@@ -1,0 +1,85 @@
+
+{ valid stack frames are:
+  (SeqF Hole d2) where d2 is a document
+  (SeqF d1 Hole) where d1 is in normal form and (Seq d1 _) doesn't need flattening
+  (TagF q Hole) where q is a quality
+
+  we use Cons and Nil for the stack
+
+  judgements are:
+  StackE k d -- in stack k, normalize document d
+  StackV k d -- return the normal document d to k
+}
+
+SNF d => StackE Nil d;
+
+{ ---------------------------------------------------------------------- }
+{ base documents }
+
+StackE k A => StackV k A;
+StackE k B => StackV k B;
+
+{ ---------------------------------------------------------------------- }
+{ Seq }
+
+{ work on first component first }
+StackE k (Seq d1 d2) => StackE (Cons (SeqF Hole d2) k) d1;
+
+{ flatten 
+
+  We could also write
+     StackV (Cons (SeqF Hole d3) k) (Seq d1 d2) => StackE k (Seq d1 (Seq d2 d3));
+  but we do the stack manipulation explicitly for clarity and speed---
+  note that d1 is normal by inversion (assuming the start state is wf), 
+  so there is no need to traverse it again 
+
+}
+StackV (Cons (SeqF Hole d3) k) (Seq d1 d2) => StackV (Cons (SeqF Hole (Seq d2 d3)) k) d1;
+
+{ if the first component doesn't need flattening, go on with the second }
+StackV (Cons (SeqF Hole d2) k) d1 => StackE (Cons (SeqF d1 Hole) k) d2;
+
+{ distribute tag over seq:
+
+  We could also write
+     StackV (Cons (SeqF (Tag q d1) Hole) k) (Tag q d2) => StackE k (Tag q (Seq d1 d2));
+  but we do the stack manipulation explicitly for clarity.
+
+  After this step, we need to work on the result: moving the Seq can create new redices
+}
+StackV (Cons (SeqF (Tag q d1) Hole) k) (Tag q d2) => StackE (Cons (TagF q Hole) k) (Seq d1 d2);
+
+{ if we don't need to distribute, return up the stack }
+StackV (Cons (SeqF d1 Hole) k) d2 => StackV k (Seq d1 d2);
+
+{ ---------------------------------------------------------------------- }
+{ Tag }
+
+{ work recursively }
+StackE k (Tag q d) => StackE (Cons (TagF q Hole) k) d;
+
+{ collapse duplicate tags 
+  
+  note that this cannot create new redices
+}
+StackV (Cons (TagF q Hole) k) (Tag q d) => StackV (Cons (TagF q Hole) k) d;
+
+{ commute tags into order 
+  Bold < Emph < Maj
+
+  three rules; one for each swap we might need to make
+
+  note that doing the swap can create new redices
+}
+StackV (Cons (TagF Emph Hole) k) (Tag Bold d) => StackE (Cons (TagF Bold Hole) k) (Tag Emph d);
+StackV (Cons (TagF Maj Hole) k) (Tag Bold d) => StackE (Cons (TagF Bold Hole) k) (Tag Maj d); 
+StackV (Cons (TagF Maj Hole) k) (Tag Emph d) => StackE (Cons (TagF Emph Hole) k) (Tag Maj d); 
+
+{ otherwise just return }
+StackV (Cons (TagF q Hole) k) d => StackV k (Tag q d);
+
+{ ---------------------------------------------------------------------- }
+{ termination: otherwise stuck states are done}
+StackV Nil x => x;
+
+.

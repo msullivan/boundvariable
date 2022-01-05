@@ -1,0 +1,55 @@
+
+Betty:
+
+Have you noticed how popular these "black-knot" toys are? Every store
+I've been to while shopping for Holidays is sold out of them, and kids
+are basically crying in the streets. Parents are in a panic.
+Unfortunately the manufacturing process uses a technology called "Open
+Terms," which is patented, so nobody can make competing replacements.
+
+Well, I think I just figured out a way to build these toys using a
+different process. Let me run this by you. First, here's a
+mathematical formulation of what black-knots do:
+
+  A black-knot has n inputs (numbered 0 to n-1) and n outputs.
+  (These are the little holes that kids drop marbles into.) The
+  black-knot is a function from each of its n inputs to a pair of
+  integers (j, k) where 0 <= j < n and 0 <= k. The number j is the
+  output hole that the marble comes out of. The number k is a number
+  of "plink" sounds that are produced as the marble rolls unseen
+  through the toy.
+
+My manufacturing technique uses only two parts, or "combinators,"
+called | and ><. I conjecture that we can reproduce each of the 11
+models of the black-knot toy using only these combinators. With my
+technique, a toy is just a grid filled with these two combinators.
+(The | combinator has width 1 and >< has width 2.) Marbles are dropped
+into the top of the grid, with input 0 being the first column, and
+input n-1 being the final column. A marble that enters the top of a |
+combinator continues into the row below in the same column. A marble
+that enters the left side of a >< combinator emerges in the right
+column and generates a "plink" sound. A marble that enters the right
+side of the >< combinator emerges on the left but does not generate a
+sound.
+
+For example:
+
+           012 
+           ||| 
+           ><| 
+           |>< 
+           ||| 
+ 
+A marble that goes in column 0 comes out in column 2 with two "plinks". 
+A marble that goes in column 1 comes out in column 0 with no "plinks". 
+A marble that goes in column 2 comes out in column 1 with no "plinks". 
+
+
+I expect children will be very picky about their knockoff toys being
+observationally equivalent to the 11 official black-knot models. I've
+written a simple program which you can use to access the mathematical
+descriptions of these toys. Run the bk_specs file in your home
+directory. The small ones are easy to reproduce but I'm having trouble
+implementing the larger ones--can you help?
+
+ -- Cain

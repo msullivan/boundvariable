@@ -1,0 +1,629 @@
+
+datatype goggles = 
+    EnglishGoggles 
+  | XMLGoggles
+  | SExpGoggles
+  | MLGoggles
+  | ANSIGoggles
+  | ReadingGoggles
+
+fun goggles-tostring EnglishGoggles = "English"
+  | goggles-tostring XMLGoggles = "XML"
+  | goggles-tostring SExpGoggles = "sexp"
+  | goggles-tostring MLGoggles = "ML"
+  | goggles-tostring ANSIGoggles = "ANSI"
+  | goggles-tostring ReadingGoggles = "Reading"
+
+val all-goggles = EnglishGoggles :: 
+                  XMLGoggles :: 
+		  SExpGoggles :: 
+                  MLGoggles ::
+		  ANSIGoggles ::
+                  ReadingGoggles ::
+                  nil
+
+fun format-list start empty sep sepN en nil = empty
+  | format-list start empty sep sepN en l = 
+    let fun f (x::nil) = x
+          | f (x::y::nil) = x ^ sepN ^ y
+          | f (x::l) = x ^ sep ^ (f l)
+          | f nil = raise Adventure "IMPOSSIBLE"
+    in
+      start ^ (f l) ^ en
+    end
+
+fun articlify ((sis "trash") _) = "some trash"
+  | articlify x = (case sub (x, 0)
+		    of ?a => "an " ^ x
+		     | ?e => "an " ^ x
+		     | ?i => "an " ^ x
+		     | ?o => "an " ^ x
+		     | ?u => "an " ^ x
+		     | _ => "a " ^ x)
+
+val goggle-view = 
+let
+
+datatype condition = 
+    Pristine
+  | Broken of condition * kind list
+and kind = Kind of string * condition
+type item = { name : string, 
+              description : string,
+              adjectives : string list,
+              condition : condition,
+              rest : datum list }
+datatype pile =
+    Pile of item * item list
+fun describe item =
+    let val adjectives = (#adjectives/item item)
+        val noun = #name/item item
+    in
+      (case #condition/item item 
+        of Pristine => ""
+         | _ => "(broken) ")
+      ^ 
+      (format-list "" noun ", " ", " 
+                   (" " ^ noun)
+                   adjectives)
+    end
+
+(* ENH if number of items > ~20 print "Sooo many
+  items... feeling dizzy... need to switch goggles" *)
+fun english_view ({ ansi, reading }, result) =
+    let 
+	fun A s = array(1, chr 27) ^ "[" ^ s
+	(* normal white on black *)
+	val defcolors = A "0m" ^ A "37m" ^ A "40m"
+	fun ansibold s = if ansi then A "1m" ^ s ^ A "0m"
+				 else s
+
+	val wordwrap_at = 64
+	(* no spaces here, or bad word-wraps can result *)
+	val redacted_string = "[______REDACTED______]"
+	val redacted_string = 
+	    if ansi 
+	    then A "5m" ^ A "1m" ^ A "33m" ^ A "41m" ^
+		 redacted_string ^
+		 defcolors
+	    else redacted_string
+        fun match_maybe_redacted (Atom s) = s
+          | match_maybe_redacted (Redacted) = redacted_string
+          | match_maybe_redacted _ = raise Match
+
+        fun match_success cmd =
+            (fn (Assoc (((sis "success") _), 
+                        Assoc (((sis "command") _),
+                               Assoc (((sis cmd) _),
+                                      details,
+                               d1),
+                        d2),
+                 d3)) => (details, d1::d2::d3::nil)
+              | _ => raise Match)
+
+        fun match_failed cmd =
+            (fn (Assoc (((sis "failed") _), 
+                        Assoc (((sis "command") _),
+                               Assoc (((sis cmd) _),
+                                      details,
+                               d1),
+                        Assoc (((sis "reason") _),
+                               Atom reason,
+                        d2)),
+                 d3)) => (details, reason, d1::d2::d3::nil)
+              | _ => raise Match)
+
+        fun match_adjectives (NoData) = nil
+          | match_adjectives (Seq (Assoc (((sis "adjective") _), 
+                                          Atom adjective, 
+                                   NoData),
+                              ((match_adjectives) adjectives))) =
+            adjective::adjectives
+          | match_adjectives _ = raise Match
+
+        fun match_kinds (NoData) = nil
+          | match_kinds (Seq (Assoc (((sis "kind") _),
+                                         Assoc (((sis "name") _),
+                                                Atom name,
+                                         Assoc (((sis "condition") _),
+                                                ((match_condition) condition),
+                                         NoData)),
+                                  NoData),
+                             ((match_kinds) kinds))) =
+            (Kind (name, condition))::kinds
+          | match_kinds _ = raise Match
+
+        and match_condition (Assoc (((sis "pristine") _), 
+                                    NoData,
+                             NoData)) = Pristine
+          | match_condition (Assoc (((sis "broken") _),
+                                    Assoc (((sis "condition") _),
+                                           ((match_condition) condition),
+                                    Assoc (((sis "missing") _),
+                                           ((match_kinds) missing),
+                                    NoData)),
+                             NoData)) = Broken (condition, missing)
+          | match_condition _ = raise Match
+
+        fun match_pile (Assoc (((sis "item") _),
+                                       Assoc (((sis "name") _),
+                                              Atom name,
+                                       Assoc (((sis "description") _),
+                                              ((match_maybe_redacted) description),
+                                       Assoc (((sis "adjectives") _),
+                                              ((match_adjectives) adjectives),
+                                       Assoc (((sis "condition") _),
+                                              ((match_condition) condition),
+                                       Assoc (((sis "piled_on") _),
+                                              ((match_maybe_pile) piled_on),
+                                       d1))))),
+                                d2)) =
+            { name = name, 
+              description = description,
+              adjectives = adjectives,
+              condition = condition,
+              rest = d1::d2::nil } :: piled_on
+          | match_pile NoData = nil
+          | match_pile _ = raise Match
+
+        and match_maybe_pile (Seq ((match_pile) pile,
+                                   NoData)) = pile
+          | match_maybe_pile NoData = nil
+          | match_maybe_pile _ = raise Match
+
+        fun match_piles NoData = nil
+          | match_piles (Seq (((match_pile) pile), 
+                              ((match_piles) piles))) =
+            pile::piles
+          | match_piles _ = raise Match
+
+        fun format_kind (Kind (name, c)) =
+            format_condition (articlify name) c
+        and format_condition s Pristine = s
+          | format_condition s (Broken (c, m)) =
+            let in
+              "(" ^ (format_condition s c) ^ " missing "
+              ^ (string-delimit " and " (list-map format_kind m))
+              ^ ")"
+            end
+
+        fun match_room (Assoc (((sis "room") _),
+                                 Assoc (((sis "name") _),
+                                        Atom name,
+                                 Assoc (((sis "description") _),
+                                        Atom description,
+                                 Assoc (((sis "items") _),
+                                        ((match_piles) piles),
+                                 d1))),
+                          d2)) = { name = name, description = description,
+                                   piles = piles, ds = d1::d2::nil }
+          | match_room _ = raise Match
+
+        fun process_room { name, description, piles, ds } =
+            let fun process_pile last (nil, s) = s
+                  | process_pile last (item::items, s) =
+                    let in
+                      process_pile (#name/item item) (items,
+                        s ^ "\nUnderneath the " ^ last ^ ", there is "
+                        ^ ((articlify o describe) item) ^ ". ")
+                        (* ENH print item.rest *)
+                    end
+                fun process_piles (nil, s) = s
+                  | process_piles (pile, s) =
+                    let 
+                      val (pile, dizzy) = if list-length pile > 20 andalso (not reading) then 
+                                            (list-take (pile, 20), true)
+                                          else
+                                            (pile, false)
+                      val item = list-head pile
+                      val items = list-tail pile
+                    in
+                      process_pile (#name/item item) (items, 
+                        s ^ "There is " ^ ((articlify o describe) item) ^ " here. ")
+                      ^ (if dizzy then "\n There are more items beneath it, but the "
+                                       ^ "pile is so tall you feel a little dizzy.\n"
+                                       ^ "Try switching your goggles." else "")
+                    end
+            in
+	      ansiroom := name;
+              (list-foldl process_piles
+                         (ansibold name ^ "\n\n" ^ description ^ "\n")
+                         piles)
+              ^ (process_results ds)
+            end
+
+        and process_result ((match_success "go") (((match_room) room), ds)) =
+            let in
+              (process_room room)
+              ^ (process_results ds)
+            end
+          | process_result ((match_failed "go") (details, reason, ds)) =
+            let in
+              (case details of
+                 Atom d => ("You can't go " ^ d ^ " because " ^ reason ^ ". ")
+               | _ => process_result details)
+              ^ (process_results ds)
+            end
+
+          | process_result ((match_success "look") (((match_room) room), ds)) =
+            let in 
+              (process_room room)
+              ^ (process_results ds)
+            end
+          | process_result ((match_failed "look") (_, reason, ds)) =
+            let in
+              ("You can't look around because " ^ reason ^ ". ")
+              ^ (process_results ds)
+            end
+
+          | process_result ((match_success "show") (((match_piles) items), ds)) =
+            let in
+              (* ENH This will give weird output if piles occur in the
+                inventory.  From the point of view of completeness, we should
+                print out the contents of the "piled_on" field. *)
+              "You are carrying"
+              ^ (format-list ":\n   " " nothing. " ",\n   " " and\n   " "."
+                                 (list-map (fn item => (articlify o describe o list-head) item)
+                                           items))
+                                           (* ENH print item.rest *)
+              ^ (process_results ds)
+            end
+          | process_result ((match_failed "show") (_, reason, ds)) =
+            let in
+              ("You can't inspect your inventory because " ^ reason ^ ". ")
+              ^ (process_results ds)
+            end
+
+          | process_result ((match_success "take") (((match_pile) (item::_)), ds1)) =
+            let in 
+              ("You are now carrying the " ^ (#name/item item) ^ ". ")
+              ^ (process_results ds1)
+              ^ (process_results (#rest/item item))
+            end
+          | process_result ((match_failed "take") (((match_pile) (item::_)), reason, ds1)) =
+            let in 
+              ("You can't take the " ^ (#name/item item) ^ " because " ^ reason ^ ". ")
+              ^ (process_results ds1)
+              ^ (process_results (#rest/item item))
+            end
+
+          | process_result ((match_success "break") (((match_pile) (item::_)), ds1)) =
+            let in 
+              ("You have broken the " ^ (#name/item item) ^ ". ")
+              ^ (process_results ds1)
+              ^ (process_results (#rest/item item))
+            end
+          | process_result ((match_failed "break") (((match_pile) (item::_)), reason, ds1)) =
+            let in 
+              ("You can't break the " ^ (#name/item item) ^ " because " ^ reason ^ ". ")
+              ^ (process_results ds1)
+              ^ (process_results (#rest/item item))
+            end
+
+          | process_result ((match_success "drop") (((match_pile) (item::_)), ds1)) =
+            let in 
+              ("You are no longer carrying the " ^ (#name/item item) ^ ". ")
+              ^ (process_results ds1)
+              ^ (process_results (#rest/item item))
+            end
+          | process_result ((match_failed "drop") (((match_pile) (item::_)), reason, ds1)) =
+            let in 
+              ("You can't drop the " ^ (#name/item item) ^ " because " ^ reason ^ ". ")
+              ^ (process_results ds1)
+              ^ (process_results (#rest/item item))
+            end
+
+          | process_result ((match_success "incinerate") (((match_pile) (item::_)), ds1)) =
+            let in 
+              ("The " ^ (#name/item item) ^ " has been destroyed. ")
+              ^ (process_results ds1)
+              ^ (process_results (#rest/item item))
+            end
+          | process_result ((match_failed "incinerate") (((match_pile) (item::_)), reason, ds1)) =
+            let in 
+              ("You can't incinerate the " ^ (#name/item item) ^ " because " 
+                     ^ reason ^ ". ")
+              ^ (process_results ds1)
+              ^ (process_results (#rest/item item))
+            end
+
+          | process_result ((match_success "combine") 
+                                ((match_piles) ((item1::_)::(item2::_)::nil), ds1)) =
+            let in
+              ("You have successfully combined the " ^ (#name/item item1) ^ " and the "
+                     ^ (#name/item item2) ^ "!")
+              ^ (process_results ds1)
+              ^ (process_results (#rest/item item1))
+              ^ (process_results (#rest/item item2))
+            end
+          | process_result ((match_failed "combine")
+                                ((match_piles) ((item1::_)::(item2::_)::nil), reason, ds1)) =
+            let in 
+              ("You can't combine the " ^ (#name/item item1) ^ " and the "
+                     ^ (#name/item item2) ^ " because " ^ reason ^ ". ")
+              ^ (process_results ds1)
+              ^ (process_results (#rest/item item1))
+              ^ (process_results (#rest/item item2))
+            end
+
+          | process_result ((match_success "use") (details, ds)) =
+            let in (* ENH dropped some data... do we care? *)
+              (case details of
+                 Seq (_, Atom consequence) => consequence
+               | _ => process_result details)
+              ^ (process_results ds)
+            end
+          | process_result ((match_failed "use") (_, reason, ds1)) =
+            let in (* ENH dropped some data... do we care? *)
+              ("Your efforts are to no avail: " ^ reason ^ ". ")
+              ^ (process_results ds1)
+            end
+
+          | process_result ((match_success "whistle") (_, ds)) =
+            let in 
+              "You whistle a cheerful tune to yourself. "
+              ^ (process_results ds)
+            end
+          | process_result ((match_failed "whistle") (_, reason, ds)) =
+            let in
+              ("You can't whistle because " ^ reason ^ ". ")
+              ^ (process_results ds)
+            end
+
+          | process_result ((match_success "hum") (_, ds)) =
+            let in 
+              "You hum a cheerful tune to yourself. "
+              ^ (process_results ds)
+            end
+          | process_result ((match_failed "hum") (_, reason, ds)) =
+            let in
+              ("You can't hum because " ^ reason ^ ". ")
+              ^ (process_results ds)
+            end
+
+          | process_result ((match_success "speak") (Atom s, ds)) =
+            let in 
+              "You speak the words \"" ^ s ^ "\" aloud, but there is no one around to hear them. "
+              ^ (process_results ds)
+            end
+          | process_result ((match_failed "speak") (Atom s, reason, ds)) =
+            let in
+              ("You can't say that aloud because " ^ reason ^ ". ")
+              ^ (process_results ds)
+            end
+
+          | process_result ((match_success "examine") (((match_pile) (item::_)), ds1)) =
+            let in
+              ("The " ^ (#name/item item) ^ " is " ^ (#description/item item) ^ ". ")
+              ^ (format-list "Interestingly, this one is " "" ", " ", and " ". " 
+			     (#adjectives/item item))
+              ^ "\n" ^
+              (case #condition/item item
+                of Pristine => "Also, it is in pristine condition"
+                 | (Broken (c, m)) => 
+                    ("Also, it is broken: it is "
+                     ^ ((format_condition (articlify (#name/item item)) c)
+                        ^ " missing "
+                        ^ (string-delimit " and " (list-map format_kind m)))))
+              ^ ". "
+              ^ (process_results ds1)
+              ^ (process_results (#rest/item item))
+            end
+          | process_result ((match_failed "examine") (((match_pile) (item::_)), reason, ds1)) =
+            let in 
+              ("You failed to examine the " ^ (#name/item item) ^ " because "
+                     ^ reason ^ ". ")
+              ^ (process_results ds1)
+              ^ (process_results (#rest/item item))
+            end
+
+          | process_result ((match_success "switch") (_, ds)) =
+            let in
+		(* hack *)
+		ansi andthen print (defcolors ^ A "2J\n\n\n");
+
+	       "Things look slightly different, but you "
+	       ^ "can't put a diode on exactly how. "
+              ^ (process_results ds)
+            end
+
+          (* Parsing errors: *)
+          | process_result (Assoc ((sis "error") _,
+                                   Assoc ((sis "response") _,
+                                          Atom s,
+                                   d1),
+                            d2)) =
+            let in
+              s
+              ^ (process_result d1)
+              ^ (process_result d2)
+            end
+
+          (* Help *)
+          | process_result (Assoc ((sis "help") _,
+                                   Atom s,
+                            NoData)) = s
+
+          | process_result NoData = ""
+                            
+          (* didn't match any known patterns... *)
+          | process_result d = 
+            "Here, you can't quite put your thoughts into words...\n"
+            ^
+            let fun indent 0 = ""
+                  | indent n = "   " ^ (indent (n - 1))
+                fun process n (Atom s) = (indent n) ^ s ^ "\n"
+                  | process n (Seq (d1, d2)) = (process n d1)
+                                             ^ (process n d2)
+                  | process n (Assoc (s, d1, d2)) = s ^ ": "
+                                                  ^ (process (n+1) d1)
+                                                  ^ (process n d2)
+                  | process n (NoData) = "\n"
+                  | process n (Redacted) = (indent n) ^ redacted_string ^ "\n"
+            in
+              process 0 d
+            end
+
+        and process_results (d::ds) = (process_result d) ^ (process_results ds)
+          | process_results nil = ""
+
+    in
+      (* print result first, which causes scrolling *)
+      print (string-wordwrap wordwrap_at (process_result result));
+
+      (* go to line where we'll draw the prompt *)
+      print "\n\n";
+
+      (* then once scrolling is done, draw the scoreboard *)
+      ansi 
+      andthen 
+	  print (
+	  (* save pos *) 
+	  A "s" ^
+	  (* go home *)
+	  A "0;0H" ^
+	  (* print status board *)
+
+	  (* bold, bg blue, fg white *)
+	  A "1m" ^ A "37m" ^ A "44m" ^
+
+          (* kill the line, to turn it blue *)
+	  A "K" ^
+
+	  string-pad(wordwrap_at + 4, 
+
+		     (* records how many points have been awarded "pre-redaction",
+			which is not the same as how many publications the user
+			has actually collected *)
+		     "[ score : " ^ A "33m" ^ int-tostring (!ansiscore) ^ A "37m ]  " ^
+
+		     !ansiroom) ^
+
+	  (* restore colors *)
+	  defcolors ^
+
+	  (* restore pos *)
+	  A "u");
+
+      print (if ansi
+	     then A "1m" ^ A "34m>: " ^ defcolors
+	     else ">: ")
+    end
+
+fun xml_view result =
+    let fun indent depth =
+            let fun loop 0 = ()
+                  | loop n = (print "  "; loop (n - 1))
+            in 
+              loop depth
+            end
+
+        fun xml_print (Atom s, depth) = 
+            let in 
+              indent depth; print s;
+              print "\n"
+            end
+          | xml_print (Seq (d1, d2), depth) =
+            let in 
+              xml_print (d1, depth);
+              xml_print (d2, depth)
+            end
+          | xml_print (Assoc (s, d1, d2), depth) =
+            let in
+              indent depth; print ("<" ^ s ^ ">\n");
+              xml_print (d1, depth + 1);
+              indent depth; print ("</" ^ s ^ ">\n");
+              xml_print (d2, depth)
+            end
+          | xml_print (NoData, depth) = ()
+          | xml_print (Redacted, depth) = 
+            let in 
+              indent depth; 
+              print "<redacted/>\n"
+            end
+    in
+      xml_print (result, 0)
+    end
+
+fun sexp_view result =
+    let fun sp (Atom s) = 
+	    let in
+		putc ?\";
+		print (string-tostring s);
+		putc ?\"
+	    end
+	  | sp (Seq (d1, d2)) =
+	    let in
+		putc ?(; 
+		sp d1; putc ? ;
+		sp d2;
+                putc ?)
+	    end
+	  | sp (Assoc (s, d1, d2)) =
+	    let in
+		putc ?(;
+                print (string-tostring s); putc ? ;
+                sp d1; 
+                putc ?);
+                sp d2
+	    end
+	  | sp NoData = ()
+          | sp Redacted = print "redacted"
+    in
+	sp result;
+	putc ?\n
+    end
+
+fun ml_view result =
+    let fun sp (Atom s) = 
+	    let in
+		putc ?\";
+		print (string-tostring s);
+		putc ?\"
+	    end
+	  | sp (Seq (d1, d2)) =
+	    let in
+                putc ?(;
+		sp d1; 
+                putc ?);
+                putc ?:;
+                putc ?:;
+		sp d2
+	    end
+	  | sp (Assoc (s, d1, NoData)) =
+	    let in
+		putc ?(;
+                print (string-tostring s); 
+                putc ? ;
+                sp d1; 
+		putc ?)
+	    end
+	  | sp (Assoc (s, d1, d2)) =
+	    let in
+		putc ?(;
+                print (string-tostring s); 
+                putc ? ;
+                sp d1; 
+		putc ?);
+                putc ? ;
+                sp d2
+	    end
+	  | sp NoData = print "nil"
+          | sp Redacted = print "redacted"
+    in
+	sp result;
+	putc ?\n
+    end
+
+(* view 'result' through the goggles 'gogs' *)
+fun goggle-view gogs result =
+    case gogs of 
+	EnglishGoggles => english_view ({ ansi = false, reading = false }, result)
+      | XMLGoggles => xml_view result
+      | SExpGoggles => sexp_view result
+      | MLGoggles => ml_view result
+      | ANSIGoggles => english_view ({ ansi = true, reading = false }, result)
+      | ReadingGoggles => english_view ({ ansi = false, reading = true }, result)
+in
+  goggle-view
+end

@@ -1,0 +1,111 @@
+
+(* val require-random = provide-random *)
+
+val provide-aspects-util = ()
+
+(* ---------------------------------------------------------------------- *)
+(* random numbers *)
+
+(* returns a random integer between 0 and  2 ^ 31 - 1 
+   
+   PERF: don't do the mod?  
+         that might break the nice properties of the generator
+	 
+	 or, is there a faster way?
+
+*)
+
+val randomIntegerSeed = ref 1
+fun randomInteger () = 
+    let 
+	val cur = ! randomIntegerSeed 
+	do randomIntegerSeed := (16807 * cur) mod 2147483647 
+                                                  (* 2^31 - 1 *)
+    in
+	cur
+    end
+
+(* random int in [0, bound)
+   assuming bound >= 0
+ *)
+fun randomBoundedInt bound = 
+    (* mod treats both args as unsigned,
+       so when the bound is actually a positive number, this will work *)
+    (randomInteger ()) mod bound 
+
+(* ---------------------------------------------------------------------- *)
+(* string utilities *)
+
+fun string-lessThan (s1, s2) = 
+    case string-compare (s1, s2) of 
+	LESS => true
+      | _ => false
+
+(* ---------------------------------------------------------------------- *)
+(* list utilities *)
+
+fun (a) flatten (l : a list list) : a list = list-foldl (op@) nil l 
+
+(* fail fast *)
+fun (a) list-all (f : a -> bool, l : a list) = 
+    case l of 
+	nil => true
+      | h::t => if f h (* does andalso fail fast *)
+		then list-all (f, t)
+		else false
+
+fun list-exists f l = case list-find f l of SOME _ => true | NONE => false
+
+(* ---------------------------------------------------------------------- *)
+(* stream utilities *)
+
+(* applies f to every element of the stream 
+   and returns true iff f returns true on all elts
+   
+   loops on infinite streams
+
+   tail recursive and applies f to the head as it forces the stream,
+   so only one element of the stream should need to be live at a time
+ *)
+fun (a) stream-eager-all (f : a -> bool) (s : a stream) =
+    let 
+	fun loop (s, acc) = 
+	    case stream-force s of
+		Nil => acc
+	      | Cons (hd, tlStream) => loop (tlStream, (f hd) andalso acc)
+    in
+	loop (s, true)
+    end	
+     
+(* builds the stream lazily *)
+fun (a) stream-tabulate (length : int, f : int -> a) : a stream = 
+    let fun loop i = 
+	stream-delay (fn _ => 
+		      if i = length 
+		      then Nil
+		      else Cons (f i,
+				 loop (i + 1)))
+    in
+	loop 0
+    end
+
+fun (a) stream-append (s1 : a stream, s2 : a stream) : a stream =
+    stream-delay (fn _ =>
+		  case stream-force s1 of
+		      Nil => stream-force s2
+		    | Cons (hd, tlStream) => Cons (hd, stream-append (tlStream, s2)))
+
+fun (a) stream-tolist (s : a stream) : a list = 
+    case stream-force s of
+	Nil => nil
+      | Cons (h, t) => h :: (stream-tolist t)
+
+fun (a,b) stream-map (f : a -> b) (s : a stream) : b stream =
+    stream-delay (fn _ => 
+		  case stream-force s of
+		      Nil => Nil
+		    | Cons (h,t) => Cons (f h, stream-map f t))
+
+fun flattenStreamList nil = stream-delay (fn _ => Nil)
+  | flattenStreamList (h::t) = stream-append (h, flattenStreamList t)
+

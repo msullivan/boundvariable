@@ -1,0 +1,201 @@
+
+    Humlock                            15 Jul 2007
+
+Humlock is our compiler for producing UM binaries from "UML" source
+code (a variant of ML). It's based on Hemlock, which is documented in
+
+  "Grid ML Programming with ConCert"   Tom Murphy VII.
+  ML Workshop 2007. Portland, Oregon.
+
+but it has a completely new backend and many features particular to
+the contest.
+
+
+ -- What Humlock is Good For --
+
+Humlock code has respectable performance; enough to implement other
+programming languages with reasonable efficiency. It can also handle
+fairly large programs: UMIX is tens of thousands of lines of code and
+compiles in a few minutes. However, some very performance- or
+size-critical code is written directly in UM assembly. Much of this
+code appears in the runtime/ subdirectory, but some can also be found
+accompanying the "standalone" assembler in the whistleock/ directory
+parallel to Humlock's.
+
+
+ -- Compiling Humlock --
+
+Humlock is written in Standard ML and can be compiled with a current
+version of SML/NJ or mlton. Unless you are going to be working on the
+compiler, we recommend that you compile it with mlton--for large programs
+like UMIX the time and space performance will make a big difference.
+With mlton installed, just type "make". With SML/NJ, run sml and then
+
+  CM.make "humlock.cm";
+
+
+ -- Using Humlock --
+
+To compile a UML file, simply use the mlton-compiled humlock as
+
+  ./humlock.exe input.uml
+
+(for a description of possible command-line flags, see below). This
+will produce a binary called input.um. To compile with SML/NJ,
+from the interactive prompt:
+
+  Compile.compile "input.uml" "input.um";
+
+Humlock gives reasonable error messages (although we do not make
+much effort to give small type error messages) except for parsing,
+where it simply tells you that your program does not parse. Compile
+early and often. If a program is rejected with a parse error, your
+best recourse is to comment out code until you narrow in on the
+mistake. (Or fix the parser in parser/parse.sml!)
+
+
+ -- Humlock Programs --
+
+UML is a somewhat peculiar variant of Standard ML. The language is not
+documented except by example and implementation. UMIX and the applications
+implemented within it are a good place to find example code, but here are
+some important differences between SML and UML:
+
+ - UML has no module system; components are textually included via the
+   "import" keyword. Identifiers are disambiguated by naming conventions,
+   such as "list-map" vs. "array-map".
+
+ - UML does not have equality types; = is integer equality, seq is
+   string equality (assuming the standard library is in use), and
+   datatype equality must be implemented manually.
+
+ - Character constants are written ?c rather than #"c".
+
+ - UML is more permissive about the contents of identifiers, so when
+   in doubt, use spaces to separate tokens. (x-y is a single identifier,
+   for instance.)
+
+ - UML does not use an apostrophe to indicate a type variable; instead
+   they must be explicitly bound:
+
+      fun (a, b) swap(x : a, y : b) : b * a = (y, x)
+      fun (a) id (x : a) : a = x
+
+ - UML datatypes are required to be uniform. For instance, in the
+   declaration of the polymorphic list type, there is no opportunity
+   to recurse at "int list" or "a list list" because the recursive
+   variable takes no arguments:
+
+      datatype a list = nil | :: of a * list
+
+   All datatypes in a mutually recursive bundle share the same type
+   arguments.
+
+ - UML has a declaration "do exp" (behaves as "val _ = exp")
+   and expression "e1 andthen e2" (same as "if e1 then (e2; ()) else ()")
+   and "e1 otherwise e2" (same as "if e1 then () else (e2; ())")   
+
+ - UML supports continuations with letcc and throw (These are often
+   used in our code for early exits because they are more efficient
+   than exceptions.)
+
+ - Humlock has an additional form of string constant, written with
+   [brackets], that allows for interpolation and arbitrary nesting.
+   For instance,
+
+   let
+     val x = "hello"
+     val y = 5
+   in
+     [The greeting is [x] and the number is [itos y].
+      There will be a newline before this line but no leading space. \
+      And this one won't even have the newline.
+     
+      Here are some words: [string-delimit ", " 
+                             (list-rev ([world] :: x :: nil))]
+      ]
+   end
+
+   Inside a bracketed string constant, [exp] evaluates exp (of type
+   string) and inserts its result in that position. This expression
+   may contain nested string constants.
+
+ - Humlock can import files as strings using the "datafile" keyword.
+   See umix.uml for many examples.
+
+ - Humlock supports a form of pattern (internally called "when" patterns)
+
+   (exp) pat
+
+   whose meaning is to evaluate exp applied to the input, and then
+   match that output against pat. If the evaluation of the expression
+   raises Match, then the pattern does not match. For example:
+
+   fun range lo hi x = if x < lo orelse x > hi then raise Match else x
+
+   fun score ((range 0 5) x) = [[itos x] points! Not bad!]
+     | score ((range 6 10) x) = [[itos x] points! Lookin' good!]
+     | score x = [Wow, [itos x] points! Awesome!]
+
+   These functions should not have effects, since they may be
+   reordered or not run at all, at the whim of the compiler.
+
+
+ -- Humlock Arguments --
+
+Used from the command line, humlock can take flags to modify its
+behavior. Here are some useful ones:
+
+-o file.um       sets the output file
+-scloadprog      turns on a more expensive self-check
+-obsouter        fills in unused bits with garbage to obfuscate
+                 the fact that this is UM code
+-junk            embeds images and strings in the output as
+                 red herrings / easter eggs
+-crypt           generate self-decrypting code (using RC4. see
+                 runtime/decrypt.sml to set the password.)
+-sd              generate self-decompressing code
+-h               generate a C++ header instead of a UM binary.
+                 A C++ function 
+
+                   string um (string arg);
+
+                 will be generated that runs the UML program with arg
+                 as the input stream and returns all of the program's
+                 output as a string. We use this to verify
+                 publications in our web server.
+
+Passing an option will invert its default value.  Thus if an option is
+off by default, passing the option will turn it on (-sd); options that
+are on by default will be turned off (-optcps).
+
+Humlock will by default write out files containing the intermediate
+language code and information for profiling and debugging. Command
+line arguments can be used to turn these off, but they do not impact
+performance much. See the c-prof UM to profile and the SML UM in the
+main um directory to debug.
+
+
+ -- License --
+
+Humlock is released under the terms of the GNU GPL. (See the file
+COPYING for details.) However, the runtime is licensed under the
+GNU Lesser GPL (code in runtime/) such that any UM binaries
+produced by Humlock (which necessarily include some runtime
+elements) can be distributed using any license of your choice.
+
+If you make interesting changes to Humlock or put the Universal
+Machine to interesting use, we'd love to hear about it!
+
+
+ -- Development --
+
+Humlock was written mostly by Tom Murphy, but Dan Spoonhower wrote the
+majority of the garbage collector and improved the performance of the
+code generator. Pretty much the whole Homework 7 team worked on the
+self-check procedure and its implementation. Humlock's dismembered
+parts now live on in Tom's thesis work and Dan's ongoing attempt to
+put ML on space robots.
+
+
+http://boundvariable.org/

@@ -1,0 +1,200 @@
+(*
+val require-publication = provide-publication 
+*)
+
+datatype rank = 
+    Lecturer
+  | Assistant
+  | Associate
+  | Full
+
+(* Careful! must be consistent with ../umix/umix.uml 
+FIE: obsfucate?
+*)
+
+fun rankToLogin Lecturer = ("guest", "")
+  | rankToLogin Assistant = ("assistant-root", "h1dd3n")
+  | rankToLogin Associate = ("associate-root", "@tth3")
+  | rankToLogin Full =      ("root", "c@Rn3g!e")
+
+fun rankToNoun Lecturer = "Lecture Administrator"
+  | rankToNoun Assistant = "Assistant Administrator"
+  | rankToNoun Associate = "Associate Administrator"
+  | rankToNoun Full = "Full Administrator"
+
+(* 
+everyone is a Lecturer
+invt: ascending order
+
+*)
+val thePromotionScores = 
+    (Lecturer, bi-fromint 0) ::
+    (Assistant, bi-fromint 1006) ::
+    (Associate, bi-fromint 2006) ::
+    (Full, bi-fromint 3006) :: (* roughly 3/4 of the par total *)
+    nil
+
+(* ---------------------------------------------------------------------- *)
+(* utils *)
+
+fun bi-le (b1, b2) = 
+    case bi-cmp (b1, b2) of
+	LESS => true
+      | EQUAL => true
+      | _ => false
+
+(* eliminate duplicates according to eq *)
+fun (a) noDups (eq : a * a -> bool) (l : a list) : a list =
+    list-foldl (fn (cur : a, acc : a list) =>
+		case list-find (fn thingInAcc => eq (cur, thingInAcc)) acc of 
+		    SOME _ => (* don't include cur *) acc
+		  | NONE => cur :: acc)
+                nil
+		l
+
+(* collect all duplicate according to eq into lists 
+   invt: none of the returned inner lists are empty
+*)
+fun (a) collect (eq : a * a -> bool) (l : a list) : (a list) list = 
+    list-map 
+    (fn cur =>
+     (* keep the elements of l that are equal to cur *)
+     list-filter (fn x => eq (x, cur)) l)
+    (noDups eq l)
+
+(* invariant: never call on an empty list! *)
+fun (a) nonempty-list-max (lt : a * a -> bool) (l : a list) : a = 
+    case l of 
+	nil => raise Match
+      | h :: t => list-foldl (fn (cur, acc) => 
+			      if lt (cur, acc) then acc else cur)
+	                     h
+			     t
+
+
+(* ---------------------------------------------------------------------- *)
+(* tallying publications *)
+
+type pub = {problem : string, task : string, score : bigint}
+
+fun sameProb ({problem=p1, task=t1, score=_},
+	      {problem=p2, task=t2, score=_})
+    = 
+    string-equals (p1, p2) andalso string-equals (t1, t2)
+
+(* tally all pubs for a given problem 
+   assumes input pubs are all for the same problem
+           that the list is non-empty
+
+   returns the score for that problem
+*)
+fun tallyProb (ps : pub list) : bigint = 
+    let val {problem, task, score} : pub = 
+	case ps of
+	    nil => raise Match (* impossible *)
+	  | p :: nil => p
+	  | (p as {problem, task, score}) :: _ =>
+		(print ("WARNING: Duplicate published versions of " ^ problem ^ "." ^ task ^ "; counting only the best one.\n\n");
+		 (nonempty-list-max (fn ({problem=_, task=_, score=b1},
+					 {problem=_, task=_, score=b2}) => bi-le (b1, b2))
+		                     ps))
+    in
+	score
+    end
+
+fun tallyPubs (ps : pub list) = 
+    let
+	val byProbs = collect sameProb ps
+	val probTallies = list-map tallyProb byProbs
+    in
+	list-foldl bi-add (bi-fromint 0) probTallies
+    end
+
+fun goodPubs (pubs : string list) : pub list = 
+    list-foldl (fn (st, acc) => 
+		(case read-publication st of
+		     NONE => 
+			 (print ("WARNING: Publication will be rejected:\n\t" ^ st ^ "\n\n");
+			  acc)
+		   | SOME p => p :: acc))
+               nil
+	       pubs
+
+(* find the largest rank that my score qualifies for 
+invt: score is non-negative
+*)
+fun rankFromScore (score : bigint) = 
+    let val (r : rank, _ : bigint) = 
+	nonempty-list-max 
+	(fn ((r1, s1 : bigint), (r2, s2 : bigint)) => bi-le (s1, s2))
+	(* keep the ranks whose cutoffs are le my score 
+	   because the score is non-neg, Lecturer will always be included,
+	   so the list will be non-empty
+	   *)
+	(list-filter (fn (_, cutOff) => bi-le (cutOff, score)) thePromotionScores)
+    in 
+	r
+    end
+
+(* ENH: better words than weight? *)
+fun assessPubs (ps : string list) : unit =
+    let 
+
+	val score =  tallyPubs (goodPubs ps)
+	val rank = rankFromScore score
+	val (login, pass) = rankToLogin rank
+
+	do print "------------------------------------------------------------\n\n"
+
+	do print ("Assessing your best accepted publications:\n\n"
+		  ^ "\tYour CV's weight is " ^ (bi-tostring score) ^ ".\n"
+		  ^ "\tYour current rank is " ^ (rankToNoun rank) ^ ".\n"
+		  ^ "\tTo use your administrative privileges: \n"
+		  ^ "\t\tlogin:   \t" ^ login ^ "\n"
+		  ^ "\t\tpassword:\t" ^ pass ^ "\n")
+
+	do print "\n"
+
+	do print "------------------------------------------------------------\n\n"
+
+	do print ("The CBV Tenure Review Board's promotion guidelines:\n\n"
+		  ^ "To attain the rank of   \t\tYour CV must weigh at least\n"  
+		  ^ "*********************   \t\t***************************\n")  
+	    
+	do list-app (fn (r, s) => 
+		     print ((rankToNoun r) ^ "\t\t\t" ^ (bi-tostring (s)) ^ "\n"))
+	    thePromotionScores
+	    
+	do print "\n"
+    in 
+	()
+    end
+
+fun readAndAssessPubs () : unit = 
+    let
+	fun removeWhitespace s = 
+	    case list-filter (fn s => not (string-equals (s, ""))) 
+		(* SUSP: fields or tokens? *)
+		(string-fields (fn ?  => true | ?\t => true | _ => false) s) of
+		pubString :: nil => SOME pubString
+	      | _ => (print "WARNING: bad input line.\n"; NONE)
+		    
+	fun loop acc = 
+	    let val l = getline () in
+		if string-equals (l, "") 
+		then acc
+		else 
+		    case (removeWhitespace l) of 
+			SOME s => loop (s :: acc)
+		      | NONE => loop acc
+	    end
+			    
+	do print "Enter one publication per line; terminate with an empty line:\n"
+	    
+	val pubs = loop nil
+
+    in
+	assessPubs pubs
+    end
+
+		    

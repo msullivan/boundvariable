@@ -1,0 +1,131 @@
+(* Items 317 - 320 *)
+
+do add_item_ex(HistoryExhibit6, Missing (Missing (Missing (Noun Codex, (Noun X-9247-GCY)::nil), (Noun X-9247-GCY)::nil), (Missing (Noun B-4832-LFH, (Noun X-9247-GCY)::(Noun F-1403-QIO)::nil))::(Noun X-9247-GCY)::nil), true, S "inscribed with the symbol \"omega.\" Other than that, it's not terribly interesting: you've seen this sort of thing before", nil)
+do add_item_ex(HistoryExhibit6, Missing (Noun B-4832-LFH, (Noun X-9247-GCY)::(Noun F-1403-QIO)::nil), true, Exemplary, gargantuan::nil)
+do add_item_ex(HistoryExhibit6, Missing (Missing (Noun B-4832-LFH, (Noun X-9247-GCY)::(Noun F-1403-QIO)::nil), (Missing (Noun X-9247-GCY, (Noun B-4832-LFH)::(Noun F-1403-QIO)::(Missing (Noun J-0010-VLV, (Noun X-9247-GCY)::(Noun B-4832-LFH)::nil))::(Noun J-0010-VLV)::(Noun J-0010-VLV)::(Noun J-0010-VLV)::nil))::nil), true, Exemplary, brass::nil)
+do add_item_ex(HistoryExhibit6, Missing (Noun X-9247-GCY, (Noun B-4832-LFH)::(Noun F-1403-QIO)::(Missing (Noun J-0010-VLV, (Noun X-9247-GCY)::(Noun B-4832-LFH)::nil))::(Noun J-0010-VLV)::(Noun J-0010-VLV)::(Noun J-0010-VLV)::nil), true, Exemplary, rotating::nil)
+do add_item_ex(HistoryExhibit6, Noun X-9247-GCY, true, Exemplary, domestic::nil)
+do add_item_ex(HistoryExhibit6, Missing (Noun B-4832-LFH, (Noun X-9247-GCY)::(Noun F-1403-QIO)::nil), true, Exemplary, burnt-sienna::nil)
+do add_item_ex(HistoryExhibit6, Missing (Missing (Noun X-9247-GCY, (Noun J-0010-VLV)::(Noun J-0010-VLV)::(Missing (Noun J-0010-VLV, (Noun X-9247-GCY)::(Noun B-4832-LFH)::nil))::(Noun J-0010-VLV)::(Noun B-4832-LFH)::(Missing (Noun B-4832-LFH, (Noun X-9247-GCY)::(Noun F-1403-QIO)::nil))::(Noun F-1403-QIO)::nil), (Noun F-1403-QIO)::nil), true, Exemplary, midnight-blue::nil)
+do add_item_ex(HistoryExhibit6, Missing (Noun F-1403-QIO, (Missing (Noun B-4832-LFH, (Noun X-9247-GCY)::(Noun F-1403-QIO)::nil))::nil), true, Exemplary, slate-blue::nil)
+do add_item_ex(HistoryExhibit6, Missing (Noun B-4832-LFH, (Noun F-1403-QIO)::(Noun B-4832-LFH)::(Noun X-9247-GCY)::nil), true, Exemplary, pale-sandy-brown::nil)
+do add_item_ex(HistoryExhibit6, Noun F-1403-QIO, true, Exemplary, cadet-blue::nil)
+do add_item_ex(HistoryExhibit6, Noun X-9247-GCY, true, Exemplary, pear::nil)
+do add_item_ex(HistoryExhibit6, Missing (Noun J-0010-VLV, (Noun X-9247-GCY)::(Noun F-1403-QIO)::(Noun X-9247-GCY)::(Noun B-4832-LFH)::(Noun X-9247-GCY)::(Noun X-9247-GCY)::(Noun X-9247-GCY)::(Noun B-4832-LFH)::(Noun X-9247-GCY)::(Noun X-9247-GCY)::nil), true, Exemplary, ochre::nil)
+do add_item_ex(HistoryExhibit6, Noun B-4832-LFH, true, Exemplary, seashell::nil)
+do add_item_ex(HistoryExhibit6, Missing (Noun X-9247-GCY, (Noun J-0010-VLV)::(Noun B-4832-LFH)::(Missing (Noun J-0010-VLV, (Noun X-9247-GCY)::(Noun B-4832-LFH)::nil))::(Noun J-0010-VLV)::(Noun F-1403-QIO)::(Noun J-0010-VLV)::(Noun X-9247-GCY)::nil), true, Exemplary, hypoallergenic::nil)
+do add_item_ex(HistoryExhibit6, Noun B-4832-LFH, true, Exemplary, lawn-green::nil)
+do add_item_ex(HistoryExhibit6, Missing (Noun X-9247-GCY, (Noun B-4832-LFH)::(Noun B-4832-LFH)::(Noun F-1403-QIO)::(Noun J-0010-VLV)::(Noun F-1403-QIO)::(Noun F-1403-QIO)::nil), true, Exemplary, gamboge::nil)
+do add_item_ex(HistoryExhibit6, Missing (Noun X-9247-GCY, (Noun B-4832-LFH)::(Noun B-4832-LFH)::(Noun F-1403-QIO)::(Noun J-0010-VLV)::(Noun F-1403-QIO)::(Noun F-1403-QIO)::nil), true, Exemplary, peach-puff::nil)
+do add_item_ex(HistoryExhibit6, Missing (Noun B-4832-LFH, (Noun X-9247-GCY)::(Noun F-1403-QIO)::nil), true, Exemplary, cornflower-blue::nil)
+do add_item_ex(HistoryExhibit6, Noun J-0010-VLV, true, Exemplary, camouflage-green::nil)
+do add_item_ex(HistoryExhibit6, Missing (Noun J-0010-VLV, (Noun X-9247-GCY)::(Noun F-1403-QIO)::(Noun X-9247-GCY)::(Noun B-4832-LFH)::(Noun X-9247-GCY)::(Noun X-9247-GCY)::(Noun X-9247-GCY)::(Noun B-4832-LFH)::(Noun X-9247-GCY)::(Noun X-9247-GCY)::nil), true, Exemplary, safety-orange::nil)
+do add_item_ex(HistoryExhibit6, Noun J-0010-VLV, true, Exemplary, purple::nil)
+do add_item_ex(HistoryExhibit6, Missing (Noun X-9247-GCY, (Noun X-9247-GCY)::(Noun F-1403-QIO)::(Missing (Noun X-9247-GCY, (Noun B-4832-LFH)::(Noun B-4832-LFH)::(Noun F-1403-QIO)::(Noun J-0010-VLV)::(Noun F-1403-QIO)::(Noun F-1403-QIO)::nil))::(Noun B-4832-LFH)::(Noun J-0010-VLV)::nil), true, Exemplary, azure::nil)
+do add_item_ex(HistoryExhibit6, Noun B-4832-LFH, true, Exemplary, burgundy::nil)
+do add_item_ex(HistoryExhibit6, Missing (Noun X-9247-GCY, (Noun B-4832-LFH)::(Missing (Noun J-0010-VLV, (Noun X-9247-GCY)::(Noun B-4832-LFH)::nil))::(Noun J-0010-VLV)::(Noun J-0010-VLV)::(Missing (Noun J-0010-VLV, (Noun X-9247-GCY)::(Noun F-1403-QIO)::(Noun X-9247-GCY)::(Noun B-4832-LFH)::(Noun X-9247-GCY)::(Noun X-9247-GCY)::(Noun X-9247-GCY)::(Noun B-4832-LFH)::(Noun X-9247-GCY)::(Noun X-9247-GCY)::nil))::(Noun F-1403-QIO)::(Noun J-0010-VLV)::nil), true, Exemplary, cornflower-blue::nil)
+do add_item_ex(HistoryExhibit6, Missing (Noun J-0010-VLV, (Noun X-9247-GCY)::(Noun F-1403-QIO)::(Noun X-9247-GCY)::(Noun B-4832-LFH)::(Missing (Noun J-0010-VLV, (Noun X-9247-GCY)::(Noun F-1403-QIO)::(Noun X-9247-GCY)::(Noun B-4832-LFH)::(Noun X-9247-GCY)::(Noun X-9247-GCY)::(Noun X-9247-GCY)::(Noun B-4832-LFH)::(Noun X-9247-GCY)::(Noun X-9247-GCY)::nil))::(Noun X-9247-GCY)::(Noun X-9247-GCY)::(Noun X-9247-GCY)::(Noun B-4832-LFH)::(Noun X-9247-GCY)::(Noun X-9247-GCY)::nil), true, Exemplary, lavender::nil)
+do add_item_ex(HistoryExhibit6, Noun X-9247-GCY, true, Exemplary, honeydew::nil)
+do add_item_ex(HistoryExhibit6, Noun F-1403-QIO, true, Exemplary, scarlet::nil)
+do add_item_ex(HistoryExhibit6, Noun X-9247-GCY, true, Exemplary, swamp-green::nil)
+do add_item_ex(HistoryExhibit6, Missing (Noun J-0010-VLV, (Noun X-9247-GCY)::(Noun F-1403-QIO)::(Noun X-9247-GCY)::(Noun B-4832-LFH)::(Noun X-9247-GCY)::(Noun X-9247-GCY)::(Noun X-9247-GCY)::(Noun B-4832-LFH)::(Noun X-9247-GCY)::(Noun X-9247-GCY)::nil), true, Exemplary, moss-green::nil)
+do add_item_ex(HistoryExhibit6, Noun B-4832-LFH, true, Exemplary, violet::nil)
+
+(*
+
+val pf =
+ [Pickup(((Noun (Part(2))), ["violet"])),
+Pickup(((Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(3))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1)))])), ["moss-green"])),
+Pickup(((Noun (Part(1))), ["swamp-green"])),
+Pickup(((Noun (Part(3))), ["scarlet"])),
+Pickup(((Noun (Part(1))), ["honeydew"])),
+Incinerate(((Noun (Part(2))), ["violet"])),
+Pickup(((Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(3))), (Noun (Part(1))), (Noun (Part(2))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(3))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1)))])), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1)))])), ["lavender"])),
+Combine(((Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(3))), (Noun (Part(1))), (Noun (Part(2))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(3))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1)))])), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1)))])), ["lavender"]), ((Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(3))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1)))])), ["moss-green"])),
+Pickup(((Missing ((Noun (Part(1))), [(Noun (Part(2))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(2)))])), (Noun (Part(4))), (Noun (Part(4))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(3))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1)))])), (Noun (Part(3))), (Noun (Part(4)))])), ["cornflower-blue"])),
+Combine(((Missing ((Noun (Part(1))), [(Noun (Part(2))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(2)))])), (Noun (Part(4))), (Noun (Part(4))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(3))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1)))])), (Noun (Part(3))), (Noun (Part(4)))])), ["cornflower-blue"]), ((Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(3))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1)))])), ["lavender"])),
+Pickup(((Noun (Part(2))), ["burgundy"])),
+Incinerate(((Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(3))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(2)))])), (Noun (Part(4))), (Noun (Part(4))), (Noun (Part(4)))])), ["cornflower-blue"])),
+Pickup(((Missing ((Noun (Part(1))), [(Noun (Part(1))), (Noun (Part(3))), (Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(2))), (Noun (Part(3))), (Noun (Part(4))), (Noun (Part(3))), (Noun (Part(3)))])), (Noun (Part(2))), (Noun (Part(4)))])), ["azure"])),
+Combine(((Missing ((Noun (Part(1))), [(Noun (Part(1))), (Noun (Part(3))), (Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(2))), (Noun (Part(3))), (Noun (Part(4))), (Noun (Part(3))), (Noun (Part(3)))])), (Noun (Part(2))), (Noun (Part(4)))])), ["azure"]), ((Noun (Part(2))), ["burgundy"])),
+Pickup(((Noun (Part(4))), ["purple"])),
+Combine(((Missing ((Noun (Part(1))), [(Noun (Part(3))), (Noun (Part(4))), (Noun (Part(1))), (Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(2))), (Noun (Part(3))), (Noun (Part(4))), (Noun (Part(3))), (Noun (Part(3)))]))])), ["azure"]), ((Noun (Part(1))), ["swamp-green"])),
+Combine(((Missing ((Noun (Part(1))), [(Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(2))), (Noun (Part(3))), (Noun (Part(4))), (Noun (Part(3))), (Noun (Part(3)))])), (Noun (Part(4))), (Noun (Part(3)))])), ["azure"]), ((Noun (Part(4))), ["purple"])),
+Pickup(((Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(3))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1)))])), ["safety-orange"])),
+Pickup(((Noun (Part(4))), ["camouflage-green"])),
+Incinerate(((Noun (Part(4))), ["camouflage-green"])),
+Pickup(((Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), ["cornflower-blue"])),
+Incinerate(((Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), ["cornflower-blue"])),
+Pickup(((Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(2))), (Noun (Part(3))), (Noun (Part(4))), (Noun (Part(3))), (Noun (Part(3)))])), ["peach-puff"])),
+Combine(((Missing ((Noun (Part(1))), [(Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(2))), (Noun (Part(3))), (Noun (Part(4))), (Noun (Part(3))), (Noun (Part(3)))])), (Noun (Part(3)))])), ["azure"]), ((Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(2))), (Noun (Part(3))), (Noun (Part(4))), (Noun (Part(3))), (Noun (Part(3)))])), ["peach-puff"])),
+Incinerate(((Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(3))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1)))])), ["safety-orange"])),
+Pickup(((Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(2))), (Noun (Part(3))), (Noun (Part(4))), (Noun (Part(3))), (Noun (Part(3)))])), ["gamboge"])),
+Incinerate(((Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(2))), (Noun (Part(3))), (Noun (Part(4))), (Noun (Part(3))), (Noun (Part(3)))])), ["gamboge"])),
+Combine(((Missing ((Noun (Part(1))), [(Noun (Part(3)))])), ["azure"]), ((Noun (Part(3))), ["scarlet"])),
+Pickup(((Noun (Part(2))), ["lawn-green"])),
+Pickup(((Missing ((Noun (Part(1))), [(Noun (Part(4))), (Noun (Part(2))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(2)))])), (Noun (Part(4))), (Noun (Part(3))), (Noun (Part(4))), (Noun (Part(1)))])), ["hypoallergenic"])),
+Pickup(((Noun (Part(2))), ["seashell"])),
+Incinerate(((Noun (Part(2))), ["seashell"])),
+Pickup(((Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(3))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1)))])), ["ochre"])),
+Incinerate(((Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(3))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1)))])), ["ochre"])),
+Pickup(((Noun (Part(1))), ["pear"])),
+Combine(((Missing ((Noun (Part(1))), [(Noun (Part(4))), (Noun (Part(2))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(2)))])), (Noun (Part(4))), (Noun (Part(3))), (Noun (Part(4))), (Noun (Part(1)))])), ["hypoallergenic"]), ((Noun (Part(1))), ["pear"])),
+Pickup(((Noun (Part(3))), ["cadet-blue"])),
+Incinerate(((Noun (Part(3))), ["cadet-blue"])),
+Pickup(((Missing ((Noun (Part(2))), [(Noun (Part(3))), (Noun (Part(2))), (Noun (Part(1)))])), ["pale-sandy-brown"])),
+Combine(((Missing ((Noun (Part(2))), [(Noun (Part(3))), (Noun (Part(2))), (Noun (Part(1)))])), ["pale-sandy-brown"]), ((Noun (Part(2))), ["lawn-green"])),
+Pickup(((Missing ((Noun (Part(3))), [(Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))]))])), ["slate-blue"])),
+Combine(((Missing ((Noun (Part(3))), [(Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))]))])), ["slate-blue"]), ((Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), ["pale-sandy-brown"])),
+Pickup(((Missing ((Missing ((Noun (Part(1))), [(Noun (Part(4))), (Noun (Part(4))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(2)))])), (Noun (Part(4))), (Noun (Part(2))), (Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), (Noun (Part(3)))])), [(Noun (Part(3)))])), ["midnight-blue"])),
+Combine(((Missing ((Missing ((Noun (Part(1))), [(Noun (Part(4))), (Noun (Part(4))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(2)))])), (Noun (Part(4))), (Noun (Part(2))), (Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), (Noun (Part(3)))])), [(Noun (Part(3)))])), ["midnight-blue"]), ((Noun (Part(3))), ["slate-blue"])),
+Pickup(((Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), ["burnt-sienna"])),
+Combine(((Missing ((Noun (Part(1))), [(Noun (Part(4))), (Noun (Part(4))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(2)))])), (Noun (Part(4))), (Noun (Part(2))), (Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), (Noun (Part(3)))])), ["midnight-blue"]), ((Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), ["burnt-sienna"])),
+Pickup(((Noun (Part(1))), ["domestic"])),
+Incinerate(((Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(3))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(2)))])), (Noun (Part(4))), (Noun (Part(4))), (Noun (Part(4)))])), ["hypoallergenic"])),
+Pickup(((Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(3))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(2)))])), (Noun (Part(4))), (Noun (Part(4))), (Noun (Part(4)))])), ["rotating"])),
+Incinerate(((Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(3))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(2)))])), (Noun (Part(4))), (Noun (Part(4))), (Noun (Part(4)))])), ["rotating"])),
+Pickup(((Missing ((Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), [(Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(3))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(2)))])), (Noun (Part(4))), (Noun (Part(4))), (Noun (Part(4)))]))])), ["brass"])),
+Combine(((Missing ((Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), [(Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(3))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(2)))])), (Noun (Part(4))), (Noun (Part(4))), (Noun (Part(4)))]))])), ["brass"]), ((Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(3))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(2)))])), (Noun (Part(4))), (Noun (Part(4))), (Noun (Part(4)))])), ["midnight-blue"])),
+Pickup(((Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), ["gargantuan"])),
+Incinerate(((Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), ["gargantuan"])),
+Pickup(((Missing ((Missing ((Missing ((Noun "Codex"), [(Noun (Part(1)))])), [(Noun (Part(1)))])), [(Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), (Noun (Part(1)))])), [])),
+Combine(((Missing ((Missing ((Missing ((Noun "Codex"), [(Noun (Part(1)))])), [(Noun (Part(1)))])), [(Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), (Noun (Part(1)))])), []), ((Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), ["brass"])),
+Combine(((Missing ((Missing ((Missing ((Noun "Codex"), [(Noun (Part(1)))])), [(Noun (Part(1)))])), [(Noun (Part(1)))])), []), ((Noun (Part(1))), ["domestic"])),
+Combine(((Missing ((Missing ((Noun "Codex"), [(Noun (Part(1)))])), [(Noun (Part(1)))])), []), ((Noun (Part(1))), ["honeydew"])),
+Combine(((Missing ((Noun "Codex"), [(Noun (Part(1)))])), []), ((Noun (Part(1))), ["azure"]))]
+
+val goal = (Noun "Codex")
+
+val pile =
+[((Noun (Part(2))), ["violet"]),
+((Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(3))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1)))])), ["moss-green"]),
+((Noun (Part(1))), ["swamp-green"]),
+((Noun (Part(3))), ["scarlet"]),
+((Noun (Part(1))), ["honeydew"]),
+((Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(3))), (Noun (Part(1))), (Noun (Part(2))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(3))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1)))])), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1)))])), ["lavender"]),
+((Missing ((Noun (Part(1))), [(Noun (Part(2))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(2)))])), (Noun (Part(4))), (Noun (Part(4))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(3))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1)))])), (Noun (Part(3))), (Noun (Part(4)))])), ["cornflower-blue"]),
+((Noun (Part(2))), ["burgundy"]),
+((Missing ((Noun (Part(1))), [(Noun (Part(1))), (Noun (Part(3))), (Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(2))), (Noun (Part(3))), (Noun (Part(4))), (Noun (Part(3))), (Noun (Part(3)))])), (Noun (Part(2))), (Noun (Part(4)))])), ["azure"]),
+((Noun (Part(4))), ["purple"]),
+((Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(3))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1)))])), ["safety-orange"]),
+((Noun (Part(4))), ["camouflage-green"]),
+((Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), ["cornflower-blue"]),
+((Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(2))), (Noun (Part(3))), (Noun (Part(4))), (Noun (Part(3))), (Noun (Part(3)))])), ["peach-puff"]),
+((Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(2))), (Noun (Part(3))), (Noun (Part(4))), (Noun (Part(3))), (Noun (Part(3)))])), ["gamboge"]),
+((Noun (Part(2))), ["lawn-green"]),
+((Missing ((Noun (Part(1))), [(Noun (Part(4))), (Noun (Part(2))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(2)))])), (Noun (Part(4))), (Noun (Part(3))), (Noun (Part(4))), (Noun (Part(1)))])), ["hypoallergenic"]),
+((Noun (Part(2))), ["seashell"]),
+((Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(3))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(1))), (Noun (Part(2))), (Noun (Part(1))), (Noun (Part(1)))])), ["ochre"]),
+((Noun (Part(1))), ["pear"]),
+((Noun (Part(3))), ["cadet-blue"]),
+((Missing ((Noun (Part(2))), [(Noun (Part(3))), (Noun (Part(2))), (Noun (Part(1)))])), ["pale-sandy-brown"]),
+((Missing ((Noun (Part(3))), [(Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))]))])), ["slate-blue"]),
+((Missing ((Missing ((Noun (Part(1))), [(Noun (Part(4))), (Noun (Part(4))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(2)))])), (Noun (Part(4))), (Noun (Part(2))), (Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), (Noun (Part(3)))])), [(Noun (Part(3)))])), ["midnight-blue"]),
+((Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), ["burnt-sienna"]),
+((Noun (Part(1))), ["domestic"]),
+((Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(3))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(2)))])), (Noun (Part(4))), (Noun (Part(4))), (Noun (Part(4)))])), ["rotating"]),
+((Missing ((Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), [(Missing ((Noun (Part(1))), [(Noun (Part(2))), (Noun (Part(3))), (Missing ((Noun (Part(4))), [(Noun (Part(1))), (Noun (Part(2)))])), (Noun (Part(4))), (Noun (Part(4))), (Noun (Part(4)))]))])), ["brass"]),
+((Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), ["gargantuan"]),
+((Missing ((Missing ((Missing ((Noun "Codex"), [(Noun (Part(1)))])), [(Noun (Part(1)))])), [(Missing ((Noun (Part(2))), [(Noun (Part(1))), (Noun (Part(3)))])), (Noun (Part(1)))])), [])]
+
+*)

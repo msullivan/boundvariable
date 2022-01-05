@@ -1,0 +1,5 @@
+#!/bin/sh
+
+D=`dirname $0`
+
+java -server -classpath ${D}/src edu.cmu.cs.homework7.UM $@

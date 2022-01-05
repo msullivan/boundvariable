@@ -1,0 +1,210 @@
+#!/bin/sh
+
+# CONFIGURATION
+
+VM_MARKS="micro-add \
+          micro-mul \
+          micro-div \
+          micro-nand \
+          micro-literal \
+          micro-cmov0 \
+          micro-cmov1 \
+          micro-loadprog0 \
+          micro-asub0 \
+          micro-upd0 \
+          micro-allocfree \
+          fact.161 \
+          quicksort.161"
+
+INST_MARKS="micro-add \
+            micro-mul \
+            micro-div \
+            micro-nand \
+            micro-literal \
+            micro-cmov0 \
+            micro-cmov1 \
+            micro-loadprog0 \
+            micro-asub0 \
+            micro-upd0 \
+            micro-allocfree"
+
+DEFAULT_DATA_DIR="benchmark-results";
+
+# No need to modify below here
+
+PRINTE="echo";
+
+MARKS_DIR=`dirname $0`;
+MARKS_DIR=`cd ${MARKS_DIR} && pwd`;
+
+while [ -n "$1" ]; do
+    case $1 in
+	-d) shift;
+	    DATA_DIRS="$1 ${DATA_DIRS}";
+	    ${PRINTE} "Using command-line data directory:"
+	    ${PRINTE} "  $1";
+	    shift;;
+
+	-a) shift;
+	    ALL_MARKS=1;;
+
+	-o) shift;
+	    PLOTS_DIR=$1;
+	    shift;
+	    ${PRINTE} "Using command-line output directory:"
+	    ${PRINTE} "  ${PLOTS_DIR}";;
+
+	-h)
+	    ${PRINTE} "usage: `basename $0` <options>";
+	    ${PRINTE} "  -d <dir>             use data in <dir> (may occur multiple times)";
+	    ${PRINTE} "  -a                   use all available benchmarks in VM plot";
+	    ${PRINTE} "  -o <dir>             output resulting graphs to <dir>";
+	    ${PRINTE} "  -h                   print this message";
+	    exit 1;;
+
+	*)
+	    ${PRINTE} "Unrecognized option: $1 (Did you forget quotes?)";
+	    exit 1;;
+    esac
+done
+
+if [ -z "${DATA_DIRS}" ]; then
+  ${PRINTE} "Defaulting to data directory:";
+  ${PRINTE} "  ${MARKS_DIR}/${DEFAULT_DATA_DIR}";
+  DATA_DIRS="${MARKS_DIR}/${DEFAULT_DATA_DIR}";
+fi;
+
+for DIR in ${DATA_DIRS}; do
+  if [ ! -d ${DIR} ]; then
+      ${PRINTE} "Missing data directory:";
+      ${PRINTE} "  ${DIR}";
+      exit 1;
+  fi;
+done
+
+if [ -n "${ALL_MARKS}" ]; then
+  VM_MARKS=`find ${DATA_DIRS} -type f -not -name .\* | grep -v '\.eps' \
+     | sed -e 's#.*/##g;' -e 's#^[^.]*\.##g;' | sort -u`;
+  ${PRINTE} "Plotting VM performance for:";
+  for VM_MARK in ${VM_MARKS}; do
+    ${PRINTE} "  ${VM_MARK}";
+  done
+fi
+
+BARGRAPH="`dirname $0`/../../../contrib/bargraph.pl -eps";
+
+VMS=`find ${DATA_DIRS} -type f -not -name .\* | grep -v '\.eps$' | sort \
+  | sed -e 's#^\(.*/[^./]*\)\.[^/]*#\1#g;' | uniq | xargs echo`;
+
+if [ -z "${PLOTS_DIR}" ]; then
+  if [ `echo ${DATA_DIRS} | xargs -n1 echo | wc -l` -eq 1 ]; then
+    ${PRINTE} "Defaulting to output directory:";
+    ${PRINTE} "  ${DATA_DIRS}";
+    PLOTS_DIR=`cd ${DATA_DIRS} && pwd`;
+  else
+    ${PRINTE} "Aborting: must specify output directory (-o) when using multiple data directories";
+    exit 1;
+  fi
+
+  VM_NAMES=`find ${DATA_DIRS} -type f -not -name .\* | grep -v '\.eps$' | sort \
+    | sed -e 's#^.*/\([^./]*\)\.[^/]*$#\1#g;' -e 's#[^/]*/##g;' | uniq \
+    | xargs echo`;
+
+else
+  VM_NAMES=`find ${DATA_DIRS} -type f -not -name .\* | grep -v '\.eps$' | sort \
+    | sed -e 's#\([^./]*\)/\([^./]*\)\.[^/]*$#\1_\2#g;'  -e 's#[^/]*/##g;' | uniq \
+    | xargs echo`;
+
+fi
+
+if [ ! -d "${PLOTS_DIR}" ]; then
+    mkdir -p ${PLOTS_DIR};
+fi
+
+# Overall vm performance -- no interesting scaling / translation
+
+OF="${PLOTS_DIR}/vm-performance.eps";
+rm -f ${OF};
+
+{
+    cat <<EOF
+title=Overall VM Performance
+xlabel=benchmark
+ylabel=execution time (s)
+=cluster ${VM_NAMES}
+=arithmean
+EOF
+
+    for VM in ${VMS}; do
+	for MARK in ${VM_MARKS}; do
+	    echo -n "${MARK} ";
+	    IF="${VM}.${MARK}";
+	    if [ -r ${IF} ]; then
+		cat ${VM}.${MARK};
+	    else
+		echo 0;
+	    fi
+	done
+	echo "=multi";
+    done 
+
+} | ${BARGRAPH} - > ${OF};
+
+
+# Relative cost of instructions
+OF="${PLOTS_DIR}/instruction-cost.eps";
+rm -f ${OF};
+
+PREC="3";
+
+{
+    cat <<EOF
+title=Relative Instruction Cost
+ylabel=execution time (normalized to add)
+yformat=%1.1f
+#extraops=set yrange [.5:20]
+#extraops=set logscale y
+=cluster ${VM_NAMES}
+EOF
+
+    for VM in ${VMS}; do
+      if [ -r ${VM}.micro-10k -a -r ${VM}.micro-add ]; then
+	SHIFT=`if [ -r ${VM}.micro-10k ]; then \
+               cat ${VM}.micro-10k; else echo 0; fi`;
+	ADD_TIME=`if [ -r ${VM}.micro-add ]; then \
+                  cat ${VM}.micro-add; else echo 0; fi`;
+	SCALE=`echo "${PREC} k \
+               ${ADD_TIME} ${SHIFT} - p" \
+               | dc`;
+	for MARK in ${INST_MARKS}; do
+	  echo -n "${MARK} " | sed -e 's/micro-//';
+	  IF="${VM}.${MARK}";
+	  if [ -r ${IF} ]; then
+	    if [ ${MARK} = "micro-loadprog0" ]; then
+	      echo "${PREC} k \
+                   `cat ${VM}.${MARK}` ${SHIFT} - \
+                   ${ADD_TIME} - \
+                   ${SCALE} / p" \
+		  | dc;
+	    else
+	      echo "${PREC} k \
+                    `cat ${VM}.${MARK}` ${SHIFT} - \
+                    ${SCALE} / p" \
+		  | dc;
+	    fi
+	  else
+	    echo 0;
+
+	  fi
+	done
+
+      else
+	echo add 0;
+	
+      fi
+
+      echo "=multi";
+
+    done 
+
+} | ${BARGRAPH} - > ${OF};

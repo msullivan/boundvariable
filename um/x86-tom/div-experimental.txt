@@ -1,0 +1,14 @@
+	movl	%esi, %ecx
+	movl	%esi, %edx
+	andl	$7, %esi
+	shrl	$6, %ecx
+	shrl	$3, %edx
+	andl	$7, %edx
+	movl	-56(%ebp,%edx,4), %eax
+        /* divl takes edx:eax as its numerator,
+           so set edx to zero here */
+    	xorl	%edx, %edx
+	andl	$7, %ecx
+	divl	-56(%ebp,%esi,4)
+	movl	%eax, -56(%ebp,%ecx,4)
+	jmp	.L13

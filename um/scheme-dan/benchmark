@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# runs the default set and all the micros
+# runs each benchmark once (scheme is too slow) and puts output below current dir
+
+for i in ../../test-binaries/micro-* ../../test-binaries/fact.161.um ../../test-binaries/quicksort.161.um ../../test-binaries/fact.345.um ../../test-binaries/quicksort.345.um 
+do
+  ../../test-binaries/run-benchmarks -r 1 -v ../../c-tom/um -v um -b $i -d benchmark-results
+done
+

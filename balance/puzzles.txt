@@ -1,0 +1,21 @@
+stop: (possible/easy) test simple register manipulation
+stop0: (impossible) can't make registers point to non-zero memory
+stop1: (possible/medium) test simple register manipulation
+stop127: (possible/medium-hard) test register manipulation
+stop128: (possible/medium)
+copymem: (impossible?) need 1 in another memory location to subtract
+copymem2: (possible/medium-hard) simple iteration
+copyreg: (impossible?) can't branch depending on register values
+swapmem: (possible/medium)
+swapreg: (possible/easy)
+swapreg2: (possible/medium)
+addmem: (possible/medium) test register manipulation
+addmem2: (possible/medium-hard) test register manipulation
+mult: (possible/hard) test iteration
+mult: (possible/hard) test iteration
+fillmem: (possible/hard) test iteration with multiple loops
+clearmem: (possible/medium?) test iteration with cleanup
+clearreg: (possible?)
+
+XXX choose par puzzles
+XXX add addreg

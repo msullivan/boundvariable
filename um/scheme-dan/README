@@ -1,0 +1,8 @@
+Instructions for making and running each UM are in the individual
+directories.
+
+To benchmark, cd into a directory, get the um running, and then run
+  ../benchmark 
+from there.
+
+The benchmark results are summarized in benchmark-results.sml.

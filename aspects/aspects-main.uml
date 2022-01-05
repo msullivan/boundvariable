@@ -1,0 +1,48 @@
+let
+    import "std.uh"
+    import "string.uh"
+    import "int.uh"
+    import "list.uh"
+    import "array.uh"
+    import "growarray.uh"
+    import "stream.uh"
+    import "parse.uh"
+    import "random.uh"
+    import "io.uh"
+    import "bigint.uh"
+    import "des.uh"
+    import "publications.uh"
+    import "hash.uh"
+    import "2d.uh"
+
+    import "aspects.uh"
+
+    (* the extra lambda () allows us to make more than one persistent stream
+       that reads from stdin.  if we only had one stream, it would cache.
+       *)
+    fun stdin () = stream-delay (fn _ => 
+				 case getco () of
+				     NONE => Nil
+				   | SOME c => Cons (c, stdin ()))
+	
+    (* exports of aspects.uh 
+       
+       there is one of these for each tutorial in the umix command
+       
+       *)
+    val {aspects-mainNoTutorial=aspects-mainNoTutorial,
+	 aspects-mainNoTutorialPrintingSteps=aspects-mainNoTutorialPrintingSteps,
+	 aspects-mainArith=aspects-mainArith,
+	 aspects-mainXml=aspects-mainXml
+	 } = aspects-main
+in
+
+    aspects-mainArith (stdin (), SOME (stdin ()))
+
+(*
+    (case check-aspects-in-2d aspects-in-2d-cheating of
+	 true => print "Passed\n"
+       | false => print "Failed\n")
+    handle AspectsInternal s => print s
+*)
+end

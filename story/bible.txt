@@ -1,0 +1,10 @@
+see story*.txt
+    ../../docs/task.txt
+    and the UM spec
+
+    [note other sources of story elements here]
+
+idea for Zessa blog:
+********************
+- goes to PCM at carnegie museum and remarks on artifacts, including the
+  codex

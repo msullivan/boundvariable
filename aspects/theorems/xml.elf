@@ -1,0 +1,46 @@
+
+qual : type.
+bold : qual.
+emph : qual.
+maj : qual.
+
+doc : type.
+a : doc.
+b : doc.
+tag : qual -> doc -> doc.
+seq : doc -> doc -> doc.
+
+%% parallel reflexive congruent closure of the rules
+red : doc -> doc -> type.
+%mode red +X1 -X2.
+
+red_dup_tag : red (tag Q (tag Q D)) (tag Q D')
+	       <- red D D'.
+red_flat_seq : red (seq (seq D1 D2) D3) (seq D1 (seq D2 D3)).
+red_distrib : red (seq (tag Q D1) (tag Q D2)) (tag Q (seq D1 D2)).
+red_commute_eb : red (tag emph (tag bold D)) (tag bold (tag emph D)).
+red_commute_mb : red (tag maj (tag bold D)) (tag bold (tag maj D)).
+red_commute_me : red (tag maj (tag emph D)) (tag emph (tag maj D)).
+red_tag : red (tag Q D) (tag Q D')
+	   <- red D D'.
+red_seq_1 : red (seq D1 D2) (seq D1' D2)
+	     <- red D1 D1'.
+red_seq_2 : red (seq D1 D2) (seq D1 D2')
+	     <- red D2 D2'.
+red_refl : red D D.
+
+
+diamond : red D D' -> red D D'' -> red D' D''' -> red D'' D''' -> type.
+%mode diamond +X1 +X2 -X3 -X4.
+
+- : diamond R1 R2 red_refl red_refl.
+
+- : diamond 
+     ((red_dup_tag R') : red (tag Q (tag Q D)) (tag Q D'))
+     ((red_tag (R'' : red (tag Q D) D''))
+	: red (tag Q (tag Q D)) (tag Q D''))
+     _
+     _.
+
+%worlds () (diamond _ _ _ _).
+%total D (diamond D _ _ _).

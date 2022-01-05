@@ -1,0 +1,397 @@
+(* Items 292 - 310, 311 - 312 -- overlaps with puz-har1, but that's ok *)
+
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun F-9887-QFY, (Noun J-6458-VIH)::nil), true, Exemplary, pink::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun J-6458-VIH, (Noun F-9887-QFY)::nil), true, Exemplary, eggplant::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun F-9887-QFY, (Noun J-6458-VIH)::nil), true, Exemplary, gold::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun F-9887-QFY, (Noun J-6458-VIH)::nil), true, Exemplary, blanched-almond-colored::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun F-9887-QFY, (Missing (Noun F-9887-QFY, (Noun N-5065-ALO)::(Noun R-6678-FOV)::(Noun V-9247-KRE)::(Noun N-5065-ALO)::nil))::nil), true, Exemplary, pastel-green::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Missing (Noun F-9887-QFY, (Noun F-9887-QFY)::nil), (Missing (Noun F-9887-QFY, (Noun J-6458-VIH)::nil))::(Missing (Noun J-6458-VIH, (Noun F-9887-QFY)::nil))::nil), true, Exemplary, deep-sky-blue::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun J-6458-VIH, (Noun F-9887-QFY)::nil), true, Exemplary, orange-red::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Missing (Missing (Missing (Missing (Missing (Noun MOSFET, (Noun B-4292-LCR)::nil), (Missing (Noun F-9887-QFY, (Noun J-6458-VIH)::nil))::nil), (Noun F-9887-QFY)::nil), (Noun F-9887-QFY)::nil), (Missing (Noun F-9887-QFY, (Noun J-6458-VIH)::nil))::nil), (Noun J-6458-VIH)::nil), true, S "a designer model", plaid::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun J-6458-VIH, (Noun F-9887-QFY)::nil), true, Exemplary, goldenrod::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun N-5065-ALO, (Noun R-6678-FOV)::(Missing (Noun V-9247-KRE, (Noun Z-4832-PUL)::nil))::nil), true, Exemplary, bright-violet::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Noun V-9247-KRE, true, Exemplary, orange-red::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Noun V-9247-KRE, true, Exemplary, celadon::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Missing (Noun V-9247-KRE, (Noun Z-4832-PUL)::(Noun V-9247-KRE)::nil), (Noun D-1403-UXS)::nil), true, Exemplary, green-yellow::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun MOSFET, (Noun Z-4832-PUL)::(Noun N-5065-ALO)::nil), true, Exemplary, crimson::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun D-1403-UXS, (Missing (Noun V-9247-KRE, (Noun H-0010-ZBZ)::(Missing (Noun L-1623-EEI, (Noun V-9247-KRE)::(Noun P-4292-JHP)::nil))::nil))::nil), true, Exemplary, heliotrope::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun V-9247-KRE, (Noun H-0010-ZBZ)::(Missing (Noun L-1623-EEI, (Noun V-9247-KRE)::(Noun P-4292-JHP)::nil))::nil), true, Exemplary, pale-brown::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Noun D-1403-UXS, true, Exemplary, chocolate-colored::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun H-0010-ZBZ, (Missing (Missing (Noun D-1403-UXS, (Missing (Noun T-9887-OKW, (Noun N-5065-ALO)::nil))::(Noun X-6458-TNF)::nil), (Noun B-5065-YQM)::(Noun F-6678-DTT)::nil))::nil), true, Exemplary, puce::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun J-9247-IWC, (Noun N-4832-NAJ)::(Noun R-1403-SDQ)::nil), true, Exemplary, cyan::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Noun V-0010-XGX, true, S "equipped with a source, drain, and body", crimson::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Missing (Noun D-1403-UXS, (Missing (Noun T-9887-OKW, (Noun N-5065-ALO)::nil))::(Noun X-6458-TNF)::nil), (Noun B-5065-YQM)::(Noun F-6678-DTT)::(Missing (Noun J-9247-IWC, (Noun N-4832-NAJ)::(Noun R-1403-SDQ)::nil))::nil), true, Exemplary, peach-yellow::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun D-1403-UXS, (Noun N-5065-ALO)::nil), true, Exemplary, seashell::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Missing (Missing (Noun Z-4832-PUL, (Noun N-5065-ALO)::nil), (Noun V-0010-XGX)::nil), (Noun D-1403-UXS)::nil), true, Exemplary, pastel-pink::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Noun N-5065-ALO, true, Exemplary, olive-green::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun MOSFET, (Noun F-9887-QFY)::nil), true, S "is an excellent example of a metal-oxide-sand field-effect transistor", navy-blue::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Noun T-9887-OKW, true, Exemplary, sky-blue::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Noun T-9887-OKW, true, Exemplary, gamboge::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Missing (Noun X-6458-TNF, (Noun B-5065-YQM)::nil), (Noun F-6678-DTT)::nil), true, Exemplary, thistle-colored::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun F-6678-DTT, (Missing (Noun X-6458-TNF, (Noun B-5065-YQM)::nil))::nil), true, Exemplary, water-logged::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun X-6458-TNF, (Noun B-5065-YQM)::nil), true, Exemplary, puce::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Noun B-5065-YQM, true, Exemplary, imported::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun F-6678-DTT, (Missing (Noun X-6458-TNF, (Noun B-5065-YQM)::nil))::nil), true, Exemplary, safety-orange::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Missing (Missing (Noun X-6458-TNF, (Noun T-9887-OKW)::(Noun T-9887-OKW)::nil), (Noun T-9887-OKW)::(Noun J-9247-IWC)::nil), (Noun F-6678-DTT)::(Noun T-9887-OKW)::nil), true, Exemplary, magenta::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Missing (Noun X-6458-TNF, (Noun B-5065-YQM)::nil), (Missing (Missing (Missing (Noun X-6458-TNF, (Noun T-9887-OKW)::(Noun T-9887-OKW)::nil), (Noun T-9887-OKW)::(Noun J-9247-IWC)::nil), (Noun F-6678-DTT)::(Noun T-9887-OKW)::nil))::nil), true, Exemplary, prussian-blue::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Noun F-6678-DTT, true, Exemplary, pastel-green::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Noun T-9887-OKW, true, Exemplary, cadet-blue::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Noun T-9887-OKW, true, Exemplary, burnt-orange::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Missing (Missing (Noun T-9887-OKW, (Missing (Noun X-6458-TNF, (Noun B-5065-YQM)::nil))::(Noun B-5065-YQM)::nil), (Noun F-6678-DTT)::nil), (Noun T-9887-OKW)::nil), true, Exemplary, celadon::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Noun F-6678-DTT, true, Exemplary, turquoise::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun N-4832-NAJ, (Noun R-1403-SDQ)::(Noun V-0010-XGX)::(Noun Z-1623-CJG)::nil), true, Exemplary, turquoise::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Missing (Noun D-4292-HMN, (Noun V-0010-XGX)::nil), (Noun T-9887-OKW)::nil), true, Exemplary, mustard::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Missing (Noun J-9247-IWC, (Noun B-5065-YQM)::nil), (Missing (Noun X-6458-TNF, (Noun B-5065-YQM)::nil))::nil), true, Exemplary, scarlet::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Noun X-6458-TNF, (Noun B-5065-YQM)::nil), true, Exemplary, dim-gray::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Missing (Missing (Missing (Missing (Noun N-5065-ALO, (Noun T-9887-OKW)::nil), (Noun T-9887-OKW)::(Noun F-6678-DTT)::(Missing (Noun N-4832-NAJ, (Noun R-1403-SDQ)::(Noun V-0010-XGX)::(Noun Z-1623-CJG)::nil))::(Noun T-9887-OKW)::nil), (Noun F-6678-DTT)::(Missing (Noun D-4292-HMN, (Noun V-0010-XGX)::nil))::nil), (Missing (Noun J-9247-IWC, (Noun B-5065-YQM)::nil))::nil), true, Exemplary, chartreuse::nil)
+do add_item_ex(FiftyFourthPlaceandHarper, Noun T-9887-OKW, true, Exemplary, tea-green::nil)
+
+(*
+  val missing_percent_chance = ?
+  val max_missing = 1
+  val lambda_percent_chance = ?
+  val duplicate_percent_chance = ?
+  val reuse_prop = ?
+
+val (pf, (goal, pile)) = Generator.generate 294 (ref (0wxE21D23F1, 0wx1EED83F)) 30 5 (nil, (nil, (Missing (Noun "MOSFET", [Noun (Part(292)"]), ["plaid"])::(Noun "MOSFET", ["crimson"])::(Missing (Noun "MOSFET", [Noun (Part(293)"]), ["navy-blue"])::nil, Noun "MOSFET"));
+val pf =
+  [Pickup (Missing (Noun "MOSFET",[Noun (Part(293))]),["navy-blue"]),
+   Pickup (Noun (Part(295)),["olive-green"]),
+   Pickup
+     (Missing
+        (Missing
+           (Missing (Noun (Part(298)),[Noun (Part(295))]),[Noun (Part(310))]),
+         [Noun (Part(299))]),["pastel-pink"]),
+   Pickup (Noun (Part(295)),["yellow-green"]),
+   Pickup (Missing (Noun (Part(299)),[Noun (Part(295))]),["seashell"]),
+   Combine
+     ((Missing (Noun (Part(299)),[Noun (Part(295))]),["seashell"]),
+      (Noun (Part(295)),["yellow-green"])),
+   Combine
+     ((Missing
+         (Missing
+            (Missing (Noun (Part(298)),[Noun (Part(295))]),[Noun (Part(310))]),
+          [Noun (Part(299))]),["pastel-pink"]),
+      (Noun (Part(299)),["seashell"])),
+   Pickup
+     (Missing
+        (Missing
+           (Noun (Part(299)),
+            [Missing (Noun (Part(303)),[Noun (Part(295))]),Noun (Part(304))]),
+         [Noun (Part(305)),Noun (Part(306)),
+          Missing (Noun (Part(307)),[Noun (Part(308)),Noun (Part(309))])]),
+      ["peach-yellow"]),Pickup (Noun (Part(310)),["crimson"]),
+   Combine
+     ((Missing
+         (Missing (Noun (Part(298)),[Noun (Part(295))]),[Noun (Part(310))]),
+       ["pastel-pink"]),(Noun (Part(310)),["crimson"])),
+   Pickup (Noun (Part(295)),["chartreuse"]),
+   Combine
+     ((Missing (Noun (Part(298)),[Noun (Part(295))]),["pastel-pink"]),
+      (Noun (Part(295)),["chartreuse"])),
+   Pickup
+     (Missing (Noun (Part(307)),[Noun (Part(308)),Noun (Part(309))]),["cyan"]),
+   Combine
+     ((Missing
+         (Missing
+            (Noun (Part(299)),
+             [Missing (Noun (Part(303)),[Noun (Part(295))]),Noun (Part(304))]),
+          [Noun (Part(305)),Noun (Part(306)),
+           Missing (Noun (Part(307)),[Noun (Part(308)),Noun (Part(309))])]),
+       ["peach-yellow"]),
+      (Missing (Noun (Part(307)),[Noun (Part(308)),Noun (Part(309))]),
+       ["cyan"])),
+   Pickup
+     (Missing
+        (Noun (Part(300)),
+         [Missing
+            (Missing
+               (Noun (Part(299)),
+                [Missing (Noun (Part(303)),[Noun (Part(295))]),
+                 Noun (Part(304))]),[Noun (Part(305)),Noun (Part(306))])]),
+      ["puce"]),
+   Combine
+     ((Missing
+         (Noun (Part(300)),
+          [Missing
+             (Missing
+                (Noun (Part(299)),
+                 [Missing (Noun (Part(303)),[Noun (Part(295))]),
+                  Noun (Part(304))]),[Noun (Part(305)),Noun (Part(306))])]),
+       ["puce"]),
+      (Missing
+         (Missing
+            (Noun (Part(299)),
+             [Missing (Noun (Part(303)),[Noun (Part(295))]),Noun (Part(304))]),
+          [Noun (Part(305)),Noun (Part(306))]),["peach-yellow"])),
+   Pickup (Noun (Part(299)),["chocolate-colored"]),
+   Incinerate (Noun (Part(299)),["chocolate-colored"]),
+   Pickup
+     (Missing
+        (Noun (Part(297)),
+         [Noun (Part(300)),
+          Missing (Noun (Part(301)),[Noun (Part(297)),Noun (Part(302))])]),
+      ["pale-brown"]),Incinerate (Noun (Part(300)),["puce"]),
+   Pickup
+     (Missing
+        (Noun (Part(299)),
+         [Missing
+            (Noun (Part(297)),
+             [Noun (Part(300)),
+              Missing (Noun (Part(301)),[Noun (Part(297)),Noun (Part(302))])])]),
+      ["heliotrope"]),
+   Combine
+     ((Missing
+         (Noun (Part(299)),
+          [Missing
+             (Noun (Part(297)),
+              [Noun (Part(300)),
+               Missing (Noun (Part(301)),[Noun (Part(297)),Noun (Part(302))])])]),
+       ["heliotrope"]),
+      (Missing
+         (Noun (Part(297)),
+          [Noun (Part(300)),
+           Missing (Noun (Part(301)),[Noun (Part(297)),Noun (Part(302))])]),
+       ["pale-brown"])),
+   Pickup
+     (Missing (Noun "MOSFET",[Noun (Part(298)),Noun (Part(295))]),["crimson"]),
+   Combine
+     ((Missing (Noun "MOSFET",[Noun (Part(298)),Noun (Part(295))]),
+       ["crimson"]),(Noun (Part(298)),["pastel-pink"])),
+   Combine
+     ((Missing (Noun "MOSFET",[Noun (Part(295))]),["crimson"]),
+      (Noun (Part(295)),["olive-green"])),
+   Pickup (Missing (Noun "MOSFET",[Noun (Part(292))]),["plaid"]),
+   Pickup
+     (Missing
+        (Missing (Noun (Part(297)),[Noun (Part(298)),Noun (Part(297))]),
+         [Noun (Part(299))]),["green-yellow"]),
+   Combine
+     ((Missing
+         (Missing (Noun (Part(297)),[Noun (Part(298)),Noun (Part(297))]),
+          [Noun (Part(299))]),["green-yellow"]),
+      (Noun (Part(299)),["heliotrope"])),
+   Pickup (Noun (Part(297)),["celadon"]),
+   Combine
+     ((Missing (Noun (Part(297)),[Noun (Part(298)),Noun (Part(297))]),
+       ["green-yellow"]),(Noun (Part(297)),["celadon"])),
+   Pickup (Noun (Part(297)),["orange-red"]),
+   Incinerate (Noun (Part(297)),["orange-red"]),
+   Pickup
+     (Missing
+        (Noun (Part(295)),
+         [Noun (Part(296)),Missing (Noun (Part(297)),[Noun (Part(298))])]),
+      ["bright-violet"]),
+   Combine
+     ((Missing
+         (Noun (Part(295)),
+          [Noun (Part(296)),Missing (Noun (Part(297)),[Noun (Part(298))])]),
+       ["bright-violet"]),
+      (Missing (Noun (Part(297)),[Noun (Part(298))]),["green-yellow"])),
+   Incinerate
+     (Missing (Noun (Part(295)),[Noun (Part(296))]),["bright-violet"])]
+  : (prop * string list) step list
+val goal = Noun "MOSFET" : prop
+val pile =
+  [(Missing (Noun "MOSFET",[Noun (Part(293))]),["navy-blue"]),
+   (Noun (Part(295)),["olive-green"]),
+   (Missing
+      (Missing
+         (Missing (Noun (Part(298)),[Noun (Part(295))]),[Noun (Part(310))]),
+       [Noun (Part(299))]),["pastel-pink"]),
+(*   (Noun (Part(295)),["yellow-green"]), *)
+   (Missing (Noun (Part(299)),[Noun (Part(295))]),["seashell"]),
+   (Missing
+      (Missing
+         (Noun (Part(299)),
+          [Missing (Noun (Part(303)),[Noun (Part(295))]),Noun (Part(304))]),
+       [Noun (Part(305)),Noun (Part(306)),
+        Missing (Noun (Part(307)),[Noun (Part(308)),Noun (Part(309))])]),
+    ["peach-yellow"]),(Noun (Part(310)),["crimson"]),
+(*   (Noun (Part(295)),["chartreuse"]), *)
+   (Missing (Noun (Part(307)),[Noun (Part(308)),Noun (Part(309))]),["cyan"]),
+   (Missing
+      (Noun (Part(300)),
+       [Missing
+          (Missing
+             (Noun (Part(299)),
+              [Missing (Noun (Part(303)),[Noun (Part(295))]),Noun (Part(304))]),
+           [Noun (Part(305)),Noun (Part(306))])]),["puce"]),
+   (Noun (Part(299)),["chocolate-colored"]),
+   (Missing
+      (Noun (Part(297)),
+       [Noun (Part(300)),
+        Missing (Noun (Part(301)),[Noun (Part(297)),Noun (Part(302))])]),
+    ["pale-brown"]),
+   (Missing
+      (Noun (Part(299)),
+       [Missing
+          (Noun (Part(297)),
+           [Noun (Part(300)),
+            Missing (Noun (Part(301)),[Noun (Part(297)),Noun (Part(302))])])]),
+    ["heliotrope"]),
+   (Missing (Noun "MOSFET",[Noun (Part(298)),Noun (Part(295))]),["crimson"]),
+(*   (Missing (Noun "MOSFET",[Noun (Part(292))]),["plaid"]), *)
+   (Missing
+      (Missing (Noun (Part(297)),[Noun (Part(298)),Noun (Part(297))]),
+       [Noun (Part(299))]),["green-yellow"]),(Noun (Part(297)),["celadon"]),
+   (Noun (Part(297)),["orange-red"]),
+   (Missing
+      (Noun (Part(295)),
+       [Noun (Part(296)),Missing (Noun (Part(297)),[Noun (Part(298))])]),
+    ["bright-violet"])] : (prop * string list) list
+- 
+
+partial puzzle for plaid mosfet
+
+val goal2 =  Missing (Noun "MOSFET",[Noun (Part(292))]);
+val (_, (goal2, pile2)) = Generator.generate 292 (ref (0wxE21D23F1, 0wx1EED83F)) 30 5 (nil, (nil, (goal2, ["plaid"])::nil, goal2));
+
+val pile2 =
+  [(Missing (Noun (Part 294),[Noun (Part 293)]),["goldenrod"]),
+ (* (Noun (Part 293),["terra-cotta"]), *)
+   (Missing
+      (Missing
+         (Missing
+            (Missing
+               (Missing
+                  (Missing (Noun "MOSFET",[Noun "B-4292-LCR"]),
+                   [Missing (Noun (Part 293),[Noun (Part 294)])]),
+                [Noun (Part 293)]),[Noun (Part 293)]),
+          [Missing (Noun (Part 293),[Noun (Part 294)])]),[Noun (Part 294)]),
+    ["plaid"]),(Missing (Noun (Part 294),[Noun (Part 293)]),["orange-red"]),
+   (Missing
+      (Missing (Noun (Part 293),[Noun (Part 293)]),
+       [Missing (Noun (Part 293),[Noun (Part 294)]),
+        Missing (Noun (Part 294),[Noun (Part 293)])]),["deep-sky-blue"]),
+(*
+   (Missing
+      (Noun (Part 293),
+       [Noun (Part 295),Noun (Part 296),Noun (Part 297),Noun (Part 295)]),
+    ["midnight-blue"]),
+*)
+   (Missing
+      (Noun (Part 293),
+       [Missing
+          (Noun (Part 293),
+           [Noun (Part 295),Noun (Part 296),Noun (Part 297),
+            Noun (Part 295)])]),["pastel-green"]),
+   (Missing (Noun (Part 293),[Noun (Part 294)]),["blanched-almond-colored"]),
+   (Missing (Noun (Part 293),[Noun (Part 294)]),["gold"]),
+   (Missing (Noun (Part 294),[Noun (Part 293)]),["eggplant"]),
+(*   (Noun (Part 293),["navajo-white"]), *)
+   (Missing (Noun (Part 293),[Noun (Part 294)]),["pink"])]
+  : (prop * string list) list
+
+
+val goal3 = Noun "Part(295)";
+val (_, (goal3, pile3)) = Generator.generate 296 (ref (0wxE209F1, 0wxF000D83F)) 30 5 (nil, (nil, (goal3, ["chartreuse"])::nil, goal3));
+
+
+val pile3 =
+  [(Noun (Part 303),["tea-green"]),
+   (Missing
+      (Missing
+         (Missing
+            (Missing (Noun (Part 295),[Noun (Part 303)]),
+             [Noun (Part 303),Noun (Part 306),
+              Missing
+                (Noun (Part 308),
+                 [Noun (Part 309),Noun (Part 310),Noun (Part 311)]),
+              Noun (Part 303)]),
+          [Noun (Part 306),Missing (Noun (Part 312),[Noun (Part 310)])]),
+       [Missing (Noun (Part 307),[Noun (Part 305)])]),["chartreuse"]),
+   (Missing (Noun (Part 304),[Noun (Part 305)]),["dim-gray"]),
+   (Missing
+      (Missing (Noun (Part 307),[Noun (Part 305)]),
+       [Missing (Noun (Part 304),[Noun (Part 305)])]),["scarlet"]),
+   (Missing (Missing (Noun (Part 312),[Noun (Part 310)]),[Noun (Part 303)]),
+    ["mustard"]),
+   (Missing
+      (Noun (Part 308),[Noun (Part 309),Noun (Part 310),Noun (Part 311)]),
+    ["turquoise"]),(Noun (Part 306),["turquoise"]),
+   (Missing
+      (Missing
+         (Missing
+            (Noun (Part 303),
+             [Missing (Noun (Part 304),[Noun (Part 305)]),Noun (Part 305)]),
+          [Noun (Part 306)]),[Noun (Part 303)]),["celadon"]),
+   (Noun (Part 303),["burnt-orange"]),(Noun (Part 303),["cadet-blue"]),
+   (Noun (Part 306),["pastel-green"]),
+   (Missing
+      (Missing (Noun (Part 304),[Noun (Part 305)]),
+       [Missing
+          (Missing
+             (Missing (Noun (Part 304),[Noun (Part 303),Noun (Part 303)]),
+              [Noun (Part 303),Noun (Part 307)]),
+           [Noun (Part 306),Noun (Part 303)])]),["prussian-blue"]),
+   (Missing
+      (Missing
+         (Missing (Noun (Part 304),[Noun (Part 303),Noun (Part 303)]),
+          [Noun (Part 303),Noun (Part 307)]),
+       [Noun (Part 306),Noun (Part 303)]),["magenta"]),
+   (Missing (Noun (Part 306),[Missing (Noun (Part 304),[Noun (Part 305)])]),
+    ["safety-orange"]),(Noun (Part 305),["imported"]),
+   (Missing (Noun (Part 304),[Noun (Part 305)]),["puce"]),
+   (Missing (Noun (Part 306),[Missing (Noun (Part 304),[Noun (Part 305)])]),
+    ["water-logged"]),
+   (Missing (Missing (Noun (Part 304),[Noun (Part 305)]),[Noun (Part 306)]),
+    ["thistle-colored"]),(Noun (Part 303),["gamboge"]),
+   (Noun (Part 303),["sky-blue"])] : (prop * string list) list
+
+
+
+OLD
+val pile3 =
+  [(Noun (Part 297),["tea-green"]),
+   (Missing
+      (Missing
+         (Missing
+            (Missing (Noun (Part 295),[Noun (Part 297)]),
+             [Noun (Part 297),Noun (Part 300),
+              Missing
+                (Noun (Part 302),
+                 [Noun (Part 303),Noun (Part 304),Noun (Part 305)]),
+              Noun (Part 297)]),
+          [Noun (Part 300),Missing (Noun (Part 306),[Noun (Part 304)])]),
+       [Missing (Noun (Part 301),[Noun (Part 299)])]),["chartreuse"]),
+   (Missing (Noun (Part 298),[Noun (Part 299)]),["dim-gray"]),
+   (Missing
+      (Missing (Noun (Part 301),[Noun (Part 299)]),
+       [Missing (Noun (Part 298),[Noun (Part 299)])]),["scarlet"]),
+   (Missing (Missing (Noun (Part 306),[Noun (Part 304)]),[Noun (Part 297)]),
+    ["mustard"]),
+   (Missing
+      (Noun (Part 302),[Noun (Part 303),Noun (Part 304),Noun (Part 305)]),
+    ["turquoise"]),(Noun (Part 300),["turquoise"]),
+   (Missing
+      (Missing
+         (Missing
+            (Noun (Part 297),
+             [Missing (Noun (Part 298),[Noun (Part 299)]),Noun (Part 299)]),
+          [Noun (Part 300)]),[Noun (Part 297)]),["celadon"]),
+   (Noun (Part 297),["burnt-orange"]),(Noun (Part 297),["cadet-blue"]),
+   (Noun (Part 300),["pastel-green"]),
+   (Missing
+      (Missing (Noun (Part 298),[Noun (Part 299)]),
+       [Missing
+          (Missing
+             (Missing (Noun (Part 298),[Noun (Part 297),Noun (Part 297)]),
+              [Noun (Part 297),Noun (Part 301)]),
+           [Noun (Part 300),Noun (Part 297)])]),["prussian-blue"]),
+   (Missing
+      (Missing
+         (Missing (Noun (Part 298),[Noun (Part 297),Noun (Part 297)]),
+          [Noun (Part 297),Noun (Part 301)]),
+       [Noun (Part 300),Noun (Part 297)]),["magenta"]),
+   (Missing (Noun (Part 300),[Missing (Noun (Part 298),[Noun (Part 299)])]),
+    ["safety-orange"]),(Noun (Part 299),["imported"]),
+(*   (Missing (Noun (Part 298),[Noun (Part 299)]),["puce"]), *)
+   (Missing (Noun (Part 300),[Missing (Noun (Part 298),[Noun (Part 299)])]),
+    ["water-logged"]),
+   (Missing (Missing (Noun (Part 298),[Noun (Part 299)]),[Noun (Part 300)]),
+    ["thistle-colored"]),(Noun (Part 297),["gamboge"]),
+   (Noun (Part 297),["sky-blue"])] : (prop * string list) list
+
+
+*)

@@ -1,0 +1,64 @@
+datatype mult-testresult-2d =
+  RevSuccess2d
+| RevFail2d of {prob    : expr2D,
+                correct : expr2D,
+                actual  : expr2D}
+  
+
+val {rev-test-2d} = 
+  let
+
+    fun list-rev-h (EInr2D EUnit2D) accum = accum
+      | list-rev-h (EInl2D (EPair2D (exp, ls))) accum =
+          list-rev-h ls (EInl2D (EPair2D (exp, accum)))
+      | list-rev-h _ _ = raise InternalError2D
+          ("[2D] Internal Error : Logic error in list rev - this should "
+           ^ "never happen\n")
+
+    fun list-rev l = list-rev-h l (EInr2D EUnit2D)
+
+    fun check-rev-circ (r,f,n,eldepth,listlenrg,strtnum,tot) =
+      let
+
+        fun build-random-exp 0 = EUnit2D
+          | build-random-exp maxDepth =
+          (case (r () mod 4) of 
+             0 => EUnit2D
+           | 1 => EPair2D (build-random-exp (maxDepth - 1),
+                           build-random-exp (maxDepth - 1))
+           | 2 => EInl2D (build-random-exp (maxDepth - 1))
+           | 3 => EInr2D (build-random-exp (maxDepth - 1))
+           | _ => raise InternalError2D
+               ("[2D] Internal Error : I took a number mod 4 in list rev and" ^
+                " it was > 3 or < 0 - this should never happen\n" ))
+             
+        fun make-list 0 = EInr2D EUnit2D
+          | make-list len =
+          EInl2D (EPair2D (build-random-exp eldepth,
+                           make-list (len - 1)))
+
+        fun check-nlists (0,_) = RevSuccess2d
+          | check-nlists (n,thisnum) =
+          let
+            val () = 
+              print ("[2D] Running rev test " ^ int-tostring thisnum
+                     ^ " of " ^ int-tostring tot ^ "\n")
+            val len  = r () mod listlenrg
+            val list = make-list len
+            val sol  = list-rev list
+            val ans  = f (list)
+          in
+            if expr2D-eq (sol,ans)
+            then check-nlists (n - 1,thisnum + 1)
+            else RevFail2d {prob = list,
+                            correct = sol,
+                            actual = ans}
+          end
+      in
+        check-nlists (n,strtnum)
+      end
+  
+  in
+    {rev-test-2d = check-rev-circ}
+  end      
+

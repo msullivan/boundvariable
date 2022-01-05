@@ -1,0 +1,193 @@
+let
+  import "std.uh"
+  import "string.uh"
+  import "list.uh"
+  import "2d.uh"
+  import "int.uh"
+  import "2d-eval.uh"
+
+  exception Example of string
+
+  val zero = EInr EUnit
+  val one = EInl zero
+  val two = EInl one
+  val three = EInl two
+  val four = EInl three
+  val five = EInl four
+  val six = EInl five
+  val seven = EInl six
+  val eight = EInl seven
+  val nine = EInl eight
+  val ten = EInl nine
+
+(*******
+ **
+ ** PLUS
+ ** 
+ *******)
+
+  val plus : module = 
+      ("plus",
+       fn (Noption, Woption) =>
+          let
+            val N = case Noption of
+                      NONE => raise InvalidIface
+                    | SOME n => n
+            val W = case Woption of
+                      NONE => raise InvalidIface
+                   | SOME w => w
+
+            val zwire = ref NONE
+            val gzwire = ref NONE
+
+
+            val in_w_outw_e = ref NONE
+            val in_w_outw_s = ref NONE
+            val in_w_bx = {com = CSend (LTwo ((W, ISouth),(W, IEast))),
+                           north = NONE,
+                           east = SOME in_w_outw_e,
+                           south = SOME in_w_outw_s,
+                           west = NONE}
+           
+            val in_n_outw_e = ref NONE
+            val in_n_outw_s = ref NONE
+            val in_n_bx = {com = CCase (N, ISouth, IEast),
+                           north = NONE,
+                           east = SOME in_n_outw_e,
+                           south = SOME in_n_outw_s,
+                           west = NONE}
+
+            val out_z_box = {com = CSend (LOne (EIface INorth, IEast)),
+                             north = SOME in_w_outw_e,
+                             east = SOME zwire,
+                             south = NONE,
+                             west = SOME in_n_outw_e}
+
+            val use_plus_outw_e = ref NONE
+            val use_plus_box = {com = CUse "plus",
+                                north = SOME in_n_outw_s,
+                                east = SOME use_plus_outw_e,
+                                south = NONE,
+                                west = SOME in_w_outw_s}
+
+            val out_gz_box = {com = CSend (LOne (EInl (EIface IWest), IEast)),
+                              north = NONE,
+                              east = SOME gzwire,
+                              south = NONE,
+                              west = SOME use_plus_outw_e}
+          in
+            (in_w_bx::in_n_bx::out_z_box::use_plus_box::out_gz_box::nil,
+             zwire::gzwire::nil)
+          end)
+
+(*
+  val add_two_three_mach = 
+      let
+        val (_,mf) = plus
+        val blwl = mf (SOME two, SOME three)
+        val outw = ref NONE
+      in
+        ((Mod (blwl, outw, nil))::nil,
+         outw,
+         plus::nil)
+      end
+*)
+
+(*********
+ **
+ ** MULT
+ **
+ *********)
+  val mult : module = 
+      ("mult",
+       fn (Noption, Woption) =>
+          let
+            val N = case Noption of
+                      NONE => raise InvalidIface
+                    | SOME e => e
+
+            val W = case Woption of
+                      NONE => raise InvalidIface
+                    | SOME e => e
+
+            val zwire = ref NONE
+            val gzwire = ref NONE
+
+            val in_w_outw_e = ref NONE
+            val in_w_outw_s = ref NONE
+            val in_w_box = {com = CSend (LTwo ((W, ISouth),(W, IEast))),
+                            north = NONE,
+                            east = SOME in_w_outw_e,
+                            south = SOME in_w_outw_s,
+                            west = NONE}
+
+            val in_n_outw_e = ref NONE
+            val in_n_outw_s = ref NONE
+            val in_n_box = {com = CCase (N, ISouth, IEast),
+                            north = NONE,
+                            east = SOME in_n_outw_e,
+                            south = SOME in_n_outw_s,
+                            west = NONE}
+
+            val use_mult_outw_e = ref NONE
+            val use_mult_box = {com = CUse "mult",
+                                north = SOME in_n_outw_s,
+                                east = SOME use_mult_outw_e,
+                                south = NONE,
+                                west = SOME in_w_outw_s}
+
+            val use_plus_box = {com = CUse "plus",
+                                north = SOME in_w_outw_e,
+                                east = SOME gzwire,
+                                south = NONE,
+                                west = SOME use_mult_outw_e}
+
+            val out_z_box = {com = CSend (LOne (EInr EUnit,IEast)),
+                             north = NONE,
+                             east = SOME zwire,
+                             south = NONE,
+                             west = SOME in_n_outw_e}
+
+          in
+            (in_w_box::in_n_box::use_mult_box::use_plus_box::out_z_box::nil,
+             zwire::gzwire::nil)
+          end)
+
+  (* multiply 2 by 3 *)
+  val main =
+      ("main",
+       (fn (NONE,NONE) =>
+	let
+	    val wtwo   = ref NONE
+	    val wthree = ref NONE
+	    val wout   = ref NONE
+	    val sendbox = { com = CSend (LTwo ((two, IEast), (three, ISouth))),
+			            north = NONE,
+			            east = SOME wtwo,
+			            south = SOME wthree,
+			            west = NONE }
+
+	    val mbox = { com = CUse "mult",
+			 north = SOME wtwo,
+			 west = SOME wthree,
+			 south = NONE,
+			 east = SOME wout }
+
+	in
+	    (sendbox :: mbox :: nil, wout :: nil)
+	end
+	| _ => raise Example "main takes no arguments"))
+
+
+  val example = (plus :: mult :: main :: nil)
+
+in
+
+   print ("2 * 3 = " ^ (expr-tostring (run-program (example,"main",NONE,NONE))) ^ "\n")
+   handle InvalidIface => print "Exception! InvalidIface \n"
+        | WrongForm s => print ("Exception! WrongForm: " ^ s ^ "\n")
+        | NoSuchModule => print "Exception! NoSuchModule\n"
+        | ModuleOutput s => print ("Exception! ModuleOutput: " ^ s ^ "\n")
+
+end
+

@@ -1,0 +1,171 @@
+
+val require-string = provide-string
+val require-list = provide-list
+
+val require-language = provide-language
+val require-aspects-util = provide-aspects-util
+val require-aspects = provide-aspects
+
+val provide-arith-testing = ()
+
+(* note: this file depends on the term representation of arithmetic expressions *)
+
+(* ---------------------------------------------------------------------- *)
+(* utilities for testing arithmetic *)
+
+(* do these only once for speed *)
+val sSymb = (intTST "S")
+val zSymb = (intTST "Z")
+val computeSymb = (intTST "Compute")
+
+fun numeral 0 = Const zSymb
+  | numeral n = App (Const sSymb, numeral (n - 1))
+	
+(*
+fun unnumeral (Const n) = 
+	if symbol-equals (n, zSymb)
+	then 0 
+	else raise AspectsInteral "not a numeral"
+  | unnumeral (App (Const n, t2)) = 
+	    if symbol-equals (n, intTST ("S"))
+	    then 1 + (unnumeral t2)
+	    else raise AspectsInteral "not a numeral"
+  | unnumeral _ = raise AspectsInteral "not a numeral"
+*)
+
+fun fact 0 = 1
+  | fact n = n * (fact (n - 1))
+
+(* ---------------------------------------------------------------------- *)
+
+type arithTest = term * int
+
+fun arithTestToTest (t, i) = simpleTestToTest (App (Const computeSymb, t), 
+					       numeral i)
+
+fun numeralATest (n : int) : arithTest = (numeral n, n)
+
+fun binaryATest 
+    (opname: symbol)
+    (answerMaker : int * int -> int)
+    ((leftIn, leftOut) : arithTest, (rightIn, rightOut) : arithTest) 
+     : arithTest=
+    (App (App (Const opname, leftIn), rightIn),
+     (answerMaker (leftOut, rightOut)))
+
+val addATest = binaryATest (intTST "Add") (op+)
+val multATest = binaryATest (intTST "Mult") (op*)
+
+fun chooseSpine () = 
+    case randomBoundedInt 2 of
+	0 => addATest
+      | 1 => multATest
+      | _ => raise AspectsInternal "generated int not in the proper range"
+
+(* made from numerals, addition, and multiplication 
+
+fun numberOfRandomArithTests (1, maxInt) = maxInt
+  | numberOfRandomArithTests (n, maxInt) = 
+    let val r = numberOfRandomArithTests (n-1, maxInt) in
+	2 * (r * r)
+    end
+
+i.e. there are a lot of ASTs
+
+the following computes the biggest numeral that could show up as an argument to 
+an Add/Mult if you replaces from the bottom up.
+however, you can't generate all numerals smaller than this biggest one with
+arith expressions of this form (think primes, for example).
+
+question: how many actually can arise?  many fewer than the number of ASTs?
+
+we can defeat this by including base tests that trip the operational semantics
+when you try to apply the table
+
+so ignore this:
+
+      If you tabled just the numeral inputs (and the straightforward thing even worked),
+      the table would need to be this big:
+      
+      fun pow (b,0) = 1
+        | pow (b, e) = b * pow (b,e-1)
+      fun tableBound (depth, maxInt) = pow(maxInt,  pow (2, (depth - 1)))
+      fun tableSize (depth, maxInt) = 2 * pow (tableBound (depth, maxInt), 2)
+      
+      so for depth=4,maxInt=5, that makes tabling pretty unrealistic if you
+      actually need to be complete
+
+*)
+fun randomArithTestGen chooseSpine (depth, maxInt) =
+    case depth of
+	1 => numeralATest (randomBoundedInt maxInt)
+      | n => (chooseSpine()) (randomArithTestGen chooseSpine (depth - 1, maxInt),
+			      randomArithTestGen chooseSpine (depth - 1, maxInt))
+val randomArithTest = randomArithTestGen chooseSpine
+val randomAddTest = randomArithTestGen (fn _ => addATest)
+
+fun arithRandomTestsGen whatKind {depth, maxInt, howMany} : test stream = 
+    stream-tabulate (howMany, fn _ => arithTestToTest (whatKind (depth, maxInt)))
+val arithRandomTests = arithRandomTestsGen randomArithTest     
+val addRandomTests = arithRandomTestsGen randomAddTest
+
+fun unaryATest 
+    (opname: symbol)
+    (answerMaker :  int -> int)
+    ((input, output) : arithTest)
+     : arithTest=
+    (App (Const opname, input),
+     answerMaker output)
+
+val factATest : arithTest -> arithTest = unaryATest (intTST "Fact") fact
+
+(* base tests: make sure we do 
+     some basic numeral crunching
+     some nested arith
+     some nested arith that trips the op sem *)
+val (addBaseTests, arithBaseTests) =
+let
+    val addT = addATest
+    val multT = multATest
+    val numT = numeralATest
+    val attt = arithTestToTest
+
+    (* PERF: don't create the lists in the first place? *)
+    val addBaseTestsList = 
+	attt (addT (numT 2, numT 3)) ::
+	attt (addATest (addATest (numeralATest 2, numeralATest 3),
+			addATest (numeralATest 2, numeralATest 3))) ::
+	nil
+
+    val arithBaseTestsList =
+	addBaseTestsList @
+	(
+	 attt (multT (multT (numT 1, numT 2),
+		      multT (numT 2, numT 2))) ::
+	 attt (multT (addT (numT 2, numT 3),
+		      multT (numT 2, numT 3))) ::
+
+	 (* this breaks many of the reassociating solutions
+	    because they end up with
+	    (0 * 0) + (0 * 2)
+	    after reassociating *)
+	 attt (multT (addT (numT 0, numT 0),
+		      addT (numT 0, numT 2))) ::
+
+	 (* ensure the reassociating solutiosn do all four possibilities *)
+	 attt (addT (addT (numT 2, numT 3), 
+		     addT (numT 3, numT 2))) ::
+	 attt (addT (multT (numT 2, numT 3), 
+		     multT (numT 3, numT 2))) ::
+	 attt (multT (addT (numT 2, numT 3), 
+		      addT (numT 3, numT 2))) ::
+	 attt (multT (multT (numT 2, numT 3), 
+		      multT (numT 3, numT 2))) ::
+	 nil
+	 )
+
+    val addBaseTests = (stream-fromlist addBaseTestsList)
+    val arithBaseTests = (stream-fromlist arithBaseTestsList)
+in
+    (addBaseTests, arithBaseTests)
+end

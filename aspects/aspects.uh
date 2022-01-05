@@ -1,0 +1,381 @@
+
+(* exports *)
+
+exception AspectsInternal of string
+
+val provide-aspects = ()
+
+(* these should raise only AspectsInternal ! *)
+val (aspects-main as 
+     {aspects-mainNoTutorial=aspects-mainNoTutorial,
+      aspects-mainNoTutorialPrintingSteps=aspects-mainNoTutorialPrintingSteps,
+      aspects-mainArith=aspects-mainArith,
+      aspects-mainXml=aspects-mainXml
+      },
+     (* for aspects-in-2d
+	input: takes the encoding of an aspects problem as a 2d term
+	       and returns the one-step result option
+	*)
+     check-aspects-in-2d, (* (expr2D -> expr2D) -> string option *)
+     aspects-in-2d-cheating, (* (expr2D -> expr2D)*)
+     compile-aspects-to-2d-rulelist ,
+     compile-aspects-to-2d-term
+     )
+=
+let 
+
+val require-std = provide-std
+val require-string = provide-string
+val require-int = provide-int
+val require-list = provide-list
+val require-array = provide-array
+val require-growarray = provide-growarray
+val require-stream = provide-stream
+val require-parse = provide-parse
+val require-io = provide-io
+val require-hash = provide-hash
+val require-growarray = provide-growarray
+val require-publications = provide-publications
+val require-random = provide-random 
+val require-2d = provide-2d
+
+import "aspects-util.uh"
+import "symbol.uh"
+import "language.uh"
+import "parsing.uh" 
+import "arith-testing.uh"
+import "xml-testing.uh"
+import "check-aspects-in-2d.uh"
+
+
+
+(* ---------------------------------------------------------------------- *)
+(* utilities for running *)
+fun runTest ({printTests, printSteps}, 
+	     stepper, 
+	     rules, 
+	     ((input, outputChecker) : test)) = 
+	let 
+	    fun printP s = if not printTests then () else print (s ())
+		
+	    do printP (fn _ => ("----------------------------------------------------------------------\n"))
+
+	    do printP (fn _ => ("\nInitial Term:    " ^ (termToPrettyString input) ^ "\n"))
+		
+	    do printP (fn _ => "Applying advice...\n")
+
+	    val (output, steps) = stepper 
+		                  ((* print each step of the term when
+				      printSteps is true *)
+				   if printSteps 
+				   then (fn e => print ("                 -> " ^ (termToString e) ^ "\n"))
+				   else (fn _ => ()),
+				   (rules, input))
+				  
+	    do printP (fn _ => ("Final Term:      " ^ (termToString output) ^ "\n"))
+
+	    do printP (fn _ => ("Total Steps:     " ^ (int-tostring steps) ^ "\n\n"))
+
+	    val (correctP, message) = outputChecker output
+	    do printP (fn _ =>  (if correctP then "Correct!\n" else "INCORRECT!\n"))
+	    do printP (fn _ => message)
+
+	    do printP (fn _ => "\n")
+
+	    do printP (fn _ => ("----------------------------------------------------------------------\n\n"))
+			  
+	in
+	    correctP
+	end
+
+type runTestsConfigParams = {printTests : bool, (* print each test ? *)
+			     printSteps : bool (* print each step during execution? *)
+			     }
+(* run each test;
+   return whether or not you passed them all *)
+fun runTests (printingOptions, stepper, rules, (tests : test stream)) = 
+    stream-eager-all (fn (curTest) => 
+		      (runTest (printingOptions, stepper, rules, curTest)))
+                     tests
+
+(* ---------------------------------------------------------------------- *)
+(* main *)
+	
+exception InputError of string
+
+(* because this is an int, operations on the rule list should never overflow *)
+val maximumNumberOfRules : int = 2147483647
+
+type internalTestsConfigParams = {(* for publication *)
+				  testsName : string, 
+				  (* pick number of tests based on number of rules *)
+				  numTestsFromNumRules : int -> int,
+				  (* generate at least that many tests*)
+				  testMaker : int -> test stream, 
+				  (* whether or not the tests are visible to the user *)
+				  printTests : bool, 
+				  (* from the size of the rules, compute a score and a message. 
+				     message should be newline-terminated 
+				     *)
+				  feedbackForPassing : bigint -> (bigint * string)
+				  }
+
+type mainConfigParams = {internalTests: internalTestsConfigParams option,
+			 printInputTestSteps : bool} (* whether individual steps are printed for the input tests *)
+
+(* takes main configuration params
+  
+   and then
+   - a user program rules char stream
+   - and a user-specified test char stream option 
+     (sometimes the user will specify tests, sometimes he won't)
+
+   all configuration happens internal to the module; the rules and input tests are external params
+
+   a main function returns 
+       true when internal tests are given and the rules pass them
+       false otherwise
+
+*)
+
+fun makeMain ({internalTests, printInputTestSteps} : mainConfigParams)
+             (ruleStream : char stream, 
+	      testStreamO : (char stream) option) : bool =
+    let 
+	do print "Welcome to O'Cult v1.0.  \n\n"
+	do print "Parsing advice...\n"
+	
+	(* parse rules *)
+	val (theRules, numRules) = 
+	    case parseRules ruleStream of
+		SOME rules =>
+		    (print "Validating advice...\n";
+		     (case list-find (not o checkRule) rules of
+			  (* an ill-formed rule *)
+			  SOME r => 
+			      raise InputError ("Ill-formed rule (free variable in RHS):\n    " 
+						^ ruleToString r)
+			(* they're all okay *)
+			| NONE => let val numRules = (list-length rules)
+				 in
+				     if numRules < maximumNumberOfRules 
+				     then (rules, numRules)
+				     else 
+					 raise InputError ("Too much advice!  Only " 
+							   ^ (int-tostring maximumNumberOfRules) 
+							   ^ " rules are allowed.")
+				  end))
+	      | NONE => raise InputError "Advice file failed to parse."
+
+	val rulesSize : bigint = list-foldl (fn (cur, acc) => bi-add (bi-fromint (ruleSize cur), 
+								      acc))
+	                                    (bi-fromint 0)
+					    theRules
+
+	do print [Successfully parsed [(int-tostring numRules)] rules; size: [bi-tostring rulesSize].\n] 
+					    
+	(* seed random number generator with the rules *)
+	val rulesString : string = list-foldl (fn (curRule, acc) => (ruleToString curRule) ^ acc) "" theRules
+	val rulesStringHashed = string-hash rulesString
+	(* note: now xors with lib random *)
+	do randomIntegerSeed := (rulesStringHashed xorb random-int ())
+
+	(* done with setup *)
+	do print "\n"
+
+	(* input tests 
+	   
+	   PERF: parses all the input tests as a list, and then makes a stream from that.
+	         We could parse to a stream to avoid allocating all the tests at once,
+		 but I presume no one needs to run that many input tests at once.
+		 
+	   *)
+	do (case testStreamO of 
+		NONE => ()
+	      | SOME testStream => 
+		    (case parseTests testStream of
+			 SOME theInputTests =>
+                             let 
+				 do print ("Running " ^ (int-tostring (list-length theInputTests)) ^ " input tests...\n************************\n")
+				     
+				 val _ = runTests ({printTests=true, printSteps=printInputTestSteps},
+						   theStepper,
+						   theRules,
+						   (stream-fromlist theInputTests))
+			     in 
+				 ()
+			     end
+		       | NONE => raise (InputError "Tests file didn't parse."))) 
+	    
+	(* done with input tests *)
+	do print "\n"
+
+	(* internal tests *)
+	val passedInternalTests =
+	    (case internalTests of 
+		 NONE => false (* no internal tests to pass *)
+	       | SOME {testsName=testsName, 
+		       numTestsFromNumRules=numTestsFromNumRules,
+		       testMaker=(testMaker : int -> test stream),
+		       printTests=printTests,
+		       feedbackForPassing=feedbackForPassing
+		       } => 
+		     let 
+			 do print ("Running internal tests...\n*************************\n")
+			     
+			 val theInternalTests : test stream = testMaker (numTestsFromNumRules numRules)
+			 val passedP  = runTests ({printTests=printTests, 
+						  (* never print internal test steps *)
+						  printSteps=false},
+						  theStepper,
+						  theRules,
+						  theInternalTests)
+			     
+			 do print (if passedP 
+				   then 
+				       let val (score, successMessage) = feedbackForPassing rulesSize
+				       in
+					   "Your advice passed the tests!\n"
+					   ^ "Our colleagues might be interested in how you did it:\n\n    "
+					   ^ (gen-publication {problem="ADVIS", 
+							       task=testsName, 
+							       score=score})
+					   ^ "\n\n" 
+					   ^ successMessage ^ "\n"
+				       end
+				   else 
+				       "Your advice failed at least one internal test.\n\n"
+				       ^ "    \"Advice is like snow---the softer it falls, the longer it dwells upon,\n"
+				       ^ "     and the deeper it sinks into the mind.\"\n"
+				       ^ "                              --Coleridge\n" 
+				       )
+		     in
+			 passedP
+		     end)
+
+	(* all done *)
+	do print "\n" 
+    in
+	passedInternalTests
+    end
+    handle InputError s => (print ("advise: bad input: " ^ s ^ "\n"); false)
+	 (* handle AspectsInternal in umix *)
+
+(* ---------------------------------------------------------------------- *)
+(* make tests and assess solutions *)
+
+(* PERF: because of GC tracing live data time,
+         everything is slower when there is a lot of live data
+
+	 Rules:
+	 - allocation should be kept to a minimum until a main is run
+	   (e.g., don't generate the tests until then)
+
+	 - make an effort to keep the live data to a minimum
+	 *)
+
+
+(* our known solutions for both problems all take the same number of rules,
+   so there is only one of these for now 
+*)
+fun feedback (sigmoidSpec as {min-score, par-score, max-score, correct, par, hole-in-one})
+             (rulesSize : bigint) : bigint * string = 
+    let 
+
+	val score = sigmoid-score sigmoidSpec rulesSize
+
+	val message = 
+	    (case bi-cmp (rulesSize, hole-in-one) of
+		 GREATER => "However, they would be even more interested if your advice were pithier.\n"
+	       | _ => "That's the best advice I've ever heard!\n")
+    in (* hole-in-one disagrees with AAPH mode *)
+	(score, message)
+    end
+
+
+(*
+
+  this tries to prevent tabling
+  mostly: lower score for more rules (so tabling shouldn't get you very much)
+  also: number of tests is proportional to number of rules
+        (but because of speed, the size of the generated numbers
+         means there is only 5000 ASTs (and fewer numeral inputs than that))
+*)
+
+(* run the base tests along with at least numTests random tests *)
+fun arithTestMaker howMany = 
+    stream-append (arithBaseTests,
+		   (* maxInt 6 might be better, but it might also be too slow *)
+		   (arithRandomTests {depth=3, maxInt=6, howMany=howMany}))
+
+(* run the base tests along with at least numTests random tests *)
+fun xmlTestMaker numTests =
+    (* run the base tests, and then random tests of various depths *)
+    stream-append(baseXmlTests,
+		  randomXmlTestsManyDepths (7::nil, numTests))
+
+  
+(* rule sizes:
+   arith-sol-stack : 282 
+   arith-sol-karl : 184
+   xml-sol-stack : 360 
+*)
+       
+val arithFeedbackSpec = 
+    { min-score = bi-fromint 30,
+      par-score = bi-fromint 150,
+      max-score = bi-fromint 175,
+      correct= bi-fromint 1000,
+      par=bi-fromint 350,
+      hole-in-one= bi-fromint 1}
+
+val xmlFeedbackSpec = 
+    { min-score = bi-fromint 30,
+      par-score = bi-fromint 150,
+      max-score = bi-fromint 175,
+      correct= bi-fromint 1000,
+      par= bi-fromint 360,
+      hole-in-one= bi-fromint 1}
+
+(* run proportional to the  number of rules, but capped from below *)
+fun numTestsFromNumRules nr = int-max (50, 3 * nr)
+
+(* ---------------------------------------------------------------------- *)
+(* exports *)
+
+in
+
+(* To add a new puzzle, add a field to this record and edit umix.uml and aspects-main.uml *)
+
+    ({aspects-mainNoTutorial = makeMain {internalTests=NONE, 
+					printInputTestSteps=false},
+      
+      aspects-mainNoTutorialPrintingSteps = makeMain {internalTests=NONE, 
+						      printInputTestSteps=true},
+      
+      aspects-mainArith = makeMain {internalTests=
+				    SOME 
+				    {testsName="ARH",
+				     (* this should be enough to prevent tabling *)
+				     numTestsFromNumRules= numTestsFromNumRules,
+				     testMaker=arithTestMaker,
+				     printTests=true,  
+				     feedbackForPassing=feedback arithFeedbackSpec},
+				    printInputTestSteps=false},
+      
+      aspects-mainXml = makeMain {internalTests=
+				  SOME
+				 {testsName="XML",
+				  numTestsFromNumRules= numTestsFromNumRules,
+				  testMaker=xmlTestMaker,
+				  printTests=true, 
+				  feedbackForPassing=feedback xmlFeedbackSpec},
+				  printInputTestSteps=false}
+      },
+     (check-aspects-in-2d :  (expr2D -> expr2D) -> string option),
+     aspects-in-2d-cheating,
+     compile-aspects-to-2d-rulelist,
+     compile-aspects-to-2d-term)
+
+
+end

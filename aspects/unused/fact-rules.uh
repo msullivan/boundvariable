@@ -1,0 +1,80 @@
+(* rules for factorial that work under
+     stepInsideSingle
+     stepInsideAll
+
+     but not LNMH_stingy 
+         or  LNHM (not-apply when = matches in each branch trips it up)
+
+     *)
+
+(* I think this is everything this library uses *)
+(* none *)
+
+val require-language = provide-language
+
+val plusName = ( "plus")
+val multName = ( "mult")
+val factName = ( "fact")
+val zName = ( "z")
+val sName = ( "s")
+val vName = ( "v")
+val v1Name = ( "v1")
+val v2Name = ( "v2")
+
+val plusP = PConst plusName
+val multP = PConst multName
+val factP = PConst factName
+val zP = PConst zName
+val sP = PConst sName
+val v = PVar vName
+val v1 = PVar v1Name
+val v2 = PVar v2Name
+
+val plus = Const plusName
+val mult = Const multName
+val fact = Const factName
+val z = Const zName
+val s = Const sName
+
+val plusRules = 
+	(PApp (PApp (plusP, zP), v),
+	 v)::
+	(PApp (PApp (plusP, PApp(sP, v1)), v2),
+	 PApp(sP, (PApp (PApp (plusP, v1), v2))))
+	::nil
+
+val multRules = 
+	plusRules @
+	((PApp (PApp (multP, zP), v),
+	  zP) :: 
+	 (PApp (PApp (multP, PApp(sP, v1)), v2),
+	  PApp (PApp(plusP, v2), (PApp (PApp (multP, v1), v2)))) :: 
+	 nil)
+	
+val factRules = 
+	(multRules @ 
+	 ((PApp (factP, zP),
+	   PApp (sP, zP)) ::
+	  (PApp (factP, PApp(sP, v1)),
+	   PApp (PApp(multP, PApp(sP, v1)), (PApp (factP, v1))))::
+	  nil))
+	
+fun numeral 0 = z
+  | numeral n = App (s, numeral (n - 1))
+	
+fun unnumeral (Const name) =
+	(if string-equals (name, zName) 
+	 then 0
+	 else raise Fail "not a numeral")
+  | unnumeral (App (Const shouldBeSName, t2)) =
+	    if string-equals (shouldBeSName, sName)
+	    then 1 + (unnumeral t2)
+	    else raise Fail "not a numeral"
+  | unnumeral _ = raise Fail "not a numeral"
+		
+val plusTest0 : program = (plusRules, App (App (plus, (numeral 0)), numeral 2))
+val plusTest1 : program = (plusRules, App (App (plus, (numeral 1)), numeral 2))
+val multTest0 : program = (multRules, App (App (mult, (numeral 1)), numeral 2))
+val multTest1 : program = (multRules, App (App (mult, (numeral 23)), numeral 12))
+val factTest0 : program = (factRules, App (fact, (numeral 4)))
+val factTest1 : program = (factRules, App (fact, (numeral 6)))

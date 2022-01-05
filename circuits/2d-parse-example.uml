@@ -1,0 +1,24 @@
+let
+  import "std.uh"
+  import "string.uh"
+  import "list.uh"
+  import "int.uh"
+  import "array.uh"
+  import "growarray.uh"
+  import "stream.uh"
+  import "random.uh"
+  import "io.uh"  
+  import "parse.uh"
+  import "2d.uh"
+  import "2d-com-parse.uh"
+  import "2d-eval.uh"
+  import "2d-parse.uh"
+    
+    
+  val modules = parse-2d (all-lines ())
+    handle ParseError2D s => (print ("\n\n" ^ s ^ "\n\n");nil)
+
+  val expr = run-program-2d (modules, "main", NONE, NONE)
+in
+  print (expr2D-tostring expr ^ "\n\n")
+end

@@ -1,0 +1,83 @@
+{ dan's stack machine solution:
+  only one transition should apply at any given time
+  and it should only apply once *at the outside of the term*.
+
+  Top-level: 
+     computation only starts when the outer term is (Add _ _) / (Mult _ _) / (Fact _)
+
+  valid stack frames are:
+  (SF Hole)
+  (AddF Hole e2) 
+  (AddF v1 Hole) where v1 is a numeral
+  (MultF Hole e2)
+  (MultF v1 Hole) where v1 is a numeral
+  (FactF Hole)
+  it might be better to terms with one fewer argument
+  than distinguishing different stack frames by writing Hole in
+  different places, but these are visually clearer than, e.g., AddF1 and
+  AddF2
+
+  we use Cons and Nil for the stack
+
+  judgements:
+  StackE k e -- work on expression e in stack k
+  StackV k v -- return the numeral v to the stack k
+}
+
+{ numerals }
+
+StackE k Z => StackV k Z;
+StackE k (S x) => StackE (Cons (SF Hole) k) x;
+StackV (Cons (SF Hole) k) v => StackV k (S v);
+
+{ ---------------------------------------------------------------------- }
+{ addition:
+  run the arguments first, then do the addition
+ }
+
+StackE k (Add e1 e2) => StackE (Cons (AddF Hole e2) k) e1;
+StackV (Cons (AddF Hole e2) k) v1 => StackE (Cons (AddF v1 Hole) k) e2;
+StackV (Cons (AddF v1 Hole) k) v2 => StackE k (AddNumerals v1 v2);
+
+{invariant: only call AddNumerals on two numerals}
+
+StackE k (AddNumerals Z v2) => StackV k v2;
+
+{ We could also write the next rule as
+     StackE k (AddNumerals (S v1) v2) => StackE k (S (AddNumerals v1 v2));
+  this variant seems less direct but more modular
+  (the current rule duplicates what you do when evaluating (S ...)). }
+StackE k (AddNumerals (S v1) v2) => StackE (Cons (SF Hole) k) (AddNumerals v1 v2);
+
+{ ---------------------------------------------------------------------- }
+{ multiplication }
+
+StackE k (Mult e1 e2) => StackE (Cons (MultF Hole e2) k) e1;
+StackV (Cons (MultF Hole e2) k) v1 => StackE (Cons (MultF v1 Hole) k) e2;
+StackV (Cons (MultF v1 Hole) k) v2 => StackE k (MultNumerals v1 v2);
+
+{ invariant: only call MultNumerals on two numerals}
+
+StackE k (MultNumerals Z v2) => StackV k Z;
+{ We could also write the next rule as 
+     StackE k (MultNumerals (S v1) v2)  => StackE k (Add v2 (MultNumerals v1 v2));
+  however, this variant is a lot less efficient in this case:
+  evaluation will then walk v2 to rediscover that it is a numeral.
+}
+StackE k (MultNumerals (S v1) v2) => StackE (Cons (AddF v2 Hole) k) (MultNumerals v1 v2);
+
+{ ---------------------------------------------------------------------- }
+{ init }
+
+{ start computation on the following forms: }
+
+Compute e => StackE Nil e;
+
+{ termination }
+
+{ because we only start computation on Compute,
+  this doesn't cause a loop }
+
+StackV Nil v => v;
+
+.

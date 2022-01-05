@@ -1,0 +1,26 @@
+(* This just serves to test syntax/type checking for the parser 
+   while ucc is in flux, feel free to delete it. -tom    15 Apr 2007
+*)
+
+let
+    import "std.uh"
+    import "string.uh"
+    import "int.uh"
+    import "list.uh"
+    import "listpair.uh"
+    import "array.uh"
+
+    import "stream.uh"
+    import "growarray.uh"
+    import "parse.uh"
+
+    import "variable.uh"
+    import "assemble.uh"
+
+    import "c7sus4.uh"
+    import "print.uh"
+
+    import "c7sus4-parse.uh"
+in
+    0
+end

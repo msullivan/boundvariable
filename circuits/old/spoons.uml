@@ -1,0 +1,217 @@
+let
+  import "std.uh"
+  import "string.uh"
+  import "list.uh"
+
+  datatype sum = SLeft | SRight 
+
+  datatype value = 
+     VUnit
+   | VPair of value * value
+   | VInj of sum * value
+   | VIface of value -> unit
+
+  type wire = value option ref
+
+  datatype iface =
+     IInput of wire list
+   | IOutput of wire list
+  (* unused interfaces are Output nil *)
+  val INone = IOutput nil
+
+  datatype dir = 
+     DNorth | DSouth | DEast | DWest
+
+  datatype expr =
+   (* Evaluates to the value on the given interface *)
+     EDir of dir
+   | EUnit
+   | EPair of expr * expr
+   | EInj of sum * expr
+   (* A "reference" to an interface *)
+   | EIface of dir
+
+  datatype stmt =
+     SSend of expr * dir
+   | SProj of expr * dir * dir
+   | SSwitch of expr * dir * dir
+   (* Connect: send the value of e1 to the interface described by e2 *)
+   | SThrow of expr * expr
+
+  type box = { name : string,
+               sl : stmt list,
+               north : iface,
+               south : iface,
+               east : iface,
+               west : iface }
+
+  fun value-tostring VUnit = "()"
+    | value-tostring (VPair (v1, v2)) = "(" ^ (value-tostring v1) ^ ", " 
+                                        ^ (value-tostring v2) ^ ")"
+    | value-tostring (VInj (SRight, v)) = "inr (" ^ (value-tostring v) ^ ")"
+    | value-tostring (VInj (SLeft, v)) = "inl (" ^ (value-tostring v) ^ ")"
+    | value-tostring (VIface _) = "<iface>"
+
+  exception Wire
+
+  fun is-wire-active w = (case !w of SOME _ => true | NONE => false)
+
+  fun is-box-active { name, sl, north, south, east, west } = 
+      let fun is-iface-active (IOutput _) = true
+            | is-iface-active (IInput ws) = list-exists is-wire-active ws
+      in
+        is-iface-active north andalso
+        is-iface-active south andalso
+        is-iface-active east andalso
+        is-iface-active west
+      end
+
+  fun consume-values (box as { name, sl, north, south, east, west }) =
+      let fun consume-iface-value (IOutput _) = NONE
+            | consume-iface-value (IInput ws) = 
+              (case (list-find is-wire-active ws)
+                (* Consume the value on the wire *)
+                of SOME w => let val v = !w 
+                                 do w := NONE 
+                             in 
+                               v
+                             end
+                 | NONE => raise Wire)
+      in
+        ({ north_val = consume-iface-value north, 
+           south_val = consume-iface-value south, 
+           east_val = consume-iface-value east, 
+           west_val = consume-iface-value west }, 
+         box)
+      end
+
+  exception Unimplemented
+
+  fun run-box ({ north_val, south_val, east_val, west_val },
+               { name, sl, north, south, east, west }) =
+      let fun get-wire-value (SOME v) = v
+            | get-wire-value NONE = raise Wire
+
+          fun set-wire-value v w = w := SOME v
+
+          fun set-iface-value d v = 
+              let val ws = case (d, north, south, east, west)
+                            of (DNorth, IOutput ws, _, _, _) => ws
+                             | (DSouth, _, IOutput ws, _, _) => ws
+                             | (DEast, _, _, IOutput ws, _) => ws
+                             | (DWest, _, _, _, IOutput ws) => ws
+                             | _ => raise Wire
+              in
+                list-app (set-wire-value v) ws
+              end
+
+          fun eval-expr (EDir DNorth) = get-wire-value north_val
+            | eval-expr (EDir DSouth) = get-wire-value south_val
+            | eval-expr (EDir DEast) = get-wire-value east_val
+            | eval-expr (EDir DWest) = get-wire-value west_val
+            | eval-expr EUnit = VUnit
+            | eval-expr (EPair (e1, e2)) = VPair (eval-expr e1, eval-expr e2)
+            | eval-expr (EInj (s, e)) = VInj (s, eval-expr e)
+            | eval-expr (EIface d) = VIface (fn v => set-iface-value d v)
+
+          fun run-stmt (SSend (e, d)) = set-iface-value d (eval-expr e)
+            | run-stmt (SProj (e, d1, d2)) = 
+              (case eval-expr e 
+                of VPair (v1, v2) => (set-iface-value d1 v1; 
+                                      set-iface-value d2 v2)
+                 | _ => raise Wire)
+            | run-stmt (SSwitch (e, d1, d2)) = 
+              (case eval-expr e
+                of VInj (SLeft, v) => set-iface-value d1 v
+                 | VInj (SRight, v) => set-iface-value d2 v
+                 | _ => raise Wire)
+            | run-stmt (SThrow (e1, e2)) =
+              (case eval-expr e2
+                of VIface f => f (eval-expr e1)
+                 | _ => raise Wire)
+      in
+        list-app run-stmt sl
+      end
+
+  fun step boxes =
+      let
+        (* First, find the active boxes *)
+        val actives = list-filter is-box-active boxes
+        (* Then consume the values on input wires *)
+        val actives_with_values = list-map consume-values actives
+        (* Now run each box, updating the output wires *)
+        do list-app run-box actives_with_values
+      in
+        ()
+      end
+
+  (* Step until the output wire wrO has a value *)
+  fun eval (boxes, wrO) = 
+      let do step boxes
+      in 
+        case !wrO 
+         of SOME v => v
+          | NONE => eval (boxes, wrO)
+      end
+
+  (* EXAMPLES *)
+
+  (* sum example *)
+  val zero = VInj (SLeft, VUnit)
+  val one = VInj (SRight, VInj (SLeft, VUnit))
+  val two = VInj (SRight, VInj (SRight, VInj (SLeft, VUnit)))
+  val three = VInj (SRight, VInj (SRight, VInj (SRight, VInj (SLeft, VUnit))))
+
+  (* set inputs to initial values *)
+  val wr1 = ref (SOME three)
+  val wr2 = ref (SOME two)
+
+  val wr3 = ref NONE
+  val wr4 = ref NONE
+  val wr9 = ref NONE
+
+  val bxA = { name = "A",
+              sl = (SSwitch ((EDir DNorth), DEast, DSouth))::nil,
+              north = IInput (wr1::wr9::nil),
+              south = IOutput (wr3::nil),
+              east = IOutput (wr4::nil),
+              west = INone }
+
+  val wr5 = ref NONE
+  val wr6 = ref NONE
+  val wr7 = ref NONE
+
+  val bxB = { name = "B",
+              sl = (SSend ((EDir DNorth), DEast))::
+                   (SSend ((EDir DNorth), DSouth))::nil,
+              north = IInput (wr2::wr5::nil),
+              south = IOutput (wr6::nil),
+              east = IOutput (wr7::nil),
+              west = INone }
+
+  (* number 8 is the output wire *)
+  val wr8 = ref NONE
+
+  val bxC = { name = "C",
+              sl = (SSend ((EDir DNorth), DEast))::nil,
+              north = IInput (wr6::nil),
+              south = INone,
+              east = IOutput (wr8::nil),
+              west = IInput (wr4::nil) }
+
+
+  val bxD = { name = "D",
+              sl = (SSend ((EDir DWest), DSouth))::
+                   (SSend ((EInj (SRight, EDir DNorth)), DEast))::nil,
+              north = IInput (wr7::nil),
+              south = IOutput (wr9::nil),
+              east = IOutput (wr5::nil),
+              west = IInput (wr3::nil) }
+
+  val sum = ((bxA::bxB::bxC::bxD::nil), wr8)
+
+in
+  print ((value-tostring (eval sum)) ^ "\n")
+  handle Unimplemented => print "unimplemented\n"
+       | Wire => print "wire\n"
+end

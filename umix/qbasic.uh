@@ -1,0 +1,678 @@
+(* included file *)
+
+val require-string = provide-string
+val require-list   = provide-list
+val require-int    = provide-int
+val require-parse  = provide-parse
+val require-roman  = provide-roman
+
+exception QBasic of string
+
+type var = string
+
+(* base types only *)
+datatype typ =
+    T_STRING
+  | T_INTEGER
+  | T_BOOLEAN
+
+datatype lvalue = 
+    V of var
+  | S of var * exp
+
+and exp =
+    VAR of var
+  | STRING of string
+  | INT of int
+  (* also includes array subscripts *)
+  | APPLY of var * exp list
+  | PLUS of exp * exp
+  | MINUS of exp * exp
+  | GREATERTHAN of exp * exp
+  | LESSTHAN of exp * exp
+  | LESSTHANEQ of exp * exp
+  | GREATERTHANEQ of exp * exp
+  | EQUALS of exp * exp
+
+(* statements *)
+datatype statement =
+    CLS
+  | PRINT of exp
+  | ASSIGN of lvalue * exp
+  | END
+  | GOTO of int
+  | IF of exp * statement * statement
+  | DIM of lvalue * typ
+  | SKIP
+
+fun qbasic-ttos T_STRING = "STRING"
+  | qbasic-ttos T_INTEGER = "INTEGER"
+  | qbasic-ttos T_BOOLEAN = "BOOLEAN"
+
+fun qbasic-lvtos (V v) = v
+  | qbasic-lvtos (S (v, e)) = v ^ "(" ^ qbasic-etos e ^ ")"
+
+and qbasic-etos e =
+    (case e of
+	 VAR v => v
+       | PLUS (e1, e2) => "(" ^ qbasic-etos e1 ^ " + " ^ 
+	                        qbasic-etos e2 ^ ")"
+       | MINUS (e1, e2) => "(" ^ qbasic-etos e1 ^ " - " ^ 
+ 	                         qbasic-etos e2 ^ ")"
+       | INT i => int-toroman i
+       | APPLY (v, el) => v ^ "(" ^ string-delimit ", " (list-map qbasic-etos el) ^ ")"
+       | STRING s => "\"" ^ s ^ "\""
+       | LESSTHAN (e1, e2) => "(" ^ qbasic-etos e1 ^ " < " ^ 
+ 	                         qbasic-etos e2 ^ ")"
+       | GREATERTHAN (e1, e2) => "(" ^ qbasic-etos e1 ^ " > " ^ 
+ 	                         qbasic-etos e2 ^ ")"
+       | LESSTHANEQ (e1, e2) => "(" ^ qbasic-etos e1 ^ " <= " ^ 
+ 	                         qbasic-etos e2 ^ ")"
+       | GREATERTHANEQ (e1, e2) => "(" ^ qbasic-etos e1 ^ " >= " ^ 
+ 	                         qbasic-etos e2 ^ ")"
+       | EQUALS (e1, e2) => "(" ^ qbasic-etos e1 ^ " = " ^ qbasic-etos e2 ^ ")")
+
+fun qbasic-stos s =
+    (case s of
+	 CLS => "CLS"
+       | PRINT e => "PRINT " ^ qbasic-etos e
+       | ASSIGN (lv, e) => "SET " ^ qbasic-lvtos lv ^ " = " ^ qbasic-etos e
+       | DIM (lv, ty) => "DIM " ^ qbasic-lvtos lv ^ " AS " ^ qbasic-ttos ty
+       | END => "END"
+       | GOTO i => "GOTO " ^ int-toroman i
+       | SKIP => "SKIP"
+       | IF (e, s1, s2) => "IF " ^ qbasic-etos e ^ " THEN " ^ qbasic-stos s1 ^
+	                   " ELSE " ^ qbasic-stos s2)
+
+datatype token =
+    (* string literal *)
+    TString of string
+    (* any identifier *)
+  | TId of string
+    (* separator character *)
+  | TSep of char
+  | TNone
+
+fun qbasic-toktos (TString t) = "\"" ^ t ^ "\""
+  | qbasic-toktos (TId t) = t
+  | qbasic-toktos (TSep c) = "?" ^ array(1, c)
+  | qbasic-toktos (TNone) = "(none)"
+
+(* get a token from s starting at position i *)
+fun qbasic-get-token (i, s) =
+    let
+	val stop = length s
+
+	fun is-ws ?   = true
+	  | is-ws ?\r = true
+	  | is-ws ?\t = true
+	  | is-ws _   = false
+
+	fun is-sep ?( = true
+	  | is-sep ?) = true
+	  | is-sep ?" = true (* " *)
+	  | is-sep ?= = true
+	  | is-sep ?+ = true
+	  | is-sep ?- = true
+	  | is-sep ?* = true
+	  | is-sep ?/ = true
+	  | is-sep ?> = true
+	  | is-sep ?< = true
+	  | is-sep ?, = true
+	  | is-sep ?; = true
+	  | is-sep _  = false
+
+	(* skip any whitespace. might skip to the
+	   end of the string *)
+	fun skipws i =
+	    if i >= stop then i
+	    else if is-ws (sub(s, i))
+		 then skipws (i + 1)
+		 else i
+
+	val i = skipws i
+
+	(* saw at least one character (starting at i),
+	   so we're accumulating a string of chars *)
+	fun accum j =
+	    (* end of string? *)
+	    if j >= stop 
+	    then (j, TId (substring(s, i, j - i)))
+	    else
+		let val c = sub(s, j)
+		in
+		    if is-ws c orelse is-sep c
+		    then (j, TId (substring(s, i, j - i)))
+		    else accum (j + 1)
+		end
+	    
+	(* read a string up until the closing quote *)
+	fun readstr j =
+	    if j >= stop
+	    then 
+		let in
+		    print "WARNING: VNCLOSED STRING\n";
+		    (* consume up to end of string *)
+		    (j, TString (substring (s, i + 1, j - (i + 1)))) 
+		end
+	    else
+		if ord (sub(s, j)) = ord ?" (* " *)
+		then (j + 1, TString (substring(s, i + 1, j - (i + 1))))
+		else readstr (j + 1)
+    in
+	(* look at first char.. *)
+	if i >= stop
+	then (i, TNone) (* out of tokens *)
+	else let val c = sub(s, i)
+	     in
+		 if ord c = ord ?" (* " *)
+		 then readstr (i + 1)
+		 else if is-sep c
+		      then (i + 1, TSep c)
+		      else accum (i + 1)
+	     end
+    end
+
+fun qbasic-parse-roman str =
+    let
+
+	(* parse a roman numeral in all caps. *)
+	fun pr (s, mx) =
+	    let
+		fun p s1 s2 =
+		    if string-prefix (s1, s2)
+		    then substring' (s2, length s1)
+		    else raise Match
+	    in
+		(* print ("parse-roman [" ^ s ^ "]\n"); *)
+		if length s = 0
+		then 0
+		else
+		    let val (v, nm, rest) =
+			  case s of
+			       ((p "CM") rest) => (900, 899, rest)
+			     | ((p "CD") rest) => (400, 399, rest)
+			     | ((p "XC") rest) => (90, 89, rest)
+			     | ((p "XL") rest) => (40, 39, rest)
+			     | ((p "IX") rest) => (9, 8, rest)
+			     | ((p "IV") rest) => (4, 3, rest)
+			     | ((p "M") rest)  => (1000, 1000, rest)
+			     | ((p "D") rest)  => (500, 500, rest)
+			     | ((p "C") rest)  => (100, 100, rest)
+			     | ((p "L") rest)  => (50, 50, rest)
+			     | ((p "X") rest)  => (10, 10, rest)
+			     | ((p "V") rest)  => (5, 5, rest)
+			     | ((p "I") rest)  => (1, 1, rest)
+			     | _ => raise QBasic ("BAD NVMERAL " ^ str)
+		    in
+			(v > mx) andthen (raise QBasic ("BAD NVMERAL " ^ str));
+			v + pr (rest, nm)
+		    end
+	    end
+
+	val num = pr (str, 1000)
+    in
+	if num >= 4000 orelse num <= 0
+	then raise QBasic ("NVMERAL TOO LARGE: " ^ str)
+	else num
+    end
+
+fun qbasic-tokenstream (idx, s) =
+    stream-delay
+    (fn () =>
+     case qbasic-get-token (idx, s) of
+	 (_, TNone) => Nil
+       | (idx', tok) => Cons(tok, qbasic-tokenstream (idx', s)))
+
+val qbasic-keyword-list =
+    ("IF" :: "THEN" :: "ELSE" ::
+     "END" :: "PRINT" :: "DIM" ::
+     "AS" :: "STRING" :: "INTEGER" ::
+     "GOTO" :: "REM" :: "CLS" :: nil) 
+
+fun qbasic-parse-line l =
+    let
+	val lstr = (qbasic-tokenstream (0, l))
+
+	fun isroman s =
+	    if
+	    string-all 
+	    (fn ?M => true
+	      | ?D => true
+	      | ?C => true
+	      | ?L => true
+	      | ?X => true
+	      | ?V => true
+	      | ?I => true
+	      | _ => false) s
+	    then qbasic-parse-roman s 
+	    else raise Match
+
+	(* an identifier that's not a keyword *)
+	fun notkey s = 
+	    if list-exists
+	       (fn s' => string-equals (s, s'))
+	       qbasic-keyword-list
+	    then raise Match
+	    else s
+
+	fun is_string (TString s) = s
+	  | is_string _ = raise Match
+
+	fun is_id (TId s) = s
+	  | is_id _ = raise Match
+
+	fun is c (TSep c') = 
+	    if ord c = ord c'
+	    then () else raise Match
+	  | is _ _ = raise Match
+
+	(* require a specific string *)
+	fun % s = parse-matching is_id 
+                            -- (fn ((sis s) _) => parse-succeed ()
+                                | _ => parse-fail)
+
+	fun & c = parse-matching (is c)
+
+	val numeral = (parse-matching is_id -- 
+		       (fn ((isroman) i) => parse-succeed i
+		        | _ => parse-fail))
+
+	val typ =
+	    % "STRING"   parse-return T_STRING
+         || % "INTEGER"  parse-return T_INTEGER
+
+	fun atomi () =
+	    & ?+ parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-left, 4, PLUS)))
+	 || & ?- parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-left, 4, MINUS)))
+
+	 || & ?< >> & ?= parse-return (Parse-opr
+				       (Parse-infix
+					(Parse-left, 4, LESSTHANEQ)))
+
+	 || & ?< parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-left, 4, LESSTHAN)))
+
+	 || & ?> >> & ?= parse-return (Parse-opr
+				       (Parse-infix
+					(Parse-non, 2, GREATERTHANEQ)))
+
+	 || & ?> parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-non, 2, GREATERTHAN)))
+
+	 || & ?= parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-non, 3, EQUALS)))
+
+
+	 || $ atom parse-wth Parse-atm
+				       
+	and atom () = parse-matching is_string  parse-wth STRING
+	        ||    parse-matching (isroman o is_id) parse-wth INT
+	        ||   (parse-matching (notkey o is_id)) --
+			(fn id => 
+			  & ?( >> parse-separate0 ($ exp) (& ?,)
+			      << & ?)  parse-wth  (fn el => APPLY(id, el))
+			   || parse-succeed (VAR id))
+	        ||   (& ?( ) >>
+		      $ exp <<
+		      (& ?) )
+
+	and exp () = parse-fixity ( $ atomi )
+
+	and lvalue () =
+	     (parse-matching is_id) --
+	     (fn id => 
+	      & ?( >> $ exp << & ?)  parse-wth  (fn e => S(id, e))
+	       || parse-succeed (V id))
+
+	(* debugging *)
+	fun dumpstream (s, k) =
+	    let in
+		print "DUMPSTREAM:\n";
+		stream-app (fn t =>
+			    print ("  " ^ qbasic-toktos t ^ "\n")) s;
+		parse-succeed () (s, k) 
+	    end
+
+	fun stmt () =
+	    % "END"                     parse-return END
+         || % "PRINT" >> $ exp          parse-wth    PRINT
+         || % "REM"                     parse-return SKIP
+         || % "CLS"                     parse-return CLS
+         || % "GOTO" >> numeral         parse-wth    GOTO
+	 || % "DIM" >> $ lvalue && (% "AS" >> typ)
+                                        parse-wth    DIM
+         || (% "IF" (* >> dumpstream *) >> $ exp) && (% "THEN" >> $ stmt)
+                              && (% "ELSE" >> $ stmt
+				  || parse-done SKIP)
+					parse-wth (fn ((a, b), c) =>
+						   IF (a, b, c))
+         || $ lvalue && (& ?= >> $ exp) parse-wth    ASSIGN
+    
+	val line = numeral && $ stmt
+
+    in
+	case parse-stream line lstr of
+	    SOME (ln, s) => 
+		let in
+		    print (int-toroman ln);
+		    print " ";
+		    print (qbasic-stos s);
+		    print "\n";
+		    (ln, s)
+		end
+	  | NONE => raise QBasic "SYNTAX ERROR: EXPECTED  LINENVM STATEMENT"
+    end
+
+(* just optimize gaps in the program to GOTO the next interesting line. *)
+fun qbasic-optimize p =
+    let
+	fun fill (n, cmd) =
+	    if n < 0 then ()
+	    else
+		(case sub(p, n) of
+		     SKIP => (update(p, n, cmd);
+			      fill (n - 1, cmd))
+		   (* PERF could path-compress a series of gotos *)
+		   | _ => fill (n - 1, GOTO n))
+		     
+    in
+	fill (3999, GOTO 4000);
+	p
+    end
+
+(* parse a string into a qbasic program. *)
+fun qbasic-parse s =
+    let
+	(* program can't be more than 4000 lines,
+	   since roman numerals only go up to 3999. *)
+	val p = array(4001, SKIP)
+	val () = update(p, 4000, END)
+
+	val lines = string-tokens (fn ?\n => true | _ => false) s
+
+        fun whitespace ?\n = true
+          | whitespace ?\r = true
+          | whitespace ?   = true
+          | whitespace ?\t = true
+          | whitespace _   = false
+
+        val lines = list-filter (fn l => 
+                                 if string-all whitespace l
+                                 then false
+                                 else true) lines
+
+	fun doline l =
+	    let val (num, stmt) = qbasic-parse-line l
+	    in  
+		update (p, num, stmt)
+	    end
+    in
+	list-app doline lines;
+	p
+    end
+
+fun qbasic-eval p commandline =
+    let
+	datatype value =
+	    (* rep invt: always 1..3999 inclusive *)
+	    Vint of int
+	  | Vstr of string
+	  | Vbool of bool
+	  | Varr of value array
+
+	val args = list-length commandline
+	val () = if args > 3999
+		 then raise QBasic "TOO MANY ARGS"
+		 else ()
+	val argv = list-toarray (list-map Vstr commandline)
+
+	fun default T_INTEGER = Vint 1
+	  | default T_STRING  = Vstr ""
+	  | default T_BOOLEAN = Vbool true
+
+	fun typeo n =
+	    raise QBasic 
+		("TYPE MISMATCH ON LINE " ^
+		 int-toroman n)
+
+	fun varo (v, n) =
+	    raise QBasic
+		("VNDEFINED VARIABLE " ^ v ^ 
+		 " ON LINE " ^ int-toroman n)
+
+	fun subo n =
+	    raise QBasic
+		("ARRAY INDEX OVT OF BOVNDS ON LINE "
+		 ^ int-toroman n)
+
+	fun argo (ip, v) =
+	    raise QBasic
+		("WRONG ARGVMENTS TO " ^ v ^
+		 " ON LINE " ^ int-toroman ip)
+
+	fun check-ty (T_INTEGER, Vint _) = true
+	  | check-ty (T_STRING, Vstr _) = true
+	  | check-ty (T_BOOLEAN, Vbool _) = true
+	  | check-ty _ = false
+
+	fun evalat (env, ip, e) =
+	    let
+		fun eval e =
+		  (case e of
+		       INT i => Vint i
+		     | STRING s => Vstr s
+		     | MINUS (e1, e2) => 
+			   (case (eval e1, eval e2) of
+			       (Vint i1, Vint i2) => 
+				   let val res = i1 - i2
+				   in
+				       if res < 1 orelse res > 3999
+				       then raise QBasic 
+					   ("IMPOSSIBLE NVMBER: " ^
+					    int-toroman i1 ^ " - " ^
+					    int-toroman i2)
+				       else Vint res
+				   end
+			     | _ => typeo ip)
+		     | PLUS (e1, e2) => 
+			   (case (eval e1, eval e2) of
+			       (Vint i1, Vint i2) => 
+				   let val res = i1 + i2
+				   in
+				       if res < 1 orelse res > 3999
+				       then raise QBasic 
+					   ("IMPOSSIBLE NVMBER: " ^
+					    int-toroman i1 ^ " + " ^
+					    int-toroman i2)
+				       else Vint res
+				   end
+			     | (Vint i, Vstr s) => Vstr (int-toroman i ^ s)
+			     | (Vstr s, Vint i) => Vstr (s ^ int-toroman i)
+			     | (Vstr s1, Vstr s2) => Vstr (s1 ^ s2)
+			     | _ => typeo ip)
+
+		     | LESSTHAN (e1, e2) => 
+			   (case (eval e1, eval e2) of
+				(Vint i1, Vint i2) => Vbool (i1 < i2)
+			      | _ => typeo ip)
+		     | GREATERTHAN (e1, e2) => 
+			   (case (eval e1, eval e2) of
+				(Vint i1, Vint i2) => Vbool (i1 > i2)
+			      | _ => typeo ip)
+
+		     | LESSTHANEQ (e1, e2) => 
+			   (case (eval e1, eval e2) of
+				(Vint i1, Vint i2) => Vbool (i1 <= i2)
+			      | _ => typeo ip)
+		     | GREATERTHANEQ (e1, e2) => 
+			   (case (eval e1, eval e2) of
+				(Vint i1, Vint i2) => Vbool (i1 >= i2)
+			      | _ => typeo ip)
+
+		     | EQUALS (e1, e2) => 
+			   (case (eval e1, eval e2) of
+				(Vint i1, Vint i2) => Vbool (i1 = i2)
+			      | (Vstr s1, Vstr s2) => Vbool (s1 seq s2)
+			      | _ => typeo ip)
+
+		     | VAR v =>
+			  let
+			      fun findit nil = varo (v, ip)
+				| findit (((sis v) _, _, va) :: _) = va
+				| findit (_ :: t) = findit t
+			  in
+			      findit env
+			  end
+		     | APPLY (var, el) =>
+			  let
+			      val vl = list-map eval el
+
+			      fun unko () =
+				  raise QBasic 
+				      ("VNKNOWN SVBROVTINE OR ARRAY " ^
+				       var ^ " ON LINE " ^ int-toroman ip)
+
+			  in
+			      (case (var, vl) of
+				   ((sis "CHR") _, Vint i :: nil) =>
+				       if i > 0
+					  andalso i < 256
+				       then Vstr (array(1, chr i))
+				       else raise QBasic ("CHARACTER TOO LARGE " ^
+							  "ON LINE " ^ int-toroman ip)
+				 | ((sis "CHR") _, _) => argo (ip, var)
+
+				 | ((sis "ARGS") _, nil) => Vint args
+				 | ((sis "ARGS") _, _) => argo (ip, var)
+
+				 | ((sis "CHECKPASS") _, Vstr u :: Vstr p :: nil) =>
+					   Vbool (umix-password-ok(u, p))
+
+				 | ((sis "CHECKPASS") _, _) => argo (ip, var)
+
+				 | (var, Vint i :: nil) => 
+				      let
+					  fun findar nil = unko ()
+					    | findar (((sis var) _, _, Varr va) :: _) = va
+					    | findar (_ :: t) = findar t
+
+					  val a = findar env
+				      in
+					  sub(a, i - 1)
+					  handle Subscript => subo ip
+				      end 
+				 | _ => unko ()
+				   )
+			  end
+		     | _ => raise QBasic "unimp exp")
+	    in
+		 eval e
+	    end
+
+	fun run (ip, env) =
+	    let
+		fun stmt st =
+		    (case st of
+			 END => ()
+		       | GOTO i => run (i, env)
+		       | SKIP => run (ip + 1, env)
+		       | PRINT e =>
+			     let 
+				 val v = evalat (env, ip, e)
+				     
+				 fun printv v = 
+				     (case v of
+					  Vint i => print (int-toroman i)
+					| Vstr s => print s
+					| Vbool true => print "true"
+					| Vbool false => print "false"
+					| Varr a => 
+					      let 
+						  do putc ?(
+                                                  (* ENH don't print final comma *)
+						  do array-app 
+							    (fn v => (printv v;
+								      putc ?,;
+								      putc ? ))
+							    a
+						  do putc ?)
+					      in
+						  ()
+					      end)
+			     in
+				 printv v;
+				 run (ip + 1, env)
+			     end
+		       | ASSIGN (V var, e) => 
+			     let 
+				 val v = evalat (env, ip, e)
+				 fun findv (((sis var) _, ty, _) :: rest) =
+				     (if check-ty (ty, v)
+				      then (var, ty, v) :: rest
+				      else typeo ip)
+				   | findv (h :: t) = h :: findv t
+				   | findv nil = varo (var, ip)
+			     in
+				 run (ip + 1, findv env)
+			     end
+		       | ASSIGN (S (var, ei), e) => 
+			     let
+				 val vi = evalat (env, ip, ei)
+				 val v = evalat (env, ip, e)
+				 fun finda (((sis var) _, ty, Varr a) :: rest) =
+				     (if check-ty (ty, v)
+				      then (case vi of
+						Vint i =>
+						    let in
+							((update(a, i - 1, v))
+							 handle Subscript => subo ip);
+							run (ip + 1, env)
+						    end
+					      | _ => typeo ip)
+				      else typeo ip)
+				   | finda (_ :: t) = finda t
+				   | finda nil = varo (var, ip)
+			     in
+				 finda env
+			     end
+		       | IF (e, s1, s2) => 
+			     (case evalat (env, ip, e) of
+				  Vbool true => stmt s1
+				| Vbool false => stmt s2
+				| _ => typeo ip)
+		       | CLS =>
+			     let
+				 fun cl () = print "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+			     in
+				 cl (); cl (); cl (); cl ();
+				 run (ip + 1, env)
+			     end
+		       | DIM (lv, ty) =>
+				  (* SUSP: check it isn't already DIM'd?
+				     allows shadowing
+				     *)
+				  run (ip + 1,
+				       (case lv of
+					    V v => (v, ty, default ty) :: env
+					  | S (v, (fn e => evalat(env, ip, e)) (Vint i)) =>
+						(v, ty, Varr (array(i, default ty))) :: env
+					  | _ => typeo ip))
+
+		       (* possible?? *)
+		       (* | _ => raise QBasic "ILLEGAL STATEMENT" *))
+	    in
+		stmt (sub(p, ip))
+	    end
+
+	val empty = nil
+    in
+	run (1, ("ARG", T_STRING, Varr argv) :: empty)
+    end

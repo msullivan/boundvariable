@@ -1,0 +1,16 @@
+
+    README         Tom Murphy          10 Mar 2006
+
+
+  This is a rudimentary assembler for the universal machine, which can
+  be used to build standalone UM binaries. The code is not very convenient
+  to use, because it requires the source assembly to be compiled into
+  whistleock as SML code. From the SML/NJ prompt:
+
+  CM.make "whistlock.cm";
+  Compile.compile () "out.um";
+
+  ... assembles whatever code is currently active (see compile.sml and the
+  source files in code/) to the output file out.um.
+
+  The name of this program is an "adventure" pun.

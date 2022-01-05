@@ -1,0 +1,8 @@
+MIDlet-1: Universal Machine, UM.png, UMmidlet
+MIDlet-Jar-Size: 66563
+MIDlet-Jar-URL: UM.jar
+MIDlet-Name: Universal Machine
+MIDlet-Vendor: Homework 7
+MIDlet-Version: 1.0
+MicroEdition-Configuration: CLDC-1.0
+MicroEdition-Profile: MIDP-1.0

@@ -1,0 +1,131 @@
+Proposal for "Circuits" language
+
+A program is given by a set of "boxes" connected by "wires."  Each box has
+four "interfaces" (north, south, east, west), and each wire connects exactly
+two interfaces.  (Note that a wire may connect two interfaces on the same box
+and that more than one wire may connect to a single interface.)  We have
+additional interfaces (shared by all boxes) that correspond to the inputs and
+output of the program.
+
+Each box contains a set of "commands."  For first-order circuits, we have the
+following commands:
+
+  COMMANDS  ::=  	copy IFACE to IFACE
+		 	drop IFACE
+			merge IFACE and IFACE to IFACE
+			split IFACE to IFACE and IFACE
+			mark IFACE as DIR to IFACE
+			switch IFACE to IFACE or IFACE
+
+  IFACE     ::= 	north
+			south
+			east
+			west
+			input X
+			output
+
+  DIR       ::= 	left
+			right
+
+Well-formed boxes must never use a given interface for both sending and
+receiving.  Interfaces that are used to send values are called
+"send-interfaces," and those used to receive are called "receive-interfaces."
+A well-formed box will assign at most one value to every send-interface during
+each activation of that box.
+
+To execute a program, we assign a state to each wire: each wire may carry zero
+or one value.  If a wire does not carry a value, it is said to be clear.
+Initially, all wires are clear and the input interfaces are set to the input
+values.  We say that an receive-interface has a value if one or more wires
+connected to that interface carries a value.
+
+  1. Every box where all receive-interfaces have a value is executed in
+     parallel (these are the active boxes).
+
+     - If more than one wire for a given interface carries a value, one of the
+       values is chosen arbitrarily.
+
+  2. Once a value is copied from a wire to the receive-interface of an active
+     box, the state of that wire is cleared.
+
+  3. For every active box, all commands are processed atomically and the values
+     sent to send-interfaces are copied to (all) connected wires.
+
+  4. Repeat starting with step 1 until the output interface is assigned a
+     value (by at least one box).
+
+
+Semantics of commands:
+
+  copy I1 to I2 	- copy the value of I1 to I2
+  drop I1 		- throw away the value associated with I1
+  merge I1 and I2 to I3 - create a pair of the values on I1 and I2 and send
+			  that pair to I3
+  split I1 to I2 and I3 - destruct a pair, sending one half to each interface
+  mark I1 as D to I2    - create a new sum (injected on D) using I1 and send
+			  to I2
+  switch I1 to I2 or I3 - case analysis a sum, sending the carried value on
+			  the the appropriate interface
+
+
+"Higher-order" commands:
+
+Add two additional commands to create "references" to wires:
+
+  name I1 to I2  	- send the "name" of the wire connected to interface
+			  I1 to the wires connected to I2
+			  (what if there is more than one wire on I1?)
+  pipe I1 to I2 	- send the value on I2 to the wire "named" by I2
+
+Notice that in the first case both I1 and I2 are send-interfaces.  In the
+second, both I1 and I2 are receive-interfaces.
+
+These commands can be used to implement a destination-passing style semantics.
+They can also be used to create higher-order circuits.  If we a consider a
+circuit to be a set of boxes and wires with distinguished input and output
+wires then we can create a pair naming those wires and use the pair as a
+reference to that circuit.  Consider a circuit F:
+
+           |
+           | in
+           |
+        + - - +
+
+        |  F  |
+
+        + - - +
+           |
+           | out
+           |
+
+Then we "name" F by adding the following boxes.  When any value is sent into
+this circuit, the pair of (in, out) will be sent out.
+
+                                          \ /
+                                           |
+                                           |
+                                      -----+-----
+           -\                     ---/           \---
+           | ---\             ---/                   \---
+           | in  ---\   +----/----+                      \---
+           |         ---| name W  |                      +---\-----+
+        + - - +         |   to E  +-     +----------+    | name S  |
+                        +---------+ \--- | merge    |  --+   to W  |
+        |  F  |                         \+  W and E +-/  +----+----+
+                                         |   to S   |         |
+        + - - +                          +----+-----+         |
+           |                                  |               |
+           | out                              |               |
+           +-----                            \|/              |
+                 \-----------                                 |
+                             \-----------                 +---+------+
+                                         \-----------     | pipe W   |
+                                                     \----+   to N   |
+                                                          |          |
+                                                          +----------+
+
+To do: how to apply a function once we have a handle to it
+
+To do: create a cross-over -- is this possible with a box?  or do we need a
+special connector to allow one wire to pass "underneath" another?
+

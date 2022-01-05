@@ -1,0 +1,13 @@
+{ tests for arithmetic }
+
+{ test addition on numerals }
+Compute (Add (S (S Z)) (S (S Z))) -> (S (S (S (S Z))));
+
+{ test multiplication on numerals }
+Compute (Mult (S (S Z)) (S (S Z))) -> (S (S (S (S Z))));
+
+{ test nested expressions }
+Compute (Add (S Z) (Mult (S (S Z)) (S (S (S Z))))) -> (S (S (S (S (S (S (S Z)))))));
+Compute (Add (Add (S (S Z)) (S Z)) (Add (S (S (S Z))) (S (S Z)))) -> (S (S (S (S (S (S (S (S Z))))))));
+
+. { end of tests }

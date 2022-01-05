@@ -1,0 +1,4 @@
+
+// just one icon, for the application
+
+IDR_APPLICATION   ICON DISCARDABLE "antfarm.ico"

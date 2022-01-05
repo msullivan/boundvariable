@@ -1,0 +1,45 @@
+
+    The Adventure Game                               16 Jul 2007
+
+Find proofs in a restricted logic to build "items" in a fictional
+robot-inhabitied universe to reprogram your own brain.  Then defeat an
+oppressive bureaucracy by outmaneuvering a broken information-flow system.
+
+The main source files for the Adventure game are described below.
+
+adventure.uh
+
+  Start here -- this is the main entry point to this game, used both by Umix
+  and main.uml.  It defines many of the important types and includes the main
+  evaluation loop.
+
+populate.uh
+
+  Set up the initial state of the robot world, including the puzzles.
+
+english-parse.uh
+
+  A parser for the English-like commands issued by a player while playing the
+  game (e.g. go north, take pamphlet).
+
+rml*
+
+  Definition and implementation of the Robot Mind Language.  This is another
+  ML-like language that is used to interpret English commands given by the
+  player and then make changes to the state of the robot world.  Though the game
+  always uses this interpreter, it's not obvious to players until they've used
+  the downloader to see the robot's current "mind."
+
+goggles.uh
+
+  Take the results of the interpreting the a given command and present it to
+  the player in one of a number of easy to read forms.
+
+puz-*.uh
+
+  Puzzles used in the game.
+
+nouns/adjectives/rooms
+
+  Define the datatypes and functions used to describe the state of the world.
+

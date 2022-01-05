@@ -1,0 +1,10 @@
+group is
+
+#if (defined(SMLNJ_VERSION))
+ $/basis.cm
+ $/smlnj-lib.cm
+#endif
+
+ seeds.sml
+ test.sml
+

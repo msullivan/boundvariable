@@ -1,0 +1,7 @@
+
+   Haskel UM Implementation                  16 Jul 2007
+
+This is an incomplete implementation of the UM in Haskell.  Some attempts 
+were made to write efficient code, but I am no Haskell hacker.  Better
+implementations can be found on the web.
+

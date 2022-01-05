@@ -1,0 +1,73 @@
+(*
+
+NEW BEST! (score 36236):
+name steps time                                                             
+Good 36236 0.589                                                            
+*)
+
+val pf =
+ [Pickup(((Missing ((Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(1)")])), ["gray60"])),
+Pickup(((Missing ((Missing ((Noun "Part(2)"), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), ["pale-carmine"])),
+Pickup(((Noun "Part(2)"), ["pale-cornflower-blue"])),
+Pickup(((Noun "Part(2)"), ["imported"])),
+Incinerate(((Noun "Part(2)"), ["imported"])),
+Pickup(((Missing ((Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(1)")])), ["gray90"])),
+Pickup(((Noun "Part(1)"), ["sepia"])),
+Combine(((Missing ((Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(1)")])), ["gray90"]), ((Noun "Part(1)"), ["sepia"])),
+Pickup(((Missing ((Missing ((Noun "Part(2)"), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), [(Noun "Part(1)"), (Noun "Part(2)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), ["gray30"])),
+Combine(((Missing ((Missing ((Noun "Part(2)"), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), [(Noun "Part(1)"), (Noun "Part(2)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), ["gray30"]), ((Noun "Part(2)"), ["pale-cornflower-blue"])),
+Pickup(((Noun "Part(1)"), ["robin-egg-blue"])),
+Incinerate(((Missing ((Missing ((Noun "Part(2)"), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), ["gray30"])),
+Pickup(((Missing ((Noun "Part(2)"), [(Noun "Part(1)")])), ["slate-blue"])),
+Combine(((Missing ((Noun "Part(2)"), [(Noun "Part(1)")])), ["slate-blue"]), ((Noun "Part(1)"), ["robin-egg-blue"])),
+Pickup(((Missing ((Noun "Part(2)"), [(Noun "Part(2)")])), ["rosy-brown"])),
+Combine(((Missing ((Noun "Part(2)"), [(Noun "Part(2)")])), ["rosy-brown"]), ((Noun "Part(2)"), ["slate-blue"])),
+Incinerate(((Noun "Part(2)"), ["rosy-brown"])),
+Incinerate(((Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), ["gray90"])),
+Incinerate(((Missing ((Missing ((Noun "Part(2)"), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), ["pale-carmine"])),
+Pickup(((Noun "Part(1)"), ["gray50"])),
+Pickup(((Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), ["misty-rose"])),
+Pickup(((Noun "Part(1)"), ["persian-blue"])),
+Pickup(((Missing ((Noun "Part(1)"), [(Noun "Part(1)")])), ["emerald"])),
+Combine(((Missing ((Noun "Part(1)"), [(Noun "Part(1)")])), ["emerald"]), ((Noun "Part(1)"), ["persian-blue"])),
+Combine(((Missing ((Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(1)")])), ["gray60"]), ((Noun "Part(1)"), ["emerald"])),
+Pickup(((Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), ["violet-red"])),
+Pickup(((Missing ((Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")]))])), ["blaze-orange"])),
+Combine(((Missing ((Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")]))])), ["blaze-orange"]), ((Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), ["violet-red"])),
+Pickup(((Missing ((Missing ((Noun "Goal"), [(Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), (Noun "Part(1)")])), [(Missing ((Missing ((Noun "Part(2)"), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), (Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), (Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")]))])), [])),
+Combine(((Missing ((Missing ((Noun "Goal"), [(Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), (Noun "Part(1)")])), [(Missing ((Missing ((Noun "Part(2)"), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), (Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), (Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")]))])), []), ((Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), ["misty-rose"])),
+Pickup(((Noun "Part(2)"), ["jade"])),
+Incinerate(((Noun "Part(2)"), ["jade"])),
+Combine(((Missing ((Missing ((Noun "Goal"), [(Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), (Noun "Part(1)")])), [(Missing ((Missing ((Noun "Part(2)"), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), (Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")]))])), []), ((Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), ["blaze-orange"])),
+Pickup(((Missing ((Missing ((Noun "Part(2)"), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), ["steel-blue"])),
+Pickup(((Missing ((Missing ((Noun "Part(2)"), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), ["persian-blue"])),
+Incinerate(((Missing ((Missing ((Noun "Part(2)"), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), ["persian-blue"])),
+Combine(((Missing ((Missing ((Noun "Goal"), [(Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), (Noun "Part(1)")])), [(Missing ((Missing ((Noun "Part(2)"), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")]))])), []), ((Missing ((Missing ((Noun "Part(2)"), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), ["steel-blue"])),
+Combine(((Missing ((Noun "Goal"), [(Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), (Noun "Part(1)")])), []), ((Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), ["gray60"])),
+Combine(((Missing ((Noun "Goal"), [(Noun "Part(1)")])), []), ((Noun "Part(1)"), ["gray50"]))]
+
+val goal = (Noun "Goal")
+
+val pile =
+[((Missing ((Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(1)")])), ["gray60"]),
+((Missing ((Missing ((Noun "Part(2)"), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), ["pale-carmine"]),
+((Noun "Part(2)"), ["pale-cornflower-blue"]),
+((Noun "Part(2)"), ["imported"]),
+((Missing ((Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(1)")])), ["gray90"]),
+((Noun "Part(1)"), ["sepia"]),
+((Missing ((Missing ((Noun "Part(2)"), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), [(Noun "Part(1)"), (Noun "Part(2)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), ["gray30"]),
+((Noun "Part(1)"), ["robin-egg-blue"]),
+((Missing ((Noun "Part(2)"), [(Noun "Part(1)")])), ["slate-blue"]),
+((Missing ((Noun "Part(2)"), [(Noun "Part(2)")])), ["rosy-brown"]),
+((Noun "Part(1)"), ["gray50"]),
+((Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), ["misty-rose"]),
+((Noun "Part(1)"), ["persian-blue"]),
+((Missing ((Noun "Part(1)"), [(Noun "Part(1)")])), ["emerald"]),
+((Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), ["violet-red"]),
+((Missing ((Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")]))])), ["blaze-orange"]),
+((Missing ((Missing ((Noun "Goal"), [(Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), (Noun "Part(1)")])), [(Missing ((Missing ((Noun "Part(2)"), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), (Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), (Missing ((Missing ((Noun "Part(1)"), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")])), [(Noun "Part(2)"), (Noun "Part(2)"), (Noun "Part(2)")]))])), []),
+((Noun "Part(2)"), ["jade"]),
+((Missing ((Missing ((Noun "Part(2)"), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), ["steel-blue"]),
+((Missing ((Missing ((Noun "Part(2)"), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), [(Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)"), (Noun "Part(1)")])), ["persian-blue"])]
+
+(* end *)

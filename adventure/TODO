@@ -1,0 +1,25 @@
+*** GENERAL
+
+look for ListPair.all etc
+
+regress for comb two things that where one has missings that is a
+strict prefix of the missings of the other
+
+
+*** RML
+
+ENH evidence description should be kept more carefully in memory 
+
+
+*** GAME ENVIRONMENT
+
+ENH piles called heaps? ha ha
+
+ENH bonus sequelsequel -- (broken) theorem prover 
+
+
+*** GOGGLES
+
+ENH? unique field names in output (e.g. "name" for both room and item?)
+
+ENH position information of type errors

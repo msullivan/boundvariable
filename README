@@ -1,0 +1,65 @@
+
+  2006 ICFP Programming Contest Source Release            16 Jul 2007
+  Cult of the Bound Variable
+  Codename: Homework 7
+
+
+  This archive contains the source code for the 2006 ICFP Programming
+  Contest and the tools we used to make it.
+
+  This source release contains major spoilers for the Codex. The
+  contest is entirely self-contained, meaning you can still play it
+  without any special resources (other than a computer and compiler)
+  by downloading the codex and the Universal Machine specification
+  from boundvariable.org. If you haven't done this, we recommend it as
+  a much more fun and interactive introduction than reading
+  documentation and source code. Stop right now and go get that Codex!
+
+  Another good introduction to the contest is our Technical Report
+  (though it also contains spoilers):
+
+    "The Cult of the Bound Variable: The 9th Annual ICFP 
+     Programming Contest." Tom Murphy VII, Daniel Spoonhower,
+     Chris Casinghino, Daniel R. Licata, Karl Crary,
+     Robert Harper. 2006. Technical Report CMU-CS-06-163
+    http://reports-archive.adm.cs.cmu.edu/anon/2006/abstracts/06-163.html
+
+  Even if you are still working through the Codex, a few things
+  included in the source release may be of interest and are
+  more-or-less free of spoilers. The first is our collection of UM
+  implementations, which are in the directory um and its various
+  subdirectories. Not all are written by experts in the language in
+  question. The fastest UM is in the x86-tom directory (assuming you
+  have an x86 processor) and the most full-featured is in the um
+  directory itself. Most interestingly, the compiler that we used to
+  build the contest materials is in um/humlock/. This produces UM
+  binaries from an ML-like input language called UML. Most of the rest
+  of the contest source code is written in UML. The file
+  um/humlock/README explains how to use Humlock. There is also a UM
+  assembler in um/whistleock/.
+
+  The directories bureaucracy/ and seeds/ contain "deleted scenes"
+  that didn't make it into the final version of the Codex.
+
+  The remainder of the directories contain the source code for various
+  parts of the contest. Many have standalone versions that can be
+  built from their own directories, but umix/ brings them all
+  together. If you want to build the Codex, start in the umix/
+  directory.
+
+  Most of the subdirectories contain README files explaining what the
+  code does and how to use it. Everything is licensed under the GNU
+  GPL (see the file COPYING) except where noted in a README file.
+
+  Enjoy!
+
+
+  - 2006 Contest Judges
+
+       Tom Murphy VII
+       Daniel Spoonhower
+       Chris Casinghino
+       Daniel R. Licata
+       Karl Crary
+       Robert Harper
+       (see story/STORY_CONTEST_CREDITS for full credits)

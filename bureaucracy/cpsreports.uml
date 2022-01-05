@@ -1,0 +1,213 @@
+(* would like to have working: (urgency: 5 = really want, 1 = eh, might be nice )
+   4 mutually recursive functions
+   2 monomorphic recursive datatypes
+   X references --- ok, thanks, tom for adding these
+   5 char case
+*)
+
+let 
+    import "std.uh"
+    import "list.uh"
+    import "string.uh"
+    import "int.uh"
+
+    val debug = false
+    val app = list-app
+    val EOF = 0 - 1
+    fun newl() = putc (chr 10)
+
+    datatype primop = Eq 
+		    | Plus 
+		    | Minus 
+		    | Times
+		    | If
+    datatype a exp_ = Int of int 
+		   | Staple of exp_ * exp_ 
+		   | TearL of exp_
+		   | TearR of exp_
+		   | It
+
+    type exp = int exp_
+    datatype address = Exp of exp
+		     | Prim of primop
+    datatype a value_ = VInt of int
+		     | VStaple of value_ * value_
+		     | VReturnK
+		     | VGarbage
+
+    type value = int value_
+
+    type office = address * exp 
+
+
+    datatype a value_ = VInt of int
+		     | VStaple of value_ * value_
+		     | VReturnK
+		     | VGarbage
+    fun printVal (VInt n) = print (int-tostring n)
+      | printVal (VStaple (v1, v2)) = (putc ?[;printVal v1; putc ?,; putc ? ; printVal v2; putc ?])
+      | printVal VReturnK = putc ?K
+      | printVal VGarbage = putc ?G
+    fun printExp (Int n) = putc (chr (ord ?0 + n))
+      | printExp (Staple (e1, e2)) = (putc ?[; printExp e1; printExp e2)
+      | printExp (TearL e) = (putc ?<; printExp e)
+      | printExp (TearR e) = (putc ?>; printExp e)
+      | printExp It = putc ?_
+    fun printAddress (Exp e) = printExp e
+      | printAddress (Prim Eq) = putc ?=
+      | printAddress (Prim Plus) = putc ?+
+      | printAddress (Prim Minus) = putc ?-
+      | printAddress (Prim Times) = putc ?*
+      | printAddress (Prim If) = putc ??
+    fun printOffice (a,e) = (printAddress a; printExp e)
+
+    fun slurp () = 
+	let
+	    val c = getc_()
+	in
+	    if c = EOF then nil else
+	    c :: slurp()
+	end
+
+    exception Fail
+
+    fun fail(n) = (putc (chr (64 + n)); raise Fail)
+    datatype parsejob = Office of int list
+
+    fun parseExp nil = fail 1
+      | parseExp (48 :: tl) = (Int 0, tl) (* 0 *)
+      | parseExp (49 :: tl) = (Int 1, tl) (* 1 *)
+      | parseExp (50 :: tl) = (Int 2, tl) (* 2 *)
+      | parseExp (51 :: tl) = (Int 3, tl) (* 3 *)
+      | parseExp (52 :: tl) = (Int 4, tl) (* 4 *)
+      | parseExp (53 :: tl) = (Int 5, tl) (* 5 *)
+      | parseExp (54 :: tl) = (Int 6, tl) (* 6 *)
+      | parseExp (55 :: tl) = (Int 7, tl) (* 7 *)
+
+      | parseExp (95 :: tl) = (It, tl) (* _ *)
+      | parseExp (91 :: tl) = let (* [ *)
+	    val (e1, tl) = parseExp tl
+	    val (e2, tl) = parseExp tl
+	in
+	    (Staple(e1, e2), tl)
+	end
+      | parseExp (60 :: tl) = let (* < *)
+	    val (e, tl) = parseExp tl
+	in
+	    (TearL e, tl)
+	end
+      | parseExp (62 :: tl) = let (* > *)
+	    val (e, tl) = parseExp tl
+	in
+	    (TearR e, tl)
+	end
+
+    fun parseAdd nil = fail 2
+      | parseAdd (61 :: tl) = (Prim Eq, tl) (* = *)
+      | parseAdd (43 :: tl) = (Prim Plus, tl) (* + *)
+      | parseAdd (45 :: tl) = (Prim Minus, tl) (* - *)
+      | parseAdd (63 :: tl) = (Prim If, tl) (* ? *)
+      | parseAdd (42 :: tl) = (Prim Times, tl) (* * *)
+      | parseAdd cs = let val (e, tl) = parseExp cs in (Exp e, tl) end
+
+    fun parseNl (10 :: tl) = tl
+      | parseNl _ = fail 3
+
+    fun parseOffice nil = NONE
+      | parseOffice cs = 
+	let val (a, tl) = parseAdd cs
+	    val (e, tl) = parseExp tl
+	    val tl = parseNl tl
+	in
+	    SOME ((a, e), tl)
+	end
+
+    fun parseOffices nil = nil
+      | parseOffices cs = 
+	(case parseOffice cs of 
+	     NONE => fail 4
+	   | SOME (off, tl)  => off :: parseOffices tl)
+
+    exception Subscript
+
+    fun tearl (VStaple (x, y)) = x
+      | tearl _ = fail 5
+    fun tearr (VStaple (x, y)) = y
+      | tearr _ = fail 6
+    fun getInt (VInt n) = n
+      | getInt _ = fail 7
+
+    fun run os n = let
+	fun nth _ nil = fail 8
+	  | nth 0 (h :: tl) = h
+	  | nth n (h :: tl) = nth (n - 1) tl
+
+	fun eval (e, pw) = let
+	    fun go (TearL e) = tearl (go e)
+	      | go (TearR e) = tearr (go e)
+	      | go (Staple (e1, e2)) = VStaple(go e1, go e2)
+	      | go It = pw
+	      | go (Int n) = VInt n
+	in
+	    go e
+	end
+
+	fun binop opr e = 
+	    let
+		val x = getInt(tearl e)
+		val y = getInt(tearl (tearr e))
+		val p = tearl (tearr (tearr e))
+		val k = tearr (tearr (tearr e))
+	    in
+		(k, VStaple(VInt(opr(x, y)), p))
+	    end
+
+	fun handlePrim (Plus, e) = binop (op +) e
+	  | handlePrim (Minus, e) = binop (op -) e
+	  | handlePrim (Times, e) = binop (op *) e
+	  | handlePrim (Eq, e) = binop (fn (x,y) => if x = y then 1 else 0) e
+	  | handlePrim (If, e) =
+	    let
+		val b = tearl e
+		val p1 = tearl (tearl (tearr e))
+		val k1 = tearr (tearl (tearr e))
+		val p2 = tearl (tearr (tearr e))
+		val k2 = tearr (tearr (tearr e))
+	    in
+		case b of VInt n => if n = 0 then (k2, p2) else (k1, p1)
+			| _ => fail 9
+	    end
+
+	fun go (n, pwork) = 
+	    let
+		val _ = if debug then print "step in office " else ()
+ 		val (a, e) = nth n os 
+		val _ = if debug then let
+				val _ = print (int-tostring n)
+				(*		val _ = printOffice (a, e) *)
+				val _ = print " paperwork = "
+				val _ = printVal pwork
+				val _ = newl()
+			    in () end else ()
+		val (newav, newpwork) = 
+		    case a of
+			Prim p => handlePrim (p, eval (e, pwork)) 
+		      | Exp ae => (eval (ae, pwork), eval (e, pwork)) 
+	    in
+		case newav of
+		    VInt newn => go (newn, newpwork)
+		  | VReturnK => getInt (tearl newpwork)
+		  | _ => fail 10
+	    end
+    in
+	go (0, VStaple(VInt n, VStaple(VGarbage, VReturnK)))
+    end
+
+    val _ =  (putc ?O; putc ?k; newl())
+    val os = parseOffices (slurp ())
+    val _ = if debug then app (fn x => (printOffice x; newl ())) os else ()
+    val _ = print (int-tostring( run os 10)) 
+in
+    ()
+
+end

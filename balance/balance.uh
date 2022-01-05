@@ -1,0 +1,463 @@
+datatype Bal-Stepmode = 
+    Bal-Prob of string
+  | Bal-Spec of string*string*string
+
+val { balancify-run, balance-inputs, balance-debug} =
+let
+    val require-util = provide-util
+    val require-publications = provide-publications
+
+    type word = int
+    val wordsize = 32
+    type mach = { mem : word array,
+                  regs : word array,
+                  is : int ref,
+                  ip : int ref,
+                  code : word array }
+
+    fun newmach m r c : mach =
+        { mem = m,
+          regs = r,
+          is = ref 1,
+          ip = ref 0,
+          code = c }
+
+    datatype inst
+      = SCIENCE of int
+      | MATH of int * int * int
+      | LOGIC of int * int * int
+      | PHYSICS of int
+      | BAIL
+
+    fun signextend bits w =
+        if (w andb (1 shl (bits - 1))) <> 0
+        then w orb (0xffffffff shl bits)
+        else w
+
+    fun dualizeops (d, s1, s2) =
+        ((d + 1) mod 2,
+         (s1 + 1) mod 4,
+         (s2 + 1) mod 4)
+
+    fun getinst w =
+        let fun ex w lo width =
+                ((1 shl width) - 1) andb (w shr lo)
+            fun threeops w =
+                (ex w 0x4 0x1
+               , ex w 0x2 0x2
+               , ex w 0x0 0x2)
+            fun opcode w =
+                0x7 andb (w shr 0x5)
+        in case opcode w of
+               0x0 => SCIENCE (signextend 5 w)
+             | 0x1 => MATH (threeops w)
+             | 0x2 => LOGIC (threeops w)
+             | 0x3 => PHYSICS (w andb 31)
+             | _ => BAIL
+             (* | _ => raise BadInst w *)
+        end
+
+    exception Done
+    exception Bail
+
+    fun bytetohex i =
+        let val digits = "0123456789ABCDEF"
+        in implode (sub (digits, i div 16)
+                    :: sub (digits, i mod 16)
+                    :: nil)
+        end
+
+    fun hextobyte c =
+        (c orb 4400) mod 55
+
+    fun step ({ mem, regs, is, ip, code } : mach) =
+        let val inst = getinst (sub (code, !ip))
+
+            fun readreg n = sub (regs, n)
+            fun readsrc n = sub (mem, readreg n)
+
+            (* mod 256 to maintain invariant *)
+            fun setreg  n w = update (regs, n, w andb 0xff)
+            fun setdest n w = update (mem, readreg n, w andb 0xff)
+        in
+            (* do inst *)
+            case inst of
+                SCIENCE d =>
+                if readsrc 0 = 0
+                then ()
+                else if d = 0
+                then raise Done
+                else is := d
+              | MATH (ops as (d, s1, s2)) =>
+                let val (d', s1', s2') = dualizeops ops
+                in  setdest (4 + d') ((readsrc s1') - (readsrc s2'));
+                    setdest (4 + d)  ((readsrc s1) + (readsrc s2))
+                end
+              | LOGIC (ops as (d, s1, s2)) =>
+                let val (d', s1', s2') = dualizeops ops
+                in  setdest (4 + d') ((readsrc s1') xorb (readsrc s2'));
+                    setdest (4 + d)  ((readsrc s1) andb (readsrc s2))
+                end
+              | PHYSICS w =>
+                let fun rotregs w =
+                        let val w = 32 orb w
+                            fun bitset n =
+                                0x0 <> (w andb (32 shr n))
+                            fun nextbit n =
+                                let val n = (n + 1) mod 6
+                                in  if bitset n
+                                    then n
+                                    else nextbit n
+                                end
+                            val first = readreg 0
+                            fun loop dst =
+                                case nextbit dst of
+                                    0 => setreg dst first
+                                  | src => (setreg dst (readreg src);
+                                            loop src)
+                        in loop 0
+                        end
+                in  setreg 0 (readreg 0 + signextend 5 w);
+                    rotregs w
+                end
+              | BAIL => raise Bail
+          ; ip := (!ip + !is) mod length code
+        end
+      
+    datatype mach_res = 
+        Failed of string*int
+      | Looped of int
+      | Bailed of int
+
+    fun run mach =
+        let val ctr = ref 0
+            fun run' n = (step mach
+                        ; ctr := !ctr + 1
+                        ; if n = 1024
+                          then (print "."; run' 1)
+                          else run' (n + 1))
+        in run' 1
+          handle (* BadInst w => (print ("bad instruction " ^ bytetohex w ^ "\n");
+                              Failed ("Bad instruction", !ctr)) 
+               | *)Done => Looped (!ctr)
+               | Bail => Bailed (!ctr)
+        end
+
+    fun print_cinst { mem, regs, is, ip, code } =
+      let
+        val inst = getinst (sub (code, !ip))
+        fun pthree (x,y,z) = 
+          int-tostring x ^ " " ^ int-tostring y ^
+          " " ^ int-tostring z
+      in
+        case inst of
+          SCIENCE n  => "SCIENCE " ^ int-tostring n
+        | MATH args  => "MATH " ^ pthree args 
+        | LOGIC args => "LOGIC " ^ pthree args
+        | PHYSICS n  => "PHYSICS " ^ int-tostring n
+        | BAIL       => "BAIL"
+      end
+
+
+    fun printmem { ascii } mem =
+	let
+	    fun printable c =
+		c >= 20 andalso c <= 127
+
+	    fun printascii n =
+		let val c = (sub(mem, n))
+		in
+		    (if printable c
+		     then putc (chr c)
+		     else putc ?.);
+		    (if (n + 1) mod 8 = 0
+		     then putc ? 
+		     else ());
+		    if (n + 1) mod 16 = 0
+		    then ()
+		    else printascii (n + 1)
+		end
+
+	    fun pm' i =
+                let val b = bytetohex (sub (mem, i))
+                in  
+		    print b;
+                    (if (i + 1) mod 8 = 0
+                     then if (i + 1) mod 16 = 0
+                          then (if ascii 
+				then (print "    "; printascii (i - 15))
+				else (); putc ?\n)
+                          else (putc ? ; putc ? )
+                     else putc ? );
+                    if i < 255
+                    then pm' (i + 1)
+                    else ()
+                end
+	in
+	   print "mem M:\n";
+	   pm' 0
+	end
+
+
+    fun printregs regs =
+        let in
+            print "src regs sR: { "
+          ; for 0 3 (fn i => print (bytetohex (sub (regs, i)) ^ " "))
+          ; print "}\n"
+          ; print "dst regs dR: { "
+          ; for 4 5 (fn i => print (bytetohex (sub (regs, i)) ^ " "))
+          ; print "}\n"
+        end
+
+    fun printmach { ascii } ({ mem, regs, is, ip, code } : mach) =
+        let
+        in  print " === machine state === \n";
+            printmem { ascii = ascii } mem;
+            printregs regs;
+            print ("IS: " ^ int-tostring (!is)
+                   ^ " IP: " ^ int-tostring (!ip) ^ "\n")
+        end
+
+
+    exception Fail of string
+
+    import "bal_puzzles.uh"
+
+    fun puzzle name =
+        case list-find (fn {name=name', task = _, checkmem, checkreg, 
+                            mem, reg, reps, sigmoid=_, desc = _} => 
+                        name seq name') bal_puzzles
+         of SOME z => z
+          | NONE => raise Fail ("no puzzle " ^ name)
+
+    (* execution *)
+    fun assert b m =
+        if b
+        then ()
+        else raise Fail m
+
+
+    exception EmptyFile
+    fun parse p sm =
+      let 
+          fun whitespace c =
+            (case ord c of
+               32 => true | 13 => true | 10 => true | _ => false)
+             
+          val count =
+            let
+              fun c (n, acc) =
+                if n = length p
+                then acc
+                else if whitespace (sub(p, n))
+                     then c (n + 1, acc)
+                     else c (n + 1, acc + 1)
+            in
+              c (0, 0)
+            end
+
+          val sz' = count div 2
+          val a = array(sz', 0)
+
+          fun init (n, dst) =
+            if n = length p
+            then ()
+            else 
+              let val ch = sub(p, n)
+              in
+                if whitespace ch
+                then init (n + 1, dst)
+                else
+                  let
+                    fun init2 n =
+                      if n = length p
+                      then raise Fail "invalid program: odd number of non-whitespace characters"
+                      else
+                        let val cl = sub(p, n)
+                        in
+                          if whitespace cl
+                          then init2 (n + 1)
+                          else
+                            (update(a, dst, (hextobyte (ord ch) shl 4) + 
+                                    (hextobyte (ord cl)));
+                             init(n + 1, dst + 1))
+                        end
+                  in
+                    init2 (n + 1)
+                  end
+              end
+            
+          val () = init (0, 0)
+
+          val () = 
+            case sm of 
+              SOME (sz, msg) => assert (sz' = sz) msg
+            | NONE => ()
+        in
+          a
+        end
+
+
+    fun run-debug z c =
+      let
+        val c = parse c NONE
+        do if length c = 0
+           then raise Fail "Invalid program:  The code file was empty"
+           else ()
+
+        val mach as {code, ip, is, mem, regs} =
+          case z of
+            Bal-Prob name =>
+              let
+                val {mem, reg, task=_, checkmem, checkreg, name, reps, 
+                     sigmoid=_, desc=_}=
+                  puzzle name
+              in
+                newmach (mem ()) (reg ()) c
+              end
+          | Bal-Spec (m, s, d) =>
+              let 
+                val m = parse m (SOME (256, "bad memory file"))
+                val s = parse s (SOME (4, "bad source register file"))
+                val d = parse d (SOME (2, "bad destination register file"))
+                val r = array (6,0)
+                val () = for 0 3 (fn i =>  update (r, i, sub (s, i)))
+                val () = for 0 1 (fn i => update (r, 4 + i, sub (d, i)))
+              in
+                newmach m r c
+              end
+
+        fun debug-loop mach =
+            let
+              val ctr = ref 0
+              val () = printmach { ascii = false } mach
+              val cont_str = "\nPress e to run until completion, enter to step forward, or ctrl-d to quit\n"
+              val () = print cont_str
+
+              exception ExitLoop
+
+              fun step-wait n = ((case getc () of
+                                     ?e => raise ExitLoop
+                                   | _ => ());
+                                 ctr := !ctr + 1;
+                                 print ("Executing Instruction: " ^ 
+                                        print_cinst mach ^ "\n");
+                                 step mach;
+                                 print ("After machine step " ^ 
+                                        int-tostring (!ctr) ^ ":\n");
+                                 printmach { ascii = false } mach;
+                                 print cont_str;
+                                 step-wait (n+1))
+
+              fun step-end () =
+                (case run mach of
+                  Failed (s,i) => 
+                     print ("The machine failed after " ^ int-tostring
+                            (ctr:= !ctr+i;!ctr) ^ " steps.\n Error: " 
+                            ^ s ^ "\n" ^ "Final machine state: \n")
+                     
+                 | Looped i =>
+                     print ("The machine halted after " ^ int-tostring 
+                            (ctr:= !ctr+i;!ctr) ^ " steps.\n" ^
+                            "Final machine state:\n")
+                 | Bailed i =>
+                     print ("The machine bailed after " ^ int-tostring
+                            (ctr:= !ctr+i;!ctr) ^ " steps.\n" ^
+                            "Final machine state:\n");
+                     printmach { ascii = false } mach;
+                     !ctr)                   
+            in 
+              step-wait 1
+              handle (* BadInst w => (print ("bad instruction " ^ bytetohex w 
+                                          ^ "\n");
+                                   !ctr)
+                   | *) Done => (print "halted\n";
+                              !ctr)
+                   | Bail => (print "Bailed\n";
+                              !ctr)
+                   | IO   => (print "EOF detected - returning to UMIX\n";
+                              !ctr)
+                   | ExitLoop => step-end ()
+
+            end    
+ 
+      in
+        debug-loop mach
+      end
+    handle Fail s => (print ("step_balance failed:  " ^ s ^ "\n");
+                      0)
+
+
+    (* this is the test harness *)
+    fun balancify-run z c =
+        let 
+          val { mem, task, reg, checkmem, checkreg, name, reps, 
+                sigmoid, desc=_} = puzzle z
+
+          val c = parse c NONE
+          do if length c = 0 
+             then raise Fail "Invalid program: the code file was empty"
+             else ()
+
+          fun check-rep 0 =
+            print ("Your code solved puzzle " ^ name ^ "!\n"
+                   ^ gen-publication { problem = "BLNCE", 
+                                       task = task,
+                                       score = 
+                                       sigmoid-score sigmoid
+                                       (bi-fromint (length c)) } 
+                   ^ "\n")
+            | check-rep n = 
+            (print ("\n[balance] Running test " ^ 
+                    int-tostring (reps - n + 1) ^ "/" ^ 
+                    int-tostring reps ^ "...\n\n");
+             let
+               val mach as { code, ip, is, mem, regs } = 
+                 newmach (mem ()) (reg ()) c
+               val () = printmach { ascii = false } mach
+               val res = run mach
+                 
+               val ok = 
+                 (case res of
+                    Failed (s,_) =>
+                      (print ("Your code didn't solve the puzzle.\n" ^
+                              "Error: " ^ s ^ "\n" ^
+                              "A Balance Certified Professional does not not solve the puzzle!");
+                       false)
+                  | Looped i => 
+                      if checkmem mem andalso checkreg regs
+                      then true
+                      else (print ("Your code halted, but "
+                                   ^ "didn't solve puzzle " ^ name ^ 
+                                   ".\nTry again to balance the score\n");
+                            false)
+                  | Bailed i =>
+                        (print 
+                         ("Your code bailed after " ^ int-tostring i ^ 
+                          " instructions.  \nRemember that it must reach " ^
+                          "the tightest possible infinite loop (SCIENCE 0)\n and"
+                          ^ " never BAIL.\nA Balance Certified Professional does not give up!\n");
+                         false))
+                    
+               (* val () = print "\nfinal state: " *)
+               val () = printmach { ascii = ok andalso n = 1 } mach
+             in
+               if ok then check-rep (n - 1)
+               else ()
+             end)
+        in
+          check-rep reps
+        end
+      handle Fail s => print ("certify failed:\n  " ^ s ^ "\n")
+
+
+    val balance-inputs =
+      list-concat (list-map (fn { name, task = _, mem, reg, checkmem, 
+                                  checkreg, reps, sigmoid=_,desc = _} =>
+                             (name ^ ".mem") :: (name ^ ".srcreg") :: (name ^ ".dstreg") :: nil)
+                   bal_puzzles)
+        in
+          { balancify-run = balancify-run, 
+            balance-inputs = balance-inputs,
+            balance-debug = run-debug }
+        end

@@ -1,0 +1,196 @@
+(* Items 272 - 273, 607 - 623 *)
+(* from needs-all-inventory *)
+
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Missing (Noun D-9887-UUE, (Noun Z-4292-PRV)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::nil), (Noun Z-4292-PRV)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::nil), true, Exemplary, persian-blue::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Missing (Noun D-9887-UUE, (Noun Z-4292-PRV)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::nil), (Noun Z-4292-PRV)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::nil), true, Exemplary, steel-blue::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Noun D-9887-UUE, true, Exemplary, jade::nil)
+do add_item(FiftyFourthStreetandHarper, Missing (Missing (Noun RS232Adapter, (Missing (Missing (Noun Z-4292-PRV, (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil), (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil))::(Noun Z-4292-PRV)::nil), (Missing (Missing (Noun D-9887-UUE, (Noun Z-4292-PRV)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::nil), (Noun Z-4292-PRV)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::nil))::(Missing (Missing (Noun Z-4292-PRV, (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil), (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil))::(Missing (Missing (Noun Z-4292-PRV, (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil), (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil))::nil), true, false, "capable of operating at speeds as high as 300 baud. It is clear to send", nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Missing (Missing (Noun Z-4292-PRV, (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil), (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil), (Missing (Missing (Noun Z-4292-PRV, (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil), (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil))::nil), true, Exemplary, blaze-orange::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Missing (Noun Z-4292-PRV, (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil), (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil), true, Exemplary, violet-red::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Noun Z-4292-PRV, (Noun Z-4292-PRV)::nil), true, Exemplary, emerald::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Noun Z-4292-PRV, true, Exemplary, persian-blue::nil)
+(*
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Missing (Noun Z-4292-PRV, (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil), (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil), true, Exemplary, misty-rose::nil)
+*)
+(* begin new *)
+
+do add_item_ex(FiftyFourthStreetandHarper, Noun D-9887-UUE, true, Exemplary, heliotrope::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Noun D-9887-UUE, true, Exemplary, pastel-pink::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Noun N-9247-AWO, (Noun N-9247-AWO)::nil), true, Exemplary, pear::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Noun N-9247-AWO, true, Exemplary, old-gold::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Noun D-9887-UUE, true, Exemplary, lavender-blush::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Noun R-4832-FAV, (Noun N-9247-AWO)::(Missing (Noun D-9887-UUE, (Noun R-4832-FAV)::(Noun V-1403-KDE)::nil))::nil), true, Exemplary, russet::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Noun R-4832-FAV, (Noun N-9247-AWO)::(Missing (Noun D-9887-UUE, (Noun R-4832-FAV)::(Noun V-1403-KDE)::nil))::nil), true, Exemplary, floating::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Noun B-9247-YCM, true, Exemplary, pine-green::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Noun F-4832-DFT, (Noun T-5065-OVW)::nil), true, Exemplary, moss-green::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Missing (Missing (Noun Z-0010-PGL, (Noun D-1623-UJS)::(Noun R-4832-FAV)::(Noun H-4292-ZMZ)::(Noun L-9887-EPI)::nil), (Noun D-1623-UJS)::nil), (Noun P-6458-JSP)::(Missing (Noun D-1623-UJS, (Noun H-4292-ZMZ)::(Noun Z-0010-PGL)::(Noun T-5065-OVW)::(Noun R-4832-FAV)::nil))::(Noun X-6678-TYF)::(Noun L-9887-EPI)::nil), true, Exemplary, pink::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Missing (Missing (Noun Z-0010-PGL, (Noun D-1623-UJS)::(Noun R-4832-FAV)::(Noun H-4292-ZMZ)::(Noun L-9887-EPI)::nil), (Noun D-1623-UJS)::nil), (Noun P-6458-JSP)::(Missing (Noun D-1623-UJS, (Noun H-4292-ZMZ)::(Noun Z-0010-PGL)::(Noun T-5065-OVW)::(Noun R-4832-FAV)::nil))::(Noun X-6678-TYF)::(Noun L-9887-EPI)::nil), true, Exemplary, blue::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Noun J-1403-IIC, (Noun N-0010-NLJ)::nil), true, Exemplary, burgundy::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Noun B-9247-YCM, true, Exemplary, royal-blue::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Noun R-1623-SOQ, true, Exemplary, cream::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Noun R-1623-SOQ, true, Exemplary, pale-pink::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Noun V-4292-XRX, true, Exemplary, swamp-green::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Missing (Missing (Noun Z-0010-PGL, (Noun D-1623-UJS)::(Noun R-4832-FAV)::(Noun H-4292-ZMZ)::(Noun L-9887-EPI)::nil), (Noun D-1623-UJS)::nil), (Noun P-6458-JSP)::(Missing (Noun D-1623-UJS, (Noun H-4292-ZMZ)::(Noun Z-0010-PGL)::(Noun T-5065-OVW)::(Noun R-4832-FAV)::nil))::(Noun X-6678-TYF)::(Noun L-9887-EPI)::nil), true, Exemplary, momemtum-preserving::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Noun R-4832-FAV, true, Exemplary, pale-sandy-brown::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Noun V-4292-XRX, (Missing (Missing (Missing (Noun Z-0010-PGL, (Noun D-1623-UJS)::(Noun R-4832-FAV)::(Noun H-4292-ZMZ)::(Noun L-9887-EPI)::nil), (Noun D-1623-UJS)::nil), (Noun P-6458-JSP)::(Missing (Noun D-1623-UJS, (Noun H-4292-ZMZ)::(Noun Z-0010-PGL)::(Noun T-5065-OVW)::(Noun R-4832-FAV)::nil))::(Noun X-6678-TYF)::(Noun L-9887-EPI)::nil))::nil), true, Exemplary, indigo::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Missing (Missing (Missing (Noun N-9247-AWO, (Noun D-9887-UUE)::nil), (Noun B-9247-YCM)::nil), (Noun R-1623-SOQ)::nil), (Noun V-4292-XRX)::nil), true, Exemplary, saffron::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Noun Z-9887-CUG, true, Exemplary, cinnamon::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Missing (Missing (Missing (Missing (Missing (Missing (Missing (Missing (Missing (Missing (Missing (Missing (Noun Z-4292-PRV, (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil), (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil), (Noun D-9887-UUE)::nil), (Noun D-9887-UUE)::nil), (Noun N-9247-AWO)::nil), (Noun N-9247-AWO)::nil), (Missing (Noun R-4832-FAV, (Noun N-9247-AWO)::(Missing (Noun D-9887-UUE, (Noun R-4832-FAV)::(Noun V-1403-KDE)::nil))::nil))::nil), (Missing (Noun R-4832-FAV, (Noun N-9247-AWO)::(Missing (Noun D-9887-UUE, (Noun R-4832-FAV)::(Noun V-1403-KDE)::nil))::nil))::nil), (Missing (Noun F-4832-DFT, (Noun T-5065-OVW)::nil))::(Missing (Missing (Missing (Noun Z-0010-PGL, (Noun D-1623-UJS)::(Noun R-4832-FAV)::(Noun H-4292-ZMZ)::(Noun L-9887-EPI)::nil), (Noun D-1623-UJS)::nil), (Noun P-6458-JSP)::(Missing (Noun D-1623-UJS, (Noun H-4292-ZMZ)::(Noun Z-0010-PGL)::(Noun T-5065-OVW)::(Noun R-4832-FAV)::nil))::(Noun X-6678-TYF)::(Noun L-9887-EPI)::nil))::nil), (Noun B-9247-YCM)::nil), (Noun R-1623-SOQ)::nil), (Noun V-4292-XRX)::nil), (Noun Z-9887-CUG)::nil), true, Exemplary, misty-rose::nil)
+
+(* end new *)
+
+do add_item_ex(FiftyFourthStreetandHarper, Noun Z-4292-PRV, true, Exemplary, gray50::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Noun D-9887-UUE, (Noun D-9887-UUE)::nil), true, Exemplary, rosy-brown::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Noun D-9887-UUE, (Noun Z-4292-PRV)::nil), true, Exemplary, slate-blue::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Noun Z-4292-PRV, true, Exemplary, robin-egg-blue::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Missing (Noun D-9887-UUE, (Noun Z-4292-PRV)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::nil), (Noun Z-4292-PRV)::(Noun D-9887-UUE)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::nil), true, Exemplary, gray30::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Noun Z-4292-PRV, true, Exemplary, sepia::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Missing (Missing (Noun Z-4292-PRV, (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil), (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil), (Noun Z-4292-PRV)::nil), true, Exemplary, gray90::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Noun D-9887-UUE, true, Exemplary, imported::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Noun D-9887-UUE, true, Exemplary, pale-cornflower-blue::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Missing (Noun D-9887-UUE, (Noun Z-4292-PRV)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::nil), (Noun Z-4292-PRV)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::(Noun Z-4292-PRV)::nil), true, Exemplary, pale-carmine::nil)
+do add_item_ex(FiftyFourthStreetandHarper, Missing (Missing (Missing (Noun Z-4292-PRV, (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil), (Noun D-9887-UUE)::(Noun D-9887-UUE)::(Noun D-9887-UUE)::nil), (Noun Z-4292-PRV)::nil), true, Exemplary, gray60::nil)
+
+
+(*
+
+  val missing_percent_chance = 50
+  val max_missing = 4
+  val lambda_percent_chance = 70
+  val duplicate_percent_chance = 50
+  val reuse_prop = 50
+  val break_mult = 5
+  val drop_mult = 2
+  val phoenixize_mult = 1
+  val worth_div = 2
+  val worth_init = 10
+
+ val goal = Missing (Missing (Noun (Part 272), (Noun (Part 273))::(Noun (Part 273))::(Noun (Part 273))::nil), (Noun (Part 273))::(Noun (Part 273))::(Noun (Part 273))::nil)
+
+ val (pf, (goal, pile)) = Generator.generate 272 (ref (0wx308B76, 0wx93D75F)) 40 4 (nil, (nil, ((goal, "misty-rose"::nil), 1)::nil, goal));
+
+val pile =
+  [(Missing
+      (Missing
+         (Missing
+            (Missing
+               (Missing
+                  (Missing
+                     (Missing
+                        (Missing
+                           (Missing
+                              (Missing
+                                 (Missing
+                                    (Missing
+                                       (Missing
+                                          (Noun (Part 272),
+                                           [Noun (Part 273),Noun (Part 273),
+                                            Noun (Part 273)]),
+                                        [Noun (Part 273),Noun (Part 273),
+                                         Noun (Part 273)]),
+                                     [Noun (Part 273)]),[Noun (Part 273)]),
+                               [Noun (Part (333 + 274))]),[Noun (Part (333 + 274))]),
+                         [Missing
+                            (Noun (Part (333 + 275)),
+                             [Noun (Part (333 + 274)),
+                              Missing
+                                (Noun (Part 273),
+                                 [Noun (Part (333 + 275)),Noun (Part (333 + 276))])])]),
+                      [Missing
+                         (Noun (Part (333 + 275)),
+                          [Noun (Part (333 + 274)),
+                           Missing
+                             (Noun (Part 273),
+                              [Noun (Part (333 + 275)),Noun (Part (333 + 276))])])]),
+                   [Missing (Noun (Part (333 + 285)),[Noun (Part (333 + 282))]),
+                    Missing
+                      (Missing
+                         (Missing
+                            (Noun (Part (333 + 277)),
+                             [Noun (Part (333 + 278)),Noun (Part (333 + 275)),
+                              Noun (Part (333 + 279)),Noun (Part (333 + 280))]),
+                          [Noun (Part (333 + 278))]),
+                       [Noun (Part (333 + 281)),
+                        Missing
+                          (Noun (Part (333 + 278)),
+                           [Noun (Part (333 + 279)),Noun (Part (333 + 277)),
+                            Noun (Part (333 + 282)),Noun (Part (333 + 275))]),
+                        Noun (Part (333 + 283)),Noun (Part (333 + 280))])]),
+                [Noun (Part (333 + 284))]),[Noun (Part (333 + 288))]),[Noun (Part (333 + 289))]),
+       [Noun (Part (333 + 290))]),["misty-rose"]),(Noun (Part (333 + 290)),["cinnamon"]),
+   (Missing
+      (Missing
+         (Missing
+            (Missing (Noun (Part (333 + 274)),[Noun (Part 273)]),[Noun (Part (333 + 284))]),
+          [Noun (Part (333 + 288))]),[Noun (Part (333 + 289))]),["saffron"]),
+   (Missing
+      (Noun (Part (333 + 289)),
+       [Missing
+          (Missing
+             (Missing
+                (Noun (Part (333 + 277)),
+                 [Noun (Part (333 + 278)),Noun (Part (333 + 275)),Noun (Part (333 + 279)),
+                  Noun (Part (333 + 280))]),[Noun (Part (333 + 278))]),
+           [Noun (Part (333 + 281)),
+            Missing
+              (Noun (Part (333 + 278)),
+               [Noun (Part (333 + 279)),Noun (Part (333 + 277)),Noun (Part (333 + 282)),
+                Noun (Part (333 + 275))]),Noun (Part (333 + 283)),Noun (Part (333 + 280))])]),
+    ["indigo"]),(Noun (Part (333 + 275)),["pale-sandy-brown"]),
+   (Missing
+      (Missing
+         (Missing
+            (Noun (Part (333 + 277)),
+             [Noun (Part (333 + 278)),Noun (Part (333 + 275)),Noun (Part (333 + 279)),
+              Noun (Part (333 + 280))]),[Noun (Part (333 + 278))]),
+       [Noun (Part (333 + 281)),
+        Missing
+          (Noun (Part (333 + 278)),
+           [Noun (Part (333 + 279)),Noun (Part (333 + 277)),Noun (Part (333 + 282)),
+            Noun (Part (333 + 275))]),Noun (Part (333 + 283)),Noun (Part (333 + 280))]),
+    ["momemtum-preserving"]),(Noun (Part (333 + 289)),["swamp-green"]),
+   (Noun (Part (333 + 288)),["pale-pink"]),(Noun (Part (333 + 288)),["cream"]),
+   (Noun (Part (333 + 284)),["royal-blue"]),
+   (Missing (Noun (Part (333 + 286)),[Noun (Part (333 + 287))]),["burgundy"]),
+   (Missing
+      (Missing
+         (Missing
+            (Noun (Part (333 + 277)),
+             [Noun (Part (333 + 278)),Noun (Part (333 + 275)),Noun (Part (333 + 279)),
+              Noun (Part (333 + 280))]),[Noun (Part (333 + 278))]),
+       [Noun (Part (333 + 281)),
+        Missing
+          (Noun (Part (333 + 278)),
+           [Noun (Part (333 + 279)),Noun (Part (333 + 277)),Noun (Part (333 + 282)),
+            Noun (Part (333 + 275))]),Noun (Part (333 + 283)),Noun (Part (333 + 280))]),["blue"]),
+   (Missing
+      (Missing
+         (Missing
+            (Noun (Part (333 + 277)),
+             [Noun (Part (333 + 278)),Noun (Part (333 + 275)),Noun (Part (333 + 279)),
+              Noun (Part (333 + 280))]),[Noun (Part (333 + 278))]),
+       [Noun (Part (333 + 281)),
+        Missing
+          (Noun (Part (333 + 278)),
+           [Noun (Part (333 + 279)),Noun (Part (333 + 277)),Noun (Part (333 + 282)),
+            Noun (Part (333 + 275))]),Noun (Part (333 + 283)),Noun (Part (333 + 280))]),["pink"]),
+   (Missing (Noun (Part (333 + 285)),[Noun (Part (333 + 282))]),["moss-green"]),
+   (Noun (Part (333 + 284)),["pine-green"]),
+   (Missing
+      (Noun (Part (333 + 275)),
+       [Noun (Part (333 + 274)),
+        Missing (Noun (Part 273),[Noun (Part (333 + 275)),Noun (Part (333 + 276))])]),
+    ["floating"]),
+   (Missing
+      (Noun (Part (333 + 275)),
+       [Noun (Part (333 + 274)),
+        Missing (Noun (Part 273),[Noun (Part (333 + 275)),Noun (Part (333 + 276))])]),
+    ["russet"]),(Noun (Part 273),["lavender-blush"]),
+   (Noun (Part (333 + 274)),["old-gold"]),
+   (Missing (Noun (Part (333 + 274)),[Noun (Part (333 + 274))]),["pear"]),
+   (Noun (Part 273),["pastel-pink"]),(Noun (Part 273),["heliotrope"])]
+  : (prop * string list) list
+
+
+
+*)

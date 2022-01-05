@@ -1,0 +1,167 @@
+(* included from rml.uml *)
+
+fun lookup-env i env = 
+    let in
+      list-nth i env
+      (* ENH cleanup error msg *)
+      handle List => (print [Tried to look-up Var [int-tostring i] in env:
+                             [string-delimit "\n" 
+                               (list-map (fn (_, e) => exp-todt int-tostring e) env)]\n];
+                      raise RML "BUG: bad variable lookup")
+    end
+
+fun lookup-case i branches = 
+    let in
+      list-nth i branches
+      (* ENH cleanup error msg *)
+      handle List => (print [Tried to look-up Construct [int-tostring i] in env:
+                             [string-delimit "\n" 
+                               (list-map (fn (_, _, sts) => list-todt (stmt-todt int-tostring) sts) branches)]\n];
+                      raise RML "BUG: bad branch lookup")
+    end
+
+fun eval_exp env (Call (i, args)) =
+    let val args = list-map (eval_exp env) args
+    in 
+      case lookup-env i env
+       of (tt, Fun impl) => 
+          letcc ret in 
+            ignore (impl args ret);
+            (tt, Unit) (* keep everyone happy *)
+          end
+        | _ => raise RML ("BUG: cannot call non-function")
+    end
+
+  | eval_exp env (Var i) = lookup-env i env
+
+  | eval_exp env (String s) = (false, String s)
+
+  | eval_exp env (Int i) = (false, Int i)
+
+  | eval_exp env (Construct (i, ttes)) =
+    (* Throw away the tainted bits because the ones in unevaluated constructor
+       expressions are just placeholders anyway... they only matter when the
+       expression is a value. *)
+    let val es = list-map (fn (_, e) => e) ttes 
+        val ttes = list-map (eval_exp env) es
+    in
+      (* Constructor values are uniform in their arguments, so the result is untainted. *)
+      (false, Construct (i, ttes))
+    end
+
+  | eval_exp env Unit = (false, Unit)
+
+  | eval_exp env (Prim (Cat, e1, e2)) =
+    let val (tt1, s1) = case eval_exp env e1 of (tt1, (anystring) s1) => (tt1, s1)
+                   | _ => raise RML "of an invalid argument to primop"
+        val (tt2, s2) = case eval_exp env e2 of (tt2, (anystring) s2) => (tt2, s2)
+                   | _ => raise RML "of an invalid argument to primop"
+    in
+      mkstring (tt1 orelse tt2) (s1 ^ s2)
+    end
+
+  | eval_exp env (Prim (Equals, e1, e2)) =
+    let fun bool_toexp tt true = (tt, Construct (1, nil))
+          | bool_toexp tt false = (tt, Construct (0, nil))
+    in
+      case (eval_exp env e1, eval_exp env e2) of
+        ((tt1, (anystring) s1), (tt2, (anystring) s2)) => 
+        bool_toexp (tt1 orelse tt2) (string-equals (s1, s2))
+      | ((tt1, Int i1), (tt2, Int i2)) => 
+        bool_toexp (tt1 orelse tt2) (i1 = i2)
+      | _ => raise RML "of an invalid argument to primop"
+    end
+
+  | eval_exp env (Prim (primop, e1, e2)) =
+    let val (tt1, i1) = case eval_exp env e1 of (tt1, Int i1) => (tt1, i1)
+                   | _ => raise RML "of an invalid argument to primop"
+        val (tt2, i2) = case eval_exp env e2 of (tt2, Int i2) => (tt2, i2)
+                   | _ => raise RML "of an invalid argument to primop"
+        val tt = tt1 orelse tt2
+    in
+      case primop of Add => (tt, Int (i1 + i2))
+                   | Sub => (tt, Int (i1 - i2))
+                   | Less => (tt, Construct (if i1 < i2 then 1 else 0, nil))
+                   | LessEquals => (tt, Construct (if i1 <= i2 then 1 else 0, nil))
+                   | Greater => (tt, Construct (if i1 > i2 then 1 else 0, nil))
+                   | GreaterEquals => (tt, Construct (if i1 >= i2 then 1 else 0, nil))
+                   | Equals => raise Adventure "IMPOSSIBLE"
+                   | Cat => raise Adventure "IMPOSSIBLE"
+    end
+
+  | eval_exp env (Room aroom) = (false, Room aroom)
+  | eval_exp env (Item aitem) = (false, Item aitem)
+  | eval_exp env (Kind np) = (false, Kind np)
+
+  | eval_exp _ e = raise RML ("found unexpected expression during evaluation") 
+                             (* ENH print tostring/todt *)
+
+(* returns list of bindings *)
+fun eval_stmts tt ret env ((Do e)::sts) =
+    (ignore (eval_exp env e);
+     eval_stmts tt ret env sts)
+
+  | eval_stmts tt ret env ((Type _)::sts) = 
+    raise RML "BUG: didn't expect type declaration in eval"
+
+  | eval_stmts tt ret env ((Extern (f, _, _))::sts) =
+    let in
+      case list-find (fn (f', _, _) => f seq f') rml-externs
+       (* Since there in only one extern of this name, binding discloses no
+        information. *)
+       of SOME (_, impl, _) => eval_stmts tt ret ((false, Fun impl)::env) sts
+        | NONE => raise RML ("of an unknown extern '" ^ f ^ "'")
+    end
+
+  | eval_stmts tt ret env ((ExternType t)::sts) = 
+    raise RML ("BUG: didn't expect extern type declaration " ^ t ^ " in eval")
+
+  | eval_stmts tt ret env ((FunDecl (_, _, _, body))::sts) =
+    let fun impl args ret' =
+            let val env' = (list-rev args)
+                           (* Because bindings should reflect the current
+                             control taintedness. *)
+                           @ ((tt, Fun impl)::env)
+            in
+              ignore (eval_stmts tt ret' env' body);
+              throw (false, Unit) to ret'
+            end
+    in
+      eval_stmts tt ret ((tt, Fun impl)::env) sts
+    end
+
+  | eval_stmts tt ret env ((Case (e, branches))::sts) =
+    let val (tt', e) = eval_exp env e
+        val (i, carried) = case e of
+                             Construct (i, carried) => (i, carried)
+                           | _ => raise RML "it can't case on non-constructor"
+        val (_, _, body) = lookup-case i branches
+        val env' = (list-rev carried) @ env
+    in
+      (* ENH bowp bowp *)
+      ignore (eval_stmts (tt orelse tt') ret env' body);
+      (* This tt could include tt'... but we don't 'cause it's only one bit
+         that's leaked.  One branch of the case could return, and the other
+         could fall out, meaning that the redactedness of the top level result
+         leaks a single bit of information. *)
+      eval_stmts tt ret env sts
+    end
+
+  | eval_stmts tt ret env ((Bind (x, e))::sts) = 
+    let val (tt', e) = eval_exp env e in
+      eval_stmts tt ret ((tt orelse tt', e)::env) sts
+    end
+
+  | eval_stmts tt ret env ((Return e)::_) = 
+    let val (tt', e') = eval_exp env e
+    in 
+      throw (tt orelse tt', e') to ret
+    end
+
+  | eval_stmts tt ret env (Skip::sts) = raise RML "BUG: didn't expect a Skip"
+
+  | eval_stmts tt ret env ((Block sts')::sts) =
+    (ignore (eval_stmts tt ret env sts'); eval_stmts tt ret env sts)
+
+  | eval_stmts _ _ env nil = env
+

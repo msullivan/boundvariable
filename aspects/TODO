@@ -1,0 +1,7 @@
+aspects-in-2d
+
+test with lots of rules: how long does the tabling arith solution take to run?
+
+PERF: better algorithmics?
+         cache matching patterns across steps so checking is just a lookup
+      more code reorg in inner loop?

@@ -1,0 +1,163 @@
+(* This is a parser for the commands within boxes in the 2d language.
+ * It is stolen directly from Tom's qvickbasic parser *)
+
+val require-string = provide-string
+val require-list   = provide-list
+val require-int    = provide-int
+(*val require-parse  = provide-parse *)
+(* PERF this should use the real parser
+   from context, but there is some problem
+   with that?? *)
+import "parse.uh"
+
+val require-2d     = provide-2d
+val provide-2d-com-parse = ()
+
+exception ComParseError
+
+datatype token2D =
+    (* any identifier *)
+    TId2D of string
+    (* separator character *)
+  | TSep2D of char
+  | TNone2D
+
+fun token2D-tostring (TId2D s) = "TId2D (" ^ s ^ ")"
+  | token2D-tostring (TSep2D c) = "TSep2D (" ^ array(1,c) ^ ")"
+  | token2D-tostring TNone2D = "TNone2D"
+
+fun cir-com-get-token2D (i, s) =
+    let
+	  val stop = length s
+
+	  fun is-ws ?   = true
+	    | is-ws _   = false
+                      
+	  fun is-sep ?( = true
+	    | is-sep ?) = true
+	    | is-sep ?, = true
+	    | is-sep ?[ = true
+      | is-sep ?] = true
+      | is-sep _  = false
+
+    (* eat leading whitespace (there should be at most one char of whitespace)
+       *)
+    val i = if i >= stop then i
+            else if is-ws (sub(s,i))
+                 then if is-ws (sub(s,i+1)) then  raise ComParseError
+                      else (i+1)
+                 else i
+                   
+    (* Accumumlate a string of chars up to the first ws or sep char
+       *)
+    fun accum j =
+      (* end of string? *)
+      if j >= stop 
+      then (j, TId2D (substring(s, i, j - i)))
+      else
+        let val c = sub(s, j)
+        in
+          if is-ws c orelse is-sep c
+          then (j, TId2D (substring(s, i, j - i)))
+          else accum (j + 1)
+        end
+      
+    in
+      (* look at first char.. *)
+      if i >= stop
+      then (i, TNone2D)
+      else let val c = sub(s, i)
+           in
+             if is-sep c
+             then (i + 1, TSep2D c)
+             else accum (i + 1)
+           end
+    end
+
+
+
+fun cir-com-token2Dstream (idx, s) =
+    stream-delay
+    (fn () =>
+     case cir-com-get-token2D (idx, s) of
+	 (_, TNone2D) => Nil
+       | (idx', tok) => Cons(tok, cir-com-token2Dstream (idx', s)))
+
+fun cir-com-parse l =
+    let
+	  val lstr = cir-com-token2Dstream (0, l)
+
+(* DEBUGGING - PRINT TOKENS
+    fun print_tkstrm strm =
+      case stream-force strm of
+        Cons(tkn, strm) => (print (token2D-tostring tkn ^ "\n");
+                            print_tkstrm strm)
+      | Nil => ()
+                   
+      val () = print_tkstrm lstr  *)
+                 
+	  fun is_id (TId2D s) = s
+	    | is_id _ = raise Match
+                         
+	  fun is c (TSep2D c') = 
+	      if ord c = ord c'
+	      then () else raise Match
+	    | is _ _ = raise Match
+
+      (* require a specific string *)
+	  fun % s = parse-matching is_id
+                               -- (fn ((sis s) _) => parse-succeed ()
+                                    | _ => parse-fail)
+	  fun & c = parse-matching (is c)
+
+      fun oif () = 
+          % "E"  parse-return IEast2D
+       || % "S"  parse-return ISouth2D
+
+	  fun dumpstream (s, k) =
+	      let in
+		    print "DUMPSTREAM:\n";
+		    stream-app (fn t =>
+			               print ("  " ^ token2D-tostring t ^ "\n")) s;
+		    parse-succeed () (s, k) 
+	      end
+
+      fun iif () =
+          % "N" parse-return INorth2D
+       || % "W" parse-return IWest2D
+
+      fun expr () = 
+          (& ?() >>   (& ?) parse-return EUnit2D
+                   || $ expr && ( & ?, >> $ expr << & ?) ) 
+                      parse-wth EPair2D)
+       || % "Inl" >> $ expr        parse-wth EInl2D
+       || % "Inr" >> $ expr        parse-wth EInr2D
+       || $ iif                      parse-wth EIface2D
+
+      fun sendPair () = & ?( >> $ expr && (& ?, >> $ oif) << & ?)
+
+
+      fun list ()= (& ?[) >>
+                        (    & ?]   parse-return LNil2D
+                         || $ sendPair << & ?] parse-wth 
+                                               LOne2D
+                         || $ sendPair && & ?, >> $ sendPair << & ?]
+                            parse-wth LTwo2D)
+
+      val modname = parse-matching is_id
+                       << parse-done ()
+
+      fun stmt ()= 
+          % "send" >> $ list              parse-wth CSend2D
+       || (% "case" >> $ expr) && (% "of" >> $ oif) &&
+          (& ?, >> $ oif)
+          parse-wth (fn ((a,b),c) => CCase2D(a,b,c))
+       || % "split" >> $ expr             parse-wth CSplit2D
+       || % "use" >> modname            parse-wth CUse2D
+
+
+    in
+      case parse-stream ($ stmt) lstr of
+        SOME s => s
+      | NONE => raise ComParseError
+    end

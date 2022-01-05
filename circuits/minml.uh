@@ -1,0 +1,158 @@
+
+val require-string = provide-string
+val require-list   = provide-list
+
+    datatype exp =
+      Int of int
+    | Plus of exp * exp
+    | Times of exp * exp
+    | Minus of exp * exp
+    (* multiple arguments; maybe recursive *)
+    | Fn of string * string list * exp
+    | Var of string
+    | Pair of exp * exp
+    | Pi1 of exp
+    | Pi2 of exp
+    | Split of exp * string * string * exp
+    | App of exp * exp list
+    | True
+    | False
+    | If of exp * exp * exp
+    | Less of exp * exp
+    | Case of exp * string * exp * exp
+    | Inl of exp
+    | Inr of exp
+    | Unit
+    (* could be derived form for App/Fn, but 
+       the the order of evaluation is wrong and
+       we might have to optimize for this common case *)
+    | Let of string * exp * exp
+
+    exception Stuck of string
+
+    (* minml-subst e1 v e
+       substitute closed e1 for v in e *)
+    fun minml-subst e1 v =
+        let 
+            fun f e =
+                case e of
+                    Var v' => if v seq v' 
+                              then e1
+                              else e
+                  | Int _ => e
+                  | True => e
+                  | False => e
+                  | Unit => e
+
+                  | Plus (e1, e2) => Plus(f e1, f e2)
+                  | Minus (e1, e2) => Minus(f e1, f e2)
+                  | Times (e1, e2) => Times(f e1, f e2)
+                  | Less (e1, e2) => Less (f e1, f e2)
+                  | If (e1, e2, e3) => If(f e1, f e2, f e3)
+
+                  | Fn (self, il, ee) => 
+                                  if list-exists (fn i => i seq v) (self :: il)
+                                  then e
+                                  else Fn (self, il, f ee)
+                  | Pair (e1, e2) => Pair(f e1, f e2)
+		  | Inl e => Inl (f e)
+		  | Inr e => Inr (f e)
+                  | Pi1 e => Pi1 (f e)
+                  | Pi2 e => Pi2 (f e)
+		  | Split (e, i1, i2, e') => if i1 seq v orelse i2 seq v
+					     then Split(f e, i1, i2, e')
+					     else Split(f e, i1, i2, f e')
+                  | Let (i, e1, e2) => if i seq v
+                                       then Let(i, f e1, e2)
+                                       else Let(i, f e1, f e2)
+                  | Case (e, i, e1, e2) => if i seq v
+                                           then Case(f e, i, e1, e2)
+                                           else Case(f e, i, f e1, f e2)
+                  | App (e1, el) => App(f e1, list-map f el)
+		  | _ => (print "WHAA?"; raise Stuck "subst match")
+        in
+            f
+        end
+
+    fun minml-eval (Int i) = Int i
+      | minml-eval True = True
+      | minml-eval False = False
+      | minml-eval Unit = Unit
+      | minml-eval (Inl e) = Inl (minml-eval e)
+      | minml-eval (Inr e) = Inr (minml-eval e)
+      | minml-eval (Split (e, v1, v2, e')) =
+	(case minml-eval e of
+	     Pair(va1, va2) =>
+		 minml-eval
+		 (minml-subst va1 v1
+		  (minml-subst va2 v2 e'))
+	   | _ => raise Stuck "split not pair")
+
+      | minml-eval (If (e, et, ef)) =
+        (case minml-eval e of
+             True => minml-eval et
+           | False => minml-eval ef
+           | _ => raise Stuck "if not bool")
+
+      | minml-eval (Less (e1, e2)) =
+        (case (minml-eval e1, minml-eval e2) of
+             (Int i, Int j) => (if i < j 
+                                then True
+                                else False)
+           | _ => raise Stuck "less not ints")
+
+      | minml-eval (Plus (e1, e2)) =
+        (case (minml-eval e1, minml-eval e2) of
+             (Int i, Int j) => Int (i + j)
+           | _ => raise Stuck "plus not ints")
+
+      | minml-eval (Minus (e1, e2)) =
+        (case (minml-eval e1, minml-eval e2) of
+             (Int i, Int j) => Int (i - j)
+           | _ => raise Stuck "minus not ints")
+
+      | minml-eval (Times (e1, e2)) =
+        (case (minml-eval e1, minml-eval e2) of
+             (Int i, Int j) => Int (i * j)
+           | _ => raise Stuck "times not ints")
+
+      | minml-eval (Fn (f, i, e)) = Fn (f, i, e)
+
+      (* should have been substituted away *)
+      | minml-eval (Var i) = raise Stuck ("var " ^ i)
+      | minml-eval (Pair (e1, e2)) = 
+             Pair (minml-eval e1, minml-eval e2)
+
+      | minml-eval (Pi1 e) =
+             (case minml-eval e of
+                  Pair(v1, _) => v1
+                | _ => raise Stuck "pi1 not pair")
+
+      | minml-eval (Pi2 e) =
+             (case minml-eval e of
+                  Pair (_, v2) => v2
+                | _ => raise Stuck "pi2 not pair")
+
+      | minml-eval (App (f, args)) =
+             (case minml-eval f of
+                  fv as (Fn (self, il, e)) => 
+                      let
+                          val avs = list-map minml-eval args
+                          fun suball (nil, nil, e) = minml-eval e
+                            | suball (i :: il, v :: vl, e) =
+                              suball (il, vl, minml-subst v i e)
+			    | suball _ = (print ("#arg mismatch: " ^ self ^ "\n"); 
+					  raise Stuck "arg mismatch")
+                      in
+                          suball (il, avs, minml-subst fv self e)
+                      end
+                | _ => raise Stuck " app not fn")
+
+      | minml-eval (Case (e, v, e1, e2)) =
+             (case minml-eval e of
+                  Inl v1 => minml-eval (minml-subst v1 v e1)
+                | Inr v1 => minml-eval (minml-subst v1 v e2)
+                | _ => raise Stuck "case not sum")
+      | minml-eval (Let(v, e1, e2)) =
+             minml-eval (minml-subst (minml-eval e1) v e2)
+      | minml-eval _ = (print "URRrrr...\n"; raise Stuck "eval match")

@@ -1,0 +1,97 @@
+
+     Antomaton and Antfarm                16 Jul 2007
+
+
+ -- Antomaton --
+
+This is the source code for antomaton, the ant puzzle in the user
+"gardener" within UMIX. See ANT_CONTEST_README for a description
+of the puzzle. You can build a stand-alone version by running
+'make'. It takes an ant pattern (or solution) on standard input.
+
+We've added a few puzzles since the contest; the original intention
+was for the puzzles to be so hard that you would need to use some
+sophisticated search procedures to find solutions. Most people
+just solved the ones in the contest by hand.
+
+
+ -- Antfarm --
+
+We also built a program for interactively developing ant puzzles. It
+is not an end-user so its interface is confusing and hostile. Since
+the graphics engine is based on Tom's puzzle game Escape
+(escape.spacebar.org), the copy and pasted code contains lots of dead
+code and things done in much more general ways than necessary for this
+little app. It's made in C++.
+
+Exit means food. Arrows are ants. Holes are holes, and bricks are
+floor. Blue blocks are walls.
+
+
+ -- Using Antfarm --
+
+Antfarm has a couple of different modes. It starts in simulation mode,
+running iterations constantly. Unless you provided an ant file on the
+command line and want to watch it run unmolested, you should stop the
+simulation with spacebar. You can step one iteration by pressing enter.
+
+The left mouse button always places an ant. The current ant is shown
+in the bottom left corner; you can change its direction with the arrow
+keys, and you can change its clan (highlighted in the list of the
+programs at the right) by pressing 0-9. To edit a clan's program, use
+alt-0 through alt-9. You can also make the placed ant have a random
+clan and direction, by pressing 'r' (it will then display as a heart).
+'e' randomizes all of the programs.
+
+The right mouse button draws environmental entities. The current tile
+is shown next the current ant in the bottom left. 'w' sets the current
+tile to a wall, 'o' to open ground/floor, 'h' to a hole, and 'g' to the
+food/exit/goal.
+
+'f' toggles the display of "Fog of War", showing where ants have
+reached over time. Lighter areas have been reached more often, and areas
+with an 'x' have never been reached.
+
+'l' can load an ant or sol file. The program automatically changes
+directory to the location of antfarm.exe, so paths are relative to
+that.
+
+'q' and 'a' seem to reset to some stored state. Many things will store the
+state, so don't press 'q' or 'a'. If you load a level from a file using
+'l' or from the command line, that will be the saved state. You need to
+set a saved state in order to search for solutions:
+
+'s' searches for solutions by randomly filling in the current pattern. You
+should edit the pattern file (see contest*.ant for examples) in a text
+editor and load it. You can set the number of iterations to try per
+configuration with 'u'. It will display iterations occasionally and show
+statistics in the bottom left. If an ant reaches the exit, it will print
+the configuration that succeeded to stdout and halt search. Fog of
+war is recommended in this mode. After solve mode is running for a while,
+any time the ants reach a new square it will print out the configuration
+and the square newly reached.
+
+'p' prints the current display as an ant file to stdout.
+
+'m' makes movies by writing a series of BMP files of the iterations
+displayed.
+
++/- zoom in and out. You can also resize the window.
+
+'esc' quits.
+
+ -- Building Antfarm --
+
+Antfarm requires SDL and SDL_image, which can be found at libsdl.org.
+
+You should be able to compile with
+   export LINUX=true
+   make
+
+Or on Windows
+   make
+
+(As long as 'make' and Visual Studio are installed and you've run
+ vcvars32.bat to put the compiler tools in your path. You'll probably
+ need to adjust the paths to SDL and SDL_image in the makefile.)
+

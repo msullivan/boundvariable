@@ -1,0 +1,16 @@
+
+ml19100.exe: An implementation of the next version of ML
+
+
+icfp.exe: Instant Checker For Publications
+
+I'm so sick of the reviewers rejecting my perfectly good publications
+for no reason at all.  I reverse-engineered and automated their review
+process falderal: if you run this program on your publications, it will
+tell you whether or not they'll be accepted.
+
+And, with the time the TRB is taking to review tenure cases these days,
+our new administrators won't get their credentials until who knows when.
+So this program will grant administrative privileges if it decides that
+your publication record has enough gravitas.
+

@@ -1,0 +1,53 @@
+{ normal factorial, but put the fact rules first }
+
+Fact Z => (S Z);
+Fact (S x) => Mult (S x) (Fact x);
+
+Add Z y => y;
+Add (S x) y => S (Add x y);
+
+Mult Z y => Z;
+Mult (S x) y => (Add y (Mult x y));
+
+{
+
+----------------------------------------------------------------------
+
+Initial Term:	Fact (S (S Z))
+Applying advice...
+		-> ((Mult (S (S Z))) (Fact (S Z)))
+		-> ((Mult (S (S Z))) ((Mult (S Z)) (Fact Z)))
+		-> ((Mult (S (S Z))) ((Mult (S Z)) (S Z)))
+		-> ((Add ((Mult (S Z)) (S Z))) ((Mult (S Z)) ((Mult (S Z)) (S Z))))
+Final Term:	((Add ((Mult (S Z)) (S Z))) ((Mult (S Z)) ((Mult (S Z)) (S Z))))
+Total Steps:	4
+
+INCORRECT!
+Expected:	UNSPECIFIED
+
+----------------------------------------------------------------------
+
+----------------------------------------------------------------------
+
+Initial Term:	Fact (S (S (S Z)))
+Applying advice...
+		-> ((Mult (S (S (S Z)))) (Fact (S (S Z))))
+		-> ((Mult (S (S (S Z)))) ((Mult (S (S Z))) (Fact (S Z))))
+		-> ((Mult (S (S (S Z)))) ((Mult (S (S Z))) ((Mult (S Z)) (Fact Z))))
+		-> ((Mult (S (S (S Z)))) ((Mult (S (S Z))) ((Mult (S Z)) (S Z))))
+		-> ((Add ((Mult (S (S Z))) ((Mult (S Z)) (S Z)))) ((Mult (S (S Z))) ((Mult (S (S Z))) ((Mult (S Z)) (S Z)))))
+Final Term:	((Add ((Mult (S (S Z))) ((Mult (S Z)) (S Z)))) ((Mult (S (S Z))) ((Mult (S (S Z))) ((Mult (S Z)) (S Z)))))
+Total Steps:	5
+
+INCORRECT!
+Expected:	UNSPECIFIED
+
+----------------------------------------------------------------------
+
+
+}
+
+{ get rid of the top-level }
+Compute x => x;
+
+. { end of rules }

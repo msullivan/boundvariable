@@ -1,0 +1,117 @@
+
+datatype qual = 
+    QUnsigned 
+  | QSigned
+  (* just means global and = 0, since we don't have 
+     separate compilation *)
+  | QStatic 
+  (* these are silently ignored *)
+  | QConst | QAuto | QRegister
+
+
+(* atomic types *)
+datatype aty =
+    AInt    (* int = char *)
+  | AChar   (* atomic addressable unit *)
+  | APtr of qual list * aty (* "platter" and offset *)
+  (* nb. array is not a type, it's a kind of var dec *)
+  | AStruct of string
+(* not supported 
+  | AFuncPtr of { ret : qual list * aty,
+		  args : (qual list * aty) list }
+  | AUnion of string * (qual list * aty) list
+*)
+
+val AUnit = AStruct ("__unit")
+
+type ty = qual list * aty
+
+val TInt = (nil, AInt)
+val TChar = (nil, AChar)
+fun TPtr x = (nil, APtr x)
+fun TStruct x = (nil, AStruct x)
+val TUnit = (nil, AUnit)
+
+val POW2_TABLE = var-tostring (var-namedvar "__pow2_table")
+
+datatype oper =
+ (* All binary ops are int * int -> int unless otherwise noted *)
+    OAdd (* int * int -> int and ptr * int -> ptr *)
+  | OSub (* int * int -> int and ptr * ptr -> int *)
+  | OEq (* int * int -> int and ptr * ptr -> int *)
+  | ONeq (* same as Eq *)
+  | OLeq
+  | OGeq
+  | OLess
+  | OGreater
+  | OBitAnd
+  | OBitOr
+  | OBitNot
+  | OBitXor
+  | OLogNot
+  | OLogAnd
+  | OLogOr
+  | ODiv
+  | OMul
+  | OIf (* ? : *) (* int * 'a * 'a -> 'a *)
+  | OComma (* 'a * 'b -> 'b *)
+
+datatype exp =
+    EInt of int
+  | EChar of char
+  | EVar of string
+  | EPrim of oper * exp list
+  | EAddrOf of exp
+  | EDeref of exp
+  | EAssign of exp * exp
+  | ECall of string * exp list
+  | EUnit (* for the C "void" type *)
+  | ECast of ty * exp
+  | ESizeOf of ty
+  | EArray of exp list
+  | EProj of exp * string
+
+fun EString s = EArray (list-map EChar ((explode s) @ ((chr 0)::nil)))
+fun ESubscript (arr, idx) = EDeref (EPrim (OAdd, arr::idx::nil))
+fun EShl (x, y) =
+    EPrim (OMul, x::(ESubscript (EVar POW2_TABLE, y))::nil)
+fun EShr (x, y) =
+    EPrim (ODiv, x::(ESubscript (EVar POW2_TABLE, y))::nil)
+(* SUSP dups arguments *)
+fun EMod (x, y) =
+    EPrim (OSub, x::(EPrim (OMul, y::(EPrim (ODiv, x::y::nil))::nil))::nil)
+
+(* obviously, oper must be a binary op... also, dups dst! *)
+fun EAssignOp oper (dst, src) = EAssign (dst, EPrim (oper, dst::src::nil))
+fun EAssignBin bin (dst, src) = EAssign (dst, bin (dst, src))
+fun EProjPtr (ptr, f) = EProj ((EDeref ptr), f)
+
+(* includes all sorts of decs, but not all decs
+   make sense in certain contexts. *)
+datatype dec =
+    DVar of ty * string * exp option
+  | DFun of ty * string * (ty * string) list * stmt
+    (* used for struct decls, fields are in reverse order! *)
+  | DStruct of string * (ty * string) list
+
+and stmt =
+    SExp of exp
+           (* only vars *)
+  | SBlock of dec list * stmt list
+  | SReturn of exp option
+         (* init, cond, inc/dec, body *)
+  | SLoop of exp * exp * exp * stmt
+  | SIf of exp * stmt * stmt
+             (*       NONE for default, should be only one *)
+  | SSwitch of exp * (int option * stmt) list
+  | SBreak
+  | SContinue
+  | SGoto of string
+  | SLabel of string
+  | SAsm of inst
+
+val SSkip = SExp (EUnit)
+val SFor = SLoop
+fun SWhile (cond, body) = SLoop (EUnit, cond, EUnit, body)
+(* PERF code size: duplicates body *)
+(* fun SDo (body, cond) = SLoop (body, cond, EUnit, body) *)

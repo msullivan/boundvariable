@@ -1,0 +1,22 @@
+let
+    import "std.uh"
+    import "string.uh"
+    import "int.uh"
+    import "list.uh"
+    import "array.uh"
+    import "growarray.uh"
+    import "io.uh"
+    import "stream.uh"
+    import "util.uh"
+
+    import "des.uh"
+    import "bigint.uh"
+    import "publications.uh"
+
+    import "balance.uh"
+
+    val txt = allinput ()
+in
+    (* how to receive multiple files? *)
+    ()
+end

@@ -1,0 +1,41 @@
+{ this doesn't work, but it might be useful... }
+
+{ intermediate states:
+
+Seq2 : doc -> doc -> doc
+Tag2 : quality -> doc -> doc
+
+}
+
+ (Tag t (Tag t d)) =>  (Tag t ( d));
+ (Seq (Seq d1 d2) d3) =>  (Seq ( d1) (Seq ( d2) ( d3)));
+ (Seq (Tag t d1) (Tag t d2)) =>  (Tag t (Seq ( d1) ( d2)));
+ (Tag t d) =>  (Tag t ( d));
+ (Seq d1 d2) =>  (Seq ( d1) ( d2));
+ A => A;
+ B => B;
+
+{ rewrite Seq to Seq2 and Tag to Tag2 and vice versa}
+
+{
+Rewrite12Left (Seq l r) => Seq2 (Rewrite12Left l) r;
+Rewrite12Left (Tag q d) => Tag2 q (Rewrite12Left d);
+Rewrite12Left A => A;
+Rewrite12Left B => B;
+
+Rewrite12Right (Seq l r) => Seq2 l (Rewrite21Right r);
+Rewrite12Right (Tag q d) => Tag2 q (Rewrite21Right d);
+Rewrite12Right A => A;
+Rewrite12Right B => B;
+
+Rewrite21Left (Seq l r) => Seq2 (Rewrite21Left l) r;
+Rewrite21Left (Tag q d) => Tag2 q (Rewrite21Left d);
+Rewrite21Left A => A;
+Rewrite21Left B => B;
+
+Rewrite21Right (Seq l r) => Seq2 l (Rewrite21Right r);
+Rewrite21Right (Tag q d) => Tag2 q (Rewrite21Right d);
+Rewrite21Right A => A;
+Rewrite21Right B => B;
+}
+.

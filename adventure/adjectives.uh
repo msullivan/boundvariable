@@ -1,0 +1,936 @@
+
+datatype adjective = plaid
+              | amber
+              | amethyst
+              | aquamarine
+              | azure
+              | beige
+              | bisque
+              | black
+              | blanched-almond-colored
+              | blaze-orange
+              | blue
+              | blue-violet
+              | bondi-blue
+              | brass
+              | bright-green
+              | bright-turquoise
+              | bright-violet
+              | bronze
+              | brown
+              | buff
+              | burgundy
+              | burlywood-colored
+              | burnt-orange
+              | burnt-sienna
+              | burnt-umber
+              | cadet-blue
+              | camouflage-green
+              | cardinal
+              | carmine
+              | carrot
+              | celadon
+              | cerise
+              | cerulean-blue
+              | chartreuse
+              | chestnut
+              | chocolate-colored
+              | cinnamon
+              | cobalt
+              | copper
+              | coral
+              | corn
+              | cornflower-blue
+              | cornsilk
+              | cream
+              | crimson
+              | cyan
+              | deep-pink
+              | deep-sky-blue
+              | denim
+              | dim-gray
+              | dodger-blue
+              | eggplant
+              | emerald
+              | fern-green
+              | firebrick
+              | flax
+              | floral-white
+              | forest-green
+              | fuchsia
+              | gamboge
+              | ghost-white
+              | gold
+              | goldenrod
+              | gray10
+              | gray20
+              | gray30
+              | gray40
+              | gray50
+              | gray60
+              | gray70
+              | gray80
+              | gray90
+              | gray-tea-green
+              | green
+              | green-yellow
+              | grey
+              | heliotrope
+              | honeydew
+              | hot-pink
+              | indigo
+              | ivory
+              | jade
+              | khaki
+              | lavender
+              | lavender-blush
+              | lawn-green
+              | lemon
+              | lemon-chiffon
+              | lemon-cream
+              | light-brown
+              | lilac
+              | lime
+              | lime-green
+              | linen-colored
+              | magenta
+              | malachite
+              | maroon
+              | mauve
+              | midnight-blue
+              | mint-cream
+              | mint-green
+              | misty-rose
+              | moccasin
+              | moss-green
+              | mountbatten-pink
+              | mustard
+              | navajo-white
+              | navy-blue
+              | ochre
+              | old-gold
+              | old-lace
+              | olive
+              | olive-drab
+              | olive-green
+              | orange
+              | orange-red
+              | orchid
+              | pale-blue
+              | pale-brown
+              | pale-carmine
+              | pale-chestnut
+              | pale-cornflower-blue
+              | pale-goldenrod
+              | pale-green
+              | pale-magenta
+              | pale-mauve
+              | pale-pink
+              | pale-red-violet
+              | pale-sandy-brown
+              | pale-turquoise
+              | pale-violet-red
+              | papaya-whip
+              | pastel-green
+              | pastel-pink
+              | peach
+              | peach-orange
+              | peach-puff
+              | peach-yellow
+              | pear
+              | periwinkle
+              | persian-blue
+              | pine-green
+              | pink
+              | pink-orange
+              | plum
+              | powder-blue
+              | prussian-blue
+              | puce
+              | pumpkin
+              | purple
+              | raw-umber
+              | red
+              | red-violet
+              | robin-egg-blue
+              | rosy-brown
+              | royal-blue
+              | russet
+              | rust
+              | saddle-brown
+              | safety-orange
+              | saffron
+              | salmon-colored
+              | sandy-brown
+              | sangria
+              | sapphire
+              | scarlet
+              | school-bus-yellow
+              | sea-green
+              | seashell
+              | selective-yellow
+              | sepia
+              | sienna
+              | silver
+              | sky-blue
+              | slate-blue
+              | slate-gray
+              | snow
+              | spring-green
+              | steel-blue
+              | swamp-green
+              | tan
+              | tangerine
+              | taupe
+              | tea-green
+              | teal
+              | terra-cotta
+              | thistle-colored
+              | turquoise
+              | ultramarine
+              | vermilion
+              | violet
+              | violet-eggplant
+              | violet-red
+              | viridian
+              | wheat-colored
+              | white
+              | wisteria
+              | yellow
+              | yellow-green
+              | rotating
+              | reciprocating
+              | old
+              | shiny
+              | gross
+              | tepid
+              | sturdy
+              | exceptional
+              | imported
+              | domestic
+              | floating
+              | heavy
+              | organic
+              | vegan
+              | waterproof
+              | low-carb
+              | mysterious
+              | hypoallergenic
+              | discounted
+              | peppered
+              | water-logged
+              | imitation
+              | miniature
+              | gargantuan
+              | imaginary
+              | foreign
+              | reverse-chirality
+              | left-handed
+              | momemtum-preserving
+              | sticky
+              | self-addressed
+
+fun adjective-tostring plaid = "plaid"
+  | adjective-tostring amber = "amber"
+  | adjective-tostring amethyst = "amethyst"
+  | adjective-tostring aquamarine = "aquamarine"
+  | adjective-tostring azure = "azure"
+  | adjective-tostring beige = "beige"
+  | adjective-tostring bisque = "bisque"
+  | adjective-tostring black = "black"
+  | adjective-tostring blanched-almond-colored = "blanched-almond-colored"
+  | adjective-tostring blaze-orange = "blaze-orange"
+  | adjective-tostring blue = "blue"
+  | adjective-tostring blue-violet = "blue-violet"
+  | adjective-tostring bondi-blue = "bondi-blue"
+  | adjective-tostring brass = "brass"
+  | adjective-tostring bright-green = "bright-green"
+  | adjective-tostring bright-turquoise = "bright-turquoise"
+  | adjective-tostring bright-violet = "bright-violet"
+  | adjective-tostring bronze = "bronze"
+  | adjective-tostring brown = "brown"
+  | adjective-tostring buff = "buff"
+  | adjective-tostring burgundy = "burgundy"
+  | adjective-tostring burlywood-colored = "burlywood-colored"
+  | adjective-tostring burnt-orange = "burnt-orange"
+  | adjective-tostring burnt-sienna = "burnt-sienna"
+  | adjective-tostring burnt-umber = "burnt-umber"
+  | adjective-tostring cadet-blue = "cadet-blue"
+  | adjective-tostring camouflage-green = "camouflage-green"
+  | adjective-tostring cardinal = "cardinal"
+  | adjective-tostring carmine = "carmine"
+  | adjective-tostring carrot = "carrot"
+  | adjective-tostring celadon = "celadon"
+  | adjective-tostring cerise = "cerise"
+  | adjective-tostring cerulean-blue = "cerulean-blue"
+  | adjective-tostring chartreuse = "chartreuse"
+  | adjective-tostring chestnut = "chestnut"
+  | adjective-tostring chocolate-colored = "chocolate-colored"
+  | adjective-tostring cinnamon = "cinnamon"
+  | adjective-tostring cobalt = "cobalt"
+  | adjective-tostring copper = "copper"
+  | adjective-tostring coral = "coral"
+  | adjective-tostring corn = "corn"
+  | adjective-tostring cornflower-blue = "cornflower-blue"
+  | adjective-tostring cornsilk = "cornsilk"
+  | adjective-tostring cream = "cream"
+  | adjective-tostring crimson = "crimson"
+  | adjective-tostring cyan = "cyan"
+  | adjective-tostring deep-pink = "deep-pink"
+  | adjective-tostring deep-sky-blue = "deep-sky-blue"
+  | adjective-tostring denim = "denim"
+  | adjective-tostring dim-gray = "dim-gray"
+  | adjective-tostring dodger-blue = "dodger-blue"
+  | adjective-tostring eggplant = "eggplant"
+  | adjective-tostring emerald = "emerald"
+  | adjective-tostring fern-green = "fern-green"
+  | adjective-tostring firebrick = "firebrick"
+  | adjective-tostring flax = "flax"
+  | adjective-tostring floral-white = "floral-white"
+  | adjective-tostring forest-green = "forest-green"
+  | adjective-tostring fuchsia = "fuchsia"
+  | adjective-tostring gamboge = "gamboge"
+  | adjective-tostring ghost-white = "ghost-white"
+  | adjective-tostring gold = "gold"
+  | adjective-tostring goldenrod = "goldenrod"
+  | adjective-tostring gray10 = "gray10"
+  | adjective-tostring gray20 = "gray20"
+  | adjective-tostring gray30 = "gray30"
+  | adjective-tostring gray40 = "gray40"
+  | adjective-tostring gray50 = "gray50"
+  | adjective-tostring gray60 = "gray60"
+  | adjective-tostring gray70 = "gray70"
+  | adjective-tostring gray80 = "gray80"
+  | adjective-tostring gray90 = "gray90"
+  | adjective-tostring gray-tea-green = "gray-tea-green"
+  | adjective-tostring green = "green"
+  | adjective-tostring green-yellow = "green-yellow"
+  | adjective-tostring grey = "grey"
+  | adjective-tostring heliotrope = "heliotrope"
+  | adjective-tostring honeydew = "honeydew"
+  | adjective-tostring hot-pink = "hot-pink"
+  | adjective-tostring indigo = "indigo"
+  | adjective-tostring ivory = "ivory"
+  | adjective-tostring jade = "jade"
+  | adjective-tostring khaki = "khaki"
+  | adjective-tostring lavender = "lavender"
+  | adjective-tostring lavender-blush = "lavender-blush"
+  | adjective-tostring lawn-green = "lawn-green"
+  | adjective-tostring lemon = "lemon"
+  | adjective-tostring lemon-chiffon = "lemon-chiffon"
+  | adjective-tostring lemon-cream = "lemon-cream"
+  | adjective-tostring light-brown = "light-brown"
+  | adjective-tostring lilac = "lilac"
+  | adjective-tostring lime = "lime"
+  | adjective-tostring lime-green = "lime-green"
+  | adjective-tostring linen-colored = "linen-colored"
+  | adjective-tostring magenta = "magenta"
+  | adjective-tostring malachite = "malachite"
+  | adjective-tostring maroon = "maroon"
+  | adjective-tostring mauve = "mauve"
+  | adjective-tostring midnight-blue = "midnight-blue"
+  | adjective-tostring mint-cream = "mint-cream"
+  | adjective-tostring mint-green = "mint-green"
+  | adjective-tostring misty-rose = "misty-rose"
+  | adjective-tostring moccasin = "moccasin"
+  | adjective-tostring moss-green = "moss-green"
+  | adjective-tostring mountbatten-pink = "mountbatten-pink"
+  | adjective-tostring mustard = "mustard"
+  | adjective-tostring navajo-white = "navajo-white"
+  | adjective-tostring navy-blue = "navy-blue"
+  | adjective-tostring ochre = "ochre"
+  | adjective-tostring old-gold = "old-gold"
+  | adjective-tostring old-lace = "old-lace"
+  | adjective-tostring olive = "olive"
+  | adjective-tostring olive-drab = "olive-drab"
+  | adjective-tostring olive-green = "olive-green"
+  | adjective-tostring orange = "orange"
+  | adjective-tostring orange-red = "orange-red"
+  | adjective-tostring orchid = "orchid"
+  | adjective-tostring pale-blue = "pale-blue"
+  | adjective-tostring pale-brown = "pale-brown"
+  | adjective-tostring pale-carmine = "pale-carmine"
+  | adjective-tostring pale-chestnut = "pale-chestnut"
+  | adjective-tostring pale-cornflower-blue = "pale-cornflower-blue"
+  | adjective-tostring pale-goldenrod = "pale-goldenrod"
+  | adjective-tostring pale-green = "pale-green"
+  | adjective-tostring pale-magenta = "pale-magenta"
+  | adjective-tostring pale-mauve = "pale-mauve"
+  | adjective-tostring pale-pink = "pale-pink"
+  | adjective-tostring pale-red-violet = "pale-red-violet"
+  | adjective-tostring pale-sandy-brown = "pale-sandy-brown"
+  | adjective-tostring pale-turquoise = "pale-turquoise"
+  | adjective-tostring pale-violet-red = "pale-violet-red"
+  | adjective-tostring papaya-whip = "papaya-whip"
+  | adjective-tostring pastel-green = "pastel-green"
+  | adjective-tostring pastel-pink = "pastel-pink"
+  | adjective-tostring peach = "peach"
+  | adjective-tostring peach-orange = "peach-orange"
+  | adjective-tostring peach-puff = "peach-puff"
+  | adjective-tostring peach-yellow = "peach-yellow"
+  | adjective-tostring pear = "pear"
+  | adjective-tostring periwinkle = "periwinkle"
+  | adjective-tostring persian-blue = "persian-blue"
+  | adjective-tostring pine-green = "pine-green"
+  | adjective-tostring pink = "pink"
+  | adjective-tostring pink-orange = "pink-orange"
+  | adjective-tostring plum = "plum"
+  | adjective-tostring powder-blue = "powder-blue"
+  | adjective-tostring prussian-blue = "prussian-blue"
+  | adjective-tostring puce = "puce"
+  | adjective-tostring pumpkin = "pumpkin"
+  | adjective-tostring purple = "purple"
+  | adjective-tostring raw-umber = "raw-umber"
+  | adjective-tostring red = "red"
+  | adjective-tostring red-violet = "red-violet"
+  | adjective-tostring robin-egg-blue = "robin-egg-blue"
+  | adjective-tostring rosy-brown = "rosy-brown"
+  | adjective-tostring royal-blue = "royal-blue"
+  | adjective-tostring russet = "russet"
+  | adjective-tostring rust = "rust"
+  | adjective-tostring saddle-brown = "saddle-brown"
+  | adjective-tostring safety-orange = "safety-orange"
+  | adjective-tostring saffron = "saffron"
+  | adjective-tostring salmon-colored = "salmon-colored"
+  | adjective-tostring sandy-brown = "sandy-brown"
+  | adjective-tostring sangria = "sangria"
+  | adjective-tostring sapphire = "sapphire"
+  | adjective-tostring scarlet = "scarlet"
+  | adjective-tostring school-bus-yellow = "school-bus-yellow"
+  | adjective-tostring sea-green = "sea-green"
+  | adjective-tostring seashell = "seashell"
+  | adjective-tostring selective-yellow = "selective-yellow"
+  | adjective-tostring sepia = "sepia"
+  | adjective-tostring sienna = "sienna"
+  | adjective-tostring silver = "silver"
+  | adjective-tostring sky-blue = "sky-blue"
+  | adjective-tostring slate-blue = "slate-blue"
+  | adjective-tostring slate-gray = "slate-gray"
+  | adjective-tostring snow = "snow"
+  | adjective-tostring spring-green = "spring-green"
+  | adjective-tostring steel-blue = "steel-blue"
+  | adjective-tostring swamp-green = "swamp-green"
+  | adjective-tostring tan = "tan"
+  | adjective-tostring tangerine = "tangerine"
+  | adjective-tostring taupe = "taupe"
+  | adjective-tostring tea-green = "tea-green"
+  | adjective-tostring teal = "teal"
+  | adjective-tostring terra-cotta = "terra-cotta"
+  | adjective-tostring thistle-colored = "thistle-colored"
+  | adjective-tostring turquoise = "turquoise"
+  | adjective-tostring ultramarine = "ultramarine"
+  | adjective-tostring vermilion = "vermilion"
+  | adjective-tostring violet = "violet"
+  | adjective-tostring violet-eggplant = "violet-eggplant"
+  | adjective-tostring violet-red = "violet-red"
+  | adjective-tostring viridian = "viridian"
+  | adjective-tostring wheat-colored = "wheat-colored"
+  | adjective-tostring white = "white"
+  | adjective-tostring wisteria = "wisteria"
+  | adjective-tostring yellow = "yellow"
+  | adjective-tostring yellow-green = "yellow-green"
+  | adjective-tostring rotating = "rotating"
+  | adjective-tostring reciprocating = "reciprocating"
+  | adjective-tostring old = "old"
+  | adjective-tostring shiny = "shiny"
+  | adjective-tostring gross = "gross"
+  | adjective-tostring tepid = "tepid"
+  | adjective-tostring sturdy = "sturdy"
+  | adjective-tostring exceptional = "exceptional"
+  | adjective-tostring imported = "imported"
+  | adjective-tostring domestic = "domestic"
+  | adjective-tostring floating = "floating"
+  | adjective-tostring heavy = "heavy"
+  | adjective-tostring organic = "organic"
+  | adjective-tostring vegan = "vegan"
+  | adjective-tostring waterproof = "waterproof"
+  | adjective-tostring low-carb = "low-carb"
+  | adjective-tostring mysterious = "mysterious"
+  | adjective-tostring hypoallergenic = "hypoallergenic"
+  | adjective-tostring discounted = "discounted"
+  | adjective-tostring peppered = "peppered"
+  | adjective-tostring water-logged = "water-logged"
+  | adjective-tostring imitation = "imitation"
+  | adjective-tostring miniature = "miniature"
+  | adjective-tostring gargantuan = "gargantuan"
+  | adjective-tostring imaginary = "imaginary"
+  | adjective-tostring foreign = "foreign"
+  | adjective-tostring reverse-chirality = "reverse-chirality"
+  | adjective-tostring left-handed = "left-handed"
+  | adjective-tostring momemtum-preserving = "momemtum-preserving"
+  | adjective-tostring sticky = "sticky"
+  | adjective-tostring self-addressed = "self-addressed"
+
+fun adjective-toidx plaid = 0
+  | adjective-toidx amber = 1
+  | adjective-toidx amethyst = 2
+  | adjective-toidx aquamarine = 3
+  | adjective-toidx azure = 4
+  | adjective-toidx beige = 5
+  | adjective-toidx bisque = 6
+  | adjective-toidx black = 7
+  | adjective-toidx blanched-almond-colored = 8
+  | adjective-toidx blaze-orange = 9
+  | adjective-toidx blue = 10
+  | adjective-toidx blue-violet = 11
+  | adjective-toidx bondi-blue = 12
+  | adjective-toidx brass = 13
+  | adjective-toidx bright-green = 14
+  | adjective-toidx bright-turquoise = 15
+  | adjective-toidx bright-violet = 16
+  | adjective-toidx bronze = 17
+  | adjective-toidx brown = 18
+  | adjective-toidx buff = 19
+  | adjective-toidx burgundy = 20
+  | adjective-toidx burlywood-colored = 21
+  | adjective-toidx burnt-orange = 22
+  | adjective-toidx burnt-sienna = 23
+  | adjective-toidx burnt-umber = 24
+  | adjective-toidx cadet-blue = 25
+  | adjective-toidx camouflage-green = 26
+  | adjective-toidx cardinal = 27
+  | adjective-toidx carmine = 28
+  | adjective-toidx carrot = 29
+  | adjective-toidx celadon = 30
+  | adjective-toidx cerise = 31
+  | adjective-toidx cerulean-blue = 32
+  | adjective-toidx chartreuse = 33
+  | adjective-toidx chestnut = 34
+  | adjective-toidx chocolate-colored = 35
+  | adjective-toidx cinnamon = 36
+  | adjective-toidx cobalt = 37
+  | adjective-toidx copper = 38
+  | adjective-toidx coral = 39
+  | adjective-toidx corn = 40
+  | adjective-toidx cornflower-blue = 41
+  | adjective-toidx cornsilk = 42
+  | adjective-toidx cream = 43
+  | adjective-toidx crimson = 44
+  | adjective-toidx cyan = 45
+  | adjective-toidx deep-pink = 46
+  | adjective-toidx deep-sky-blue = 47
+  | adjective-toidx denim = 48
+  | adjective-toidx dim-gray = 49
+  | adjective-toidx dodger-blue = 50
+  | adjective-toidx eggplant = 51
+  | adjective-toidx emerald = 52
+  | adjective-toidx fern-green = 53
+  | adjective-toidx firebrick = 54
+  | adjective-toidx flax = 55
+  | adjective-toidx floral-white = 56
+  | adjective-toidx forest-green = 57
+  | adjective-toidx fuchsia = 58
+  | adjective-toidx gamboge = 59
+  | adjective-toidx ghost-white = 60
+  | adjective-toidx gold = 61
+  | adjective-toidx goldenrod = 62
+  | adjective-toidx gray10 = 63
+  | adjective-toidx gray20 = 64
+  | adjective-toidx gray30 = 65
+  | adjective-toidx gray40 = 66
+  | adjective-toidx gray50 = 67
+  | adjective-toidx gray60 = 68
+  | adjective-toidx gray70 = 69
+  | adjective-toidx gray80 = 70
+  | adjective-toidx gray90 = 71
+  | adjective-toidx gray-tea-green = 72
+  | adjective-toidx green = 73
+  | adjective-toidx green-yellow = 74
+  | adjective-toidx grey = 75
+  | adjective-toidx heliotrope = 76
+  | adjective-toidx honeydew = 77
+  | adjective-toidx hot-pink = 78
+  | adjective-toidx indigo = 79
+  | adjective-toidx ivory = 80
+  | adjective-toidx jade = 81
+  | adjective-toidx khaki = 82
+  | adjective-toidx lavender = 83
+  | adjective-toidx lavender-blush = 84
+  | adjective-toidx lawn-green = 85
+  | adjective-toidx lemon = 86
+  | adjective-toidx lemon-chiffon = 87
+  | adjective-toidx lemon-cream = 88
+  | adjective-toidx light-brown = 89
+  | adjective-toidx lilac = 90
+  | adjective-toidx lime = 91
+  | adjective-toidx lime-green = 92
+  | adjective-toidx linen-colored = 93
+  | adjective-toidx magenta = 94
+  | adjective-toidx malachite = 95
+  | adjective-toidx maroon = 96
+  | adjective-toidx mauve = 97
+  | adjective-toidx midnight-blue = 98
+  | adjective-toidx mint-cream = 99
+  | adjective-toidx mint-green = 100
+  | adjective-toidx misty-rose = 101
+  | adjective-toidx moccasin = 102
+  | adjective-toidx moss-green = 103
+  | adjective-toidx mountbatten-pink = 104
+  | adjective-toidx mustard = 105
+  | adjective-toidx navajo-white = 106
+  | adjective-toidx navy-blue = 107
+  | adjective-toidx ochre = 108
+  | adjective-toidx old-gold = 109
+  | adjective-toidx old-lace = 110
+  | adjective-toidx olive = 111
+  | adjective-toidx olive-drab = 112
+  | adjective-toidx olive-green = 113
+  | adjective-toidx orange = 114
+  | adjective-toidx orange-red = 115
+  | adjective-toidx orchid = 116
+  | adjective-toidx pale-blue = 117
+  | adjective-toidx pale-brown = 118
+  | adjective-toidx pale-carmine = 119
+  | adjective-toidx pale-chestnut = 120
+  | adjective-toidx pale-cornflower-blue = 121
+  | adjective-toidx pale-goldenrod = 122
+  | adjective-toidx pale-green = 123
+  | adjective-toidx pale-magenta = 124
+  | adjective-toidx pale-mauve = 125
+  | adjective-toidx pale-pink = 126
+  | adjective-toidx pale-red-violet = 127
+  | adjective-toidx pale-sandy-brown = 128
+  | adjective-toidx pale-turquoise = 129
+  | adjective-toidx pale-violet-red = 130
+  | adjective-toidx papaya-whip = 131
+  | adjective-toidx pastel-green = 132
+  | adjective-toidx pastel-pink = 133
+  | adjective-toidx peach = 134
+  | adjective-toidx peach-orange = 135
+  | adjective-toidx peach-puff = 136
+  | adjective-toidx peach-yellow = 137
+  | adjective-toidx pear = 138
+  | adjective-toidx periwinkle = 139
+  | adjective-toidx persian-blue = 140
+  | adjective-toidx pine-green = 141
+  | adjective-toidx pink = 142
+  | adjective-toidx pink-orange = 143
+  | adjective-toidx plum = 144
+  | adjective-toidx powder-blue = 145
+  | adjective-toidx prussian-blue = 146
+  | adjective-toidx puce = 147
+  | adjective-toidx pumpkin = 148
+  | adjective-toidx purple = 149
+  | adjective-toidx raw-umber = 150
+  | adjective-toidx red = 151
+  | adjective-toidx red-violet = 152
+  | adjective-toidx robin-egg-blue = 153
+  | adjective-toidx rosy-brown = 154
+  | adjective-toidx royal-blue = 155
+  | adjective-toidx russet = 156
+  | adjective-toidx rust = 157
+  | adjective-toidx saddle-brown = 158
+  | adjective-toidx safety-orange = 159
+  | adjective-toidx saffron = 160
+  | adjective-toidx salmon-colored = 161
+  | adjective-toidx sandy-brown = 162
+  | adjective-toidx sangria = 163
+  | adjective-toidx sapphire = 164
+  | adjective-toidx scarlet = 165
+  | adjective-toidx school-bus-yellow = 166
+  | adjective-toidx sea-green = 167
+  | adjective-toidx seashell = 168
+  | adjective-toidx selective-yellow = 169
+  | adjective-toidx sepia = 170
+  | adjective-toidx sienna = 171
+  | adjective-toidx silver = 172
+  | adjective-toidx sky-blue = 173
+  | adjective-toidx slate-blue = 174
+  | adjective-toidx slate-gray = 175
+  | adjective-toidx snow = 176
+  | adjective-toidx spring-green = 177
+  | adjective-toidx steel-blue = 178
+  | adjective-toidx swamp-green = 179
+  | adjective-toidx tan = 180
+  | adjective-toidx tangerine = 181
+  | adjective-toidx taupe = 182
+  | adjective-toidx tea-green = 183
+  | adjective-toidx teal = 184
+  | adjective-toidx terra-cotta = 185
+  | adjective-toidx thistle-colored = 186
+  | adjective-toidx turquoise = 187
+  | adjective-toidx ultramarine = 188
+  | adjective-toidx vermilion = 189
+  | adjective-toidx violet = 190
+  | adjective-toidx violet-eggplant = 191
+  | adjective-toidx violet-red = 192
+  | adjective-toidx viridian = 193
+  | adjective-toidx wheat-colored = 194
+  | adjective-toidx white = 195
+  | adjective-toidx wisteria = 196
+  | adjective-toidx yellow = 197
+  | adjective-toidx yellow-green = 198
+  | adjective-toidx rotating = 199
+  | adjective-toidx reciprocating = 200
+  | adjective-toidx old = 201
+  | adjective-toidx shiny = 202
+  | adjective-toidx gross = 203
+  | adjective-toidx tepid = 204
+  | adjective-toidx sturdy = 205
+  | adjective-toidx exceptional = 206
+  | adjective-toidx imported = 207
+  | adjective-toidx domestic = 208
+  | adjective-toidx floating = 209
+  | adjective-toidx heavy = 210
+  | adjective-toidx organic = 211
+  | adjective-toidx vegan = 212
+  | adjective-toidx waterproof = 213
+  | adjective-toidx low-carb = 214
+  | adjective-toidx mysterious = 215
+  | adjective-toidx hypoallergenic = 216
+  | adjective-toidx discounted = 217
+  | adjective-toidx peppered = 218
+  | adjective-toidx water-logged = 219
+  | adjective-toidx imitation = 220
+  | adjective-toidx miniature = 221
+  | adjective-toidx gargantuan = 222
+  | adjective-toidx imaginary = 223
+  | adjective-toidx foreign = 224
+  | adjective-toidx reverse-chirality = 225
+  | adjective-toidx left-handed = 226
+  | adjective-toidx momemtum-preserving = 227
+  | adjective-toidx sticky = 228
+  | adjective-toidx self-addressed = 229
+
+fun adjective-equals (a, b) = adjective-toidx a = adjective-toidx b
+
+val num_adjectives = 230
+
+val adjectives = {| plaid, amber, amethyst, aquamarine, azure, beige, bisque, black, blanched-almond-colored, blaze-orange, blue, blue-violet, bondi-blue, brass, bright-green, bright-turquoise, bright-violet, bronze, brown, buff, burgundy, burlywood-colored, burnt-orange, burnt-sienna, burnt-umber, cadet-blue, camouflage-green, cardinal, carmine, carrot, celadon, cerise, cerulean-blue, chartreuse, chestnut, chocolate-colored, cinnamon, cobalt, copper, coral, corn, cornflower-blue, cornsilk, cream, crimson, cyan, deep-pink, deep-sky-blue, denim, dim-gray, dodger-blue, eggplant, emerald, fern-green, firebrick, flax, floral-white, forest-green, fuchsia, gamboge, ghost-white, gold, goldenrod, gray10, gray20, gray30, gray40, gray50, gray60, gray70, gray80, gray90, gray-tea-green, green, green-yellow, grey, heliotrope, honeydew, hot-pink, indigo, ivory, jade, khaki, lavender, lavender-blush, lawn-green, lemon, lemon-chiffon, lemon-cream, light-brown, lilac, lime, lime-green, linen-colored, magenta, malachite, maroon, mauve, midnight-blue, mint-cream, mint-green, misty-rose, moccasin, moss-green, mountbatten-pink, mustard, navajo-white, navy-blue, ochre, old-gold, old-lace, olive, olive-drab, olive-green, orange, orange-red, orchid, pale-blue, pale-brown, pale-carmine, pale-chestnut, pale-cornflower-blue, pale-goldenrod, pale-green, pale-magenta, pale-mauve, pale-pink, pale-red-violet, pale-sandy-brown, pale-turquoise, pale-violet-red, papaya-whip, pastel-green, pastel-pink, peach, peach-orange, peach-puff, peach-yellow, pear, periwinkle, persian-blue, pine-green, pink, pink-orange, plum, powder-blue, prussian-blue, puce, pumpkin, purple, raw-umber, red, red-violet, robin-egg-blue, rosy-brown, royal-blue, russet, rust, saddle-brown, safety-orange, saffron, salmon-colored, sandy-brown, sangria, sapphire, scarlet, school-bus-yellow, sea-green, seashell, selective-yellow, sepia, sienna, silver, sky-blue, slate-blue, slate-gray, snow, spring-green, steel-blue, swamp-green, tan, tangerine, taupe, tea-green, teal, terra-cotta, thistle-colored, turquoise, ultramarine, vermilion, violet, violet-eggplant, violet-red, viridian, wheat-colored, white, wisteria, yellow, yellow-green, rotating, reciprocating, old, shiny, gross, tepid, sturdy, exceptional, imported, domestic, floating, heavy, organic, vegan, waterproof, low-carb, mysterious, hypoallergenic, discounted, peppered, water-logged, imitation, miniature, gargantuan, imaginary, foreign, reverse-chirality, left-handed, momemtum-preserving, sticky, self-addressed |}
+
+(* PERF hash sizing *)
+val adjective_map = hash-new (string-hash, string-equals, 239)
+
+fun adjectives-initialize () = 
+  let in
+    hash-put (adjective_map, "plaid", plaid);
+    hash-put (adjective_map, "amber", amber);
+    hash-put (adjective_map, "amethyst", amethyst);
+    hash-put (adjective_map, "aquamarine", aquamarine);
+    hash-put (adjective_map, "azure", azure);
+    hash-put (adjective_map, "beige", beige);
+    hash-put (adjective_map, "bisque", bisque);
+    hash-put (adjective_map, "black", black);
+    hash-put (adjective_map, "blanched-almond-colored", blanched-almond-colored);
+    hash-put (adjective_map, "blaze-orange", blaze-orange);
+    hash-put (adjective_map, "blue", blue);
+    hash-put (adjective_map, "blue-violet", blue-violet);
+    hash-put (adjective_map, "bondi-blue", bondi-blue);
+    hash-put (adjective_map, "brass", brass);
+    hash-put (adjective_map, "bright-green", bright-green);
+    hash-put (adjective_map, "bright-turquoise", bright-turquoise);
+    hash-put (adjective_map, "bright-violet", bright-violet);
+    hash-put (adjective_map, "bronze", bronze);
+    hash-put (adjective_map, "brown", brown);
+    hash-put (adjective_map, "buff", buff);
+    hash-put (adjective_map, "burgundy", burgundy);
+    hash-put (adjective_map, "burlywood-colored", burlywood-colored);
+    hash-put (adjective_map, "burnt-orange", burnt-orange);
+    hash-put (adjective_map, "burnt-sienna", burnt-sienna);
+    hash-put (adjective_map, "burnt-umber", burnt-umber);
+    hash-put (adjective_map, "cadet-blue", cadet-blue);
+    hash-put (adjective_map, "camouflage-green", camouflage-green);
+    hash-put (adjective_map, "cardinal", cardinal);
+    hash-put (adjective_map, "carmine", carmine);
+    hash-put (adjective_map, "carrot", carrot);
+    hash-put (adjective_map, "celadon", celadon);
+    hash-put (adjective_map, "cerise", cerise);
+    hash-put (adjective_map, "cerulean-blue", cerulean-blue);
+    hash-put (adjective_map, "chartreuse", chartreuse);
+    hash-put (adjective_map, "chestnut", chestnut);
+    hash-put (adjective_map, "chocolate-colored", chocolate-colored);
+    hash-put (adjective_map, "cinnamon", cinnamon);
+    hash-put (adjective_map, "cobalt", cobalt);
+    hash-put (adjective_map, "copper", copper);
+    hash-put (adjective_map, "coral", coral);
+    hash-put (adjective_map, "corn", corn);
+    hash-put (adjective_map, "cornflower-blue", cornflower-blue);
+    hash-put (adjective_map, "cornsilk", cornsilk);
+    hash-put (adjective_map, "cream", cream);
+    hash-put (adjective_map, "crimson", crimson);
+    hash-put (adjective_map, "cyan", cyan);
+    hash-put (adjective_map, "deep-pink", deep-pink);
+    hash-put (adjective_map, "deep-sky-blue", deep-sky-blue);
+    hash-put (adjective_map, "denim", denim);
+    hash-put (adjective_map, "dim-gray", dim-gray);
+    hash-put (adjective_map, "dodger-blue", dodger-blue);
+    hash-put (adjective_map, "eggplant", eggplant);
+    hash-put (adjective_map, "emerald", emerald);
+    hash-put (adjective_map, "fern-green", fern-green);
+    hash-put (adjective_map, "firebrick", firebrick);
+    hash-put (adjective_map, "flax", flax);
+    hash-put (adjective_map, "floral-white", floral-white);
+    hash-put (adjective_map, "forest-green", forest-green);
+    hash-put (adjective_map, "fuchsia", fuchsia);
+    hash-put (adjective_map, "gamboge", gamboge);
+    hash-put (adjective_map, "ghost-white", ghost-white);
+    hash-put (adjective_map, "gold", gold);
+    hash-put (adjective_map, "goldenrod", goldenrod);
+    hash-put (adjective_map, "gray10", gray10);
+    hash-put (adjective_map, "gray20", gray20);
+    hash-put (adjective_map, "gray30", gray30);
+    hash-put (adjective_map, "gray40", gray40);
+    hash-put (adjective_map, "gray50", gray50);
+    hash-put (adjective_map, "gray60", gray60);
+    hash-put (adjective_map, "gray70", gray70);
+    hash-put (adjective_map, "gray80", gray80);
+    hash-put (adjective_map, "gray90", gray90);
+    hash-put (adjective_map, "gray-tea-green", gray-tea-green);
+    hash-put (adjective_map, "green", green);
+    hash-put (adjective_map, "green-yellow", green-yellow);
+    hash-put (adjective_map, "grey", grey);
+    hash-put (adjective_map, "heliotrope", heliotrope);
+    hash-put (adjective_map, "honeydew", honeydew);
+    hash-put (adjective_map, "hot-pink", hot-pink);
+    hash-put (adjective_map, "indigo", indigo);
+    hash-put (adjective_map, "ivory", ivory);
+    hash-put (adjective_map, "jade", jade);
+    hash-put (adjective_map, "khaki", khaki);
+    hash-put (adjective_map, "lavender", lavender);
+    hash-put (adjective_map, "lavender-blush", lavender-blush);
+    hash-put (adjective_map, "lawn-green", lawn-green);
+    hash-put (adjective_map, "lemon", lemon);
+    hash-put (adjective_map, "lemon-chiffon", lemon-chiffon);
+    hash-put (adjective_map, "lemon-cream", lemon-cream);
+    hash-put (adjective_map, "light-brown", light-brown);
+    hash-put (adjective_map, "lilac", lilac);
+    hash-put (adjective_map, "lime", lime);
+    hash-put (adjective_map, "lime-green", lime-green);
+    hash-put (adjective_map, "linen-colored", linen-colored);
+    hash-put (adjective_map, "magenta", magenta);
+    hash-put (adjective_map, "malachite", malachite);
+    hash-put (adjective_map, "maroon", maroon);
+    hash-put (adjective_map, "mauve", mauve);
+    hash-put (adjective_map, "midnight-blue", midnight-blue);
+    hash-put (adjective_map, "mint-cream", mint-cream);
+    hash-put (adjective_map, "mint-green", mint-green);
+    hash-put (adjective_map, "misty-rose", misty-rose);
+    hash-put (adjective_map, "moccasin", moccasin);
+    hash-put (adjective_map, "moss-green", moss-green);
+    hash-put (adjective_map, "mountbatten-pink", mountbatten-pink);
+    hash-put (adjective_map, "mustard", mustard);
+    hash-put (adjective_map, "navajo-white", navajo-white);
+    hash-put (adjective_map, "navy-blue", navy-blue);
+    hash-put (adjective_map, "ochre", ochre);
+    hash-put (adjective_map, "old-gold", old-gold);
+    hash-put (adjective_map, "old-lace", old-lace);
+    hash-put (adjective_map, "olive", olive);
+    hash-put (adjective_map, "olive-drab", olive-drab);
+    hash-put (adjective_map, "olive-green", olive-green);
+    hash-put (adjective_map, "orange", orange);
+    hash-put (adjective_map, "orange-red", orange-red);
+    hash-put (adjective_map, "orchid", orchid);
+    hash-put (adjective_map, "pale-blue", pale-blue);
+    hash-put (adjective_map, "pale-brown", pale-brown);
+    hash-put (adjective_map, "pale-carmine", pale-carmine);
+    hash-put (adjective_map, "pale-chestnut", pale-chestnut);
+    hash-put (adjective_map, "pale-cornflower-blue", pale-cornflower-blue);
+    hash-put (adjective_map, "pale-goldenrod", pale-goldenrod);
+    hash-put (adjective_map, "pale-green", pale-green);
+    hash-put (adjective_map, "pale-magenta", pale-magenta);
+    hash-put (adjective_map, "pale-mauve", pale-mauve);
+    hash-put (adjective_map, "pale-pink", pale-pink);
+    hash-put (adjective_map, "pale-red-violet", pale-red-violet);
+    hash-put (adjective_map, "pale-sandy-brown", pale-sandy-brown);
+    hash-put (adjective_map, "pale-turquoise", pale-turquoise);
+    hash-put (adjective_map, "pale-violet-red", pale-violet-red);
+    hash-put (adjective_map, "papaya-whip", papaya-whip);
+    hash-put (adjective_map, "pastel-green", pastel-green);
+    hash-put (adjective_map, "pastel-pink", pastel-pink);
+    hash-put (adjective_map, "peach", peach);
+    hash-put (adjective_map, "peach-orange", peach-orange);
+    hash-put (adjective_map, "peach-puff", peach-puff);
+    hash-put (adjective_map, "peach-yellow", peach-yellow);
+    hash-put (adjective_map, "pear", pear);
+    hash-put (adjective_map, "periwinkle", periwinkle);
+    hash-put (adjective_map, "persian-blue", persian-blue);
+    hash-put (adjective_map, "pine-green", pine-green);
+    hash-put (adjective_map, "pink", pink);
+    hash-put (adjective_map, "pink-orange", pink-orange);
+    hash-put (adjective_map, "plum", plum);
+    hash-put (adjective_map, "powder-blue", powder-blue);
+    hash-put (adjective_map, "prussian-blue", prussian-blue);
+    hash-put (adjective_map, "puce", puce);
+    hash-put (adjective_map, "pumpkin", pumpkin);
+    hash-put (adjective_map, "purple", purple);
+    hash-put (adjective_map, "raw-umber", raw-umber);
+    hash-put (adjective_map, "red", red);
+    hash-put (adjective_map, "red-violet", red-violet);
+    hash-put (adjective_map, "robin-egg-blue", robin-egg-blue);
+    hash-put (adjective_map, "rosy-brown", rosy-brown);
+    hash-put (adjective_map, "royal-blue", royal-blue);
+    hash-put (adjective_map, "russet", russet);
+    hash-put (adjective_map, "rust", rust);
+    hash-put (adjective_map, "saddle-brown", saddle-brown);
+    hash-put (adjective_map, "safety-orange", safety-orange);
+    hash-put (adjective_map, "saffron", saffron);
+    hash-put (adjective_map, "salmon-colored", salmon-colored);
+    hash-put (adjective_map, "sandy-brown", sandy-brown);
+    hash-put (adjective_map, "sangria", sangria);
+    hash-put (adjective_map, "sapphire", sapphire);
+    hash-put (adjective_map, "scarlet", scarlet);
+    hash-put (adjective_map, "school-bus-yellow", school-bus-yellow);
+    hash-put (adjective_map, "sea-green", sea-green);
+    hash-put (adjective_map, "seashell", seashell);
+    hash-put (adjective_map, "selective-yellow", selective-yellow);
+    hash-put (adjective_map, "sepia", sepia);
+    hash-put (adjective_map, "sienna", sienna);
+    hash-put (adjective_map, "silver", silver);
+    hash-put (adjective_map, "sky-blue", sky-blue);
+    hash-put (adjective_map, "slate-blue", slate-blue);
+    hash-put (adjective_map, "slate-gray", slate-gray);
+    hash-put (adjective_map, "snow", snow);
+    hash-put (adjective_map, "spring-green", spring-green);
+    hash-put (adjective_map, "steel-blue", steel-blue);
+    hash-put (adjective_map, "swamp-green", swamp-green);
+    hash-put (adjective_map, "tan", tan);
+    hash-put (adjective_map, "tangerine", tangerine);
+    hash-put (adjective_map, "taupe", taupe);
+    hash-put (adjective_map, "tea-green", tea-green);
+    hash-put (adjective_map, "teal", teal);
+    hash-put (adjective_map, "terra-cotta", terra-cotta);
+    hash-put (adjective_map, "thistle-colored", thistle-colored);
+    hash-put (adjective_map, "turquoise", turquoise);
+    hash-put (adjective_map, "ultramarine", ultramarine);
+    hash-put (adjective_map, "vermilion", vermilion);
+    hash-put (adjective_map, "violet", violet);
+    hash-put (adjective_map, "violet-eggplant", violet-eggplant);
+    hash-put (adjective_map, "violet-red", violet-red);
+    hash-put (adjective_map, "viridian", viridian);
+    hash-put (adjective_map, "wheat-colored", wheat-colored);
+    hash-put (adjective_map, "white", white);
+    hash-put (adjective_map, "wisteria", wisteria);
+    hash-put (adjective_map, "yellow", yellow);
+    hash-put (adjective_map, "yellow-green", yellow-green);
+    hash-put (adjective_map, "rotating", rotating);
+    hash-put (adjective_map, "reciprocating", reciprocating);
+    hash-put (adjective_map, "old", old);
+    hash-put (adjective_map, "shiny", shiny);
+    hash-put (adjective_map, "gross", gross);
+    hash-put (adjective_map, "tepid", tepid);
+    hash-put (adjective_map, "sturdy", sturdy);
+    hash-put (adjective_map, "exceptional", exceptional);
+    hash-put (adjective_map, "imported", imported);
+    hash-put (adjective_map, "domestic", domestic);
+    hash-put (adjective_map, "floating", floating);
+    hash-put (adjective_map, "heavy", heavy);
+    hash-put (adjective_map, "organic", organic);
+    hash-put (adjective_map, "vegan", vegan);
+    hash-put (adjective_map, "waterproof", waterproof);
+    hash-put (adjective_map, "low-carb", low-carb);
+    hash-put (adjective_map, "mysterious", mysterious);
+    hash-put (adjective_map, "hypoallergenic", hypoallergenic);
+    hash-put (adjective_map, "discounted", discounted);
+    hash-put (adjective_map, "peppered", peppered);
+    hash-put (adjective_map, "water-logged", water-logged);
+    hash-put (adjective_map, "imitation", imitation);
+    hash-put (adjective_map, "miniature", miniature);
+    hash-put (adjective_map, "gargantuan", gargantuan);
+    hash-put (adjective_map, "imaginary", imaginary);
+    hash-put (adjective_map, "foreign", foreign);
+    hash-put (adjective_map, "reverse-chirality", reverse-chirality);
+    hash-put (adjective_map, "left-handed", left-handed);
+    hash-put (adjective_map, "momemtum-preserving", momemtum-preserving);
+    hash-put (adjective_map, "sticky", sticky);
+    hash-put (adjective_map, "self-addressed", self-addressed)
+  end

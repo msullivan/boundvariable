@@ -1,0 +1,22 @@
+
+{ this solution works under a sane operational semantics }
+
+{ collapse duplicates }
+Tag t (Tag t d) => Tag t d;
+
+{ flatten }
+Seq (Seq d1 d2) d3 => Seq d1 (Seq d2 d3);
+
+{ distribute }
+Seq (Tag t d1) (Tag t d2) => Tag t (Seq d1 d2);
+
+{ commute tags into order, based on the following order:
+  Bold < Emph < Maj }
+Tag Emph (Tag Bold d) => Tag Bold (Tag Emph d);
+Tag Maj (Tag Emph d) => Tag Emph (Tag Maj d);
+Tag Maj (Tag Bold d) => Tag Bold (Tag Maj d);
+
+{ if nothing else applies! }
+SNF x => x;
+
+.

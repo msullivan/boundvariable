@@ -1,0 +1,17 @@
+
+XXX scoring
+
+XXX spec talks about "machine" sometimes?
+
+XXX make sure programs agree about "certification"
+    "halting" vs "tightest inner loop"
+  etc.
+
+- figure out Ruy's fillmem goodness
+
+- regression suite
+
+FUTURE: send an automated e-mail from certification
+   program?
+
+notes: stop1 can be solved by stop program (cheaper!)

@@ -1,0 +1,45 @@
+let
+    import "std.uh"
+    import "string.uh"
+    import "int.uh"
+    import "list.uh"
+    import "listpair.uh"
+    import "array.uh"
+
+    import "stream.uh"
+    import "growarray.uh"
+    import "random.uh"
+    import "io.uh"
+    import "parse.uh"
+
+    import "ucc.uh"
+
+    fun emit w = 
+        let in
+          putc (chr (w shr 24));
+          putc (chr ((w shr 16) andb 255));
+          putc (chr ((w shr 8) andb 255));
+          putc (chr (w andb 255))
+        end
+in
+  let
+    val ws = ucc-run (allinput ())
+
+    (* only for "uum" style output *)
+ (* do emit (length ws) *)
+
+    do array-app emit ws
+  in
+    ()
+  end
+    handle Subscript => print [Subscript\n]
+         | List => print [List\n]
+         | Match => print [Match\n]
+         | Assemble s => print [Assemble: [s]\n]
+         | Compile s => print [Compile: [s]\n]
+         | Parse s => print [Parse: [s]\n]
+         | Div => print [Div\n]
+         | Radix => print [Radix\n]
+         | UnequalLengths => print [UnequalLengths\n]
+         | IO => print [IO\n]
+end

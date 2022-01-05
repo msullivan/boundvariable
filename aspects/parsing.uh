@@ -1,0 +1,212 @@
+(* parsing for aspects *)
+
+val require-string = provide-string
+val require-parse = provide-parse
+val require-stream = provide-stream
+
+val require-language = provide-language
+val provide-parsing = ()
+
+(* ---------------------------------------------------------------------- *)
+(* tokenizing *)
+
+fun isWhitespaceChar c = 
+	(case c of ?   => true
+             | ?\t => true
+	     | ?\r => true
+	     | ?\n => true
+	     | _ => false)
+	     
+fun isUppercaseLetter c = ord c >= ord ?A andalso ord c <= ord ?Z
+fun isLowercaseLetter c = ord c >= ord ?a andalso ord c <= ord ?z
+fun isDigit c = ord c >= ord ?0 andalso ord c <= ord ?9
+
+fun isIdentifierChar c = isUppercaseLetter c 
+	                     orelse isLowercaseLetter c 
+			     orelse isDigit c
+	
+fun parse-ignore p = p >> parse-succeed ()
+
+(* any whitespace *)
+val whitespace : (unit, char) parser = 
+	parse-ignore (parse-repeat (parse-satisfy isWhitespaceChar))
+
+(* any whitespace with at least one char *)
+val whitespace1 : (unit, char) parser = 
+	parse-ignore (parse-repeat1 (parse-satisfy isWhitespaceChar))
+
+fun char-equals (c1, c2) = (ord c1) = (ord c2)
+
+fun literal s = 
+	let fun help nil = parse-succeed ()
+	      | help (h::t) = (parse-satisfy (fn c => char-equals (c, h)))
+	                       >> (help t)
+	in
+	    help (explode s)
+	end
+
+val identifierString : (string, char) parser = 
+	(parse-repeat (parse-satisfy isIdentifierChar)) parse-wth (fn cs => implode cs)
+
+fun idWithFirst (firstCharCondition) : (string, char) parser = 
+	((parse-satisfy firstCharCondition) && identifierString)
+	parse-wth (fn (f,r) => (implode (f::nil)) ^ r)
+
+(* a constant string is an identifier that starts with an uppercase letter *)
+val constantString = idWithFirst isUppercaseLetter
+(* a variable string is an identifier that starts with an lowercase letter *)
+val variableString = idWithFirst isLowercaseLetter
+
+val comment = 
+    let val startChar = ?{
+	val endChar = ?}
+    in
+	parse-ignore ((parse-satisfy (fn c => char-equals (c, startChar)))
+		      && ((parse-repeat (parse-satisfy (fn c => not (char-equals (c, endChar)))))
+			  && (parse-satisfy (fn c => char-equals (c, endChar)))))
+    end
+
+datatype token = 
+    LeftParenToken
+  | RightParenToken
+  | TestGoesToToken (* -> *)
+  | RuleGoesToToken (* => *)
+  | SemicolonToken 
+  | PeriodToken 
+  | ConstantToken of string
+  | VariableToken of string
+
+fun tokenToString LeftParenToken = "LEFTP"
+  | tokenToString RightParenToken = "RIGHTP"
+  | tokenToString TestGoesToToken = "TGOESTO"
+  | tokenToString RuleGoesToToken = "RGOESTO"
+  | tokenToString SemicolonToken = "SEMI"
+  | tokenToString PeriodToken = "PERIOD"
+  | tokenToString (ConstantToken s) = "CONST:" ^ s
+  | tokenToString (VariableToken s) = "VAR:" ^ s
+
+val tokenParser : (token, char) parser = 
+    whitespace >>
+    ((parse-repeat (comment && whitespace)) >>
+     parse-alt 
+     (((literal "(") parse-return LeftParenToken) ::
+      ((literal ")") parse-return RightParenToken) ::
+      ((literal "->") parse-return TestGoesToToken) ::
+      ((literal "=>") parse-return RuleGoesToToken) ::
+      ((literal ";") parse-return SemicolonToken) ::
+      ((literal ".") parse-return PeriodToken) ::
+      (constantString parse-wth ConstantToken) ::
+      (variableString parse-wth VariableToken) :: nil))
+
+(* ---------------------------------------------------------------------- *)
+(* parsing *)
+
+(* E ::= c | x | E E | (E) 
+   with left-associativity of application
+
+   because the combinators don't do left-recursion, 
+   we build up a list and then reassociate
+   
+   *)
+fun (a) exp (args as (const,
+		      app : a * a -> a,
+		      var)) =
+
+	let
+	    fun associate es = 
+		case es of
+		    h::t => SOME (list-foldl (fn (cur, acc) => app (acc, cur)) h t)
+		  | nil => NONE
+			
+	    (* list of rs *)
+	    fun e () = 
+		(parse-repeat ($ r))
+		(* process the list, keeping in mind that on 
+		   bad programs it can be empty *)
+		parse-when associate
+		
+	    and r () =
+		parse-alt
+		 (* c *) 
+		(((parse-matching (fn (ConstantToken s) => s | _ => raise Match)) -- const) ::
+		 (* x *)
+		 ((parse-matching (fn (VariableToken s) => s | _ => raise Match)) -- var) ::
+	         (* (E) *)
+		 ((parse-matching (fn LeftParenToken => () | _ => raise Match))
+		  >> (($ e) << (parse-matching (fn RightParenToken => () | _ => raise Match))))
+		 :: nil)
+	in 
+	    ($ e)
+	end
+		
+val termParser = exp (fn (s : string) => parse-succeed (Const (intTST s)), 
+		      App, 
+		      fn s => parse-fail)
+	
+val patternParser = exp (fn s => parse-succeed (PConst (intTST s)), 
+			 PApp, 
+			 fn s => parse-succeed (PVar (intTST s)))
+
+(* p sep p terminal
+   
+   returns p * p
+   
+   *)
+fun pair (p, sep, term) = (p << sep) && (p << term)
+
+val ruleParser = pair (patternParser, 
+		       (parse-matching (fn RuleGoesToToken => () | _ => raise Match)),
+		       (parse-matching (fn SemicolonToken => () | _ => raise Match)))
+val testParser = pair (termParser, 
+		       (parse-matching (fn TestGoesToToken => () | _ => raise Match)),
+		       (parse-matching (fn SemicolonToken => () | _ => raise Match)))
+    
+fun manyWithPeriodGen m p = (m p) << (parse-matching (fn PeriodToken => () | _ => raise Match))
+fun zeroOrMoreWithPeriod p = manyWithPeriodGen parse-repeat p
+fun oneOrMoreWithPeriod p = manyWithPeriodGen parse-repeat1 p  
+
+(* the rules must be a non-empty list of rules terminated with a period *)
+val rulesParser : (rule list, token) parser = 
+    oneOrMoreWithPeriod ruleParser
+
+(* the tests can either be empty 
+                        or a possibly-empty list of tests terminated with a period *)
+val testsParser : (simpleTest list, token) parser = 
+    (zeroOrMoreWithPeriod testParser) || (parse-succeed nil)
+
+
+(* ---------------------------------------------------------------------- *)
+(* stream manipulation *)
+
+fun (a,b) parseStreamToStream (p : (a, b) parser) (s : b stream) : a stream =
+	stream-delay (fn _ => 
+		      letcc out in
+		         (letcc fail (* : unit cont *) in
+			    let val (item, newStream) = p (s, fail)
+			    in  
+				throw Cons (item, 
+					    parseStreamToStream p newStream)
+				to out
+			    end
+                         end;
+			 Nil)
+                     end
+		     )
+
+fun parseStreamViaTokens (tp : (token, char) parser)
+                         p (* : (_, token) parser *)
+                         (c : char stream) =
+	parse-stream p 
+	(parseStreamToStream tp c)
+
+(* ---------------------------------------------------------------------- *)
+(* utilities for parsing *)
+
+val parseRules : (char stream) -> (rule list) option = 
+    parseStreamViaTokens tokenParser rulesParser
+
+fun parseTests (c : char stream) : (test list) option = 
+    option-map 
+    (fn tl =>
+     list-map simpleTestToTest tl)
+    (parseStreamViaTokens tokenParser testsParser c)

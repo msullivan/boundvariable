@@ -1,0 +1,461 @@
+
+val provide-assembly = ()
+
+type reg = int
+
+(* SUSP must agree with compile.uh *)
+val zz = 6
+val one = 7
+
+datatype inst =
+  (* A <- B  unless C = 0 *)
+  CMOV of reg * reg * reg
+  (* replace code with array in A,
+     goto address in B *)
+| LOADPROG of reg * reg
+| LITERAL of reg * int (* limited to 24 bits? *)
+| HALT
+| READ of reg
+| WRITE of reg
+(* A <- id of new array with B words *)
+| ALLOC of reg * reg
+(* free register *)
+| FREE of reg
+(* A <- B[C] *)
+| ASUB of reg * reg * reg
+(* A[B] <- C *)
+| UPD of reg * reg * reg
+| ADD of reg * reg * reg
+| MUL of reg * reg * reg
+| DIV of reg * reg * reg
+| NAND of reg * reg * reg
+
+(* advisory ops here. these don't do anything,
+   but might make it easier to optimize or
+   read the code. *)
+(* ... *)
+| COMMENT of string
+ 
+(* macro-ops here. these don't correspond to
+   individual instructions, but can be expanded
+   in place *)
+
+(* jump to destination if test reg is not zero
+   (zero, less-than-zero respectively). give 
+   the test register, the destination, and three
+   temporaries *)
+| JNZ of reg * var * reg * reg
+| JZ  of reg * var * reg * reg
+| JLZ  of reg * var * reg * reg
+
+(* CALLWITH (a, v, t1, t2)
+   call to a label, storing return address
+   (= next instruction) in a *)
+| CALLWITH of reg * var * reg
+
+(* load a literal address into the first
+   register, trashing the second. we simply
+   assume that labels fall within the bit
+   range expressible with literals in a
+   single instruction. (this gives us
+   about three-hundred-meg-sized programs!) *)
+| LITERAL_ADDR of reg * var
+
+(* load a 32-bit word *)
+| LITERAL_ANY of reg * int * reg
+  (* sometimes small enough to use LITERAL.
+     sometimes we can LITERAL and then NOT. *)
+  (* at worst:
+     LITERAL reg, word_hi16
+     LITERAL tmp, 65536
+     MUL     reg <- tmp * reg
+     LITERAL tmp, word_low16
+     ADD     reg <- tmp + reg *)
+
+(* a <- b - c *)
+| SUB of reg * reg * reg
+  (* NAND a, c, c   (* a = ~c *)
+     ADD a, b, a
+     LITERAL d, 1
+     ADD a, t, a
+     *)
+
+(* a <- b | c, trashing d *)
+| OR of reg * reg * reg * reg
+  (* NAND d, b, b
+     NAND a, c, c
+     NAND a, d, a *)
+
+ (* PERF probably a faster way exists? *)
+(* a <- b ^ c, trashing d *)
+| XOR of reg * reg * reg * reg
+  (* OR a, b, c, d
+     NAND d, b, c
+     NAND a, d, a
+     NAND a, a, a *)
+
+  (* a <- ~b *)
+| NOT of reg * reg
+
+| AND of reg * reg * reg
+  (* NAND a, b, c,
+     NAND a, a, a *)
+
+  (* a--, trashing b *)
+| DEC of reg * reg
+  (* a = b - 1 *)
+| DECTO of reg * reg
+
+(* other stuff *)
+(* encode the instruction given
+   with the wrong endianness. we
+   use this for self-checking
+   purposes. *)
+| SWAPEND of inst
+(* just give the word directly *)
+| DATA of int
+
+(* address of this label *)
+| DATALAB of var
+
+ (* reserve one word of space, 
+    but it needn't be initialized*)
+| BSSDATA
+
+(* convenient when calling functions
+   that return lists of instructions *)
+| MANY of inst list
+
+ (* no instruction; just marks this label
+    for this spot *)
+| LABEL of var
+
+fun regword r =
+  if r >= 0 andalso r <= 8 
+  then r
+  else raise Assemble ("bad register: " ^ int-tostring r)
+
+fun triple tag (r1, r2, r3) =
+  (* tag words are lg(14)=4 bits.
+     each reg is lg(8)=3 bits. *)
+    op orb(op shl(tag, 28),
+	   op orb(op shl(regword r1, 6),
+		  op orb(op shl(regword r2, 3),
+			 regword r3)))
+
+val mask_z = triple 15 (0, 0, 0)
+val mask_s = triple 15 (0, 0, 7)
+val mask_d = triple 15 (0, 7, 7)
+val mask_t = triple 15 (7, 7, 7)
+val mask_a = 0 : int
+val mask_0 = 0xFFFFFFFF : int
+
+(* encode an instruction into a 32-bit word *)
+fun encodemask (CMOV r) = (triple 0 r, mask_t)
+  | encodemask (ASUB r) = (triple 1 r, mask_t)
+  | encodemask (UPD r)  = (triple 2 r, mask_t)
+  | encodemask (ADD r)  = (triple 3 r, mask_t)
+  | encodemask (MUL r)  = (triple 4 r, mask_t)
+  | encodemask (DIV r)  = (triple 5 r, mask_t)
+  | encodemask (NAND r) = (triple 6 r, mask_t)
+
+  | encodemask HALT                = (triple 7  (0, 0, 0), mask_z)
+  | encodemask (ALLOC (r1, r2))    = (triple 8  (0, r1, r2), mask_d)
+  | encodemask (FREE r)            = (triple 9  (0, 0, r), mask_s)
+  | encodemask (WRITE r)           = (triple 10 (0, 0, r), mask_s)
+  | encodemask (READ r)            = (triple 11 (0, 0, r), mask_s)
+  | encodemask (LOADPROG (r1, r2)) = (triple 12 (0, r1, r2), mask_d)
+  | encodemask (LITERAL (r, w))    =
+    (if op andb(op shl(0xFFF, 25), w) <> 0
+     then raise Assemble ("literal too large: " ^ int-tostring w)
+     else op orb((* tag *)
+		op shl(13, 28),
+		(* register *)
+		op orb(op shl(regword r, 25),
+		      (* literal *)
+		      w)), mask_0)
+
+  | encodemask (DATA w) = (w, mask_0)
+  | encodemask BSSDATA = (0, mask_a)
+  | encodemask i = raise Assemble "tried to encode a macro instruction"
+
+fun encode i =
+    let
+	val (word, mask) = encodemask i
+    in
+	word
+    end
+
+
+  fun expand_ops il =
+    let
+      fun oneop (SUB (a, b, c)) =
+        ((NAND (one, c, c)):: (* c = ~c *)
+         (ADD (a, b, one))::
+         (LITERAL (one, 1))::
+         (ADD (a, one, a))::nil)
+
+        | oneop (DEC (a, tmp)) =
+        ((NAND (tmp, zz, zz))::
+         (ADD (a, tmp, a))::nil)
+
+        | oneop (DECTO (a, b)) =
+        ((NAND (a, zz, zz))::
+         (ADD (a, b, a))::nil)
+
+        | oneop (OR (a, b, c, tmp)) =
+        (if a = tmp orelse c = tmp
+         then raise Assemble "reg conflict in OR" else ();
+        ((NAND (tmp, b, b)):: (* tmp = ~b *)
+         (NAND (a, c, c))::   (* a = ~c *)
+         (NAND (a, tmp, a))::nil))
+
+        | oneop (AND (a, b, c)) =
+        ((NAND (a, b, c))::
+         (NAND (a, a, a))::nil)
+
+        | oneop (XOR (a, b, c, tmp)) =
+        (if a = b orelse a = c orelse a = tmp
+            orelse b = tmp orelse c = tmp
+         then raise Assemble "reg conflict in XOR" else ();
+        expand_ops 
+        ((OR (a, b, c, tmp))::
+         (NAND (tmp, b, c))::
+         (NAND (a, tmp, a))::
+         (NAND (a, a, a))::nil))
+        | oneop (NOT (a, b)) = ((NAND (a, b, b))::nil)
+        | oneop (LITERAL_ANY (dst, w, tmp)) =
+        if (0xFFF shl 25) andb w <> 0
+        then 
+        (* PERF for most negative numbers, 
+           can do it in two instructions with
+           NOT *)
+
+          (* if low bits are zero, don't load them. 
+             PERF we can get 25(?) bits like this,
+             not just 16
+             *)
+          (if w andb 0xFFFF <> 0 then
+             ((LITERAL(dst, w shr 16))::
+              (LITERAL(tmp, 0x10000))::
+              (MUL(dst, tmp, dst))::
+              (LITERAL(tmp, (w andb 0xFFFF)))::
+              (ADD(dst, tmp, dst))::
+              nil)
+           else
+             (* low bits zero; just shift *)
+             ((LITERAL(dst, w shr 16))::
+              (LITERAL(tmp, 0x10000))::
+              (MUL(dst, tmp, dst))::
+              nil))
+
+        else (LITERAL(dst, w))::nil
+        | oneop (MANY l) = list-concat (list-map oneop l)
+
+        | oneop normal = normal::nil
+
+    in
+      list-concat (list-map oneop il)
+    end
+
+(* makes a program into a vector of words.
+   puts the 'header' code at position 0,
+   Must back-patch jumps to labels whose addresses 
+   are not yet known. *)
+fun linearize header blocks =
+    let
+      fun ++ p = p := !p + 1
+
+      val num_syms = ref 0
+      (* assuming it doesn't already exist *)
+      fun add_sym str =
+          let 
+            val this = !num_syms
+          in
+            ++ num_syms;
+            this
+          end
+
+      (* addresses that need to be backpatched
+         with literal loads. *)
+      val backlist = ref nil
+      fun backpatch addr sym dest reg =
+          backlist := (addr, sym, dest, reg) :: !backlist
+
+      (* same, but for DATALAB instead of LITERAL *)
+      val bdatalist = ref nil
+      fun backdata addr sym dest =
+          bdatalist := (addr, sym, dest) :: !bdatalist
+
+      val labs = ref varmap-empty
+      fun checkduplab l =
+          (case varmap-find l (!labs) of
+             NONE => ()
+           | SOME _ => raise Assemble ("duplicate label: " ^ var-tostring l))
+
+      fun addlab l loc =
+          (checkduplab l;
+           labs := varmap-insert(!labs, l, loc))
+
+      fun getlab l =
+          case varmap-find l (!labs) of
+            NONE => raise Assemble ("can't find label " ^ var-tostring l)
+          | SOME loc => loc
+
+      val prog = growarray-new 0
+
+      (* XXX pos is redundant with growarray-length (?) *)
+      val pos = ref 0
+
+      fun putw w s =
+          let in
+            growarray-push (prog, w);
+            ++ pos
+          end
+
+      fun emit s i = 
+          let val (w, _) = encodemask i
+          in
+            putw w s
+          end
+
+      (* assuming small addresses for now *)
+      fun emit_la s (dst, var) =
+          let
+          in
+            backpatch (!pos) s var dst;
+            (* add an empty slot in the output *)
+            growarray-push (prog, 0);
+            (* skip one inst (linearization will fail later
+                              if this is not backpatched) *)
+            ++ pos
+          end
+
+      (* as above, but this need make no assumptions *)
+      fun emit_dl s dst =
+          let
+          in
+            backdata (!pos) s dst;
+            (* add an empty slot in the output *)
+            growarray-push (prog, 0);
+
+            ++ pos
+          end
+
+      (* emit a single block in the current location. *)
+      fun doblock (lab, ins) =
+          let 
+            val sym_me = add_sym lab
+
+            fun em (LITERAL_ADDR (d, v) :: rest) = (emit_la sym_me (d, v);
+                                                    em rest)
+              | em (DATALAB v :: rest) = (emit_dl sym_me v; em rest)
+
+              | em (LABEL v :: rest) = (addlab v (!pos); em rest)
+
+              (* could do conditional jumps here. *)
+              | em (JNZ (testreg, v, t1, t2) :: rest) =
+                let 
+                  val ft = var-namedvar "jnz_fallthrough"
+                in
+                  em ((LITERAL_ADDR(t1, v))::
+                      (LITERAL_ADDR(t2, ft))::
+                      (CMOV(t2, t1, testreg))::
+                      (LOADPROG(zz, t2))::
+                      nil);
+
+                  (* emit fallthrough label *)
+                  addlab ft (!pos);
+
+                  em rest
+                end
+              | em (JZ (testreg, v, t1, t2) :: rest) =
+                let 
+                  val ft = var-namedvar "jz_fallthrough"
+                in
+                  em ((LITERAL_ADDR(t1, v))::
+                      (LITERAL_ADDR(t2, ft))::
+                      (CMOV(t1, t2, testreg))::
+                      (LOADPROG(zz, t1))::
+                      nil);
+
+                  (* emit fallthrough label *)
+                  addlab ft (!pos);
+
+                  em rest
+                end
+              | em (JLZ (testreg, v, t1, t2) :: rest) =
+                let 
+                  val ft = var-namedvar "jlz_fallthrough"
+                in
+                  (em o expand_ops)
+                      ((LITERAL_ANY (t1, 0x80000000, t2))::
+                       (AND (testreg, testreg, t1))::
+                       (LITERAL_ADDR(t1, ft))::
+                       (LITERAL_ADDR(t2, v))::
+                       (CMOV(t1, t2, testreg))::
+                       (LOADPROG(zz, t1))::
+                       nil);
+
+                      (* emit fallthrough label *)
+                      addlab ft (!pos);
+
+                      em rest
+                end
+
+              | em (CALLWITH (a, lab, t1) :: rest) =
+                let
+                  val next = var-namedvar "call_ret"
+                in
+                  em ((LITERAL_ADDR(a, next))::
+                      (LITERAL_ADDR(t1, lab))::
+                      (LOADPROG(zz, t1))::
+                      nil);
+
+                  (* fallthrough ... *)
+                  addlab next (!pos);
+                  em rest
+                end
+
+              (* ignore .. *)
+              | em (COMMENT _ :: rest) = em rest
+              | em (i :: rest) = (emit sym_me i; em rest)
+              | em nil = ()
+          in
+            addlab lab (!pos);
+            em ins
+          end
+
+      (* cr0 is the self-check and initialization code. *)
+      val cr0 = var-namedvar "__cr0"
+      fun writecr0 () = doblock (cr0, expand_ops header)
+
+      fun dopatch () = 
+          let in
+            (* for each entry in backlist *)
+            list-app (fn (i, sym, dest, reg) =>
+                         let in
+                           growarray-update (prog, i, 
+                                             (encode (LITERAL (reg, getlab dest))))
+                         end) (!backlist);
+            
+            list-app (fn (i, sym, dest) =>
+                         let in
+                           growarray-update (prog, i, (getlab dest))
+                         end) (!bdatalist)
+          end
+
+      val blocks = list-map (fn (l, is) => (l, expand_ops is)) blocks
+            
+    in
+      writecr0 ();
+
+      (* should be at code_start now *)
+      list-app doblock blocks;
+
+      (* now backpatch *)
+      dopatch ();
+
+      growarray-subarray (prog, 0, growarray-length prog)
+
+    end

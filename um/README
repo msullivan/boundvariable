@@ -1,0 +1,34 @@
+
+  Universal Machine              16 Jul 2007
+
+
+The universal machine is a virtual machine that we required
+participants to implement in order to run the software that we
+provided. It is designed to be very simple to implement in a
+variety of languages, while allowing for programs that perform
+reasonably well.
+
+The machine is described in um-spec.txt, the same document we
+gave to participants.
+
+We built many implementations for the UM ourselves, both for the
+purposes of developing the contest and for anticipating problems that
+participants might encounter. (Some of these are tested for by the
+self-check.) We also developed several UM's for pure hack value
+(PostScript, Twelf, um.um).
+
+The fastest UM if you are on an x86 processor is in the x86-tom
+directory. The c-tom UM is almost as fast. sml-fast-tom (compiled with
+mlton) and java-adam are also pretty fast. Not all of these implementations
+are made by language experts, and not all are tuned for speed, so direct
+benchmark comparisons should be taken with a grain of salt.
+
+  c-prof        supports profiling with the Humlock profiling output.
+  um.sml        supports advanced debugging (value watchpoints, etc.)
+  c-net-tom     can be used to run UM binaries on network sockets
+  uml-spoons    a UM implemented in UML (also found in the codex)
+  whistleock    is a UM assembler, which contains an implementation of the
+                universal machine in UM assembly (um.um in the codex)
+  humlock       is our UML compiler
+  ucc           A compiler for C7sus4 (a variant of C), written in
+                UML, that produces UM binaries (also found in the codex)

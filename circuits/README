@@ -1,0 +1,15 @@
+2d.uh - the basic datatypes and some display functions for the abstract 
+  syntax of the um language
+
+2d-eval.uh - an evaluator for the language defined in 2d.uh
+
+2d-examples.uml - some plus and mult examples which can be evaluated with 
+  2d-eval.
+
+2d-parse.uh - a parser for the concrete syntax of the circuits language
+
+2d-com-parse.uh - a parser for the simple commands found in the 2d boxes
+
+raytrace-test.uml - the raytrace tester
+
+2d-parse-example.uml - tests parsing

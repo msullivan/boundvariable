@@ -1,0 +1,12 @@
+
+    "Simple" compiler to 2D               16 Jul 2007
+
+
+This is Tom's attempt at a compiler from MinML to 2D. I believe that
+the layout engine works, but that the minml compiler suffers a problem
+with control dependencies and so is incorrect. I gave up on it to work
+on other puzzles because Karl implemented his own working compiler.
+
+A working minml implementation of the raytracer is in the parent
+directory.
+

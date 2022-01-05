@@ -1,0 +1,123 @@
+
+fun qual-tostring QUnsigned = "unsigned"
+  | qual-tostring QSigned = "signed"
+  | qual-tostring QStatic = "static"
+  | qual-tostring QConst = "const"
+  | qual-tostring QAuto = "auto"
+  | qual-tostring QRegister = "reg"
+
+fun quals-tostring qs = (string-delimit " " (list-map qual-tostring qs))
+                        ^ (case qs of nil => "" | _ => " ")
+
+fun aty-tostring AInt = "int"
+  | aty-tostring AChar = "char"
+  | aty-tostring (APtr (qs, aty)) = [[quals-tostring qs] [aty-tostring aty]*]
+  | aty-tostring (AStruct s) = [struct [s]]
+
+fun ty-tostring (qs, aty) = [[quals-tostring qs][aty-tostring aty]]
+
+fun oper-tostring OAdd = "+"
+  | oper-tostring OSub = "-"
+  | oper-tostring OEq = "=="
+  | oper-tostring ONeq = "!="
+  | oper-tostring OLeq = "<="
+  | oper-tostring OGeq = ">="
+  | oper-tostring OLess = "<"
+  | oper-tostring OGreater = ">"
+  | oper-tostring OBitAnd = "&"
+  | oper-tostring OBitOr = "|"
+  | oper-tostring OBitNot = "~"
+  | oper-tostring OBitXor = "^"
+  | oper-tostring OLogNot = "!"
+  | oper-tostring OLogAnd = "&&"
+  | oper-tostring OLogOr = "||"
+  | oper-tostring ODiv = "/"
+  | oper-tostring OMul = "*"
+  | oper-tostring OIf = ":?"
+  | oper-tostring OComma = ","
+
+and exp-tostring (EInt i) = int-tostring i
+  | exp-tostring (EChar c) = implode (c::nil)
+  | exp-tostring (EVar x) = x
+  | exp-tostring (EPrim (oper, es)) = 
+    [[oper-tostring oper]([string-delimit ", " (list-map exp-tostring es)])]
+  | exp-tostring (EAssign (e1, e2)) = 
+    [[exp-tostring e1] = [exp-tostring e2]]
+  | exp-tostring (EAddrOf e) = [&([exp-tostring e])]
+  | exp-tostring (EDeref e) = [*([exp-tostring e])]
+  | exp-tostring (ECall (f, es)) =
+    [[f]([string-delimit ", " (list-map exp-tostring es)])]
+  | exp-tostring (EUnit) = "()"
+  | exp-tostring (EArray es) = [{[string-delimit ", " (list-map exp-tostring es)]}]
+  | exp-tostring (ECast (ty, e)) = [([ty-tostring ty])[exp-tostring e]]
+  | exp-tostring (ESizeOf ty) = [sizeof([ty-tostring ty])]
+  | exp-tostring (EProj (e, f)) = [[exp-tostring e].[f]]
+
+and dec-tostring (DVar (ty, x, e)) =
+    let in
+      [[ty-tostring ty] [x][case e of SOME e => " = " ^ (exp-tostring e)
+                                    | NONE => ""]]
+    end
+  | dec-tostring (DFun (ty, f, args, body)) =
+    let in
+      [[ty-tostring ty] [f] ([string-delimit ", " 
+                                  (list-map (fn (ty, x) => ty-tostring ty ^ " " ^ x) 
+                                            args)])
+       [stmt-tostring body]
+       ]
+    end
+  | dec-tostring (DStruct (s, fields)) =
+    let in
+      [struct [s] {
+         [string-delimit ";\n  " (list-map (fn (ty, x) => ty-tostring ty ^ " " ^ x) fields)]
+       }]
+    end
+
+and stmt-tostring (SExp e) = exp-tostring e ^ ";"
+  | stmt-tostring (SReturn e) = 
+    [return[case e of SOME e => " " ^ (exp-tostring e) 
+                    | NONE => ""];]
+  | stmt-tostring (SBlock (decs, stmts)) = 
+    let val s = string-delimit "\n" ((list-map dec-tostring decs) 
+                                      @ (list-map stmt-tostring stmts))
+    in
+      [{
+         [s]
+       }
+       ]
+    end
+  | stmt-tostring (SIf (test, conc, alt)) = 
+    let in
+      [if ([exp-tostring test])
+         [stmt-tostring conc]
+       else
+         [stmt-tostring alt]
+       ]  
+    end
+  | stmt-tostring (SBreak) = "break;"
+  | stmt-tostring (SContinue) = "continue;"
+  | stmt-tostring (SGoto l) = "goto " ^ l ^ ";"
+  | stmt-tostring (SLabel l) = l ^ ":"
+  | stmt-tostring (SLoop (init, cond, step, body)) =
+    let in
+      [for ([exp-tostring init]; [exp-tostring cond]; [exp-tostring step])
+       [stmt-tostring body]
+       ]
+    end
+  | stmt-tostring (SAsm _) = "<asm>"
+  | stmt-tostring (SSwitch (e, css)) =
+    let 
+      fun cs-tostring (NONE, s) = [default:
+                                     [stmt-tostring s]
+                                   ]
+
+        | cs-tostring (SOME i, s) = [case [int-tostring i]:
+                                       [stmt-tostring s]
+                                     ]
+      val body = string-concat (list-map cs-tostring css)
+    in
+      [switch ([exp-tostring e]) {
+         [body]
+       }
+       ]
+    end

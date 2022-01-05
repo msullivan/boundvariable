@@ -1,0 +1,582 @@
+  val intro_msg = 
+
+"        +-------------------------------------------+\n" ^
+"        | CORPORATE PAPERWORK SYSTEM ........ v3.14 |\n" ^
+"        +-------------------------------------------+\n" ^
+" \n" ^
+"----------------------------------------------------------------------\n" ^
+"...  CONGRATULATIONS!, and welcome to our 'family', APPLICANT#z39801 !\n" ^
+"All of us are excited about the unique skills and personal traits\n" ^
+"that you bring to the stimulating work environment here at COMPANYNAME\n" ^
+".  You have completed PHASE 5b of JOB APPLICATION PROTOCOLS 0901 , and\n" ^
+"are now qualified to begin training with our new paperwork policy\n" ^
+"processing system, which has been carefully customized especially for\n" ^
+"the way we do things at COMPANYNAME . For maximum efficiency!  \n" ^
+"\n" ^
+"We hope you enjoy the training system, APPLICANT#z39801!\n" ^
+"\n" ^
+"----------------------------------------------------------------------\n" ^
+"NOTE FROM SYSTEM MANAGER:\n" ^
+"\n" ^
+"Sorry, but we haven't got budget approval for the training system\n" ^
+"yet. Until then, we had one of our engineers hack in some quick\n" ^
+"documentation. Type any digit 0-6 and hit enter.\n" ^
+"----------------------------------------------------------------------\n"
+(*
+        +-------------------------------------------+
+        | CORPORATE PAPERWORK SYSTEM ........ v3.14 |
+        +-------------------------------------------+
+ 
+----------------------------------------------------------------------
+...  CONGRATULATIONS!, and welcome to our 'family', APPLICANT#z39801 !
+All of us are excited about the unique skills and personal traits that
+you bring to the stimulating work environment here at COMPANYNAME .
+You have completed PHASE 5b of JOB APPLICATION PROTOCOLS 0901 , and
+are now qualified to begin training with our new paperwork policy
+processing system, which has been carefully customized especially for
+the way we do things at COMPANYNAME . For maximum efficiency!
+
+We hope you enjoy the training system, APPLICANT#z39801!
+
+----------------------------------------------------------------------
+NOTE FROM SYSTEM MANAGER:
+
+Sorry, but we haven't got budget approval for the training system
+yet. Until then, we had one of our engineers hack in some quick
+documentation. Type any digit 0-6 and hit enter.
+----------------------------------------------------------------------
+ 
+*)
+
+val doc0_msg = 
+
+"Local Documentation 2.7.0\n" ^
+"-------------------------\n" ^
+"\n" ^
+"The Corporate Paperwork System is designed to streamline changes in\n" ^
+"paperwork policy management. As a management trainee, you will learn\n" ^
+"how policies are implemented by office sub-managerial-level employage\n" ^
+"unit teams. You have been tasked with using this knowledge to achieve\n" ^
+"Work Handlement Accomplishing Targets set by your supervisor.\n" ^
+"\n" ^
+"Remember, you are responsible for setting policy in all of the\n" ^
+"Peripheral Offices that report to you, room numbers PO 0 through PO\n" ^
+"99. Effective communication with the Central Offices is critical!\n"
+
+(*
+
+Local Documentation 2.7.0
+-------------------------
+
+The Corporate Paperwork System is designed to streamline changes in
+paperwork policy management. As a management trainee, you will learn
+how policies are implemented by office sub-managerial-level employage
+unit teams. You have been tasked with using this knowledge to achieve
+Work Handlement Accomplishing Targets set by your supervisor.
+
+Remember, you are responsible for setting policy in all of the
+Peripheral Offices that report to you, room numbers PO 0 through PO
+99. Effective communication with the Central Offices is critical!
+
+*)
+
+val doc1_msg =
+
+"Local Documentation 2.7.1\n" ^
+"-------------------------\n" ^
+"\n" ^
+"WHAT IS A POLICY?\n" ^
+"\n" ^
+"A POLICY defines the behavior of an office when that office receives\n" ^
+"paperwork. Whenever an office receives some paperwork, it must create\n" ^
+"paperwork, and send this paperwork to another office. Thus, a policy\n" ^
+"consists of two parts: (1) Instructions for how to determine from the\n" ^
+"received paperwork where the office should send the paperwork it\n" ^
+"produces, (the RECIPIENT) and (2) Instructions for how it produce\n" ^
+"paperwork from the paperwork it receives. (the PROCESS)\n" ^
+"\n" ^
+"To write down a policy, write down the recipient immediately followed\n" ^
+"by the process.\n"
+
+(*
+
+Local Documentation 2.7.1
+-------------------------
+
+WHAT IS A POLICY?
+
+A POLICY defines the behavior of an office when that office receives
+paperwork. Whenever an office receives some paperwork, it must create
+paperwork, and send this paperwork to another office. Thus, a policy
+consists of two parts: (1) Instructions for how to determine from the
+received paperwork where the office should send the paperwork it
+produces, (the RECIPIENT) and (2) Instructions for how it produce
+paperwork from the paperwork it receives. (the PROCESS)
+
+To write down a policy, write down the recipient immediately followed
+by the process.
+
+*)
+
+val doc2_msg =
+"Local Documentation 2.7.2\n" ^
+"-------------------------\n" ^
+"\n" ^
+"WHAT ARE RECIPIENTS?\n" ^
+"\n" ^
+"A valid recipient expression is either one of the Central Offices,\n" ^
+"a single character from the following list:\n" ^
+"\n" ^
+"    +    (The Department of Additional Services)\n" ^
+"    -    (The Department of Differential Services)\n" ^
+"    *    (The Department of Productive Services)\n" ^
+"    ?    (The Department of Questionable Services)\n" ^
+"    &    (The Department of Conjunctive Services)\n" ^
+"    |    (The Department of Disjunctive Services)\n" ^
+"\n" ^
+"or else it is a staplification expression. (see local documentation\n" ^
+"2.7.3) In the latter case, the staplification must have as its RESULT\n" ^
+"a single piece of paper containing a number. The Peripheral Office\n" ^
+"with that room number will then be the recipient.\n"
+
+(*
+
+Local Documentation 2.7.2
+-------------------------
+
+WHAT ARE RECIPIENTS?
+
+A valid recipient expression is either one of the Central Offices,
+a single character from the following list:
+
+    +    (The Department of Additional Services)
+    -    (The Department of Differential Services)
+    *    (The Department of Productive Services)
+    ?    (The Department of Questionable Services)
+    &    (The Department of Conjunctive Services)
+    |    (The Department of Disjunctive Services)
+
+or else it is a staplification expression. (see local documentation
+2.7.3) In the latter case, the staplification must have as its RESULT
+a single piece of paper containing a number. The Peripheral Office
+with that room number will then be the recipient.
+
+*)
+
+val doc3_msg = 
+"Local Documentation 2.7.3\n" ^
+"-------------------------\n" ^
+"\n" ^
+"WHAT IS STAPLIFICATION?\n" ^
+"\n" ^
+"Every office is equipped with a top-of-the line Staplematic X320\n" ^
+"stapler, a double-action destaplifier, and a licensed Copyograph\n" ^
+"machine; A STAPLIFICATION is an expression explaining how to use this\n" ^
+"fine office equipment to turn one piece of paperwork into another.  \n" ^
+"\n" ^
+"You may not yet be familiar with the SM X320! In the hands of a\n" ^
+"trained professional, it can be used to create richly-structured\n" ^
+"paperwork. Every STaple-Unified Paperwork Legible Entity (or 'STUPLE')\n" ^
+"produced by the stapler has a FRONT part and a BACK part, and each of\n" ^
+"these parts may either be a single sheet of paper bearing a number, or\n" ^
+"else may be a stuple itself.\n" ^
+"\n" ^
+"As everyone knows, the destaplifier can be used to recover the front\n" ^
+"or back part of a stuple.\n" ^
+"\n" ^
+"Every staplification has a piece of paperwork that is its RESULT. Here\n" ^
+"is how to create staplification expressions, and a description of what\n" ^
+"their results are:\n" ^
+"\n" ^
+"the character    _    is a staplification that results in the\n" ^
+"                      paperwork received by an office.  This character\n" ^
+"                      may be freely used many times in a\n" ^
+"                      staplification expression, thanks to the\n" ^
+"                      Copyograph machine's ability to make copies of\n" ^
+"                      paperwork.\n" ^
+"the character    [   (followed immediately by two other \n" ^
+"                      staplification expressions) instructs the\n" ^
+"                      sub-managerial-level employage unit team to use\n" ^
+"                      the X320 on the results of the two experssions\n" ^
+"	              that follow. The result of the first expression\n" ^
+"	              becomes the front of the stuple, and the result\n" ^
+"	              of the second expression becomes the back.\n" ^
+"the character    <   (followed immediately by another staplification\n" ^
+"                      expression) invokes the destaplifier. It results\n" ^
+"                      in the front part of the result of the\n" ^
+"                      expression that follows it. Similarly, \n" ^
+"the character    >   (followed immediately by another staplification\n" ^
+"                      expression) also invokes the destaplifier.\n" ^
+"                      It results in the back part of the result of the\n" ^
+"                      expression that follows it.\n" ^
+"any digit        0-9  instructs the employage unit team to take a \n" ^
+"                      Sharpley Eterna-Ink Marker and inscribe that number\n" ^
+"                      on a sheet of paper. The result is this sheet of\n" ^
+"                      paper.\n" ^
+"\n" ^
+"For example, the staplification '[[123' results (regardless of what\n" ^
+"paperwork the office might have received) in a stuple whose back is a\n" ^
+"single sheet of paper with '3' on it, and whose front is a stuple\n" ^
+"whose front is '1', and whose back is '2'.\n" ^
+"\n" ^
+"If this paperwork was in turn given to an office whose process was the\n" ^
+"staplification '[>_7', then the result would be a stuple whose front\n" ^
+"was '3', and whose back was '7'.\n" ^
+"\n" ^
+"We can also use staplification expressions to simply describe pieces\n" ^
+"of paperwork. Thus we would say that the paperwork '[[123', given to\n" ^
+"an office whose process is '[>_7', results in the paperwork '[37'.\n"
+
+
+(*
+
+Local Documentation 2.7.3
+-------------------------
+
+WHAT IS STAPLIFICATION?
+
+Every office is equipped with a top-of-the line Staplematic X320
+stapler, a double-action destaplifier, and a licensed Copyograph
+machine; A STAPLIFICATION is an expression explaining how to use this
+fine office equipment to turn one piece of paperwork into another.  
+
+You may not yet be familiar with the SM X320! In the hands of a
+trained professional, it can be used to create richly-structured
+paperwork. Every STaple-Unified Paperwork Legible Entity (or "STUPLE")
+produced by the stapler has a FRONT part and a BACK part, and each of
+these parts may either be a single sheet of paper bearing a number, or
+else may be a stuple itself.
+
+As everyone knows, the destaplifier can be used to recover the front
+or back part of a stuple.
+
+Every staplification has a piece of paperwork that is its RESULT. Here
+is how to create staplification expressions, and a description of what
+their results are:
+
+the character    _    is a staplification that results in the
+                      paperwork received by an office.  This character
+                      may be freely used many times in a
+                      staplification expression, thanks to the
+                      Copyograph machine's ability to make copies of
+                      paperwork.
+the character    [   (followed immediately by two other 
+                      staplification expressions) instructs the
+                      sub-managerial-level employage unit team to use
+                      the X320 on the results of the two experssions
+	              that follow. The result of the first expression
+	              becomes the front of the stuple, and the result
+	              of the second expression becomes the back.
+the character    <   (followed immediately by another staplification
+                      expression) invokes the destaplifier. It results
+                      in the front part of the result of the
+                      expression that follows it. Similarly, 
+the character    >   (followed immediately by another staplification
+                      expression) also invokes the destaplifier.
+                      It results in the back part of the result of the
+                      expression that follows it.
+any digit        0-9  instructs the employage unit team to take a 
+                      Sharpley Eterna-Ink Marker and inscribe that number
+                      on a sheet of paper. The result is this sheet of
+                      paper.
+
+For example, the staplification "[[123" results (regardless of what
+paperwork the office might have received) in a stuple whose back is a
+single sheet of paper with "3" on it, and whose front is a stuple
+whose front is "1", and whose back is "2".
+
+If this paperwork was in turn given to an office whose process was the
+staplification "[>_7", then the result would be a stuple whose front
+was "3", and whose back was "7".
+
+We can also use staplification expressions to simply describe pieces
+of paperwork. Thus we would say that the paperwork "[[123", given to
+an office whose process is "[>_7", results in the paperwork "[37".
+
+*)
+
+val doc4_msg = 
+"Local Documentation 2.7.4\n" ^
+"-------------------------\n" ^
+"\n" ^
+"WHAT DO THE CENTRAL OFFICES DO?\n" ^
+"\n" ^
+"------------------------------------------------\n" ^
+"    +    (The Department of Additional Services)\n" ^
+"------------------------------------------------\n" ^
+"\n" ^
+"When it receives a piece of paperwork of the form\n" ^
+"\n" ^
+"         [M[N[PR\n" ^
+"\n" ^
+"Where M, N, R are sheets of paper with numbers on them, (P can be\n" ^
+"any piece of paperwork, including a stuple of more paperwork) the\n" ^
+"department will compute the sum A = M + N, and send the paperwork\n" ^
+"\n" ^
+"         [AP\n" ^
+"\n" ^
+"to the Peripheral Office whose room number is R. If any of M, N, R are\n" ^
+"not single sheets of paper bearing numbers, then the paperwork is in\n" ^
+"violation of corporate policy WFF-17, and the responsible parties will\n" ^
+"be reprimanded.\n" ^
+"\n" ^
+"--------------------------------------------------\n" ^
+"    -    (The Department of Differential Services)\n" ^
+"--------------------------------------------------\n" ^
+"\n" ^
+"Operates in the same way, except that it computes the difference \n" ^
+"A = M - N\n" ^
+"\n" ^
+"------------------------------------------------\n" ^
+"    *    (The Department of Productive Services)\n" ^
+"------------------------------------------------\n" ^
+"\n" ^
+"Operates in the same way, except that it computes the product\n" ^
+"A = M * N\n" ^
+"\n" ^
+"-------------------------------------------------\n" ^
+"    &    (The Department of Conjunctive Services)\n" ^
+"-------------------------------------------------\n" ^
+"\n" ^
+"Operates in the same way, except that it computes the logical\n" ^
+"conjunction A = M & N in the following sense: if both M and N are not\n" ^
+"0, then A is 1. Otherwise, A is 0.\n" ^
+"\n" ^
+"-------------------------------------------------\n" ^
+"    |    (The Department of Disjunctive Services)\n" ^
+"-------------------------------------------------\n" ^
+"\n" ^
+"Operates in the same way, except that it computes the logical\n" ^
+"disjunction A = M | N in the following sense: if both M and N are\n" ^
+"0, then A is 0. Otherwise, A is 1.\n" ^
+"\n" ^
+"--------------------------------------------------\n" ^
+"    ?    (The Department of Questionable Services)\n" ^
+"--------------------------------------------------\n" ^
+"\n" ^
+"When it receives a piece of paperwork of the form\n" ^
+"\n" ^
+"         [B[[PR[QS\n" ^
+"\n" ^
+"Where B, R, S are sheets of paper with numbers on them, (P and Q can\n" ^
+"be any piece of paperwork) the department will inspect B to see\n" ^
+"whether its number is different from 0. If it is some number different\n" ^
+"from zero, the department will send the paperwork\n" ^
+"\n" ^
+"         [BP\n" ^
+"\n" ^
+"to the Peripheral Office with room number R. Otherwise, it will send\n" ^
+"the paperwork\n" ^
+"\n" ^
+"         [BQ\n" ^
+"\n" ^
+"to room number S. If any of B, R, S are not single sheets of paper\n" ^
+"bearing numbers, then the paperwork is in violation of corporate\n" ^
+"policy WFF-17, and the responsible parties will be reprimanded.\n"
+
+(* 
+
+Local Documentation 2.7.4
+-------------------------
+
+WHAT DO THE CENTRAL OFFICES DO?
+
+------------------------------------------------
+    +    (The Department of Additional Services)
+------------------------------------------------
+
+When it receives a piece of paperwork of the form
+
+         [M[N[PR
+
+Where M, N, R are sheets of paper with numbers on them, (P can be
+any piece of paperwork, including a stuple of more paperwork) the
+department will compute the sum A = M + N, and send the paperwork
+
+         [AP
+
+to the Peripheral Office whose room number is R. If any of M, N, R are
+not single sheets of paper bearing numbers, then the paperwork is in
+violation of corporate policy WFF-17, and the responsible parties will
+be reprimanded.
+
+--------------------------------------------------
+    -    (The Department of Differential Services)
+--------------------------------------------------
+
+Operates in the same way, except that it computes the difference 
+A = M - N
+
+------------------------------------------------
+    *    (The Department of Productive Services)
+------------------------------------------------
+
+Operates in the same way, except that it computes the product
+A = M * N
+
+-------------------------------------------------
+    &    (The Department of Conjunctive Services)
+-------------------------------------------------
+
+Operates in the same way, except that it computes the logical
+conjunction A = M & N in the following sense: if both M and N are not
+0, then A is 1. Otherwise, A is 0.
+
+-------------------------------------------------
+    |    (The Department of Disjunctive Services)
+-------------------------------------------------
+
+Operates in the same way, except that it computes the logical
+disjunction A = M | N in the following sense: if both M and N are
+0, then A is 0. Otherwise, A is 1.
+
+--------------------------------------------------
+    ?    (The Department of Questionable Services)
+--------------------------------------------------
+
+When it receives a piece of paperwork of the form
+
+         [B[[PR[QS
+
+Where B, R, S are sheets of paper with numbers on them, (P and Q can
+be any piece of paperwork) the department will inspect B to see
+whether its number is different from 0. If it is some number different
+from zero, the department will send the paperwork
+
+         [BP
+
+to the Peripheral Office with room number R. Otherwise, it will send
+the paperwork
+
+         [BQ
+
+to room number S. If any of B, R, S are not single sheets of paper
+bearing numbers, then the paperwork is in violation of corporate
+policy WFF-17, and the responsible parties will be reprimanded.
+
+*)
+
+val doc5_msg = 
+"Local Documentation 2.7.5\n" ^
+"-------------------------\n" ^
+"\n" ^
+"HOW DO I SET POLICY?\n" ^
+"\n" ^
+"To clear all policies in the Peripheral Offices, use the command\n" ^
+"\n" ^
+"clear\n" ^
+"\n" ^
+"To create a new policy, use the command\n" ^
+"\n" ^
+"enact [policy]\n" ^
+"\n" ^
+"This will result in [policy] being applied to the next Peripheral\n" ^
+"Office that does not already have a policy.\n" ^
+"\n" ^
+"To see what policies have been enacted, use the command\n" ^
+"\n" ^
+"show\n"
+
+(* 
+
+Local Documentation 2.7.5
+-------------------------
+
+HOW DO I SET POLICY?
+
+To clear all policies in the Peripheral Offices, use the command
+
+clear
+
+To create a new policy, use the command
+
+enact [policy]
+
+This will result in [policy] being applied to the next Peripheral
+Office that does not already have a policy.
+
+To see what policies have been enacted, use the command
+
+show
+
+To test the working of your policy, you can use the command
+
+test [staplification]
+
+where [staplification] is a staplification not containing the
+character '_'. The paperwork that the staplification results in will
+be sent to PO 0. If you want to see a final answer for the work being
+done, remember that your own office is in PO 100 --- arrange policy to
+have the answer sent there.
+
+*)
+
+val doc6_msg = 
+"Local Documentation 2.7.6\n" ^
+"-------------------------\n" ^
+"\n" ^
+"WHAT AM I SUPPOSED TO DO?\n" ^
+"\n" ^
+"To find out your current Work Handlement Accomplishing Target (WHAT) use the command\n" ^
+"\n" ^
+"what\n" ^
+"\n" ^
+"To report that you believe you have completed your current target, and\n" ^
+"to request another, use the command\n" ^
+"\n" ^
+"done\n"
+
+(* 
+
+Local Documentation 2.7.6
+-------------------------
+
+WHAT AM I SUPPOSED TO DO?
+
+To find out your current Work Handlement Accomplishing Target (WHAT) use the command
+
+what
+
+To report that you believe you have completed your current target, and
+to request another, use the command
+
+done
+
+*)
+
+val start_task = 
+"+--------------------------+\n" ^
+"|WHAT#49808729-329         |\n" ^
+"+==========================+\n" ^
+"| STATUS: INCOMPLETE       |\n" ^
+"|                          |\n" ^
+"+--------------------------+ \n" ^
+"\n" ^
+"---BEGIN WHAT#49808729-329---\n" ^
+"\n" ^
+"URGENT ... APPLICANT#Z39801 HAS JUST BEEN HIRED AS PO MANAGER AND\n" ^
+"REQUIRES STANDARD WELCOME PACKET ... WE WILL SEND THE PACKET TO\n" ^
+"PERIPHERAL OFFICE 0 WHENEVER YOU ARE READY ... MAKE SURE THAT IT GETS\n" ^
+"TO APPLICANT#Z39801'S OFFICE AT PO 100 ...\n" ^
+"\n" ^
+"---END WHAT#49808729-329---\n"
+
+(* 
+
++--------------------------+
+|WHAT#49808729-329         |
++==========================+
+| STATUS: INCOMPLETE       |
+|                          |
++--------------------------+ 
+
+---BEGIN WHAT#49808729-329---
+
+URGENT ... APPLICANT#Z39801 HAS JUST BEEN HIRED AS PO MANAGER AND
+REQUIRES STANDARD WELCOME PACKET ... WE WILL SEND THE PACKET TO
+PERIPHERAL OFFICE 0 WHENEVER YOU ARE READY ... MAKE SURE THAT IT GETS
+TO APPLICANT#Z39801'S OFFICE AT PO 100 ...
+
+---END WHAT#49808729-329---
+
+*)

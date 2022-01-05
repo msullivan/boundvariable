@@ -1,0 +1,284 @@
+(* included from rml.uml *)
+
+fun typ-tostring UnitType = "()"
+  | typ-tostring VoidType = "void"
+  | typ-tostring StringType = "string"
+  | typ-tostring IntType = "int"
+  | typ-tostring RoomType = "room"
+  | typ-tostring ItemType = "item"
+  | typ-tostring KindType = "kind"
+  | typ-tostring (DataType (d, _)) = d
+  | typ-tostring (ConstructType (args, res)) =
+    (* ENH better tostring for constructor types *)
+    let val s = case args of
+                  nil => "{ }"
+                | arg1::args => (list-foldl (fn (arg, s) => s ^ ", " ^ (typ-tostring arg))
+                                            ("{ " ^ (typ-tostring arg1)) args) ^ " }"
+    in
+      s ^ " => " ^ (typ-tostring res)
+    end
+
+  | typ-tostring (FunType (args, res)) =
+    let val s = case args of
+                  nil => typ-tostring UnitType
+                | arg::nil => typ-tostring arg
+                | arg1::args => (list-foldl (fn (arg, s) => s ^ ", " ^ (typ-tostring arg))
+                                            ("(" ^ (typ-tostring arg1)) args) ^ ")"
+    in
+      s ^ " -> " ^ (typ-tostring res)
+    end
+
+fun typ-equals (UnitType, UnitType) = true
+  | typ-equals (VoidType, VoidType) = true
+  | typ-equals (StringType, StringType) = true
+  | typ-equals (IntType, IntType) = true
+  | typ-equals (RoomType, RoomType) = true
+  | typ-equals (ItemType, ItemType) = true
+  | typ-equals (KindType, KindType) = true
+  | typ-equals (DataType (s1, (!)cnstrs1), DataType (s2, (!)cnstrs2)) =
+        (* must handle recursive type references in datatypes specially *)
+    let fun typ-equals' (typ1 as DataType (s1', _), typ2 as DataType (s2', _)) = 
+            string-equals (s1, s1') andalso string-equals (s2, s2')
+            orelse typ-equals (typ1, typ2)
+          | typ-equals' (typ1, typ2) = 
+            typ-equals (typ1, typ2)
+
+        fun cnstr-equals ((s1, typs1), (s2, typs2)) =
+            string-equals (s1, s2) andalso
+            listpair-all typ-equals' (typs1, typs2)
+    in
+      string-equals (s1, s2) andalso
+      listpair-all cnstr-equals (cnstrs1, cnstrs2)
+    end
+      handle UnequalLengths => false
+  | typ-equals (ConstructType (args1, res1), ConstructType (args2, res2)) =
+    let in
+      (listpair-all typ-equals (args1, args2)) andalso
+      typ-equals (res1, res2)
+    end
+      handle UnequalLengths => false
+  | typ-equals (FunType (args1, res1), FunType (args2, res2)) =
+    let in
+      (listpair-all typ-equals (args1, args2)) andalso
+      typ-equals (res1, res2)
+    end
+      handle UnequalLengths => false
+  | typ-equals (_, _) = false
+
+fun tis t t' = if typ-equals (t, t') then () else raise Match
+
+fun check_exp ctx (Unit) = UnitType
+
+  | check_exp ctx (String s) = StringType
+
+  | check_exp ctx (Int i) = IntType
+
+  | check_exp ctx (Var x) = lookup ctx x
+
+  | check_exp ctx (Construct (c, es)) =
+    let val es = list-map (fn (_, e) => e) es
+        val typs = list-map (check_exp ctx) es in
+      case lookup ctx c of
+        ConstructType (ctyps, dtyp) => 
+        if listpair-all typ-equals (typs, ctyps) then dtyp
+        else raise RML ("of an invalid argument to constructor " ^ c
+               ^ " (expected { " ^ (list-foldl (fn (typ, s) => s ^ (typ-tostring typ) ^ " ")
+                                              "" ctyps)
+               ^ "} but found { " ^ (list-foldl (fn (typ, s) => s ^ (typ-tostring typ) ^ " ") 
+                                                "" typs)
+               ^ "})")
+      | _ => raise RML ("of an unknown constructor " ^ c)
+    end
+      handle UnequalLengths => raise RML ("of wrong number of arguments to constructor " ^ c)
+
+  | check_exp ctx (Prim (Cat, e1, e2)) =
+    let in 
+      case (check_exp ctx e1, check_exp ctx e2) of
+        (StringType, StringType) => StringType
+      | (_, _) => raise RML "^ requires strings as arguments"
+    end
+
+  | check_exp ctx (Prim (Equals, e1, e2)) =
+    let in 
+      case (check_exp ctx e1, check_exp ctx e2) of
+        (IntType, IntType) => BoolType
+      | (StringType, StringType) => BoolType
+      | (_, _) => raise RML "equality requires two arguments of the same type"
+    end
+
+  | check_exp ctx (Prim (primop, e1, e2)) =
+    let in 
+      case (check_exp ctx e1, check_exp ctx e2) of
+        (IntType, IntType) => (case primop of Less => BoolType
+                                            | LessEquals => BoolType
+                                            | Greater => BoolType
+                                            | GreaterEquals => BoolType
+                                            | _ => IntType)
+      | (_, _) => raise RML "arithmetic operators require integer arguments"
+    end
+
+  | check_exp ctx (Call (f, args)) =
+    let val arg_types = list-map (check_exp ctx) args in
+      case lookup ctx f of
+        FunType (formal_types, res_type) =>
+          let do listpair-app (fn (arg_type, formal_type) => 
+                                  if typ-equals (arg_type, formal_type) then ()
+                                  else raise RML ("function " ^ f ^ 
+                                                  " requires an argument of type " ^ 
+                                                  (typ-tostring formal_type) ^
+                                                  " instead of " ^
+                                                  (typ-tostring arg_type)))
+                              (arg_types, formal_types)
+            handle UnequalLengths => raise RML ("of wrong number of arguments at call to " ^ f)
+          in
+            res_type
+          end
+      | ConstructType _ => raise RML ("function calls require a function, not constructor " ^ f ^ " (maybe missing { ... }?)")
+      | t => raise RML ("it requires a function instead of " ^ f ^ " with type " ^
+                          (typ-tostring t))
+    end
+
+  | check_exp ctx (SecureString _) = raise RML "BUG: didn't expect SecureString in check_exp"
+
+  | check_exp ctx (Room _) = raise RML "BUG: didn't expect Room in check_exp"
+
+  | check_exp ctx (Item _) = raise RML "BUG: didn't expect Item in check_exp"
+
+  | check_exp ctx (Kind _) = raise RML "BUG: didn't expect Kind in check_exp"
+
+  | check_exp ctx (Fun _) = raise RML "BUG: didn't expect Fun in check_exp"
+
+fun filter_stmts sts = list-filter (fn Skip => false | _ => true) sts
+
+(* returns a pair of a context and a boolean; the boolean is true if all paths
+  return a value *)
+
+fun check_stmts res tctx ctx ((Do e)::sts) : (bool * (string * typ) list) =
+    (ignore (check_exp ctx e);
+     check_stmts res tctx ctx sts) 
+
+  | check_stmts res tctx ctx ((Type (t, cnstrs))::sts) = 
+    let val cnstrs = list-sort cnstr-compare cnstrs
+        val dtyp_cnstrs = ref nil
+        val dtyp = DataType (t, dtyp_cnstrs)
+        val tctx = (t, dtyp)::tctx
+        do dtyp_cnstrs := (list-map (fn (c, args) => (c, list-map (lookup tctx) args))
+                                    cnstrs) 
+        val ctx = (list-rev (list-map (fn (c, args) => (c, ConstructType 
+                                                               (list-map (lookup tctx) args,
+                                                                dtyp)))
+                                      cnstrs))
+                  @ ctx
+        (* Check to see if the type is also declared internally. *)
+        do case list-find (fn (t', _) => t seq t') types
+            of NONE => ()
+             | SOME (_, dtyp') => 
+               let in 
+                 if typ-equals (dtyp, dtyp') then ()
+                 else raise RML ("declared type " ^ t 
+                                 ^ " does not match external definition")
+               end
+    in
+      check_stmts res tctx ctx sts
+    end
+
+  | check_stmts res tctx ctx ((Extern (s, args, rs))::sts) =
+    let val typ = case rs of
+                    nil => FunType (list-map (lookup tctx) args, UnitType)
+                  | r::nil => FunType (list-map (lookup tctx) args,
+                                       lookup tctx r)
+                  (* No externs define results of tuple type *)
+                  | _ => raise RML ("extern " ^ s ^ " does not have the proper type")
+    in
+      case list-find (fn (s', _, _) => s seq s') rml-externs
+       of SOME (_, _, typ') => 
+          if typ-equals (typ, typ') then
+            check_stmts res tctx ((s, typ')::ctx) sts
+          else 
+            raise RML ("extern " ^ s ^ " does not have the proper type "
+                       ^ "(expected " ^ (typ-tostring typ') ^ ")")
+        | NONE => raise RML ("of an unknown extern '" ^ s ^ "'")
+    end
+
+  | check_stmts res tctx ctx ((ExternType s)::sts) =
+    let in 
+      case list-find (fn (s', _) => s seq s') rml-externtypes 
+       of SOME (_, typ) => check_stmts res ((s, typ)::tctx) ctx sts
+        | NONE => raise RML ("of an unknown extern type '" ^ s ^ "'")
+    end
+
+  | check_stmts res tctx ctx ((FunDecl (f, formals, r, body))::sts) =
+    let val res' = case r of SOME r => lookup tctx r
+                           | NONE => UnitType
+        val ftype = FunType (list-map (fn (arg, t) => lookup tctx t) formals, res')
+        val ctx = (f, ftype)::ctx
+        val ctx' = (list-rev (list-map (fn (arg, t) => (arg, lookup tctx t)) formals)) 
+                   @ ctx
+        val (trm, _) = check_stmts res' tctx ctx' (filter_stmts body)
+        do if trm then ()
+           else raise RML ("not all control paths of " ^ f ^ " return a result")
+    in
+      check_stmts res tctx ctx sts
+    end
+
+  | check_stmts res tctx ctx ((Case (e, branches))::sts) =
+    let val typ = check_exp ctx e
+        fun cmp ((c1, _, _), (c2, _, _)) = string-compare (c1, c2)
+        val branches = list-sort cmp branches
+    in
+      case typ of
+        DataType (t, (!)cnstrs) => 
+        let fun do_branch ((c, typs), (c', args, st), trm) =
+                if not (c seq c') then 
+                  raise RML ("of a missing case branch for " ^ c)
+                else 
+                  let val ctx = (list-zipEq (args, typs)) @ ctx
+                      val (trm', _) = check_stmts res tctx ctx (filter_stmts st)
+                  in
+                    trm andalso trm'
+                  end
+            val () = if (list-length cnstrs) = (list-length branches) then ()
+                     else raise RML "of a wrong number of branches in case"
+            val trm = listpair-foldl do_branch true (cnstrs, branches)
+                handle UnequalLengths => raise RML "of a wrong number of branches in case"
+        in
+          case sts of nil => (trm, ctx)
+                    | _ => check_stmts res tctx ctx sts
+        end
+      | _ => raise RML "case expressions require an expression of sum type"
+    end
+
+  | check_stmts res tctx ctx ((Bind (s, e))::sts) =
+    let val typ = check_exp ctx e
+    in
+      check_stmts res tctx ((s, typ)::ctx) sts
+    end
+
+  | check_stmts res tctx ctx ((Return e)::sts) =
+    (* ENH we'd get better error messages if we checked that typ is not
+      ConstructType (since constructors shouldn't be first class -- this is
+      true for many ctx lookups! *)
+    let val typ = check_exp ctx e in
+      if typ-equals (res, typ) 
+      then case sts of nil => (true, ctx)
+                     | _ => raise RML "of unreachable code after return"
+      else if typ-equals (res, VoidType)
+      then raise RML "of a return statement at the top-level"
+      else raise RML "a return value does not match declared type"
+    end
+
+  | check_stmts res tctx ctx (Skip::sts) = raise RML "BUG: didn't expect a skip"
+
+  | check_stmts res tctx ctx ((Block sts')::nil) =
+    let val (trm, _) = check_stmts res tctx ctx sts'
+    in
+      (trm, ctx)
+    end
+
+  | check_stmts res tctx ctx ((Block sts')::sts) =
+    (ignore (check_stmts res tctx ctx (filter_stmts sts'));
+     check_stmts res tctx ctx sts)
+
+  | check_stmts UnitType tctx ctx nil = (true, ctx)
+
+  | check_stmts res tctx ctx nil = (false, ctx)

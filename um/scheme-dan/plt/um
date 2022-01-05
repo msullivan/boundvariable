@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "NOTE: THIS SCRIPT ONLY WORKS FROM homework7/langs/um/scheme-dan/plt/"
+mzscheme -f run-compiled-um.scm $1

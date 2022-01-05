@@ -1,0 +1,23 @@
+
+let
+  import "std.uh"
+  import "string.uh"
+  import "array.uh"
+  import "int.uh"
+  import "list.uh"
+  import "listpair.uh"
+  import "growarray.uh"
+  import "random.uh"
+  import "io.uh"
+  import "stream.uh"
+  import "hash.uh"
+  import "parse.uh"
+  import "bigint.uh"
+  import "des.uh"
+  import "obfuscate.uh"
+  import "publications.uh"
+
+  import "adventure.uh"
+in
+  runAdventure ("adventure"::nil)
+end

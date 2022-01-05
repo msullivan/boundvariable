@@ -1,0 +1,29 @@
+n
+take bolt
+take spring
+inc spring
+take button
+take processor
+take pill
+inc pill
+take radio
+take cache
+comb processor cache
+take blue transistor
+comb radio transistor
+take antenna
+inc antenna
+take screw
+take motherboard
+comb motherboard screw
+take A-1920-IXB
+comb A-1920-IXB bolt
+comb A-1920-IXB processor
+comb A-1920-IXB radio
+take transistor
+comb A-1920-IXB transistor
+comb motherboard A-1920-IXB
+take keypad
+comb keypad motherboard
+comb keypad button
+s

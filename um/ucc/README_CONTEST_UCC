@@ -1,0 +1,39 @@
+
+ CSO-7731 "C7sus4: A Portable High-Level Language for 
+ 	   Efficient Low- and Medium-Low Level Systems 
+	   Programming In The Universal Machine"
+           3rd Edition
+           Octember 12, 19100
+
+	   CSO Standards Committee
+	   Chair: Kenneth N. Royagef
+
+Description
+
+  C7sus4 is a new Programming Language designed for low and medium-low
+  level systems programming. With vastly improved syntax over previous
+  language technologies, it will increase programmer productivity while
+  increasing consumer confidence in Universal Machine applications.
+
+
+Language Definition
+
+  Any program accepted by the reference implementation ("ucc") shall
+  be a valid C7sus4 program, and its behavior shall be defined to
+  be the behavior of the output of the reference compiler, if any.
+  Note: some programs may have undefined behavior.
+
+
+Usage
+
+  To compile a collection of C7sus4 source files into a UM binary,
+  please issue the following command line at the UMIX prompt:
+
+     ucc file1.c ... filen.c
+
+  This will produce a file called a.um that can be run in any
+  Universal Machine implementation.
+
+  In the case that your files do not comprise a valid C7sus4,
+  you will receive a helpful error message summarily rejecting
+  your input.

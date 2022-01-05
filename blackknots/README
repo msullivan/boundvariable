@@ -1,0 +1,16 @@
+bk-test-gen:
+  A program written in sml to generate tests.
+  Takes three command line arguments, width height freq
+  ><s appear 1/freq of the time
+
+  I've found that if you make the height around 30 or 40 lines and
+  the frequency 4 or 5, you can sometimes get problems that stump
+  the common solvers I've tried
+
+bk-parse-test:
+  This um program will take in a blackknots machine followed by a
+  newline and output the final positions and number of plinks in the 
+  appropriate form.
+
+Note: the files in sols aren't actually used for anything, they are
+just nice to have around.  Try to keep them up to date.

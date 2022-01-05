@@ -1,0 +1,234 @@
+val () = provide-std
+val () = provide-string
+val () = provide-int
+val () = provide-list
+val () = provide-array
+val () = provide-io
+
+val provide-blackknots = ()
+
+exception BlackknotsParseError of string
+
+type bk-machine  = (int * int) array
+(* for a column x, the xth element of the array is
+   (where a marble ends up when you drop it down column x,
+    how many plinks it accumulates on the way there)  *)
+
+datatype bk-machine-check = 
+    BK-SUCCESS 
+  | BK-CHECK-FAIL  of (int * (int*int) * (int*int))
+  | BK-LENGTH-FAIL of (int * int)
+
+fun bk-machine-tostring mach =
+  let
+    val machlen = length mach
+    fun scan-print n =
+      if n >= machlen then ""
+      else
+        let
+          val (col,pl) = sub (mach,n)
+        in
+          ((int-tostring n) ^ " -> (" ^ (int-tostring col) ^ ", "
+           ^ (int-tostring pl) ^ ")\n" ^ (scan-print (n + 1)))
+        end
+  in
+    scan-print 0
+  end
+
+fun bk-machine-equiv (m1 : bk-machine ,m2) =
+  if length m1 = length m2
+  then
+    let
+      fun check-vals i =
+        if i >= length m1 then BK-SUCCESS
+        else 
+          let
+            val (a,b) = sub (m1,i)
+            val (a',b') = sub (m2,i)
+          in
+            if a = a' andalso b = b' 
+            then check-vals (i+1)
+            else BK-CHECK-FAIL (i,(a,b),(a',b'))
+          end
+    in
+      check-vals 0
+    end
+  else BK-LENGTH-FAIL (length m1, length m2)
+
+
+val { parse-blackknots-file, parse-blackknots-stdin, interactive-blackknots } =
+let
+
+  datatype bk-tube = ST-BK | LT-BK | RT-BK
+    
+  type bk-particle = int * int (* lefts, rights *)
+
+  (* do_row : bk-col list * tube list -> bk-col list
+     Takes a row and updates the particle list for the case that the
+     provided row comes just after the machine represented by the 
+     particle list *)
+  fun do_row (nil,nil,_) = nil
+    | do_row ((i,j) :: (k,l) :: ptl, RT-BK :: LT-BK :: ttl, rn)  = 
+      (k + 1,l) :: (i,j + 1) :: do_row (ptl, ttl, rn)
+    | do_row ((i,j)::ptl, ST-BK :: ttl, rn) = (i,j) :: do_row (ptl, ttl, rn)
+    | do_row (nil,_, rn)  = raise BlackknotsParseError
+      ("[BK] Parse Error : Inconsistent number of machine columns in "
+       ^ "row " ^ int-tostring rn ^ " \n")
+    | do_row (_,nil,rn)  = raise BlackknotsParseError
+      ("[BK] Parse Error : Inconsistent number of machine columns in "
+       ^ "row " ^ int-tostring rn ^ "\n")
+    | do_row (_,_,rn)    = raise BlackknotsParseError
+      ("[BK] Parse Error : input machine doesn't meet blackknots spec "
+       ^ "in row " ^ int-tostring rn ^ "\n")
+
+  fun coord-tostring (x,y) = "(ln: " ^ int-tostring y ^ ", col: "
+                              ^ int-tostring x ^ ")"
+
+  fun tokenize-char (?|,_,_)   = ST-BK
+    | tokenize-char (?<,_,_)   = LT-BK
+    | tokenize-char (?>,_,_)   = RT-BK
+    | tokenize-char (chr,c,r)  = raise BlackknotsParseError
+      ("[BK] Parse Error : stray character " ^ {|chr|} ^ " found at "
+       ^ coord-tostring (c,r) ^ " in blackknots program.\n")
+
+
+  (* build-machine : (bk-particle list) -> bk-machine *)
+  fun build-machine parts =
+    let
+      val mach = array(list-length parts, (0,0))
+      fun scan-parts (nil,col) = mach
+        | scan-parts ( (lefts,rights)::parts, col ) =
+        let 
+          val source = col - rights + lefts
+        in
+          update (mach, source, (col, rights));
+          scan-parts (parts, col+1)
+        end
+    in
+      scan-parts (parts,0)
+    end
+      
+
+  (* ************************
+   * ** STAND-ALONE PARSER **
+   * ************************)
+  fun parse-blackknots strarr = 
+    let
+
+      val tokenized-inp = 
+        array-mapi (fn (rn,row) =>
+                    array-mapi (fn (cn,char) =>
+                                tokenize-char(char,cn,rn)) row)
+        strarr
+
+      val inp-lists = list-map explode (explode tokenized-inp)
+
+      val numrows = list-length inp-lists
+
+
+      fun get-parts (nil,n,pts) = pts
+        | get-parts (row::rows,rownum,pts) = 
+          get-parts (rows, rownum+1, do_row(pts,row,rownum))
+    
+      val init-parts = explode (array (length (sub(strarr,1)), (0,0)))
+
+      val particles = get-parts (inp-lists,0,init-parts)
+
+
+      (* USEFUL DEBUGGING OUTPUT *)
+      (* val () = list-appi (fn ((x,y),i) => print (int-tostring i ^ " - " 
+       *                                          ^int-tostring x ^ ", "
+       *                                          ^ int-tostring y ^ "\n")) 
+       * particles
+       *)
+
+    in
+      build-machine particles
+    end
+
+
+  (* *************************
+   * ** LINE-BY-LINE PARSER **
+   * *************************)
+  
+  fun read-machine-line-by-line () =
+    let 
+      val input = getline ()
+        handle IO => raise BlackknotsParseError
+          ("[BK] Parse Error : No machine specified \n")
+          
+      val init-parts = explode (array (length input, (0,0)))
+        
+      fun parse-line (inp,row,parts) =
+        if string-equals (inp,"") then build-machine parts
+        else
+          let 
+            val tokens = 
+              array-mapi (fn (i,c) => tokenize-char(c,i,row)) inp
+            val parts = do_row (parts, explode tokens, row)
+            val nextinp = getline ()
+              handle IO => ""
+          in
+            parse-line(nextinp,row+1,parts)
+          end
+    in
+      parse-line (input,0,init-parts)
+    end
+
+
+
+  (* *****************************
+   * ** INTERACTIVE INTERPRETER **
+   * *****************************)
+  fun interactive-blackknots () =
+    let 
+      do print ("Enter your machine one row at a time, using the "
+                ^ " characters | > <\n")
+      do print "Terminate with an empty line.\n"
+        
+      fun interact mach =
+        let
+          fun prompt () =
+            let 
+              do print ("What column would you like to put a marble in?\n"
+                        ^"(type exit to quit)\n> ")
+              val input = getline () handle IO => "exit"
+            in
+              if string-equals (input,"exit") then ()
+              else
+                case (int-fromstring input) of
+                  NONE => 
+                    let in
+                      print "Invalid input! Please try again\n";
+                      prompt()
+                    end
+                | SOME n =>
+                    if n < length mach andalso n >= 0 then
+                       let
+                         val (outcol,plinks) = sub(mach, n)
+                       in
+                         print 
+			 ("You hear " ^ int-tostring plinks ^ " delightfully euphonious " ^
+			  "plink(s), and the marble comes out of column " ^ int-tostring outcol 
+			  ^ ".\n");
+                         prompt()
+                       end
+                    else
+                      (print ("Sorry, " ^ int-tostring n ^ " isn't within "
+                              ^ "the bounds of this machine\n");
+                       prompt())
+            end
+        in
+          prompt ()
+        end
+    in
+      interact (read-machine-line-by-line ())
+      handle BlackknotsParseError s => print s
+    end
+
+in
+  {parse-blackknots-file = parse-blackknots,
+   parse-blackknots-stdin = read-machine-line-by-line,
+   interactive-blackknots = interactive-blackknots}
+end
+

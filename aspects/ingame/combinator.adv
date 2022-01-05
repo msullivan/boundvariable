@@ -1,0 +1,10 @@
+
+{ broken version of combinator logic }
+
+{ primitives }
+(K x y) => x;
+(S x y z) => (x z (y z));
+
+{ derived syntax }
+I => (S K K);
+.

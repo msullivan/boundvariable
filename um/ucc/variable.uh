@@ -1,0 +1,29 @@
+
+val provide-variable = ()
+
+(* int is a unique counter, basename is for printing. *)
+datatype var = Var of string * int option
+
+val var-vc = ref 0
+fun ++ r = (r := !r + 1; SOME (!r))
+
+fun var-namedvar s = Var (s, ++ var-vc)
+(* create a var whose uniqueness is based solely on the given string *)
+fun var-rawvar s = Var (s, NONE)
+fun var-newvar () = var-namedvar ""
+fun var-alphavary (Var (v, x)) = (v, ++ var-vc)
+fun var-eq (Var (_, SOME x), Var (_, SOME y)) = x = y
+  | var-eq (Var (s, NONE), Var (t, NONE)) = s seq t
+  | var-eq _ = false
+fun var-basename (Var (x, _)) = x
+fun var-tostring (Var (x, SOME y)) = x ^ "$" ^ int-tostring y
+  | var-tostring (Var (x, NONE)) = x
+fun var-show (Var (x, _)) = x
+
+val varmap-empty = nil
+fun varmap-insert (m, v, a) = (v, a) :: m
+fun varmap-find _ nil = NONE
+  | varmap-find v' ((v, a)::rest) = if var-eq (v, v') then SOME a
+				    else varmap-find v' rest
+
+(* etc. *)

@@ -1,0 +1,10 @@
+program.  check.
+
+weightings.  spoons
+
+binning.  array, same size of program, identifiers ranging from 0 to size of
+program
+
+symbol table.
+
+  <ascii string>

@@ -1,0 +1,47 @@
+(* An item is junk if it is missing something. It can be missing an item
+ (e.g. a "radio without transitor" is missing a transitor) or it can be
+ missing another piece of junk (e.g. a "time machine without a (radio
+ without a transitior)" is missing a "radio without a transitior"). *)
+
+
+(* noun-dt *)
+
+datatype nounphrase = Noun of noun
+	            | Missing of nounphrase * nounphrase list (* a #1 without #2 *)
+
+(* See nounphase-equals below. *)
+
+(* noun-tostring *)
+
+(* Trash must be 0! *)
+(* noun-toidx *)
+
+fun noun-equals (a, b) = noun-toidx a = noun-toidx b
+
+fun nounphrase-cmp (Noun a, Noun b) = int-compare (noun-toidx a, noun-toidx b)
+  | nounphrase-cmp (Missing (a, al), Missing (b, bl)) =
+    let
+      val al = list-sort nounphrase-cmp al
+      val bl = list-sort nounphrase-cmp bl
+
+      val proplcmp = list-lex-list-order nounphrase-cmp 
+    in
+      list-lex-order proplcmp nounphrase-cmp ((al, a), (bl, b))
+    end
+    | nounphrase-cmp (Noun _, Missing _) = LESS
+    | nounphrase-cmp (Missing _, Noun _) = GREATER
+
+fun nounphrase-equals r = order-equals (nounphrase-cmp r, EQUAL)
+
+fun nounphrase-noun (Noun n) = n
+  | nounphrase-noun (Missing (np, _)) = nounphrase-noun np
+
+(* num_nouns *)
+
+(* nouns *)
+
+(* PERF hash sizing *)
+val noun_map = hash-new (string-hash, string-equals, 433)
+
+(* add nouns *)
+

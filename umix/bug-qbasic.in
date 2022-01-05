@@ -1,0 +1,5 @@
+guest
+/bin/umodem foo.bas EOF
+XX j = foo(bar)
+EOF
+/bin/qbasic foo.bas

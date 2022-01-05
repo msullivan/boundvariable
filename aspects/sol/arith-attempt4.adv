@@ -1,0 +1,33 @@
+{ chris's linearity solution:
+  
+  these don't work in general for nested arithmetic expressions,
+  but they do work for arithmetic on numerals
+  and they seem to work for the arithmetic that comes up in Fact.
+}
+
+{
+   old op sem: tested on 400 each
+   new	     : tested on 50 each
+}
+
+Add Z y => y;
+Add (S x) y => S (Add x y);
+
+Mult Z y => Z;
+Mult (S x) y => (Add y (Mult x y));
+
+{ factorial 
+ 
+  makes sure non-values aren't duplicated
+
+  old op. sem.: works on 0...6; 7 didn't come back.
+  new op. sem.: tested on 0...5
+  
+}
+Fact Z => (S Z);
+Fact (S x) => Mult (Fact x) (S x);
+
+{ get rid of the top-level }
+Compute x => x;
+
+. { end of rules }

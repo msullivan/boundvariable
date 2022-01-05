@@ -1,0 +1,275 @@
+
+(* ROBOT MIND LANGUAGE *)
+
+val require-parse = provide-parse
+val require-int   = provide-int
+val require-string = provide-string
+val require-list = provide-list
+val require-listpair = provide-listpair
+
+exception RML of string
+
+datatype primop =
+    Add
+  | Sub
+  | Less
+  | LessEquals
+  | Greater
+  | GreaterEquals
+  | Equals
+  | Cat
+
+datatype void =
+
+datatype a exp =
+    Var of a
+  | Unit
+  | String of string
+  | SecureString of obs-string
+  | Int of int
+                     (* tainted,  sub-exp *)
+  | Construct of a * (bool * exp) list
+              (* when a = string then #1 is name of constructor
+                      a = int then #1 is index in sorted list *)
+
+  | Prim of primop * exp * exp
+  | Call of a * exp list
+  (* These four value forms not available in the surface syntax: *)
+  | Room of room
+  | Item of item
+  | Kind of nounphrase
+        (* args        result cont *)
+  | Fun of (bool * exp) list -> (bool * exp) cont -> void
+
+and stmt =
+    Do of exp
+  | Type of a * (a * a list) list
+    (* extern  fn   :  (arg1, arg2, arg3) -> (res1, res2) *)
+  | Extern of string * (a list) * (a list)
+  | ExternType of string
+    (*          name      argtypes/argnames      result       body *)
+  | FunDecl of a * (a * a) list * a option * stmt list
+    (*      obj    constructor args         body *)
+  | Case of exp * (a * a list * stmt list) list
+  | Bind of a * exp
+  | Return of exp
+  | Skip
+  | Block of stmt list
+
+datatype typ =
+    UnitType
+  | VoidType (* used to ensure that top-level stmts don't return *)
+  | StringType
+  | IntType
+  | RoomType
+  | ItemType
+  | KindType
+             (* name     constructors & args *)
+  | DataType of string * (string * typ list) list ref
+                  (* carried    datatype *)
+  | ConstructType of typ list * typ
+            (* args       result *)
+  | FunType of typ list * typ
+
+fun q s = ["[s]"]
+fun pr-todt f (a, b) = [([f a], [f b])]
+fun opt-todt _ NONE = "NONE"
+  | opt-todt f (SOME a) = [SOME [f a]]
+fun list-todt _ nil = "nil"
+  | list-todt f (x::xs) = [[f x]::[list-todt f xs]]
+
+fun primop-todt Add = "Add"
+  | primop-todt Sub = "Sub"
+  | primop-todt Less = "Less"
+  | primop-todt LessEquals = "LessEquals"
+  | primop-todt Greater = "Greater"
+  | primop-todt GreaterEquals = "GreaterEquals"
+  | primop-todt Equals = "Equals"
+  | primop-todt Cat = "Cat"
+
+fun ttexp-todt f (tt, e) = "(" ^ (if tt then "true" else "false") 
+                           ^ ", " ^ (exp-todt f e) ^ ")"
+
+and exp-todt f (Var x) = [(Var [f x])]
+  | exp-todt f (Unit) = [Unit]
+  | exp-todt f (String s) = [(String [q s])]
+  | exp-todt f (SecureString s) = [(String [q (obs-tostring s)])]
+  | exp-todt f (Int i) = [(Int [int-tostring i])]
+  | exp-todt f (Construct (cn, d)) = [(Construct ([f cn], [list-todt (ttexp-todt f) d]))]
+  | exp-todt f (Prim (p, e1, e2)) = [(Prim ([primop-todt p], [exp-todt f e1], [exp-todt f e2]))]
+  | exp-todt f (Call (g, args)) = [(Call ([f g], [list-todt (exp-todt f) args]))]
+  | exp-todt f (Room room) = "Room"
+  | exp-todt f (Item item) = "Item"
+  | exp-todt f (Kind np) = "Kind"
+  | exp-todt f (Fun clos) = "Fun"
+
+fun cnstr-todt f (c, ts) = [([f c], [list-todt f ts])]
+
+fun typ-todt UnitType = "UnitType"
+  | typ-todt VoidType = "VoidType"
+  | typ-todt StringType = "StringType"
+  | typ-todt IntType = "IntType"
+  | typ-todt RoomType = "RoomType"
+  | typ-todt ItemType = "ItemType"
+  | typ-todt KindType = "KindType"
+  | typ-todt (DataType (dn, ((!) cnargs))) = "DataType (" ^ dn ^ ", ref nil)" (* ENH *)
+  | typ-todt (ConstructType _) = "ConstructType"
+  | typ-todt (FunType (args, res)) = [FunType ([list-todt typ-todt args], [typ-todt res])]
+
+fun branch-todt f (c, formals, st) = [([f c], [list-todt f formals], [list-todt (stmt-todt f) st])]
+
+and stmt-todt f (Do e) = [(Do [exp-todt f e])]
+  | stmt-todt f (Type (t, cnstrs)) = [(Type ([f t], [list-todt (cnstr-todt f) cnstrs]))]
+  | stmt-todt f (Extern (g, args, res)) = [(Extern ([q g], [list-todt f args], [list-todt f res]))]
+  | stmt-todt f (ExternType (t)) = [(ExternType [q t])]
+  | stmt-todt f (FunDecl (g, args, res, body)) = [(FunDecl ([f g], [list-todt (pr-todt f) args], [opt-todt f res], [list-todt (stmt-todt f) body]))]
+  | stmt-todt f (Case (e, branches)) = [(Case ([exp-todt f e], [list-todt (branch-todt f) branches]))]
+  | stmt-todt f (Bind (x, e)) = [(Bind ([f x], [exp-todt f e]))]
+  | stmt-todt f (Return e) = [(Return [exp-todt f e])]
+  | stmt-todt f (Skip) = "Skip"
+  | stmt-todt f (Block l) = [(Block ([list-todt (stmt-todt f) l]))]
+
+import "rml-parse.uh"
+
+val bool_cnstrs = ref nil
+val BoolType = DataType ("bool", bool_cnstrs)
+(* N.B. these constructors must be sorted lexicographically! *)
+do bool_cnstrs := ("False", nil)::
+                  ("True", nil):: nil
+(* N.B. BoolType must appear in the list of external types! *)
+
+fun lookup l x = 
+    let in 
+      case list-find (fn (x', _) => x seq x') l
+            of SOME (_, v) => v
+             | NONE => raise RML ("of an unknown identifier '" ^ x ^ "'")
+    end
+
+fun idxof v l =
+  let fun f i nil = raise RML ("of an unbound variable " ^ v)
+        | f i (v'::vs) = if string-equals (v, v') then i else f (i+1) vs
+  in
+    f 0 l
+  end
+
+fun idxof' v l =
+  let fun f i nil = raise RML ("of an unbound variable " ^ v)
+        | f i ((v', _)::vs) = if string-equals (v, v') then i else f (i+1) vs
+  in
+    f 0 l
+  end
+
+fun cnstr-compare ((c1, _), (c2, _)) =
+    let val ord = string-compare (c1, c2)
+    in
+      case ord of
+        EQUAL => raise RML [duplicate constructor name "[c1]"]
+      | _ => ord
+    end
+
+fun mkstring false (s:string) = (false, String s)
+  | mkstring true s = (true, SecureString (obs-fromstring (random-int (), 
+                                                           random-int ()) s))
+
+fun anystring (String s) = s
+  | anystring (SecureString os) = obs-tostring os 
+  | anystring _ = raise Match
+
+import "rml-runtime.uh"
+import "rml-check.uh"
+import "rml-todb.uh"
+import "rml-eval.uh"
+
+fun rml-load (stmts : string stmt list) =
+    let val (_, env) = check_stmts VoidType nil nil stmts
+
+        val process_typ = lookup env "process"
+            handle RML _ => raise RML "robot brain code must define a function 'process : command -> datum'"
+        do case process_typ of
+             FunType (((tis CommandType) _)::nil, ((tis DatumType) _)) => ()
+           | _ => raise RML "robot brain code must define function 'process' to have type 'command -> datum'" 
+        val idx = case list-idxof (fn (f, _) => f seq "process") env
+                   of NONE => raise Adventure "impossible"
+                    | SOME idx => idx
+(*
+        do print [PRE-DB:
+                  [string-delimit "\n" (list-map (fn st => stmt-todt q st) stmts)]\n]
+*)
+        val stmts : int stmt list = stmts-todb nil nil stmts
+(*
+        do print [POST-DB:
+                  [string-delimit "\n" (list-map (fn st => stmt-todt int-tostring st) stmts)]\n]
+*)
+    in 
+      letcc out in
+        ignore (letcc err
+                in
+                  throw let val env =  (eval_stmts false err nil stmts)
+                            val (_, exp) = list-nth idx env
+                        in
+                          exp
+                        end
+                        to out
+                end);
+        raise RML "robot brain programs should not return from the top level"
+      end
+    end
+
+fun rml-process-command (brain : int exp) action =
+    let fun convert_dir 0 = 1
+          | convert_dir 1 = 0
+          | convert_dir 2 = 2
+          | convert_dir 3 = 3
+          | convert_dir _ = raise Adventure "IMPOSSIBLE"
+        fun convert_item tt off itemswhere =
+            (tt, Item (growarray-sub (items, (list-nth off (local_items itemswhere)))))
+        fun convert_command tt (Go i) = 
+            Construct (4, (tt, Construct (convert_dir i, nil))::nil)
+          | convert_command tt (Take off) = (* eh, hoser! *)
+            Construct (10, (convert_item tt off RoomItems)::nil)
+          | convert_command tt (Incinerate off) =
+            Construct (6, (convert_item tt off InventoryItems)::nil)
+          | convert_command tt (Combine (off1, off2)) =
+            Construct (1, (convert_item tt off1 InventoryItems)::
+                          (convert_item tt off2 InventoryItems)::nil)
+          | convert_command tt (Break off) =
+            Construct (0, (convert_item tt off InventoryItems)::nil)
+          | convert_command tt (Drop off) =
+            Construct (2, (convert_item tt off InventoryItems)::nil)
+          | convert_command tt (Use off) =
+            Construct (11, (convert_item tt off InventoryItems)::nil)
+          | convert_command tt LookAround = Construct (7, nil)
+          | convert_command tt ShowInventory = Construct (8, nil)
+          | convert_command tt (Examine off) = 
+            Construct (3, (convert_item tt off InventoryAndRoomItems)::nil)
+          | convert_command tt (Whistle) = Construct (12, nil)
+          | convert_command tt (Hum) = Construct (5, nil)
+          | convert_command tt (Speak s) = Construct (9, (tt, String s)::nil)
+          | convert_command _ _ = raise RML "unimplemented convert_command"
+
+        val c = convert_command false action
+
+        fun is_tainted exp =
+            (case exp of
+               (Construct (1, (true, _)::nil)) => true
+             | (Construct (0, (true, _)::_)) => true
+             | _ => false)
+
+        fun convert_datum (tainted, exp) =
+            if !censor_output andalso (tainted orelse is_tainted exp) then
+              Redacted
+            else
+              (case exp of
+                 Construct (1, (_, (anystring) s)::nil) => Atom s
+               | Construct (3, (d1::d2::nil)) =>
+                 Seq (convert_datum d1, convert_datum d2)
+               | Construct (0, ((_, (anystring) s1)::d1::d2::nil)) =>
+                 Assoc (s1, convert_datum d1, convert_datum d2)
+               | Construct (2, nil) => NoData
+               | e => raise RML ("BUG: ill-formed result")) (* ENH tostring/todt e *)
+
+        val d : bool * int exp = (eval_exp ((false, brain)::nil) (Call (0, c::nil)))
+    in
+      convert_datum d
+    end
+

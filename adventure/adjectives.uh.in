@@ -1,0 +1,17 @@
+
+(* adjective-dt *)
+
+(* adjective-tostring *)
+
+(* adjective-toidx *)
+
+(* adjective-equals *)
+
+(* num_adjectives *)
+
+(* adjectives *)
+
+(* PERF hash sizing *)
+val adjective_map = hash-new (string-hash, string-equals, 239)
+
+(* add adjectives *)

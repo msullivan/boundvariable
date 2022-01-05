@@ -1,0 +1,58 @@
+TEST UM BINARIES
+
+internal-challenge.um
+	the initial challenge program
+
+fact.um
+	computes fact of 20000 (mod 2^32)
+
+Micro benchmarks
+----------------
+
+  Most of these micro-benchmarks test a single instruction by
+  executing it 100,000,000 times (10,000 times per loop, 10,000
+  loop iterations).  About 0.1% of the instructions executed are loop
+  overhead.
+
+micro-null.um
+	VM startup time only
+
+micro-10k.um
+	time to decode ~10k instructions (but only execute one)
+
+micro-cmov0.um
+	conditional moves where condition is false
+
+micro-cmov1.um
+	conditional moves where condition is true
+
+micro-literal.um
+	load literal instruction
+
+micro-add.um
+micro-mul.um
+micro-div.um
+micro-nand.um
+	arithmetic / logical instructions
+
+micro-asub0.um
+micro-upd0.um
+	array instructions on arrays[0]
+
+micro-allocfree.um
+	interleaved alloc and free -- note that each of these two
+        instructions is executed 50M times, thus the benchmark yields
+        the average cost of alloc and free
+
+micro-loadprog0.um
+	loadprog of arrays[0] -- note that this benchmark performs 200M
+        instructions, half of which are loadprog and half of which are
+        add, thus the time for micro-add should be subtracted to
+        determine the cost of loadprog.
+
+
+TODO:
+	array instructions on arrays other than arrays[0]
+	loadprog other than 0 (?)
+	non-interleaved alloc / free operations
+	IO

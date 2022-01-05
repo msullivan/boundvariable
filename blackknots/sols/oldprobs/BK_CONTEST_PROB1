@@ -1,0 +1,15 @@
+**  x -> (y,z)
+**  Means that if you drop a marble into pipe x, it comes out of pipe y,
+**  and you hear z plinks
+
+0 -> (3, 3)
+1 -> (2, 2)
+2 -> (0, 0)
+3 -> (4, 2)
+4 -> (1, 1)
+5 -> (5, 2)
+6 -> (7, 1)
+7 -> (6, 2)
+8 -> (8, 2)
+9 -> (10, 3)
+10 -> (9, 2)

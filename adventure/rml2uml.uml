@@ -1,0 +1,216 @@
+
+let
+  import "std.uh"
+  import "string.uh"
+  import "array.uh"
+  import "int.uh"
+  import "list.uh"
+  import "listpair.uh"
+  import "growarray.uh"
+  import "random.uh"
+  import "io.uh"
+  import "stream.uh"
+  import "hash.uh"
+  import "parse.uh"
+  import "bigint.uh"
+  import "des.uh"
+  import "publications.uh"
+
+
+  exception Adventure of string
+
+  datatype chapter =
+     FirstChapter
+   | SequelChapter
+
+  fun doInFirst chapter f =
+      (case chapter of
+          FirstChapter => f ()
+        | SequelChapter => ())
+
+  fun doInSequel chapter f =
+      (case chapter of
+          FirstChapter => ()
+        | SequelChapter => f ())
+
+  fun chapter-equals (FirstChapter, FirstChapter) = true
+    | chapter-equals (SequelChapter, SequelChapter) = true
+    | chapter-equals (_, _) = false
+
+  import "nouns.uh"
+  import "adjectives.uh"
+  import "rooms.uh"
+
+  type item = { idx : int,
+                nounphrase : nounphrase,
+                adjectives : adjective list, (* a unique set for this noun *)
+                portable : bool,
+                classified : bool,
+                description : string,
+                location : location }
+
+  fun item-noun item = nounphrase-noun (#nounphrase/item item)
+
+  datatype datum =
+     Atom of string
+   | Seq of datum * datum
+   | Assoc of string * datum * datum
+   | NoData
+   | Redacted
+
+  (* icing: only used for ANSI goggles *)
+  val ansiscore = ref 0
+  val ansiroom = ref "?"
+
+  (* Different ways of printing out the current player environment *)
+  import "goggles.uh"
+
+  (* Integers are often offsets into the list of local items. NB local items
+     are defined differently for each action (e.g. Take must carry an index in
+     the list of items in the room but not the inventory). *)
+  datatype command = 
+     Go of int
+   | Take of int
+   | Incinerate of int
+   | Combine of int * int
+   | Break of int
+   | Drop of int
+   | Use of int
+   | LookAround
+   | ShowInventory
+   | Examine of int
+   | Whistle
+   | Hum
+   | Speak of string
+   | SwitchGoggles of goggles
+   | Save
+   | Restore of string
+   | Help of string
+   | Unparsable of string (* error message *)
+
+  (* CURRENT STATE *)
+  (* Set up default values... the real initial values are set in populate.uh. *)
+  val current_loc = ref 0
+  val items_locs = array (num_rooms, nil)
+  val current_goggles = ref EnglishGoggles
+  val history = ref nil
+  val items = (growarray-new
+                (* growarray needs a default element *)
+                { idx = ~1,
+                  nounphrase = Noun Trash,
+                  adjectives = nil, 
+                  portable = true,
+                  classified = false,
+                  description = "",
+                  location = TrashHeap }) : item growarray
+
+  datatype itemswhere = InventoryItems | RoomItems | InventoryAndRoomItems
+  fun local_items InventoryItems = sub (items_locs, location-toidx InventoryA87312)
+    | local_items RoomItems = sub (items_locs, !current_loc)
+    | local_items InventoryAndRoomItems = (sub (items_locs, location-toidx InventoryA87312)) 
+                                          @ (sub (items_locs, !current_loc))
+
+  val brain_source = ref ""
+  val brain = ref nil
+  val censor_output = ref true
+
+  type pub = unit -> string option
+  type pubs =
+     { 
+      incinerate_item : pub,
+      combine_items : pub,
+      use_keypad : pub,
+
+      fix_usbcable : pub,
+      get_progressbar : pub,
+      fix_display : pub,
+      fix_powercord : pub,
+      fix_jumpershunt : pub,
+      use_downloader : pub,
+
+      fix_battery : pub,
+      fix_epromburner : pub,
+      fix_rs232adapter : pub,
+      fix_statusled : pub,
+      fix_mosfet : pub,
+      use_uploader : pub,
+
+      move_to_museum : pub,
+      use_crowbar : pub,
+      read_console : pub,
+                     
+      fix_racecar : pub,
+      fix_poussegame : pub,
+      fix_packagerobot : pub,
+      fix_robber : pub,
+      fix_fsm : pub,
+      fix_codex : pub
+     }
+  val pubs = ref
+     { 
+      incinerate_item = fn () => NONE,
+      combine_items = fn () => NONE,
+      use_keypad = fn () => NONE,
+      fix_usbcable = fn () => NONE,
+
+      get_progressbar = fn () => NONE,
+      fix_display = fn () => NONE,
+      fix_powercord = fn () => NONE,
+      fix_jumpershunt = fn () => NONE,
+      use_downloader = fn () => NONE,
+
+      fix_battery = fn () => NONE,
+      fix_epromburner = fn () => NONE,
+      fix_rs232adapter = fn () => NONE,
+      fix_statusled = fn () => NONE,
+      fix_mosfet = fn () => NONE,
+      use_uploader = fn () => NONE,
+
+      move_to_museum = fn () => NONE,
+      use_crowbar = fn () => NONE,
+      read_console = fn () => NONE,
+
+      fix_racecar = fn () => NONE,
+      fix_poussegame = fn () => NONE,
+      fix_packagerobot = fn () => NONE,
+      fix_robber = fn () => NONE,
+      fix_fsm = fn () => NONE,
+      fix_codex = fn () => NONE
+     }
+
+  (* support for interpreted command processors *)
+  import "rml.uh"
+  
+  (* adds items to rooms, etc *)
+  import "populate.uh"
+
+  fun progress n = ()
+  val s = all-lines-progress "EOM" progress
+
+  val source = case s of SOME s => s | NONE => raise RML "brain too large"
+
+
+(*
+  val mind = (rml-parse source)
+  import "gc.uh"
+*)
+  val mind = (Block ((Return (Construct ("Assoc", (false, (String "kind"))::
+(false, (Construct ("Assoc", (false, (String "name"))::
+(false, (Construct ("Atom", (false, (Call ("kind_name", (Var "e")::
+nil)))::
+nil)))::
+(false, (Construct ("Assoc", (false, (String "condition"))::
+(false, (Call ("describe_condition", (Call ("kind_condition", (Var "e")::
+nil))::
+nil)))::
+(false, (Construct ("NoData", nil)))::
+nil)))::
+nil)))::
+(false, (Construct ("NoData", nil)))::
+nil)))::
+nil))::nil
+
+in
+  print (list-todt stmt-todt mind)
+end
+

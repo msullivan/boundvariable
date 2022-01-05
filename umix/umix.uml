@@ -1,0 +1,2384 @@
+let
+
+    (* hoist coupon so we can print top-level exception *)
+
+    import "std.uh"
+    import "list.uh"
+    import "listpair.uh"
+    import "string.uh"
+
+    (* NOTE: all regressions look for
+       This should never happen! We apologize for the inconvenience.
+       
+       to check that we're not giving coupons *)
+    fun coupon s =
+        [  \n\n
+           This should never happen! We apologize for the inconvenience.
+           If you can reproduce this error, please e-mail the message
+           below and instructions on how to reproduce the problem
+           to icfpcontest-organizers@lists.andrew.cmu.edu. There may
+           be a score reward for finding bugs.
+         
+           Message: [s]\n]
+in
+
+let
+    import "growarray.uh"
+    import "random.uh"
+    import "io.uh"
+    import "int.uh"
+    import "util.uh"
+    import "stream.uh"
+    import "parse.uh"
+    import "roman.uh"
+    import "array.uh"
+    import "hash.uh"
+    import "des.uh"
+    import "obfuscate.uh"
+    import "bigint.uh"
+    import "publications.uh"
+
+    (* puzzles *)
+    (* ants *)
+    import "antomaton.uh"
+    (* balance *)
+    import "balance.uh"
+    import "bal_puzzles.uh"
+    (* blackknots *)
+    import "blackknots.uh"
+    import "bk-sol-machines.uh"
+    (* circuits *)
+    import "2d.uh"
+    import "2d-parse.uh"
+    import "2d-eval.uh"
+    import "raytrace.uh"
+    import "mult-test.uh"
+    import "rev-test.uh"
+    (* adventure *)
+    import "adventure.uh"
+    (* aspects *)
+    import "aspects.uh"     
+    (* fun *)
+    import "um.uh"
+    (* endgame *)
+    import "story.uh"     
+
+    exception UMIXBug of string
+    exception Logout
+
+    (* ---------------------------------------------------------------------- *)
+    (* user names and passwords *)
+    (* ENH obfuscate *)
+
+    (* users *)
+    val guest        = "guest"
+
+    (* CAREFUL! must be cracked by hack_bas.uml *)
+    val ftd           = "ftd"
+    val ftd_pass      = "falderal90"
+
+    (* CAREFUL! duplicated in balance/bal_puzzles.uh (twice)
+                              and UMIX_CONTEST_ASPECTS_EMAIL *)
+    val antomata      = "gardener"
+    val antomata_pass = "mathemantica"
+    (* CAREFUL! duplicated in balance/bal_puzzles.uh (twice), 
+                              hack_bas list,
+                              and UMIX_CONTEST_ASPECTS_EMAIL *)
+    val twod         = "ohmega"
+    val twod_pass    = "bidirectional"
+
+    (* CAREFUL! duplicated in adventure/populate.uh
+            and duplicated in balance/bal_puzzles.uh (twice) *)
+    val balance      = "yang"   (* Y. Yang *)
+    val balance_pass = "U+262F" (* unicode for yin yang symbol *)
+
+    (* CAREFUL! dupliated in hack_bas.uml password list
+                             and adventure/populate.uh *)
+    val adv          = "howie"
+    val adv_pass     = "xyzzy"
+
+    (* CAREFUL! duplicated in adventure/populate.uh 
+                              story/STORY_CONTEST_FTD_TODO
+       *)
+    val aspects      = "hmonk"
+    val aspects_pass = "COMEFROM"
+
+    (* CAREFUL! in circuits/2D_CONTEST_EMAIL
+               and UMIX_ANT_HISTORY *)
+    val bk           = "bbarker"
+    val bk_pass      = "plinko"
+
+    (* CAREFUL! in story/story.uh *)
+    val story1 =  "assistant-root"
+    val story1_pass = "h1dd3n"
+    val story2 = "associate-root"
+    val story2_pass = "@tth3"
+    val story3 = "root"
+    val story3_pass = "c@Rn3g!e"
+
+    (* CAREFUL! needs to agree with adventure machineroom *)
+    val gifts1      = "knr"
+    val gifts1_pass = "X3.159-1989"
+
+    (* invt: this includes all users who are able to log in 
+             (including hidden users)
+       *)
+    val all-users = (ftd, ftd_pass) ::
+                    (guest, "nopass") ::
+                    (antomata, antomata_pass) ::
+                    (twod, twod_pass) ::
+                    (balance, balance_pass) ::
+                    (bk, bk_pass) ::
+                    (aspects, aspects_pass) ::
+                    (adv, adv_pass) ::
+                    (story1, story1_pass) ::
+                    (story2, story2_pass) ::
+                    (story3, story3_pass) ::
+                    (gifts1, gifts1_pass) ::
+                    nil
+
+    fun umix-password-ok (u, p) = 
+        let
+            fun ok nil = false
+              | ok ( (uu, pp) :: rest ) = (u seq uu andalso p seq pp)
+                                          orelse ok rest
+        in
+            if u seq guest then true
+            else ok all-users
+        end
+
+    (* ---------------------------------------------------------------------- *)
+    (* actually log in a user in and initialize state
+       
+       NOTE: this happens so early because the subsequent code 
+       closes around the current user and his state
+       *)
+    
+    (* mail 
+       creates a global mail queue
+       *)
+    import "mail.uh"
+
+    fun bug s =
+      raise UMIXBug s
+
+    type perm = { owner : string }
+
+    datatype file =
+        Program of string list -> unit
+      | Text of string
+      | Directory of (string * perm * file) list ref
+
+    do let in
+        print "\n\n\n\n\n\n\n\n\n\n";
+        print "\n\n\n\n\n\n\n\n\n\n";
+        print "\n\n\n\n\n\n\n\n\n\n";
+        print "\n\n\n\n\n\n\n\n\n\n";
+        print "\n\n\n\n\n\n\n\n\n\n";
+        print "12:00:00 1/1/19100\n";
+        print "Welcome to Universal Machine IX (UMIX).\n\n";
+        print "This machine is a shared resource. Please do not log\n";
+        print "in to multiple simultaneous UMIX servers. No game playing\n";
+        print "is allowed.\n\n";
+        
+        print "Please log in (use 'guest' for visitor access).\n";
+        print ";login: "
+    end
+
+    val name = (getline ()) handle _ => ""
+
+    val pass =
+       if name seq guest then
+          ""
+       else
+          let in
+             print "password: ";
+             (getline ()) handle _ => ""
+          end
+
+    (* uses umix-password-ok above *)
+    val user = 
+        if umix-password-ok (name, pass)
+        then name
+        else 
+            (let in
+                 (* try to prevent password brute-forcing *)
+                 obfuscate-delay 5000;
+                 print ("ACCESS DENIED for user " ^ name ^ "\n");
+                 halt ()
+             end)
+
+    val cwd = ref (user :: "home" :: nil)
+      
+    (* some commands and programs require access to the root
+       of the filesystem *)
+    val rootr = ref nil
+    val fsroot = Directory rootr
+
+    (* ---------------------------------------------------------------------- *)
+    (* umix file system utilites *)
+
+    fun okread { owner } =
+      string-equals(owner, "root")
+      orelse string-equals (owner, user)
+      
+    (* ENH make it so you can't overwrite files that are owned by root? 
+           that seems to break things in the current version
+           (maybe it checks write perms on the way down the path?)
+       *)
+    val okwrite = okread
+            
+    (* get the file pointed to by the path,
+       where the path is 
+       f1 :: d1 :: d2 :: ... :: dn :: nil
+       
+       where f may be any type of file or
+       directory, and d1...dn are files. The
+       list is in "reverse" order so that
+       /home/tom/README is represented as
+       "README" :: "tom" :: "home" :: nil.
+       *)
+    fun getpath p =
+      let
+        fun search thing nil = SOME thing
+          | search (Directory l) (f :: path) =
+          (* find f inside the directory l *)
+          let
+            (* ENH check / return permissions? *)
+            fun findy (((sis f) _, perm, file) :: _) = 
+              if okread perm
+              then search file path
+              else
+                let in
+                  print ("Permission denied: " ^ f ^ "\n");
+                  NONE
+                end
+              | findy (_ :: more) = findy more
+              | findy nil = NONE
+          in
+            findy (!l)
+          end
+          (* path goes through a text or program *)
+          | search _ _ = NONE
+      in
+        search fsroot (list-rev p)
+      end
+    
+    fun mkabsolute path =
+      let
+        (* remove trailing /
+           this works even in the case that path is "/" *)
+        val path = 
+          case sub (path, length path - 1) of
+            ?/ => substring(path, 0, length path - 1)
+          | _ => path
+            
+        val parts = string-fields (fn c => ord c = ord ?/) path
+          
+        (* val _ = list-app (fn s => print (s ^ "\n")) parts *)
+          
+        fun readpath (p, nil) = p
+          (* empty means that we have written
+             either /absolute/path or relative/with//double.
+             for regularity, we treat these as
+             /absolute/path and /double respectively. *)
+          | readpath (p, ((sis "") _) :: more) = 
+          let in
+            (* print "rpempty\n"; *)
+            readpath (nil, more)
+          end
+          (* shorthand for current directory, as in ./runme
+             or /asdf/./ghjk; ignore it. *)
+          | readpath (p, ((sis ".") _) :: more) = readpath (p, more)
+          (* attempting to ascend above root. pretend root is parent of root *)
+          | readpath (nil, ((sis "..") _) :: more) = 
+          let in
+            (* print "uproot\n"; *)
+            readpath (nil, more)
+          end
+          (* pop off one level *)
+          | readpath (h :: rest, ((sis "..") _) :: more) = 
+          let in
+            (* print "up\n"; *)
+            readpath (rest, more)
+          end
+          | readpath (p, normal :: more) = 
+          let in
+            (* print "normal\n"; *)
+            readpath(normal :: p, more)
+          end
+      in
+        readpath (!cwd, parts)
+      end
+
+    (* get a path relative to the current directory.
+       path is a string like "a/b/c" or "/c" or "../asdf/"
+       or "./whatever". Tries to do the right thing,
+       not worrying about semantic consistency. *)
+    fun getrel path = getpath (mkabsolute path)
+
+    fun makefile (path, filename, perm, contents) =
+        if array-exists (fn ?/ => true | _ => false) filename
+        then print [Illegal filename: '[filename]'\n]
+        else
+        let
+            fun search (Directory r) nil = 
+                (* this is the dir. *)
+                let
+                in
+                    (* print ("Creating file " ^ filename ^ "\n");*)
+                    (* note: will overwrite directories, etc. *)
+                    r := 
+                    (filename, perm, contents) ::
+                    list-filter (fn (x, _, _) =>
+                                 not (string-equals(x, filename))) (!r)
+                end
+              | search (Directory ((!) l)) (f :: path) =
+                (* find f inside the directory l *)
+                let
+                    fun findy (((sis f) _, perm, file) :: _) = 
+                        if okwrite perm
+                        then search file path
+                        else print ("Can't write file: " ^ filename ^ 
+                                    "; permission denied.\n")
+                      | findy (_ :: more) = findy more
+                      | findy nil =
+                        print ("Could not create file " ^ filename ^ " : "
+                               ^ " no such path " ^ f ^ "\n")
+                in
+                    findy l
+                end
+              | search _ _ =
+                print ("Could not create file " ^ filename ^ " : "
+                       ^ " path not valid\n")
+        in
+            search fsroot (list-rev path)
+        end
+
+    (* ---------------------------------------------------------------------- *)
+    (* wrappers and home directories for individual languages=puzzles *)
+
+    (* *******************
+     * ** UMIX/QBASIC CODE *
+     * *******************)
+
+    (* responsible for users: guest *)
+
+    (* encourage people to poke around *)
+    fun a_out l =
+        let in
+            print "segmentation fault (core dumped)\n";
+            makefile (!cwd, "core",
+                      (* ?? *)
+                      { owner = user }, 
+                      Text
+                      (gen-publication { problem = "INTRO",
+                                         task    = "OUT",
+                                         score   = bi-fromint 5 } ^ "\n"))
+        end
+
+    val umodem-firsttime = ref true
+
+    fun umodem (_ :: file :: eof :: nil) = 
+        (case getrel file of
+           SOME _ => print [umodem : file [file] already exists.\n]
+         | NONE =>
+            let
+              fun progress n = print ("Transferred " ^ int-tostring n ^ "...\n")
+              do  print ("Begin sending characters. Terminate with " ^ eof ^ "...\n")
+            in
+              case all-lines-progress eof progress of
+                   NONE => print "umodem: out of disk space\n"
+                 | SOME str => 
+                       let in
+                           print ("writing " ^ int-tostring (length str) 
+                                  ^ " characters\n");
+
+                           (* SUSP mkabsolute.. a file like ftd/README gets rejected
+                              as an illegal filename. *)
+                           makefile (!cwd, file, { owner = user }, Text (str));
+                           (!umodem-firsttime andalso user seq guest)
+                               andthen 
+                               let in
+                                   print (gen-publication 
+                                          { problem = "INTRO",
+                                            task    = "UMD",
+                                            score   = bi-fromint 10 });
+                                   print "\n"
+                               end;
+                           umodem-firsttime := false
+                       end
+             end)
+      | umodem _ =
+        let in
+          print [umodem: transfer files between UMIX systems
+                 usage: umodem file.out EOF_SENTINEL
+                 Writes characters from the console into the file
+                 until the specified sequence EOF_SENTINEL is reached.\n]
+        end
+
+    val qbasic-firstcompile = ref true
+    fun qbasic (_ :: file :: nil) =
+        (case getrel file of
+             SOME (Text s) =>
+                 (let 
+                      val basename = list-head (string-fields (fn ?. => true
+                                                                | _  => false) file)
+                      import "qbasic.uh"
+                  in  let
+                          val p = qbasic-parse s
+                          val p = qbasic-optimize p
+                      in
+                          (user seq guest andalso !qbasic-firstcompile) 
+                          andthen print (gen-publication { problem = "INTRO",
+                                                           task    = "QBC",
+                                                           score   = bi-fromint 10 } ^ "\n");
+                          qbasic-firstcompile := false;
+                          makefile (!cwd, basename ^ ".exe", 
+                                    { owner = user }, 
+                                    Program (fn l =>
+                                             (qbasic-eval p l)
+                                             handle QBasic s =>
+                                                 print ("\nqbasic: " ^ s ^ "\n")));
+                          print "Compiled.\n"
+                      end handle QBasic s => print ("qbasic: " ^ s ^ "\n")
+                  end)
+           | SOME _ => print "qbasic: not a text file\n"
+           | NONE => print "qbasic: no such file\n")
+      | qbasic _ =
+        let in
+            print "QVICKBASIC version VII.0\n";
+            print "The programming language of choice for\n";
+            print "discriminating hackers.\n";
+            print "usage: qbasic file.bas\n"
+        end
+
+    val um-firsttime = ref true
+
+    fun um-run-bonus args =
+      um-run args andthen
+        let in
+            !um-firsttime
+            andthen 
+            let in
+                print (gen-publication 
+                       { problem = "INTRO",
+                         task    = "UMR",
+                         score   = bi-fromint 10 });
+                print "\n"
+            end;
+            um-firsttime := false
+        end
+
+    fun um (flags, file :: nil) = 
+        (* was -h given? for hex *)
+        if list-exists (fn s =>
+                        case array-find (fn ?h => true
+                                          | _  => false) s of
+                            SOME _ => true
+                          | _ => false) flags then
+        let 
+          exception Hex of string
+          fun harr2iarr arr =
+              let val totallen = length arr
+                  fun counthexchars i acc =
+                      if i >= totallen then acc
+                      else
+                        let val c = ord (sub (arr, i)) in
+                          if (c >= 48 andalso c <= 57) orelse
+                             (c >= 65 andalso c <= 70) orelse
+                             (c >= 97 andalso c <= 102) then
+                            counthexchars (i + 1) (acc + 1)
+                          else if c = 32 orelse c = 13 orelse c = 10 then
+                            counthexchars (i + 1) acc
+                          else raise Hex [invalid hex character "[implode ((chr c)::nil)]"]
+                        end
+
+                  val hexchars = counthexchars 0 0
+                  val len = if hexchars mod 8 = 0 then
+                              hexchars div 8
+                            else raise Hex "input must contain a multiple of 8 hex characters"
+                  val res = array (len, 0)
+
+                  fun h2i shift acc (arri : int) = 
+                      let val c = ord (sub (arr, arri)) in
+                        if c >= 48 andalso c <= 57 then
+                          (acc + ((c - 48) shl shift), arri + 1)
+                        else if c >= 65 andalso c <= 70 then
+                          (acc + ((c - 55) shl shift), arri + 1)
+                        else if c >= 97 andalso c <= 102 then
+                          (acc + ((c - 87) shl shift), arri + 1)
+                        else if c = 32 orelse c = 13 orelse c = 10 then
+                          h2i shift acc (arri + 1)
+                        else raise Hex [invalid hex character "[implode ((chr c)::nil)]"]
+                      end
+
+                  fun copy arri resi =
+                      if resi >= len
+                      then 
+                        (print [== Decoded [int-tostring resi] instructions. ==\n];
+                         res)
+                      else
+                        let val (i, arri) = h2i 28 0 arri
+                            val (i, arri) = h2i 24 i arri
+                            val (i, arri) = h2i 20 i arri
+                            val (i, arri) = h2i 16 i arri
+                            val (i, arri) = h2i 12 i arri
+                            val (i, arri) = h2i 8 i arri
+                            val (i, arri) = h2i 4 i arri
+                            val (i, arri) = h2i 0 i arri
+                        in
+                          update (res, resi, i);
+                          copy arri (resi + 1)
+                        end
+              in
+                copy 0 0
+              end 
+        in
+          case getrel file of
+             SOME (Text s) => let in
+                                um-run-bonus (harr2iarr s)
+                                handle Hex s => print [um: [s]\n]
+                                     | Subscript => print "um: subscript\n"
+                                     | _ => print "um: unknown exn\n"
+                              end
+           | SOME _ => print "um: not a text file\n"
+           | NONE => print "um: no such file\n"
+        end
+        else
+        let 
+          (* convert from char array to int array *)
+          fun carr2iarr arr =
+              let val len = length arr
+                  val res = array (len div 4, 0)
+                  fun copy n = if n >= len then res
+                               else (update (res, n div 4, 
+                                             (ord (sub (arr, n))) shl 24
+                                             + (ord (sub (arr, n + 1))) shl 16
+                                             + (ord (sub (arr, n + 2))) shl 8
+                                             + (ord (sub (arr, n + 3))));
+                                     copy (n + 4))
+              in
+                copy 0
+              end
+        in
+          case getrel file of
+             SOME (Text s) => um-run-bonus (carr2iarr s)
+           | SOME _ => print "um: not a text file\n"
+           | NONE => print "um: no such file\n"
+        end
+
+      | um _ = print [um: execute Universal Machine binaries
+                      usage: um \[-h\] prog.um
+                      Pass the -h option if the binary is hex encoded\n]
+
+    fun um-safe args = um args 
+          handle _ => print "um: application triggered impossible behavior\n"
+
+    val ucc-firsttime = ref true
+
+    fun ucc (_ :: (files as _:: _)) =
+        let
+          import "ucc.uh"
+          exception UCC of string
+          fun gettext f = (case getrel f of
+                             SOME (Text s) => s
+                           | SOME _ => raise UCC [not a text file: [f]]
+                           | NONE => raise UCC [no such file: [f]])
+          (* convert from int array to char array *)
+          fun iarr2carr arr =
+              let val len = length arr
+                  val res = array (len * 4, chr 0)
+                  fun copy n = if n >= len then res
+                               else let 
+                                      val i = sub (arr, n)
+                                      val idx = n * 4
+                                    in
+                                      update (res, idx, chr (i shr 24));
+                                      update (res, idx + 1, chr ((i shr 16) andb 0xFF));
+                                      update (res, idx + 2, chr ((i shr 8) andb 0xFF));
+                                      update (res, idx + 3, chr (i andb 0xFF));
+                                      copy (n + 1)
+                                    end
+              in
+                copy 0
+              end
+        in
+          let
+            val src = string-concat (list-map gettext files)
+            val ws = ucc-run src
+          in
+            makefile (!cwd, "a.um", 
+                      { owner = user }, 
+                      Text (iarr2carr ws));
+
+            !ucc-firsttime
+            andthen 
+            let in
+                print (gen-publication 
+                       { problem = "INTRO",
+                         task    = "UCC",
+                         score   = bi-fromint 10 });
+                print "\n"
+            end;
+            ucc-firsttime := false
+          end
+            handle Assemble s => print [ucc: assembly error: [s]\n]
+                 | Compile s => print [ucc: compile error: [s]\n]
+                 | Parse s => print [ucc: parsing error: [s]\n]
+                 | UCC s => print [ucc: [s]\n]
+        end
+      | ucc _ = print [ucc: compile C7sus4 source to a UM binary
+                       usage: ucc file.c \[...\]
+                       Multiple files are concatenated in the order given.
+                       The result is written out as a.um.
+                       ]
+
+    (* VISVAL BASIC?
+       UISUAL BASIC *)
+    val binr = ref ( ("qbasic", { owner = "root" }, Program qbasic) ::
+                     ("umodem", { owner = "root" }, Program umodem) ::
+                     nil )
+
+    val home_guest_code = 
+        ref (        
+              ("hack.bas", { owner = guest },
+               let
+                   import "hack_bas.uh"
+               in
+                   Text hack-bas
+               end) :: nil )
+
+    do user seq guest andthen enqueuemail { sender = "Administrator <root@localhost>",
+                                            headers = nil, (* ENH *)
+                                            subject = "guest account misuse",
+                                            body = datafile "UMIX_CONTEST_GUEST_MAIL" }
+
+    val home_guest = ref ( ("code", { owner = guest }, Directory home_guest_code) ::
+                           ("a.out", { owner = guest }, Program a_out) ::
+                           nil )
+        
+    (* *******************
+     * ** ADVENTURE CODE *
+     * *******************)
+
+    val home_adv = ref ( ("adventure", { owner = adv },
+                          Program (runAdventure)) ::
+
+                         ("README", { owner = adv },
+                          Text (datafile "ADVENTURE_README")) ::
+
+                         nil )
+
+    (* *******************
+     * ** ANTOMATON CODE *
+     * *******************)
+
+    (* ENH/SUSP parser accepts boards wider and higher than specified,
+       also longer programs than specified *)
+    fun antomaton l = 
+        case (case l of
+                  _ :: ((sis "-i") _) :: ((sis "-s") _) :: file :: nil => SOME (true, true, file)
+                | _ :: ((sis "-s") _) :: ((sis "-i") _) :: file :: nil => SOME (true, true, file)
+                | _ :: ((sis "-i") _) :: file :: nil => SOME (true, false, file)
+                | _ :: ((sis "-s") _) :: file :: nil => SOME (false, true, file)
+                | _ :: file :: nil => SOME (false, false, file)
+                | _ => NONE) of
+
+            SOME (inter, silent, file) =>
+                (case getrel file of
+                     SOME (Text s) => antomaton-runant (inter, silent, s)
+                   | SOME _ => print "antomaton: not a text file\n"
+                   | NONE => print "antomaton: no such file\n")
+          | NONE => 
+                     let in
+                         print [antomaton: simulates smellular antomata
+                                usage: antomaton \[-i\] \[-s\] file.ant
+                                reads the board from the specified file and runs the
+                                simulation. Specify -i for interactive mode. Or
+                                -s for silent mode. \n]
+                     end
+
+    val home_antomata = ref ( ("antomaton", { owner = antomata },
+                               Program antomaton) ::
+                              (".history", { owner = antomata },
+                               Text (datafile "UMIX_ANT_HISTORY")) ::
+                              ("README", { owner = antomata },
+                               Text (datafile "ANT_CONTEST_README")) ::
+                              ("example.ant", { owner = antomata },
+                               Text (datafile "ANT_CONTEST_EXAMPLE1")) ::
+                              list-map (fn (name, s, _, _) =>
+                                        (name, 
+                                         (* so they are read-only;
+                                            ENH should have a better way
+                                            to do this *)
+                                         { owner = "root" },
+                                         Text s)) antomaton-inputs ) 
+
+    (* ******************
+     * ** BALANCE CODE **
+     * ******************)
+
+    exception step-balance-badfile of string
+
+    fun step-balance-getfile file =
+      (case getrel file of
+         (SOME (Text s)) => s
+       | (SOME _) => 
+           raise step-balance-badfile 
+             ("step_balance: error: " ^ file ^ " is not a text file\n")
+       | _ =>
+           raise step-balance-badfile
+             ("step_balance: error: no such file " ^ file ^ "\n"))
+  
+    fun step-balance (_ :: prob :: prog :: nil) =
+        (let
+           val code = step-balance-getfile prog
+           val steps = balance-debug (Bal-Prob prob) code
+         in
+           print ("step_balance: Simulation terminated after " ^
+                  int-tostring steps ^ " steps.\n")
+         end
+           handle step-balance-badfile s => print s)
+      | step-balance (_ :: mem :: src :: dst :: prog :: nil) =
+        (let
+           val mem = step-balance-getfile mem
+           val src = step-balance-getfile src
+           val dst = step-balance-getfile dst
+           val code = step-balance-getfile prog
+           val steps = balance-debug (Bal-Spec (mem,src,dst)) code
+         in
+           print ("step_balance: Simulation terminated after " ^
+                  int-tostring steps ^ " steps.\n")
+         end
+           handle step-balance-badfile s => print s)
+      | step-balance _ =
+        let in
+          print "step_balance: simulates balance one step at a time\n";
+          print "usage: step_balance (<prob>|(<mem> <src> <dst>)) <prog>\n";
+          print "  The user may specify an initial machine configuration\n";
+          print "  either by providing a problem name (<prob>) or by\n";
+          print "  specifying files representing the initial memory,\n";
+          print "  source register and destination register states\n";
+          print "  (<mem> <src> <dst>).\n";
+          print "Excecution of the specified machine will occur step by\n";
+          print "  step.  Press enter to process the next instruction.\n";
+          print "  The program halts on EOF.\n"
+        end
+       
+    fun certify argv =
+        case argv
+         of _ :: name :: file :: nil =>
+            let in
+                case getrel file
+                  of SOME (Text s) => balancify-run name s
+                | SOME _ => print "certify: not a text file\n"
+                | NONE => print "certify: no such file\n"
+            end
+          | _ =>
+            let in
+                print "certify: verify solutions to certification challenges\n";
+                print "usage: certify <puzzle> <prog>\n";
+                print "simulates the program to solve the challenge.\n"
+            end
+ 
+
+    val home_balance =
+      ref (("certify", {owner = balance}, 
+            Program certify) ::
+
+           ("step_balance", {owner = balance},
+            Program step-balance) ::
+
+           ("README", {owner = balance}, 
+            Text (datafile "BALANCE_README")) ::
+
+           ("PUZZLES", {owner = balance},
+            let
+              (* SUSP FUTURE ENH - mail that give certification *)
+              val leadstr =
+                ("Balance Certified Professional Program Puzzles\n" ^
+                 "\n" ^
+                 "This file contains a list of puzzles.  Solutions to these puzzles may count\n" ^
+                 "towards your BCPP certification.  Use the certify program to submit\n" ^
+                 "your solutions.  (Note: Not all maximum scores have been attained by the\n" ^
+                 "BCPP organization.)\n\n\n")
+              fun gen_pstr {name,mem=_,reg=_,checkmem=_,checkreg=_,reps=_,
+                            task=_,
+                            sigmoid={min-score,par-score=_,max-score,
+                                     correct=_,par=_,hole-in-one=_},
+                            desc={imem,iregs,fmem,fregs}} =
+                ("Puzzle: " ^ name ^ "\n" ^
+                 "Initial memory: " ^ imem ^
+                 "Initial registers: " ^ iregs ^
+                 "Final memory: " ^ fmem ^
+                 "Final registers: " ^ fregs ^ 
+                 "Certification point value: " ^ bi-tostring min-score ^
+                   " - " ^ bi-tostring max-score ^ "\n\n"
+                 )
+            in
+              Text (leadstr ^ 
+                    (list-foldr (fn (puz,str) => (gen_pstr puz) ^ str) 
+                     "\n" bal_puzzles))
+            end) ::
+           
+           nil )
+
+
+    (* *******************
+     * ** CIRCUITS CODE **
+     * *******************)
+
+   (* scoring goodness *)
+      
+    val bifi = bi-fromint
+    val mult-score = 
+      sigmoid-score
+      {min-score = bifi 30, par-score = bifi 40, max-score = bifi 75,
+       correct = bifi 2200, par = bifi 1000, hole-in-one = bifi 500}
+      
+    val rev-score =
+      sigmoid-score
+      {min-score = bifi 35, par-score = bifi 45, max-score = bifi 75,
+       correct = bifi 1500, par = bifi 800, hole-in-one = bifi 300}
+      
+    val ray-score =
+      sigmoid-score
+      {min-score = bifi 700, par-score = bifi 840, max-score = bifi 1300,
+       correct = bifi 500000, par = bifi 100000, hole-in-one = bifi 6000}
+
+    val asp-score =
+      sigmoid-score
+      {min-score = bifi 700, par-score = bifi 840, max-score = bifi 1300,
+       correct = bifi 500000, par = bifi 100000, hole-in-one = bifi 6000}
+
+    (* ENH allow params that limit the number of recursive steps,
+       or show intermediate steps? *)
+    fun eval2d (_ :: file :: nil) =
+        (case getrel file of
+           SOME (Text s) =>
+             (let
+                val lines =
+                    let
+                      val lnarr = growarray-new ({| ?  |})
+                      val endl = length s
+                      fun get-line n =
+                          let 
+                            val ga = growarray-new ? 
+                            fun pushc c = growarray-push (ga,c)
+                            fun scan n =
+                              if n = endl then
+                                 growarray-push 
+                                 (lnarr,
+                                  growarray-subarray (ga, 0, 
+                                                      growarray-length ga))
+                              else
+                                case ord (sub (s,n)) of
+                                  13 => scan (n+1)
+                                | 10 =>
+                                    (growarray-push
+                                     (lnarr,
+                                      growarray-subarray 
+                                      (ga, 0, growarray-length ga));
+                                     get-line (n+1))
+                                | c => (pushc (chr c);scan (n+1))
+                          in
+                            scan n
+                          end
+                    in
+                      get-line 0;
+                      growarray-subarray(lnarr, 0,
+                                         growarray-length lnarr)
+                    end
+
+                val prog = parse-2d lines
+                  
+                val res = run-program-2d (prog, "main", NONE, NONE)       
+              in
+                print ("Result:\n");
+                print (expr2D-tostring res ^ "\n")
+              end
+                handle ParseError2D es    => print ("\n" ^ es ^ "\n")
+                     | EvalError2D es     => print ("\n" ^ es ^ "\n")
+                     | InternalError2D es => raise UMIXBug ("2D: " ^ es)
+                     | _                  => raise UMIXBug 
+                         ("Unknown uncaught exception in 2d\n"))
+              
+         | SOME _ => print "2d: not a text file\n"
+         | NONE => print "2d: no such file\n")
+      | eval2d _ =
+           let in
+             print "2d: runs 2d programs\n";
+             print "usage: 2d prog.2d\n";
+             print "reads the program from the file specified,\n";
+             print "and invokes the module 'main' with no arguments.\n";
+             print "prints the result to the screen.\n"
+           end
+
+    val first2dsol = ref true
+
+    fun verify2d (_ :: problem :: file :: nil) =
+      (case getrel file of
+         SOME (Text s) =>
+           let
+             val lines =
+                 let
+                   val lnarr = growarray-new ({| ?  |})
+                   val endl = length s
+                   fun get-line n =
+                       let
+                         val ga = growarray-new ?
+                         fun pushc c = growarray-push (ga,c)
+                         fun scan n =
+                           if n = endl then
+                              growarray-push
+                              (lnarr,
+                               growarray-subarray (ga, 0,
+                                                   growarray-length ga))
+                           else
+                             case ord (sub (s,n)) of
+                               13 => scan (n+1)
+                             | 10 =>
+                                 (growarray-push
+                                  (lnarr,
+                                   growarray-subarray
+                                   (ga, 0, growarray-length ga));
+                                  get-line (n+1))
+                             | c => (pushc (chr c);scan (n+1))
+                       in
+                         scan n
+                       end
+                 in
+                   get-line 0;
+                   growarray-subarray(lnarr, 0,
+                                      growarray-length lnarr)
+                 end
+
+
+             (* bigint calculation to prevent overflow*)
+             val area = 
+               bi-mult
+               (bi-fromint (length lines),
+                bi-fromint (array-foldl 
+                                (fn (e,mx) => int-max(length e,mx)) 0 lines))
+               
+             datatype checkres =
+               CheckOK
+             | CheckFail of string
+               
+               
+             (* These are the test cases to run on mult 
+                It's a list of pairs of the form:
+                (how many tests to run, what range to run those tests on)
+                And we just scan down the list and run the appropriate tests *)
+             val mult-2d-test-list = (20,10) :: (2,30) :: nil
+               
+             fun mult_check prog =
+               let
+                 val num-tests = 
+                   list-foldl (fn ((a,b),y) => a+y) 0 mult-2d-test-list
+                   
+                 fun run-test-list (nil,accum) = CheckOK
+                   | run-test-list ( (num,rg)::otests, accum ) =
+                   (case mult-test-2d 
+                         (random-int,
+                          (fn (e1,e2) => run-program-2d (prog,
+                                                         "mult",
+                                                         SOME e1,
+                                                         SOME e2)),
+                          num,rg,accum,num-tests) of
+                         MultSuccess2d => run-test-list (otests, accum + num)
+                       | MultFail2d {prob,correct,actual} =>
+                           CheckFail 
+                           ("Multiplication failed!\n  Multiplying "
+                            ^ expr2D-tostring (#1/2prob) ^ " by " ^ 
+                            expr2D-tostring (#2/2prob) ^ "\n Yielded \n" 
+                            ^ expr2D-tostring actual ^ " instead of \n" ^ 
+                            expr2D-tostring correct ^ "\n"))
+               in
+                 run-test-list (mult-2d-test-list, 1)
+               end 
+                 
+           (* These are the test cases to run on rev
+              It's a list of pairs of the form:
+              (how many tests to run, what range of lengths test on,
+               how big the elements should be)
+              And we just scan down the list and run the appropriate tests *)
+           val rev-2d-test-list = (1,1,3)::(10,5,3)::(5,10,4)::(4,13,3)::nil
+ 
+           fun rev_check prog =
+             let
+               val num-tests = 
+                 list-foldl (fn ((a,_,_),y) => a+y) 0 rev-2d-test-list
+
+               fun run-test-list (nil,accum) = CheckOK
+                 | run-test-list ( (num,rg,dpth)::otests, accum ) =
+                 (case rev-test-2d (random-int,
+                                    (fn exp => 
+                                     run-program-2d (prog, "rev", SOME exp,
+                                                     NONE)),
+                                     num,dpth,rg,accum,num-tests) of
+                    RevSuccess2d => run-test-list (otests, accum + num)
+                  | RevFail2d {prob,correct,actual} =>
+                      CheckFail ("Rev failed!\n  Reversing \n" 
+                                 ^ expr2D-tostring prob ^ " \n yielded \n " 
+                                 ^ expr2D-tostring actual ^ " instead of \n" ^ 
+                                 expr2D-tostring correct ^ "\n"))
+             in
+               run-test-list (rev-2d-test-list, 1)
+             end 
+           
+           
+           fun raytrace_check prog =
+               let
+                 fun tracer scene =
+                     let
+                       (*Stolen from the minml version in raytrace-test *)
+                       fun scene-to-2d nil = EInr2D EUnit2D
+                         | scene-to-2d (h :: t) =
+                         let
+                           fun intensity RTI_None = EInl2D EUnit2D
+                             | intensity RTI_Medium = EInr2D (EInl2D EUnit2D)
+                             | intensity RTI_All = EInr2D (EInr2D 
+                                                           (EInl2D EUnit2D))
+                             
+                           fun dir RTD_Towards = EInl2D EUnit2D
+                             | dir RTD_Away    = EInr2D EUnit2D
+                             
+                           fun surf { D, R, T, E } =
+                             EPair2D(dir D, 
+                                     EPair2D(intensity R,
+                                             EPair2D(intensity T,
+                                                     intensity E)))
+                         in
+                           EInl2D (EPair2D(surf h, scene-to-2d t))
+                         end
+                       
+                       val res = run-program-2d (prog, "main", 
+                                                 SOME (scene-to-2d scene),
+                                                 NONE)
+
+                       fun twod-to-intensity (EInl2D EUnit2D) = RTI_None
+                         | twod-to-intensity (EInr2D(EInl2D EUnit2D)) = 
+                           RTI_Medium
+                         | twod-to-intensity (EInr2D(EInr2D(EInl2D EUnit2D))) =
+                           RTI_All
+                         | twod-to-intensity bval = raise RayTrace
+                     ("RayTrace error : program returned " ^ expr2D-tostring
+                      bval ^ " which is not a valid intensity value\n")
+                     in
+                       twod-to-intensity res
+                     end
+               in
+                 case raytrace-test (random-int, tracer) of
+                   RaytraceSuccess => CheckOK
+                 | RaytraceFail {scene, correct, actual} => 
+                     CheckFail [FAILED:
+                                Correct value for ray L0: [correct]
+                                Your value for ray L0: [actual]
+                                ]
+                                
+               end
+             handle RayTrace es    => CheckFail es
+               
+             fun aspects_check prog =
+               let
+                 fun step asp_prog =
+                   run-program-2d (prog, "step",
+                                   NONE, SOME (asp_prog))
+               in
+                 case check-aspects-in-2d step of
+                   NONE => CheckOK
+                 | SOME s => CheckFail s                 
+               end
+
+           val vfy =
+             case problem of
+               ((sis) "mult") _ => SOME (mult_check, "MUL")
+             | ((sis) "rev") _ => SOME (rev_check, "REV")
+             | ((sis) "raytrace") _ => SOME (raytrace_check, "RAY")
+             | ((sis) "ocult") _ => SOME (aspects_check, "OCU")
+             | _ => NONE
+
+           do print ("Program area: " ^ bi-tostring area ^ " (smaller is better)\n")
+
+           in
+             case vfy of
+               SOME (ch, pub) =>
+                 (let in 
+                    case ch (parse-2d lines) of
+                      CheckOK =>
+                        let in
+                          print ("Verification successful.\n");
+                          print (gen-publication 
+                                 { problem = "CIRCS",
+                                   task    = pub,
+                                   score   =
+                                   case pub of
+                                     (sis "MUL") _ => mult-score area
+                                   | (sis "REV") _ => rev-score area
+                                   | (sis "RAY") _ => ray-score area 
+                                   | (sis "ASP") _ => asp-score area
+                                   | _ => raise UMIXBug "unknown 2d task"} ^ "\n");
+                    (if (pub seq "MUL" orelse pub seq "REV")
+                        andalso !first2dsol
+                     then
+                       enqueuemail { sender = 
+                                     "Cain Gardener <gardener@cbv.net>",
+                                     headers = nil, (* ENH *)
+                                     subject = "Something is wrong...",
+                                     body = datafile "2D_CONTEST_EMAIL" }
+                     else ());
+                        first2dsol := false
+                        end
+                    | CheckFail s =>
+                        let in
+                          print ("[2D] Verification failed:\n");
+                          print s;
+                          print "\n"
+                        end
+                  end
+                    handle ParseError2D es =>
+                           let in
+                             print ("[2D] Verification failed in parsing:\n");
+                             print es;
+                             print "\n"
+                           end
+                         | EvalError2D es  =>
+                           let in
+                             print 
+                             ("[2D] Verification failed in evaluation:\n");
+                             print es;
+                             print "\n"
+                           end
+                         | InternalError2D es =>
+                           raise UMIXBug es
+                         | _               => raise UMIXBug
+                             ("Unknown uncaught exception in raised in " ^
+                              "verify 2D\n"))
+                             
+             | NONE =>
+                    print ("verify: There is no problem called '" 
+                           ^ problem ^ "'!\n")
+           end
+       | SOME _ => print "verify: not a text file\n"
+       | NONE => print "verify: no such file\n")
+      | verify2d _ =
+         let in
+           print "verify: verifies that a 2D program meets a specification.\n";
+           print "usage: verify testname prog.2d \n";
+           print "verifies the provided program against the specified test.\n";
+           (* ENH need to be more obvious about this -- maybe in another readme? *)
+           print "The program's score is determined by its area: \n";
+           print "  Smaller is better.\n";
+
+           print "Built in tests are :\n";
+           print "  mult\n";
+           print "  rev\n";
+           print "  raytrace\n";
+           print "  ocult\n"
+         end
+
+    val home_twod = ref ( ("2d", { owner = twod },
+                           Program eval2d) ::
+
+                          ("verify", { owner = twod },
+                           Program verify2d) ::
+
+                          ("README", { owner = twod },
+                           Text (datafile "2D_CONTEST_README")) ::
+
+                          ("mult.spec", { owner = twod },
+                           Text (datafile "2D_CONTEST_MULT_SPEC")) ::
+
+                          ("reverse.spec", { owner = twod },
+                           Text (datafile "2D_CONTEST_REVERSE_SPEC")) ::
+
+                          ("raytrace.spec", { owner = twod },
+                           Text (datafile "2D_CONTEST_RAYTRACE_SPEC")) ::
+                          
+                          ("aspects.spec", { owner = twod },
+                           Text (datafile "2D_CONTEST_ASP_SPEC")) ::
+
+                          ("plus.2d", { owner = twod },
+                           Text (datafile "2D_CONTEST_PLUS_CODE")) ::
+
+                          nil )
+       
+    (* ******************
+     * ** ASPECTS CODE **
+     * ******************)
+
+    (* to add an action:
+       add a line to the case at the end
+       and don't forget to update the usage string
+                                  and the advise.man data file
+       *)
+    fun aspects-main-wrapped commandInput = 
+        let 
+            exception BadCommand of string
+
+            val testsFileOptional = "             The tests-file argument is optional for this suite;\n"
+                                  ^ "             if a tests file is given, the tests in it are run\n"
+                                  ^ "             along with the built-in tests.\n\n"
+
+
+            val usageString = ("Usage: advise <action> <advice_file> [<tests_file>]\n" 
+                               ^ "Available actions:\n"
+                               ^ "    run      Runs the tests in the file given as the third argument.\n\n"
+                               
+                               ^ "    step     Runs the tests in the file given as the third argument\n"
+                               ^ "             and prints each step of the advice.\n\n"
+                               
+                               ^ "    arith    Arithmetic suite:\n"
+                               ^ "             Run automatically generated arithmetic tests.\n"
+                               ^ testsFileOptional
+                               
+                               ^ "    xml      XML suite:\n"
+                               ^ "             Run XML tests obtained from the Cult Wide Web.\n"
+                               ^ testsFileOptional
+                              )
+
+            fun getFileText filename = 
+                (case getrel filename of
+                     SOME (Text s) => s
+                   | SOME _ => raise BadCommand ("advise: " ^ filename ^ " is not a text file!\n")
+                   | NONE => raise BadCommand ("advise: no such file: " ^ filename ^ "\n"))
+
+            fun runGen (startMessage, main, ruleFilename, testsFnO) = 
+                let in
+                    print (startMessage ^ "\n");
+                    case testsFnO of
+                        SOME testsFilename => main (stream-fromstring (getFileText ruleFilename),
+                                                    SOME (stream-fromstring (getFileText testsFilename)))
+                      | NONE => main (stream-fromstring (getFileText ruleFilename),
+                                      NONE)
+                end
+
+            fun runEnsuringTests (main, message) args = 
+                case args of 
+                    (rulesFilename :: testsFilename :: nil) =>
+                        runGen (message, main, rulesFilename, SOME testsFilename)
+                  | _ => raise BadCommand usageString
+
+            fun runWithTestsIfAvailable (main, message) args =
+                case args of 
+                    (rulesFilename :: testsFilename :: nil) =>
+                        runGen (message, main, rulesFilename, SOME testsFilename)
+                  | (rulesFilename :: nil) => 
+                        runGen (message, main, rulesFilename, NONE)
+                  | _ => raise BadCommand usageString
+
+        in
+            (case commandInput of 
+                 (_ :: tutname :: rest) => 
+                     (case tutname of
+                          ((sis "run") _) => ignore (runEnsuringTests (aspects-mainNoTutorial, "Running input tests.") rest)
+                        | ((sis "step") _) => ignore (runEnsuringTests (aspects-mainNoTutorialPrintingSteps, "Running input tests; printing steps.") rest)
+                        | ((sis "arith") _) => 
+                              if runWithTestsIfAvailable (aspects-mainArith, "Running 'arith' suite.") rest 
+                              then 
+                                  (* give passwords for 2d and ants *)
+                                  (* ENH: obsfucate the passwords in the datafile? *)
+                                  enqueuemail
+                                  {sender = "hmonk@cbv.net",
+                                   headers = nil,
+                                   subject = "O'Cult User Survey",
+                                   body = (datafile "UMIX_CONTEST_ASPECTS_EMAIL")}
+                              else ()
+                        | ((sis "xml") _) => ignore (runWithTestsIfAvailable (aspects-mainXml, "Running 'xml' suite.") rest)
+                        | _ => raise BadCommand ("advise: unknown action: " ^ tutname ^ "\n"))
+               | _ => raise BadCommand usageString)
+            handle BadCommand s => print s
+        end
+
+    val home_aspects = ref (("README", { owner = aspects },
+                             Text (datafile "ASPECTS_CONTEST_README")) ::
+                            
+                            ("advise", { owner = aspects },
+                             Program (aspects-main-wrapped)) ::
+                            
+                            ("advise.man", { owner = aspects },
+                             Text (datafile "ASPECTS_CONTEST_advise.man")) ::
+                            
+                            ("arith.adv", { owner = aspects },
+                             Text (datafile "ASPECTS_CONTEST_arith.adv")) ::
+                            
+                            ("arith.tests", { owner = aspects },
+                             Text (datafile "ASPECTS_CONTEST_arith.tests")) ::
+                            
+                            nil )
+
+    (* *********************
+     * ** BLACKKNOTS CODE **
+     * *********************)
+
+    do user seq bk andthen enqueuemail { sender = "Cain Gardener <gardener@cbv.net>",
+                                         headers = nil,
+                                         subject = "Get Rich Quick? ;-)",
+                                         body = datafile "BK_CONTEST_MAIL" }
+
+    fun run_interactive_blackknots _ = 
+      let
+        do print [Please enter your machine one row at a time, using the \
+                  |>< characters.
+                  Terminate with an empty line.\n\n]
+          
+        val machine = parse-blackknots-stdin ()
+
+        do print [Finished reading in machine.  Processing...\n]
+      in
+        print
+        [* x -> (y,z)
+         * Means that if you drop a marble into pipe x, it comes out pipe y,
+         * and you hear z plinks\n];
+        array-appi 
+        (fn (i,(a,b)) => 
+         print [[int-tostring i] -> ([int-tostring a],[int-tostring b])\n])
+        machine        
+      end
+    handle BlackknotsParseError es => print es
+
+
+
+    val scores =
+      ref (
+           (50, adv, adv_pass ^ "^H^H^H^H^H") ::
+           (40, balance, balance_pass) ::
+           (0, balance, "please take my password off!") ::
+           (0, balance, "how do I delete this??") ::
+           
+           (* some stuff? *)
+           (0, guest, "") ::
+           (0, guest, "") ::
+           (0, guest, "") ::
+           (0, guest, "") ::
+           (0, guest, "") ::
+           (0, guest, "") ::
+           (0, guest, "") ::
+           nil)
+
+    (* list of problem numbers solved *)
+    val bk-solved = ref nil
+    val bk-score = ref 0
+
+    fun bk-solve-prog (n, score, bkname, bkpass) =
+      list-exists (fn x => x seq n) (!bk-solved)
+      otherwise (bk-solved := n :: !bk-solved;
+                 bk-score := !bk-score + score;
+                 scores := (!bk-score, bkname, bkpass) :: !scores)
+
+    (* generate scoreboard. *)
+    fun bk-scoreboard () =
+      let
+        val board = list-sort (fn ((a, _, _), (b, _, _)) =>
+                               int-compare (b, a)) (!scores)
+      in
+        print [===============================
+                        HIGH SCORES
+               ===============================
+               SCORE      NAME     PASSWORD\n];
+        list-app
+        (fn (score, sname, spass) =>
+         print [[string-pad(0 - 5, int-tostring score)] [string-pad(0 - 10, sname)] \
+                [spass]\n]) board
+      end
+
+    fun verify-blackknots _ =
+      let
+        do print [Please enter your machine now using the |>< characters.
+                  Terminate with an empty line.\n\n]
+
+        val machine = parse-blackknots-stdin ()
+        val mach-length = length machine
+      in
+        case bk-find-prob-by-width mach-length of
+          SOME {name,points,sol} =>
+            (print ("[BK] Your machine has the same width as black-knot "
+                    ^ "model " ^ name ^ 
+                    ".\n[BK] Checking against that model's spec...\n");
+             case bk-machine-equiv (machine, sol) of
+               BK-LENGTH-FAIL (l1,l2) =>
+               raise (UMIXBug ("[BK] We found a spec by width, but the " ^
+                               "user's machine have that length?\n"))
+             | BK-CHECK-FAIL (i,inp,sol) =>
+               let
+                 fun plinks-tostr (out, p) = 
+                     let val plinks = if p = 1 then "plink" else "plinks"
+                     in
+                         ("it comes out of column " ^ int-tostring out ^ 
+                          " and you hear " ^ int-tostring p ^ " " ^ plinks)
+                     end
+               in
+                 print 
+                 ("[BK] Verification failure: If you drop a marble into " ^
+                  "column " ^ int-tostring i ^ " in the\n black-knot toy, " ^
+                  plinks-tostr sol ^ ",\n but, with your machine, " ^
+                  plinks-tostr inp ^ ".\n")
+               end
+             | BK-SUCCESS =>
+               let
+                 do print ("[BK] Your machine successfully replicated " 
+                           ^ "black-knot model " ^ name ^ "!\n")
+                 do print "High score!\nPlease enter your name: "
+                 val bkname = getline ()
+                 (* tee hee *)
+                 do print "Please enter your password: "
+                 val bkpass = getline ()
+               in
+                 bk-solve-prog (name, points, bkname, bkpass);
+                 bk-scoreboard();
+                 print (gen-publication { problem = "BLACK",
+                                          task    = name,
+                                          score   = bi-fromint points} ^ 
+                        "\n")
+               end  )
+        | NONE => 
+          let in
+            print ("[BK] Your machine has width " ^ int-tostring mach-length
+                   ^ " but there is no machine spec that matches this.\n");
+            print ("Please try again.\n")
+          end
+      end
+    handle BlackknotsParseError es =>
+      let in
+        print (es ^ "\n")
+      end
+
+    fun bk_spec_prog _ =
+      let
+        do print [Which model would you like to see the spec for?\n]
+        do print [I know about the following models:\n]
+        do list-app (fn {name,points=_,sol=_} => print [  [name]\n])
+           bk-sol-machines
+
+        val tmod = getline ()
+          handle IO => "NO MODEL"
+
+        val toy = 
+          list-find (fn {name,points=_,sol=_}=> name seq tmod)
+          bk-sol-machines
+      in
+        case toy of
+          NONE => print [That isn't a valid model!\n]
+        | SOME {name=_,points=_,sol} =>
+        let in
+         print 
+         [* x -> (y,z)
+          * Means that if you drop a marble into pipe x, it comes out pipe y,
+          * and you hear z plinks\n];
+         array-appi 
+         (fn (i,(a,b)) => 
+          print [[int-tostring i] -> ([int-tostring a],[int-tostring b])\n])
+         sol
+        end
+      end
+
+
+    val home_bk = 
+      ref (("run_bb", {owner = bk},
+            Program run_interactive_blackknots) ::
+
+           ("verify", {owner = bk},
+            Program verify-blackknots) ::
+
+           ("bk_specs", {owner = bk},
+            Program bk_spec_prog) ::
+
+           nil)
+
+    (* *******************
+     * ** ENDGAME CODE *
+     * *******************)
+
+    (* responsible for users:
+       root
+       associate-root
+       assistant-root
+       and 
+       ftd *)
+      
+    (* publication in ftd's dir for running qbasic password cracker on ftd *)
+    fun ml2000 l =
+        let in
+            (* tee hee *)
+            print "Uncaught exception: Unimplemented\n";
+            print
+            (gen-publication { problem = "BASIC",
+                               task    = "MLC",
+                               score   = bi-fromint 100 } ^ "\n")
+        end
+    
+    fun icfp commandLine = 
+        let 
+            val usage = "usage: icfp.exe\n"
+        in
+            (case commandLine of 
+                 _ :: nil => readAndAssessPubs ()
+               | _ => print usage)
+        end
+      
+    val home_ftd = ref ( ("TODO", {owner = ftd}, Text (datafile "STORY_CONTEST_FTD_TODO")) :: 
+                         ("README", {owner = ftd}, Text (datafile "STORY_CONTEST_FTD_README")) ::
+                         ("ml19100.exe", { owner = ftd }, Program ml2000) ::
+                         ("icfp.exe", { owner = ftd }, Program icfp) ::
+                         nil )
+
+    val home_gifts1 = ref ( ("ucc", { owner = gifts1 }, Program ucc) ::
+                            ("README", { owner = gifts1 }, Text (datafile "README_CONTEST_UCC")) ::
+                            ("hello.c", { owner = gifts1 }, Text (datafile "hello.c")) ::
+                            ("io.c", { owner = gifts1 }, Text (datafile "io.c")) ::
+                            ("std.c", { owner = gifts1 }, Text (datafile "std.c")) ::
+                            ("um.c", { owner = gifts1 }, Text (datafile "um.c")) ::
+                            (".history", { owner = gifts1 }, Text ([ucc io.c hello.c
+                                                                    ls -l
+                                                                    um a.um
+                                                                    dump a.um
+                                                                    rm a.um
+                                                                    ])) ::
+                            nil )
+
+
+    (* invt: only meaningful if user is story1, story2, or story3 *)
+    val home_root =
+        let 
+            val assoc = "associate administrator"
+            val full = "full administrator"
+            val corrupted = "File corrupted.  Try running 'recover'.\n"
+
+            (* owner is current user *)
+            fun corruptedDirEntry fileName = (fileName, {owner=user}, Text corrupted)
+                
+            type dirEntry = (string * perm * file)
+                
+            type recoverEntry = {canRecover: (string -> bool), (* username *)
+                                 filename: string, 
+                                 text: string}
+
+            (* note: could compute the recover entries for the current user directly
+               for performance/clarity instead of making functions for any user *)
+               
+            (* corrupted file; recoverable in all three levels *)
+            fun s123 (filename : string, 
+                      text : string) :  dirEntry * recoverEntry = 
+                (corruptedDirEntry filename,
+                 {canRecover = fn curUser => string-equals (curUser, story1) 
+                                             orelse string-equals (curUser, story2) 
+                                             orelse string-equals (curUser, story3),
+                  filename=filename, text=text})
+                
+            (* corrupted file; recoverable in 2 and 3 *)
+            fun s23 (filename : string, 
+                     text : string) :  dirEntry * recoverEntry = 
+                (corruptedDirEntry filename,
+                 {canRecover = fn curUser => string-equals (curUser, story2) 
+                  orelse string-equals (curUser, story3),
+                  filename=filename, text=text})
+                    
+            (* corrupted file; recoverable in 3 *)
+            fun s3 (filename : string, 
+                     text : string) :  dirEntry * recoverEntry = 
+                (corruptedDirEntry filename,
+                 {canRecover = fn curUser => string-equals (curUser, story3),
+                  filename=filename, text=text})
+
+            (* ---------------------------------------------------------------------- *)
+            (* build directories *)
+
+            val directories : (dirEntry * recoverEntry) list = 
+                s3 ("CREDITS", datafile "STORY_CONTEST_CREDITS") ::
+                s123 ("aum_log_29_12_19004_172107", datafile "STORY_CONTEST_PART1") ::
+                s23 ("aum_log_29_12_19004_222107", datafile "STORY_CONTEST_PART2") ::
+                s3 ("aum_log_29_12_19004_235107", datafile "STORY_CONTEST_PART3") ::
+                nil
+                
+            (* ---------------------------------------------------------------------- *)
+            (* convert out *) 
+
+            val dirs : (dirEntry list ref) = 
+                let 
+                    val des = list-map (fn (x,y) => x) directories
+                    val ses = list-map (fn (x,y) => y) directories
+
+                    val recover = list-foldl (fn ({canRecover, filename, text}, acc) => 
+                                           fn f => if f seq filename andalso canRecover user
+                                                   then print [File recovered!  Text follows:\n [text]]
+                                                   else acc f)
+                                        (fn f => (print [File could not be recovered.\n];
+                                                  if user seq story1 then 
+                                                     print [Perhaps your local [assoc] can recover it.\n]
+                                                  else if user seq story2 then 
+                                                      print [Perhaps your local [full] can recover it.\n]
+                                                       else ()))
+                                        ses
+
+                    fun recoverWrapped (_ :: s :: nil) = recover s
+                      | recoverWrapped _ = print "usage: recover <filename>\n"
+
+                    val tools = 
+                        ref
+                        (("README", {owner=user}, 
+                          Text [This is a reference implementation of the Universal Machine.
+                                
+                                The implementation supports all UM programs, including uncompressed
+                                .um files and self-decompressing .umz files. To use this
+                                implementation to run a UM binary called c.um, simply concatenate the
+                                two files together:
+                                
+                                cat um.um c.um > cmu.um
+                                
+                                (Note: Not all versions of UMIX support the redirection operator >)
+                                
+                                The resulting binary can be run in any compliant universal machine
+                                implementation, including itself.\n]) ::
+                         
+                         ("um.um", {owner=user}, Text (datafile "gifts/um.um")) ::
+                         nil)
+                        
+                in
+                    (* owner is current user *)
+                    ref (("tools", {owner=user}, Directory tools) ::
+                         ("lost+found", {owner=user}, 
+                          Directory (ref(("recover", {owner=user}, Program (recoverWrapped)) :: des))) ::
+                         nil)
+                end
+        in
+            dirs
+        end
+
+    
+    val curUserIsAdmin = string-equals (user, story1) 
+        orelse string-equals (user, story2) 
+        orelse string-equals (user, story3)
+
+    (* set root home directory *)
+    do curUserIsAdmin andthen (cwd := ("root" :: nil))
+    
+    (* ---------------------------------------------------------------------- *)
+    (* build initial filesystem *)
+
+    type dirEntry = string * perm * file
+
+    fun maybeCons (b, h, t) = if b then h::t else t
+
+
+    (* note: hidden users should not be in this list! *)
+    val homer = 
+        ref
+        ( (ftd, { owner = ftd }, Directory home_ftd) ::
+          (gifts1, { owner = gifts1 }, Directory home_gifts1) ::
+          (guest, { owner = guest }, Directory home_guest) :: 
+          (antomata, { owner = antomata }, Directory home_antomata) ::
+          (twod, { owner = twod }, Directory home_twod) ::
+          (balance, { owner = balance }, Directory home_balance) ::
+          (adv, { owner = adv }, Directory home_adv) ::
+          (aspects, { owner = aspects }, Directory home_aspects) ::
+          (bk, { owner = bk }, Directory home_bk) ::
+          nil )
+
+    do rootr := ( ("home", { owner = "root" }, Directory homer) ::
+                  ("bin", { owner = "root" }, Directory binr) ::
+                  (* this only shows up if the user is and administrator, 
+                     so these permissions are okay *)
+                  maybeCons (curUserIsAdmin, 
+                             ("root", {owner=user}, Directory home_root),
+                             nil))
+    (* ---------------------------------------------------------------------- *)
+    (* umix shell *)
+
+    datatype flag =
+        Toggle of string
+      | Char of char    
+
+    fun program_more (flags, s :: nil) =
+        (case getrel s of
+             (SOME (Text s)) =>
+                 let
+                     val ls = length s
+                     val MORE_LINES = 24
+                     fun pr (i, 0) =
+                         let 
+                             do print " -- more? (q/!) --\n"
+                             val l = getline ()
+                         in
+                             if length l = 0 
+                             then pr (i, MORE_LINES)
+                             else
+                                 case sub(l, 0) of
+                                     ?q => (* done *) ()
+                                   | ?! => pr (i, 99999999) (* SUSP *)
+                                   | _ => 
+                                 let in
+                                     print (" (press ENTER for more, q to quit, or ! " ^
+                                            "to continue without prompting.)\n");
+                                     pr (i, 0)
+                                 end
+                         end
+                       | pr (i, n) =
+                         let 
+                             fun pl i =
+                                 if i >= ls
+                                 then () (* done -- eof *)
+                                 else
+                                     (* PERF sub_ *)
+                                     let val c = sub(s, i)
+                                     in
+                                         putc c;
+                                         (case c of
+                                              ?\n => pr(i + 1, n - 1)
+                                            | _ => pl (i + 1))
+                                     end
+                         in
+                             pl i
+                         end
+                 in
+                     pr(0, MORE_LINES)
+                 end
+           | (SOME _) => print "more: not a text file\n"
+           | _ => print "more: no such file\n")
+      | program_more _ =
+             let in
+                 print "type\n  help more\nfor documentation.\n"
+             end
+
+    fun cdup () =
+        cwd := (case !cwd of
+                    nil => (print "cdup: already at root.\n";
+                            nil)
+                  | _ :: t => t)
+
+    fun run file args =
+        (case getrel file of
+             (SOME (Program f)) => f (file :: args)
+           | (SOME _) => print "run: not an executable file.\n"
+           | _ => print "run: no such accessible program.\n")
+             handle Match => 
+              let in
+                raise UMIXBug ("match inside prog " ^ file ^ ".\n" ^
+                               "Args were:" ^
+                               (list-foldl (fn (x,s) => s ^ "\n" ^ "  " ^ x) 
+                                          "  " args)
+                               ^ "\n")
+              end
+            | IO =>
+              let in
+                print ("EOF detected.  Initiating UMIX shutdown.\n");
+                halt ()
+              end
+                  | _ =>
+              let in
+                raise UMIXBug ("Exception raised inside program " ^ file ^ 
+                               ".\n" ^
+                               "Args were:" ^
+                               (list-foldl (fn (x,s) => s ^ "\n" ^ "  " ^ x) 
+                                           "  " args) 
+                               ^ "\n")
+                end
+          
+    val pid = ref 2
+
+    fun ps _ =
+        let in
+            print ("  PID   TTY   TIME    COMMAND\n");
+            print (string-pad(0 - 6, "1") ^ " pts/7  00:00:00 ush\n");
+            print (string-pad(0 - 6, int-tostring (!pid)) ^ " pts/7  00:00:00 ps\n")
+        end
+
+    fun who _ =
+        let in
+            print "WARNING: clock not functional\n";
+            
+            print "12:00am  up 0 days, 1 users, load average: 0.0, 0.0, 0.0\n";
+            print "USER     TTY      FROM              LOGIN@    IDLE   JCPU   PCPU  WHAT\n";
+            print (string-pad(8, user) ^ 
+                          " tty1     -                 1Jan19100 0days  9.99s  0.00s who\n")
+            
+        end
+
+    fun dump (_, file :: nil) =
+        (case getrel file of
+             SOME (Text s) =>
+                 let
+                     fun bytetohex i =
+                         let val digits = "0123456789ABCDEF"
+                         in {| 
+                             sub (digits, i div 16),
+                             sub (digits, i mod 16)
+                           |}
+                         end
+                 in
+                     array-appi (fn (i, x) =>
+                                 let in
+                                     print (bytetohex (ord x));
+                                     (if i mod 16 = 15
+                                      then print [\n]
+                                      else print [ ])
+                                 end) s;
+                     print [\n]
+                 end
+           | _ => print [dump: not a binary file or not accessible\n])
+      | dump _ = print [usage: dump file
+                        prints a hexadecimal dump of a binary file.\n]
+
+
+    fun logout _ =
+       raise Logout
+
+    fun rm (flags, s :: nil) =
+       let val abs = mkabsolute s
+       in
+          (* nb. always report an error for howie (easter egg)--he doesn't
+             need to remove anything anyway *)
+          if user seq adv
+          then print "rm: you can't bring yourself to part with this file.\n"
+          else
+          (case abs of
+              nil => print "rm: cannot remove directory.\n"
+            | (f :: path) =>
+                 (case getpath path of
+                     (SOME (Directory lr)) =>
+                        let fun delete (((sis f) _, perm, file) :: rest) =
+                                if okwrite perm then
+                                   (case file of
+                                       (Directory _) =>
+                                          let in
+                                             print "rm: cannot remove directory.\n";
+                                             NONE
+                                          end
+                                     | _ => SOME rest)
+                                else
+                                   let in
+                                      print ("Permission denied: " ^ f ^ "\n");
+                                      NONE
+                                   end
+                              | delete (file :: rest) =
+                                (case delete rest of
+                                    SOME rest' => SOME (file :: rest')
+                                  | NONE => NONE)
+                              | delete nil = NONE
+                        in
+                           (case delete (!lr) of
+                               NONE => print "rm: no such removable file.\n"
+                             | SOME l => lr := l)
+                        end
+                   | (SOME _) =>
+                        bug "bad absolute path"
+                   | NONE =>
+                        print "rm: no such removable file.\n"))
+       end
+      | rm _ = raise Match
+       
+    fun ls (flags, l) =
+        (case (case l of nil => SOME (!cwd)
+                       | s :: nil => SOME (mkabsolute s)
+                       | _ => NONE) of
+           NONE => print "usage : ls [directory]\n"
+         | SOME path =>
+           (* ENH use general flags system *)
+           let val long = list-exists (fn s =>
+                                       case array-find (fn ?l => true
+                                                         | _  => false) s of
+                                                 SOME _ => true
+                                               | _ => false) flags
+                 in
+                     (case getpath path of
+                          (SOME (Directory ((!) l))) =>
+                              if long then
+                                 list-app (fn (name, { owner }, file) =>
+                                           let 
+                                               fun filesize (Text s) = int-tostring (length s)
+                                                 | filesize _ = "?"
+                                           in
+                                               print
+                                               (case file of
+                                                    Text _ => "-rw- "
+                                                  | Directory _ => "drwx "
+                                                  | Program _ => "-r-x ");
+
+                                               print ("   " ^ 
+                                                      string-pad (12, owner));
+                                               
+                                               print (" " ^
+                                                      string-pad (0 - 8, filesize file));
+                                                                  
+                                               print (" " ^ name ^ "\n")
+                                           end) l
+                              else
+                                  list-app (fn (name, { owner }, file) =>
+                                            print ((case file of
+                                                        Text _ => name
+                                                      | Directory _ => name ^ "/"
+                                                      | Program _ => name ^ "*") ^ "\n")
+                                            ) l
+                         | _ => print "ls: not an accessible directory.\n")
+                 end)
+
+    fun either f g x =
+        let in
+          (f x)
+          handle Match => g x
+        end
+
+    val index_html = datafile "cultweb/index.html"
+    val httpd_cbv_gif = datafile "cultweb/cbv.gif"
+    val httpd_cbv_gif = ("image/gif", httpd_cbv_gif, length httpd_cbv_gif)
+    val httpd_rainbow_gif = datafile "cultweb/rainbow.gif"
+    val httpd_rainbow_gif = ("image/gif", httpd_rainbow_gif, length httpd_rainbow_gif)
+    val httpd_contact_gif = datafile "cultweb/contact.gif"
+    val httpd_contact_gif = ("image/gif", httpd_contact_gif, length httpd_contact_gif)
+    val httpd_home_gif = datafile "cultweb/home.gif"
+    val httpd_home_gif = ("image/gif", httpd_home_gif, length httpd_home_gif)
+    val httpd_links_gif = datafile "cultweb/links.gif"
+    val httpd_links_gif = ("image/gif", httpd_links_gif, length httpd_links_gif)
+    val httpd_sship_gif = datafile "cultweb/sship.gif"
+    val httpd_sship_gif = ("image/gif", httpd_sship_gif, length httpd_sship_gif)
+    val httpd_under_construction_gif = datafile "cultweb/under_construction.gif"
+    val httpd_under_construction_gif = ("image/gif", httpd_under_construction_gif, length httpd_under_construction_gif)
+    val httpd_favicon_ico = datafile "cultweb/favicon.ico"
+    val httpd_favicon_ico = ("image/x-icon", httpd_favicon_ico, length httpd_favicon_ico)
+
+    val digits = array-map (fn s => ("image/gif", s, length s))
+        {| datafile "cultweb/0.gif",
+           datafile "cultweb/1.gif",
+           datafile "cultweb/2.gif",
+           datafile "cultweb/3.gif",
+           datafile "cultweb/4.gif",
+           datafile "cultweb/5.gif",
+           datafile "cultweb/6.gif",
+           datafile "cultweb/7.gif",
+           datafile "cultweb/8.gif",
+           datafile "cultweb/9.gif" |}
+
+    val httpd-pub-thunk = ref NONE
+    fun httpd-pub () =
+        case !httpd-pub-thunk of 
+            NONE =>
+                let in
+                    (* found in web headers upon successful HTTP request *)
+                    httpd-pub-thunk := SOME(gen-publication { problem = "INTRO",
+                                                              task    = "WEB",
+                                                              score   = bi-fromint 15 });
+                    httpd-pub ()
+                end
+          | SOME s => s
+        
+    val httpd-counter-score = ref 5
+    fun httpd-counter () =
+        let
+            val s = string-padwith ?0 (~7, int-tostring (!httpd-counter-score))
+        in
+            httpd-counter-score := !httpd-counter-score + 1;
+            string-concat
+            (list-map (fn digit =>
+                       [<img src="[string-str digit].gif" alt="[string-str digit]">]
+                       ) (explode s))
+        end
+
+
+    fun telnet (flags, ((either (sis "localhost") (sis "127.0.0.1")) _) :: 
+                       ((either (sis "http") (sis "80")) _) :: nil) =
+        let exception HTTP of string * string * string in (* code * reason * message *)
+          let val req = getline () 
+
+              fun gobble () = let val l = getline () in
+                                if length l = 0 then ()
+                                else gobble ()
+                              end
+              do gobble ()
+
+              fun match-proto ((sis "HTTP/1.0") _) = ()
+                | match-proto ((sis "HTTP/1.1") _) = ()
+                | match-proto _ = raise Match
+
+              val req = string-fields (fn x => ord x = ord ? ) req
+              val file = case req of
+                           ((sis "GET") _) :: file :: ((match-proto) _) :: nil => file
+                         | _ => raise HTTP ("400", "Bad Request", "Your user agent sent a request that this content broadcaster does not understand.")
+
+(* raise ("501", "Method Not Implemented", "FOO to /index.shtml not supported.\n<P>Invalid method in request FOO / HTTP/1.0<P>") *)
+
+              (* rewrite index.html to add counter *)
+              fun dorewrite s = 
+                  let val s' = string-replace "||COUNTER||" (httpd-counter ()) s
+                  in ("text/html", s', length s')
+                  end
+
+              val (content_type, content, content_length) = 
+                  if file seq "/index.html" then dorewrite index_html
+                  else if file seq "/" then dorewrite index_html
+                  else if file seq "/cbv.gif" then httpd_cbv_gif
+                  else if file seq "/rainbow.gif" then httpd_rainbow_gif
+                  else if file seq "/home.gif" then httpd_home_gif
+                  else if file seq "/contact.gif" then httpd_contact_gif
+                  else if file seq "/links.gif" then httpd_links_gif
+                  else if file seq "/favicon.ico" then httpd_favicon_ico
+                  else if file seq "/under_construction.gif" then httpd_under_construction_gif
+                  else if length file = 6 andalso
+                          (ord(sub (file, 1)) >= ord ?0) andalso
+                          (ord(sub (file, 1)) <= ord ?9) andalso
+                          (ord(sub (file, 0))  = ord ?/) andalso
+                          substring(file, 2, 4) seq ".gif" then sub(digits, ord(sub (file, 1)) - ord ?0)
+                  else raise HTTP ("404", "Not Found", 
+                                   [The requested URL [file] was not found on this server.<P>])
+          in
+            print [HTTP/1.1 200 OK
+                   Date: Sun, 1 Jan 19100 00:00:00 UCT
+                   Server: CultWeb/1.0 (UMIX)
+                   Connection: close
+                   Publication: [httpd-pub ()]
+                   Content-Length: [int-tostring content_length]
+                   Content-Type: [content_type]
+                   
+                   [content]]
+          end
+            handle HTTP (code, reason, msg) => 
+                   let val content = [<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+                                      <HTML><HEAD>
+                                      <TITLE>[code] [reason]</TITLE>
+                                      </HEAD><BODY>
+                                      <H1>[reason]</H1>
+                                      [msg]
+                                      <HR>
+                                      <ADDRESS>CultWeb/1.0 Server at <A HREF="mailto:nobody@cbv.net">localhost</A> Port 80</ADDRESS>
+                                      </BODY></HTML>]
+                       val content_length = length content
+                   in
+                       print [HTTP/1.1 [code] [reason]
+                              Date: Sun, 1 Jan 19100 00:00:00 UCT
+                              Server: CultWeb/1.0 (UMIX)
+                              Allow: GET
+                              Connection: close
+                              Content-Length: [int-tostring content_length]
+                              Content-Type: text/html
+
+                              [content]]
+                   end
+        end
+
+
+      | telnet (flags, ((either (sis "localhost") (sis "127.0.0.1")) _) :: 
+                       port :: nil) =
+        let in
+          print [Trying 127.0.0.1...
+                 telnet: Unable to connect to remote host: Connection refused\n]
+        end
+      | telnet (flags, host :: port :: nil) =
+        print [telnet: could not resolve [host]/[port]: Name or service not known\n]
+      | telnet (flags, host :: nil) = telnet (flags, host :: "telnet" :: nil)
+      | telnet _ =
+        let in
+            print [usage: telnet host port
+                   Connects to a remote (or local) machine at the
+                   specified port.\n]
+        end
+
+    val commands =
+        { name = "ls",
+          secret = false,
+          flags = nil,
+          run = ls,
+          help = "Lists the files in the current directory.",
+          usage = "ls" } ::
+
+        (* ENH : dir style like DOS *)
+        { name = "dir",
+          secret = true,
+          flags = nil,
+          run = ls,
+          help = "Lists the files in the current directory.",
+          usage = "dir" } ::
+
+        { name = "rm",
+          secret = false,
+          flags = nil,
+          run = rm,
+          help = "Deletes a file.",
+          usage = "rm file" } ::
+        { name = "del",
+          secret = true,
+          flags = nil,
+          run = rm,
+          help = "Deletes a file.",
+          usage = "del file" } ::
+
+        { name = "cat",
+          secret = false,
+          flags = nil,
+          run = (fn (flags, l as (_ :: _)) =>
+                 list-app (fn s =>
+                           case getrel s of
+                               (SOME (Text s)) => print s
+                             | (SOME _) => print "cat: not a text file\n"
+                             | _ => print "cat: no such accessible file\n") l
+                 | _ => raise Match),
+          help = "Prints a file to the terminal.",
+          usage = "cat file" } ::
+        { name = "type",
+          secret = true,
+          flags = nil,
+          run = (fn (flags, s :: nil) =>
+                 (case getrel s of
+                      (SOME (Text s)) => print s
+                    | (SOME _) => print "type: not a text file\n"
+                    | _ => print "type: no such accessible file\n")
+                  | _ => raise Match),
+          help = "Prints a file to the terminal.",
+          usage = "type file" } ::
+
+        { name = "more",
+          secret = false,
+          flags = nil,
+          run = program_more,
+          help = "Prints a file to the terminal, a screenful at a time.",
+          usage = "more file" } ::
+
+        { name = "cdup",
+          secret = false,
+          flags = nil,
+          run = (fn (flags, nil) => cdup () | _ => raise Match),
+          help = "Ascends to the parent directory.",
+          usage = "cdup" } ::
+
+        { name = "mkdir",
+          flags = nil,
+          secret = false,
+          run = (fn (flags, s :: nil) =>
+                 (case getrel s of
+                      (* SUSP: 
+                          NONE => print [File [s] already exists.\n]
+                         | SOME => 
+                          makefile (!cwd, s,
+                          { owner = user }, 
+                          Directory (ref nil)))
+                          | _ => raise Match),
+                       still compiled *)
+                      SOME _ => print [File [s] already exists.\n]
+                    | NONE => 
+                          makefile (!cwd, s,
+                                    { owner = user }, 
+                                    Directory (ref nil)))
+                          | _ => raise Match),
+          help = "Creates a directory.",
+          usage = "mkdir dir" } ::
+
+        { name = "cd",
+          flags = nil,
+          secret = false,
+          run = (fn (flags, s :: nil) =>
+                 let 
+                     val abs = mkabsolute s
+                 in
+                     case getpath abs of
+                         (SOME (Directory _)) => cwd := abs
+                       | _ => print "cd: not an accessible directory.\n"
+                 end
+                  | _ => raise Match),
+          help = "Changes the current directory.",
+          usage = "cd dir" } ::
+
+        { name = "run",
+          secret = false,
+          flags = nil,
+          (* SUSP: now passes flags to the command
+             if you depended on the previous behavior,
+             you're broken now *)
+          run = (fn (flags, s :: args) => run s (flags @args) | _ => raise Match),
+          help = "Runs a program.",
+          usage = "run file args" } ::
+
+        { name = "pwd",
+          secret = false,
+          flags = nil,
+          run = (fn (_, nil) =>
+                 let in
+                     print "/";
+                     list-app (fn f => (print f;
+                                        print "/")) (list-rev (!cwd));
+                     print "\n"
+                 end
+                  | _ => raise Match),
+          help = "Displays the current directory.",
+          usage = "pwd" } ::
+
+        { name = "mail",
+          secret = true,
+          flags = nil,
+          run = runmail user,
+          help = [Display mail messages.
+                  If there is unread mail, displays the first unread message.
+                  Otherwise, displays your inbox.],
+          usage = "mail" } ::
+
+        { name = "ps",
+          secret = true,
+          flags = nil,
+          run = ps,
+          help = "Displays the running processes.",
+          usage = "ps" } ::
+
+        { name = "w",
+          secret = true,
+          flags = nil,
+          run = who,
+          help = "Displays the logged-on users.",
+          usage = "w" } ::
+
+        { name = "who",
+          secret = true,
+          flags = nil,
+          run = who,
+          help = "Displays the logged-on users.",
+          usage = "who" } ::
+
+        { name = "dump",
+          secret = false,
+          flags = nil,
+          run = dump,
+          help = "Prints a hexidecimal dump of a binary file.",
+          usage = "dump file" } ::
+
+        { name = "um",
+          secret = true,
+          flags = nil,
+          run = um-safe,
+          help = "Emulates universal machine binaries (or hex-encoded binaries with -h).",
+          usage = "um [-h] program.um" } ::
+
+        { name = "logout",
+          secret = false,
+          flags = nil,
+          run = logout,
+          help = "Log out the current user.",
+          usage = "logout" } ::
+
+        { name = "exit",
+          secret = true,
+          flags = nil,
+          run = logout,
+          help = "Log out the current user.",
+          usage = "exit" } ::
+
+        { name = "telnet",
+          secret = false,
+          flags = nil,
+          run = telnet,
+          help = "Connect to UMIX host.",
+          usage = "telnet host port" } ::
+
+        nil
+ 
+    (* add help, which refers to the rest of the command list *)
+    val commands =
+        { name = "help",
+          secret = false,
+          flags = nil,
+          run = (fn (_, nil) =>
+                 let in
+                     print "For information on a specific command, type\n  help cmd\n";
+                     print "UMIX Commands:\n";
+                     list-app (fn { name, flags, run, help, usage, secret } =>
+                               secret otherwise print ("  " ^ name ^ "\n")) commands;
+                     print "\nAlso, try running programs with no arguments for usage instructions.\n\n"
+                 end
+                 | (_, cmd :: nil) => 
+                 let
+                     fun findc ({ name = name as ((sis cmd) _), secret,
+                                  flags, run, help, usage } :: _) =
+                         print (name ^ " : " ^ help ^ "\n" ^
+                                "usage : " ^ usage ^ "\n")
+                       | findc (_ :: t) = findc t
+                       | findc nil = print ("help: unknown command " ^ cmd ^ "\n")
+                 in
+                     findc commands
+                 end
+                 | _ => raise Match),
+          help = "List commands, or describe a command.",
+          usage = "help [command]" } :: 
+        commands
+
+    fun bash () =
+        let
+            do mailcheck ()
+
+            (* ENH print path too? as C:\path> *)
+            do print "% "
+
+            val entry = string-tokens (fn c => ord c = ord ? ) (getline ())
+
+            fun process entry =
+            (case entry of
+                 nil => ()
+               | cmd :: args =>
+                     let
+                         (* find this command *)
+                         fun findc ({ name = name as ((sis cmd) _), 
+                                      flags, run, help, usage, secret } :: _) =
+                             let
+                                 val (flags, args) = 
+                                     list-partition
+                                     (fn s => length s > 0 
+                                      andalso ord(sub(s, 0)) = ord ?-) args
+                                     (* ENH process flags properly *)
+                             in
+                                 pid := (!pid + 1) mod 65536;
+                                 ( ( run (flags, args) ) handle Match => 
+                                     let in
+                                         print "SYNTAX ERROR.\n";
+                                         print ("Command: " ^ name ^ "\n");
+                                         print ("Purpose: " ^ help ^ "\n");
+                                         print ("Correct syntax: " ^ usage ^ "\n")
+                                     end)
+                             end
+                           | findc (_ :: t) = findc t
+                           | findc nil = 
+                                 (* not a builtin. maybe it's a path to a program? *)
+                                 (case getrel cmd of
+                                      SOME f => process ("run" :: entry)
+                                    | NONE => 
+                                          print ("unknown command " ^ cmd ^ "\n" ^
+                                                 "new to UMIX? try\n  help\nfor help.\n"))
+                     in
+                         findc commands
+                     end)
+
+        in
+            process entry;
+            (* keep going... *)
+            bash ()
+        end    
+in
+
+    (* run *)
+
+    print ("logged in as " ^ user ^ "\n");
+    user seq guest andthen print (gen-publication { problem = "INTRO",
+                                                    task = "LOG",
+                                                    score = bi-fromint 200 });
+    print "\n";
+    (* under ENDGAME code *)
+    curUserIsAdmin andthen print [---------------------------------------------------------
+                                  Administrative account is for maintenance only.
+                                  No research is allowed.
+                                  ---------------------------------------------------------
+                                  ];
+    print "\n";
+
+    bash () 
+    handle IO => print ("UMIX shutdown: console EOF\n")
+         | Logout => ()
+         | UMIXBug es => print (coupon (es))
+         (* stdlib *)
+         | Div => print (coupon [Divide by 0])
+         | List => print (coupon [List])
+         | Match => print (coupon [Match])
+         | Negative => print (coupon [Negative])
+         | Radix => print (coupon [Radix])
+         | Subscript => print (coupon [Subscript])
+         | UnequalLengths => print (coupon [UnequalLengths])
+         (* Aspects internal invariants violated *)
+         | AspectsInternal s => print (coupon [advise: internal error: [s]])
+end
+(* handle anything that escapes *)
+handle _  => print (coupon [(unknown)])
+
+end

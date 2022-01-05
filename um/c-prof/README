@@ -1,0 +1,10 @@
+(Bash) usage:
+
+  cd c-prof
+  make
+  ./um ../humlock/tests/fact.um 2>fact.prof
+  ./runprof fact.sym ../humlock/tests/fact.um fact.prof fact.bins | sort -n -r
+
+where *.sym is a list of symbols (one per line, no whitespace within symbol
+names for now!) and *.bins is the set of indexes mapping from IP values to
+symbols numbers.  All of {.um, .prof, .bins} should be of the same length.

@@ -1,0 +1,511 @@
+val require-parse  = provide-parse
+
+
+datatype token =
+    (* string literal *)
+    TString of string
+    (* any identifier *)
+  | TId of string
+    (* multi-character symbolic "keywords" *)
+  | TOp of string
+    (* separator character *)
+  | TSep of char
+  | TNone
+
+
+(* get a token from s starting at position i *)
+fun ucc-get-token (i, s) =
+    let
+	val stop = length s
+
+	fun is-ws ?   = true
+	  | is-ws ?\r = true
+	  | is-ws ?\t = true
+	  | is-ws ?\n = true
+	  | is-ws _   = false
+
+        (* XXX windows? *)
+        fun is-nl ?\n = true
+          | is-nl _ = false
+
+	fun is-sep ?( = true
+	  | is-sep ?) = true
+          | is-sep ?{ = true
+          | is-sep ?} = true 
+          | is-sep ?[ = true
+          | is-sep ?@ = true
+          | is-sep ?] = true 
+	  | is-sep ?" = true (* " *)
+	  | is-sep ?~ = true            
+	  | is-sep ?= = true
+	  | is-sep ?+ = true
+	  | is-sep ?- = true
+	  | is-sep ?% = true
+	  | is-sep ?^ = true
+          | is-sep ?& = true
+	  | is-sep ?* = true
+	  | is-sep ?/ = true
+	  | is-sep ?? = true
+	  | is-sep ?! = true
+	  | is-sep ?> = true
+	  | is-sep ?< = true
+	  | is-sep ?. = true
+	  | is-sep ?, = true
+	  | is-sep ?; = true
+	  | is-sep ?: = true
+	  | is-sep ?| = true
+	  | is-sep _  = false
+
+	(* skip any whitespace. might skip to the
+	   end of the string *)
+	fun skipws i =
+	    if i >= stop then i
+	    else if is-ws (sub(s, i))
+		 then skipws (i + 1)
+		 else i
+
+	val i = skipws i
+
+	(* saw at least one character (starting at i),
+	   so we're accumulating a string of chars *)
+	fun accum j =
+	    (* end of string? *)
+	    if j >= stop 
+	    then (j, TId (substring(s, i, j - i)))
+	    else
+		let val c = sub(s, j)
+		in
+		    if is-ws c orelse is-sep c
+		    then (j, TId (substring(s, i, j - i)))
+		    else accum (j + 1)
+		end
+	    
+	(* read a string up until the closing quote *)
+	fun readstr i j =
+	    if j >= stop
+	    then 
+		let in
+		    print "Warning: Unclosed string\n";
+		    (* consume up to end of string *)
+		    (j, TString (substring (s, i + 1, j - (i + 1)))) 
+		end
+	    else
+	      if ord (sub(s, j)) = ord ?" (* " *)
+	      then (j + 1, TString (substring(s, i + 1, j - (i + 1))))
+	      else if ord (sub(s, j)) = ord ?\\ then 
+                if j >= stop then
+                  let in
+		    print "Warning: Unclosed string (terminated with \\)\n";
+		    (* consume up to end of string *)
+		    (j, TString (substring (s, i + 1, j - (i + 1))))
+                  end
+                else
+                  let
+                    val c = ord (sub(s, j+1))
+                    val esc = if c = ord ?n then [\n]
+                              else if c = ord ?r then [\r]
+                              else if c = ord ?t then [\t]
+                              else if c = ord ?\\ then [\\]
+                              else if c = ord ?" then ["]
+                              else raise Parse ("Unknown escape sequence: " 
+                                              ^ (implode (chr c::nil)))
+                    val init = substring (s, i + 1, j - (i + 1))
+                    val (j, rest) = case readstr (j + 1) (j + 1)
+                                     of (j, TString rest) => (j, rest)
+                                      | _ => raise Parse "impossible"
+                  in
+                    (j, TString (init ^ esc ^ rest))
+                  end
+              else (* not an escape *)
+                readstr i (j + 1)
+
+        fun readcomment depth j =
+            if j >= stop
+            then 
+              let in
+                print ("Warning: unclosed comment\n");
+                (i, TNone)
+              end
+            else
+              if ord (sub(s, j)) = ord ?*
+                 andalso j < stop
+                 andalso ord (sub(s, j+1)) = ord ?/
+              then if depth = 1
+                   then ucc-get-token (j + 2, s)
+                   else readcomment (depth - 1) (j + 2)
+              else if ord (sub(s, j)) = ord ?/
+                      andalso j < stop
+                      andalso ord (sub(s, j+1)) = ord ?*
+              then readcomment (depth + 1) (j + 2)
+              else if is-nl (sub(s, j))
+              then readcomment depth (j + 1)
+              else readcomment depth (j + 1)
+
+      (* takes a char and the following position, tries to extend the 
+         operator if possible *)
+        fun readop c j =
+            if j >= stop
+            then (j, TSep c)
+            else case (c, sub(s, j)) of
+                   (?+, ?+) => (j + 1, TOp "++")
+                 | (?-, ?-) => (j + 1, TOp "--")
+
+                 | (?-, ?>) => (j + 1, TOp "->")
+
+                 | (?=, ?=) => (j + 1, TOp "==")
+                 | (?!, ?=) => (j + 1, TOp "!=")
+                 | (?<, ?=) => (j + 1, TOp "<=")
+                 | (?>, ?=) => (j + 1, TOp ">=")
+
+                 | (?&, ?&) => (j + 1, TOp "&&")
+                 | (?|, ?|) => (j + 1, TOp "||")
+
+                 | (?-, ?=) => (j + 1, TOp "-=")
+                 | (?+, ?=) => (j + 1, TOp "+=") 
+                 | (?*, ?=) => (j + 1, TOp "*=")
+                 | (?/, ?=) => (j + 1, TOp "/=") 
+                 | (?%, ?=) => (j + 1, TOp "%=") 
+                 | (?<, ?<) => if j + 1 >= stop then (j + 1, TOp "<<") 
+                               else (case sub(s, j + 1) of ?= => (j + 2, TOp "<<=")
+                                                         | _ => (j + 1, TOp "<<"))
+                 | (?>, ?>) => if j + 1 >= stop then (j + 1, TOp ">>") 
+                               else (case sub(s, j + 1) of ?= => (j + 2, TOp ">>=")
+                                                         | _ => (j + 1, TOp ">>"))
+                 | (?&, ?=) => (j + 1, TOp "&=") 
+                 | (?^, ?=) => (j + 1, TOp "^=") 
+                 | (?|, ?=) => (j + 1, TOp "|=") 
+                 | _ => (j, TSep c)
+
+    in
+	(* look at first char.. *)
+	if i >= stop
+	then (i, TNone) (* out of tokens *)
+	else let val c = sub(s, i)
+	     in
+		 (* XXX should support 'chars' *)
+		 if ord c = ord ?" (* " *)
+		 then readstr i (i + 1)
+                 else if ord c = ord ?/
+                         andalso i < stop
+                         andalso ord (sub(s, i + 1)) = ord ?*
+                 then readcomment 1 (i + 2)
+		 else if is-sep c
+		      then readop c (i + 1)
+		      else accum (i + 1)
+	     end
+    end
+
+fun ucc-tokenstream (idx, s) =
+    stream-delay
+    (fn () =>
+     case ucc-get-token (idx, s) of
+	 (_, TNone) => Nil
+       | (idx', tok) => Cons(tok, ucc-tokenstream (idx', s)))
+
+
+val ucc-keyword-list =
+    ("if" :: "while" :: "else" ::
+     "do" :: "for" :: "break" :: "continue" ::
+     "switch" :: "case" :: "default" ::
+     "goto" :: "void" :: "int" :: "char" ::
+     "signed" :: "unsigned" ::
+     "auto" :: "register" :: "static" ::
+     "const" :: "return" :: "sizeof" ::
+     "struct" ::
+     nil)
+
+fun ucc-parse program =
+    let
+	val lstr = (ucc-tokenstream (0, program))
+
+	(* an identifier that's not a keyword *)
+	fun notkey s = 
+	    if list-exists
+	       (fn s' => string-equals (s, s'))
+	       ucc-keyword-list
+	    then raise Match
+	    else s
+
+	fun is_string (TString s) = s
+	  | is_string _ = raise Match
+
+	fun is_id (TId s) = s
+	  | is_id _ = raise Match
+
+	fun is_numeral s =
+	    case int-fromstring s of
+		SOME i => i
+	      | _ => raise Match
+
+	fun is c (TSep c') = 
+	    if ord c = ord c'
+	    then () else raise Match
+	  | is _ _ = raise Match
+
+        fun is_op s (TOp s') =
+            if s seq s'
+            then () else raise Match
+          | is_op _ _ = raise Match
+
+	(* require a specific string *)
+	fun % s = parse-matching is_id 
+                            -- (fn ((sis s) _) => parse-succeed ()
+                                | _ => parse-fail)
+
+	fun & c = parse-matching (is c)
+
+        fun \ s = parse-matching (is_op s)
+
+	val id = parse-matching (notkey o is_id)
+
+	val ptyp =
+	     % "int"          parse-return TInt
+	 ||  % "char"         parse-return TChar
+	 ||  % "void"         parse-return TUnit
+         ||  % "struct" >> id parse-wth TStruct
+	fun typ () = ptyp && (parse-repeat (& ?*)) parse-wth 
+                      (fn (ty, stars) => list-foldl (fn (_, ty) => TPtr ty) ty stars)
+
+	fun bin oper (x, y) = EPrim (oper, x :: y :: nil)
+
+            (* 15: highest precedence () [] . -> post++ post-- *)
+      (* XXX this will not properly parse expressions such as m[i][j] *)
+        fun postexp () = 
+            ($ atom) -- (fn e1 =>
+                            & ?[ >> ($ exp) << & ?]  
+                              parse-wth  (fn e2 => ESubscript(e1, e2))
+                         || & ?. >> ((parse-matching (notkey o is_id))
+                                parse-wth (fn id => EProj (e1, id)))
+                         || \ "->" >> ((parse-matching (notkey o is_id))
+                                parse-wth (fn id => EProjPtr (e1, id)))
+                         || \ "++"
+                                parse-return (let
+                                                val x = var-newvar ()
+                                              in
+                                                (* you don't need to tell me this 
+                                                       is terrible *)
+                                                bin OSub (EAssign (e1, 
+                                                            bin OAdd (e1, EInt 1)), 
+                                                          EInt 1)
+                                              end)
+                         || \ "--"
+                                parse-return (let
+                                                val x = var-newvar ()
+                                              in
+                                                (* yes, terrible *)
+                                                bin OAdd (EAssign (e1, 
+                                                            bin OSub (e1, EInt 1)), 
+                                                          EInt 1)
+                                              end)
+                         || parse-succeed e1)
+
+            (* 14: ++pre --pre unary+ unary- ! ~ (cast) * & sizeof *)
+            (* unary+ is dumb *)
+        and preexp () = 
+         (* these dup e... ha! *)
+	    \ "++" >> ($ preexp) parse-wth
+                  (fn e => EAssign (e, bin OAdd (e, EInt 1)))
+	 || \ "--" >> ($ preexp) parse-wth
+                  (fn e => EAssign (e, bin OSub (e, EInt 1)))
+	 || & ?- >> ($ preexp) parse-wth 
+                  (fn e => bin OSub (EInt 0, e))
+	 || & ?! >> ($ preexp) parse-wth (fn e => EPrim (OLogNot, e :: nil))
+	 || & ?~ >> ($ preexp) parse-wth (fn e => EPrim (OBitNot, e :: nil))
+         || (& ?( ) >> $ typ && (& ?) ) >> ($ preexp) parse-wth ECast
+	 || & ?* >> ($ preexp) parse-wth EDeref
+	 || & ?& >> ($ preexp) parse-wth EAddrOf
+         || % "sizeof" >> & ?( >> $ typ << & ?) parse-wth ESizeOf
+         || $ postexp
+
+	and bini-noatm () =
+            (* 13: * / % *)
+  	    & ?* parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-left, 13, bin OMul)))
+	 || & ?/ parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-left, 13, bin ODiv)))
+	 || & ?% parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-left, 13, EMod)))
+            (* 12: + - *)
+	 || & ?+ parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-left, 12, bin OAdd)))
+	 || & ?- parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-left, 12, bin OSub)))
+            (* 11: << >> *)
+	 || \ "<<" parse-return (Parse-opr
+				       (Parse-infix
+					(Parse-left, 11, EShl)))
+	 || \ ">>" parse-return (Parse-opr
+				       (Parse-infix
+					(Parse-left, 11, EShr)))
+            (* 10: < <= > >= *)
+	 || \ "<=" parse-return (Parse-opr
+			         (Parse-infix
+				  (Parse-left, 10, bin OLeq)))
+	 || & ?< parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-left, 10, bin OLess)))
+	 || \ ">=" parse-return (Parse-opr
+				 (Parse-infix
+			          (Parse-left, 10, bin OGeq)))
+	 || & ?> parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-left, 10, bin OGreater)))
+            (* 9: == != *)
+	 || \ "==" parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-left, 9, bin OEq)))
+	 || \ "!=" parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-left, 9, bin ONeq)))
+            (* 8: & *)
+	 || & ?& parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-left, 8, bin OBitAnd)))
+            (* 7: ^ *)
+	 || & ?^ parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-left, 7, bin OBitXor)))
+            (* 6: | *)
+	 || & ?| parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-left, 6, bin OBitOr)))
+            (* 5: && *)
+	 || \ "&&" parse-return (Parse-opr
+			         (Parse-infix
+				  (Parse-left, 5, bin OLogAnd)))
+            (* 4: || *)
+	 || \ "||" parse-return (Parse-opr
+  			         (Parse-infix
+				  (Parse-left, 5, bin OLogOr)))
+
+        and bini () = $ preexp parse-wth Parse-atm
+                     || $ bini-noatm
+
+	and binexp () = parse-fixityalt ( $ bini ) ( $ bini-noatm )
+
+        and terexp () = 
+            (* 3: ?: *)
+            ($ binexp) --
+                (fn e1 => 
+                    & ?? >> $ exp && & ?: >> $ terexp
+                      parse-wth (fn (e2, e3) => EPrim (OIf, e1::e2::e3::nil))
+                    || parse-succeed e1)
+
+        and assigni () =
+            (* 2: = += ... *)
+	    & ?= parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-right, 2, EAssign)))
+	 || \ "+=" parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-right, 2, EAssignOp OAdd)))
+	 || \ "-=" parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-right, 2, EAssignOp OSub)))
+	 || \ "*=" parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-right, 2, EAssignOp OMul)))
+	 || \ "/=" parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-right, 2, EAssignOp ODiv)))
+	 || \ "%=" parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-right, 2, EAssignBin EMod)))
+	 || \ "<<=" parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-right, 2, EAssignBin EShl)))
+	 || \ ">>=" parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-right, 2, EAssignBin EShr)))
+	 || \ "&=" parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-right, 2, EAssignOp OBitAnd)))
+	 || \ "^=" parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-right, 2, EAssignOp OBitXor)))
+	 || \ "|=" parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-right, 2, EAssignOp OBitOr)))
+         || $ terexp parse-wth Parse-atm
+
+        and assignexp () = parse-fixity ( $ assigni )
+                                         
+        and expi () =
+            (* 1: lowest precedence , *)
+	    & ?, parse-return (Parse-opr
+			       (Parse-infix
+				(Parse-right, 1, bin OComma)))
+         || $ assignexp parse-wth Parse-atm
+
+	and exp () = parse-fixity ( $ expi )
+
+	and atom () = parse-matching is_string  parse-wth EString
+	        ||    parse-matching (is_numeral o is_id) parse-wth EInt
+	        ||   (parse-matching (notkey o is_id)) --
+			(fn id => 
+  			      & ?( >> parse-separate0 ($ assignexp) (& ?,)
+			        << & ?)  parse-wth  (fn el => ECall(id, el))
+                              || parse-succeed (EVar id))
+	        ||   (& ?( ) >> $ exp << (& ?) )
+	        ||   & ?{ >> parse-separate0 ($ exp) (& ?,) << & ?}
+                        parse-wth EArray
+
+        and maybeExp NONE = EUnit
+          | maybeExp (SOME e) = e
+
+	and stmt () =
+            & ?{ >> (parse-repeat ($ decl))
+                 && (parse-repeat ($ stmt))
+            << & ?} parse-wth    
+                      (fn (decls, stmts) => SBlock (list-concat decls, stmts))
+	 || % "break" && & ?;                         parse-return SBreak
+	 || % "continue" && & ?;                      parse-return SContinue
+                                                                   
+         || % "return" >> parse-opt ($ exp) << & ?;   parse-wth    SReturn
+         || % "goto" >> id << & ?;                    parse-wth    SGoto
+         || id << & ?:                                parse-wth    SLabel
+         || % "if" >> & ?( >> $ exp && & ?) >> $ stmt
+                              && (% "else" >> $ stmt
+				  || parse-succeed SSkip)
+              parse-wth (fn ((a, b), c) => SIf (a, b, c))
+         || % "for" >> & ?( >> parse-opt ($ exp) && & ?; 
+                            >> parse-opt ($ exp) && & ?; 
+                            >> parse-opt ($ exp) && & ?)
+                            >> $ stmt
+              parse-wth (fn (((init, cond), step), body) => 
+                            SFor (maybeExp init, maybeExp cond, 
+                                  maybeExp step, body))
+         || % "while" >> & ?( >> $ exp && & ?)
+                            >> $ stmt
+              parse-wth SWhile
+         || % "switch" >> & ?( >> $ exp && & ?) >> & ?{
+                 >> parse-repeat ((% "case" >> parse-matching (is_numeral o is_id)
+                                                parse-wth SOME
+                                   || % "default" parse-return NONE) && & ?: 
+                                  >> (parse-repeat ($ stmt) parse-wth 
+                                                              (fn ss => SBlock (nil, ss))))
+                 << & ?} parse-wth SSwitch
+         || $ exp << & ?; parse-wth SExp
+
+	and decl () = 
+	    $ typ && id && & ?( >> parse-separate0 ($ typ && id) (& ?,) && & ?)
+                          >> $ stmt << (parse-opt (& ?;))
+		  parse-wth (fn (((a, b), c), d) => DFun(a, b, c, d) :: nil)
+	 || $ typ && (parse-separate (id && parse-opt (& ?= >> $ terexp)) (& ?,)) << & ?;
+	          parse-wth (fn (t, xes) => list-map (fn (x, e) => DVar(t, x, e)) xes)
+         || % "struct" >> id && & ?{ >> parse-separate0 ($ typ && id) (& ?;) <<
+                           parse-opt (& ?;) << & ?} << & ?;
+                  parse-wth (fn (s, fields) => DStruct (s, list-rev fields) :: nil)
+    in
+	case parse-stream (parse-repeat ($ decl) << parse-done ()) lstr of
+	    SOME l =>
+		let in
+		    list-concat l
+		end
+	  | NONE => raise Parse "Syntax error"
+    end

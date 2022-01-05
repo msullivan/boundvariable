@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+
+use FileHandle;
+use IPC::Open2;
+
+sub bytes
+{
+  my ($d) = @_;
+  '(' . join(' $ ', ((map { sprintf '%02x_8', $_ } unpack('C*', $d)), ('nil$'))) . ')';
+}
+
+while (<STDIN>) { $i .= $_; }
+
+open(FILE, $ARGV[0]);
+while (<FILE>) { $p .= $_; }
+close(FILE);
+
+$pid = open2(*In, *Out, "/usr0/twelf.HEAD/bin/twelf-server" ); <In>; <In>;
+print Out "set chatter 0\n"; <In>;
+print Out "Config.read sources.cfg\n"; <In>;
+print Out "Config.load\n"; <In>;
+print Out "set chatter 3\n"; <In>;
+print Out "Trace.traceAll\n"; <In>;
+print Out "readDecl\n";
+print '%query 1 1 run ' . &bytes($p) . ' ' . &bytes($i) . " O.\n";
+
+# while(<In>) { print $_; }
+
+close(In);
+close(Out);

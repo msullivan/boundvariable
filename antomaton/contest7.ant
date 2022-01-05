@@ -1,0 +1,32 @@
+Puzzle 7: Threshing Machine
+WWWWEEE
+EEEEWWW
+NNNNWWW
+SSSSESW
+*******
+*******
+*******
+*******
+*******
+16 21
+ o o o o o o $ $ $ $ o o o o o o
+ o o o o o o - - - - o o o o o o
+ o o o o o o - - - - o o o o o o
+ o o o o o o -1v -1v o o o o o o
+ o o o o o o - - - - o o o o o o
+ o o o o o o1^ -1^ - o o o o o o
+ o o o o o o - - - - o o o o o o
+ o o o o o o -1< -1< o o o o o o
+ o o o o o o - - - - o o o o o o
+ o o o o o o1> -1> - o o o o o o
+ o o o o o o - - - - o o o o o o
+ o o o o o o - - - - o o o o o o
+ o o o o o o - - - - o o o o o o
+ o o o o o o3v3v3v3v o o o o o o
+ o o o o o o3^3^3^3^ o o o o o o
+ o o o o o o - - - - o o o o o o
+ * * * * * - - - - - - * * * * *
+ * * * * * - - - - - - * * * * *
+ * * * * * - - - - - - * * * * *
+ * * * * * - - - - - - * * * * *
+ o o o o o o o o o o o o o o o o

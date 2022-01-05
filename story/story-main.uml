@@ -1,0 +1,29 @@
+let
+    import "std.uh"
+    import "string.uh"
+    import "int.uh"
+    import "list.uh"
+    import "array.uh"
+    import "growarray.uh"
+    import "stream.uh"
+    import "parse.uh"
+    import "io.uh"
+    import "random.uh"
+    import "bigint.uh"
+    import "des.uh"
+    import "publications.uh"
+    import "hash.uh"
+
+    import "story.uh"
+
+in
+
+    assessPubs 
+    ("advise.arith=240@10299569|33eb6e476142f66b18936089d9cec9c" ::
+     "advise.arith=240@10299569|33eb6e476142f66b18936089d9cec9c" :: (* should trigger dups *)
+     "advise.arith=240@10299569|33eb6e476142f66b36089d9cec9c" :: (* should reject *)
+     "advise.arith=340@10299569|33eb6e476142f66b36089d9cec9c" :: (* should reject *)
+     "advise.xml=340@10299569|33eb6e476142f66b36089d9cec9c" :: (* should reject *)
+     nil)
+
+end 

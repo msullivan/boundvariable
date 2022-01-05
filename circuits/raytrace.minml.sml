@@ -1,0 +1,204 @@
+(* raytracer in minml. *)
+structure RT =
+struct
+
+open MinML
+
+val none   = Inl Unit
+val medium = Inr (Inl Unit)
+val all    = Inr (Inr (Inl Unit))
+
+val towards = Inl Unit
+val away    = Inr Unit
+
+val tru     = Inl Unit
+val fal     = Inr Unit
+
+val error   = Unit
+
+(* need to program using first_order toplevel functions in order to be
+   able to compile to circuits without closure_conversion *)
+val % = Var
+val minml_tracer_funs =
+    ("*", ("l" :: "r" :: nil),
+     Case (%"l",
+           "v",
+           (* if it's none, then return none *)
+           none,
+           Case(%"v",
+                "w",
+                (* it's medium__case analyze r *)
+                Case(%"r",
+                     (* none: return none *)
+                     "unused",
+                     none,
+                     (* medium or all: return medium *)
+                     medium),
+                (* if l is all, then return r *)
+                %"r"))) ::
+
+    ("+", ("l" :: "r" :: nil),
+     Case (%"l",
+           "v",
+           (* none, return r *)
+           %"r",
+           (* otherwise, keep looking... *)
+           Case(%"v",
+                "w",
+                (* medium: look at r *)
+                Case(%"r",
+                     "unused",
+                     (* medium + none = medium *)
+                     medium,
+                     (* medium + other = all *)
+                     all),
+                (* all: always all *)
+                all))) ::
+
+    (* makes a list of rays of length |scene|+1,
+       all initialized to None *)
+    ("make-rays", ("scene" :: nil),
+     Case(%"scene",
+          "v",
+          (* cons *)
+          Inl (Pair(none,
+                    App(%"make-rays", Pi2 (%"v") :: nil))),
+          (* just a single None *)
+          Inl (Pair(none, Inr Unit)))) ::
+
+    ("orelseneq", ("b" :: "ia" :: "ib" :: nil),
+     Case (%"ia",
+           "ia_",
+           (* a:none *)
+           Case(%"ib",
+                "ib_",
+                (* a:none, b:none (eq) *)
+                %"b",
+                (* o/w definitely neq *)
+                tru),
+
+           (* a:some *)
+           Case(%"ib",
+                "ib_",
+                (* a:some b:none (neq) *)
+                tru,
+                App(%"orelseneq", %"b" :: %"ia_" :: %"ib_" :: nil)))) ::
+           
+
+    ("flow", ("scene" :: "lall" :: "rall" :: nil),
+     Case(%"scene",
+          "sv",
+          (* scene cons *)
+          Split(%"sv", "s", "surfs",
+          Case(%"lall",
+               "lall_",
+               (* lall cons *)
+               Case(%"rall",
+                    "rall_",
+                    (* rall cons *)
+                    Split(%"lall_",
+                          "lp0",
+                          "lall2",
+                          Split(%"rall_",
+                                "rp",
+                                "rall2",
+                                (* now again: *)
+                                Case(%"lall2",
+                                     "lall2_",
+                                     (* lall2 cons *)
+                                     Case(%"rall2",
+                                          "rall2_",
+                                          (* rall2 cons *)
+                                          (* get ln and rn *)
+                                          Split(%"lall2_", "ln", "ls",
+                                                Split(%"rall2_", "rn0", "rs",
+                                                      (* break apart surface *)
+                                                      Split(%"s", "D", "s2",
+                                                      Split(%"s2", "R", "s3",
+                                                      Split(%"s3", "T", "E",
+                                                      (* new rays *)
+                                                      Split((* returns lp, rn *)
+                                                            Case(%"D",
+                                                                 "Dunused",
+                                                                 (* towards *)
+                                                                 Pair
+                                                                 (App(%"+",
+                                                                      App(%"+",
+                                                                          %"E" ::
+                                                                          App (%"*",
+                                                                               %"T" ::
+                                                                               %"ln" :: nil) :: nil) ::
+                                                                      App(%"*",
+                                                                          %"R" :: %"rp" :: nil) :: nil),
+                                                                  %"rp"),
+
+                                                                 (* away *)
+                                                                 Pair
+                                                                 (%"ln",
+                                                                  App(%"+",
+                                                                      App(%"+",
+                                                                          %"E" ::
+                                                                          App(%"*", %"T" :: %"rp" :: nil) :: nil) ::
+                                                                      App(%"*",
+                                                                          %"R" :: %"ln" :: nil) :: nil))
+                                                                 ),
+                                                            
+                                                            "lp", "rn",
+                                                      
+                                                      Split(App(%"flow",
+                                                                %"surfs" ::
+                                                                Inl(Pair(%"ln", %"ls")) ::
+                                                                Inl(Pair(%"rn", %"rs")) ::
+                                                                nil),
+                                                            "lns", "flowres2",
+                                                            Split(%"flowres2",
+                                                                  "rns", "ch",
+                                                                  Pair(Inl(Pair(%"lp", %"lns")),
+                                                                       Pair(Inl(Pair(%"rp", %"rns")),
+                                                                            App(%"orelseneq",
+                                                                                App(%"orelseneq",
+                                                                                    %"ch" :: 
+                                                                                    %"lp" :: %"lp0" :: nil)
+                                                                                :: %"rn" :: %"rn0" :: nil)
+                                                                            ))))
+                                                       ))))
+                                                      )),
+                                          (* rall2 nil *)
+                                          error),
+                                     (* lall2 nil *)
+                                     error))),
+                    (* nil *)
+                    error),
+               (* nil *)
+               error)),
+          (* nil. we know ls is None::nil and rs is rlast::nil *)
+          Pair(%"lall", Pair(%"rall", fal)))) ::
+
+    ("loop", "scene" :: "ls" :: "rs" :: nil,
+     
+     (* continually call flow *)
+     Split(App(%"flow", %"scene" :: %"ls" :: %"rs" :: nil),
+           "lsnew", "rest",
+           Split(%"rest",
+                 "rsnew", "changed",
+                 Case(%"changed",
+                      "unused",
+                      (* inl: true *)
+                      App(%"loop", %"scene" :: %"lsnew" :: %"rsnew" :: nil),
+                      (* inr: done *)
+                      Case(%"lsnew",
+                           (* cons *)
+                           "lsnew_",
+                           (* return first one *)
+                           Pi1 (%"lsnew_"),
+                           (* nil: impossible *)
+                           error))))) ::
+
+    ("main", "scene" :: nil,
+     Let("rays", App(%"make-rays", %"scene" :: nil),
+         App(%"loop", %"scene" :: %"rays" :: %"rays" :: nil))) ::
+
+    nil
+
+
+end

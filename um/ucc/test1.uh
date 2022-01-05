@@ -1,0 +1,122 @@
+
+
+val prog1 = 
+           (DFun (TUnit, "main", nil, 
+                  SBlock (nil,
+                          ((SExp (ECall ("putc", (EChar ?h)::nil)))::
+                           (SExp (ECall ("putc", (EChar ?e)::nil)))::
+                           (SExp (ECall ("putc", (EChar ?l)::nil)))::
+                           (SExp (ECall ("putc", (EChar ?l)::nil)))::
+                           (SExp (ECall ("putc", (EChar ?o)::nil)))::
+                           (SExp (ECall ("putc", (EChar ?\n)::nil)))::
+                           nil))))::
+           nil
+
+val prog2 = 
+           (DFun (TChar, "f", (TChar, "c")::nil, 
+                  SBlock (nil,
+                          (SExp (EVar "c"))::
+                          nil)))::
+
+           (DFun (TUnit, "main", nil, 
+                  SBlock (nil,
+                          (
+                          (SReturn (SOME (ECall ("putc", (ECall ("f", (EChar ?A)::nil))::nil))))::
+                          nil))))::
+           nil
+
+val echo = 
+           (DFun (TUnit, "main", nil, 
+                  SBlock (nil,
+                          (SWhile (EInt 1, SExp (ECall ("putc", (ECall ("getc", nil))::nil))))::
+                          nil)))::
+           nil
+
+val addr =
+           (DFun (TUnit, "putpc", (TPtr (nil, AChar), "x")::nil,
+                  SBlock (nil,
+                          SExp (ECall ("putc", EDeref (EVar "x")::nil))::
+                          SExp (EAssign (EDeref (EVar "x"), EChar ?B))::
+                          nil)))::
+
+           (DFun (TUnit, "main", nil,
+                  SBlock (DVar (TChar, "a", SOME (EChar ?A))::
+                          nil,
+                          SExp (ECall ("putpc", (EAddrOf (EVar "a"))::nil))::
+                          SExp (ECall ("putc", EVar "a"::nil))::
+                          nil)))::
+           nil
+
+val swap = 
+           (DFun (TUnit, "swap", (TPtr (nil, AChar), "x")::(TPtr (nil, AChar), "y")::nil,
+                  SBlock (DVar (TChar, "t", SOME (EDeref (EVar "x")))::nil,
+
+                          (SExp (EAssign (EDeref (EVar "x"), EDeref (EVar "y"))))::
+                          (SExp (EAssign (EDeref (EVar "y"), EVar "t")))::
+
+                          SExp (ECall ("putc", EVar "t"::nil))::                          
+                          nil)))::
+
+           (DFun (TUnit, "main", nil,
+                  SBlock (DVar (TChar, "a", SOME (EChar ?A))::
+                          DVar (TChar, "b", SOME (EChar ?B))::
+                          nil,
+                          SExp (ECall ("swap", (EAddrOf (EVar "a"))::
+                                               (EAddrOf (EVar "b"))::nil))::
+                          SExp (ECall ("putc", EVar "a"::nil))::
+                          SExp (ECall ("putc", EVar "b"::nil))::
+                          nil)))::
+           nil
+
+val pseudoswap = 
+           (DFun (TUnit, "swap", (TChar, "x")::(TChar, "y")::nil,
+                  SBlock (DVar (TChar, "t", SOME (EVar "x"))::nil,
+
+                          (SExp (EAssign (EVar "x", EVar "y")))::
+                          (SExp (EAssign (EVar "y", EVar "t")))::
+
+                          SExp (ECall ("putc", EVar "t"::nil))::                          
+                          nil)))::
+
+           (DFun (TUnit, "main", nil,
+                  SBlock (DVar (TChar, "a", SOME (EChar ?A))::
+                          DVar (TChar, "b", SOME (EChar ?B))::
+                          nil,
+                          SExp (ECall ("swap", (EVar "a")::
+                                               (EVar "b")::nil))::
+                          SExp (ECall ("putc", EVar "a"::nil))::
+                          SExp (ECall ("putc", EVar "b"::nil))::
+                          nil)))::
+           nil
+
+val add1 = 
+           (DFun (TUnit, "main", nil,
+                  SBlock (DVar (TChar, "a", SOME (EChar ?A))::
+                          DVar (TChar, "b", SOME (EPrim (OAdd, (EVar "a")::(EInt 1)::nil)))::
+                          nil,
+                          SExp (ECall ("putc", EVar "a"::nil))::
+                          SExp (ECall ("putc", EVar "b"::nil))::
+                          nil)))::
+           nil
+
+val add2 = 
+           (DFun (TUnit, "putpc", (TPtr (nil, AChar), "x")::nil,
+                  SBlock (nil,
+                          SExp (ECall ("putc", EDeref (EVar "x")::nil))::
+                          SExp (EAssign (EDeref (EVar "x"), EChar ?B))::
+                          nil)))::
+
+           (DFun (TUnit, "main", nil,
+                  SBlock (DVar (TPtr (TPtr TChar), "arr", SOME (ECall ("malloc", (EInt 4)::nil)))::
+                          DVar (TChar, "a", SOME (EChar ?A))::
+                          DVar (TChar, "b", SOME (EChar ?B))::
+                          nil,
+                          SExp (EAssign (ESubscript (EVar "arr", EInt 0), EAddrOf (EVar "a")))::
+                          SExp (EAssign (ESubscript (EVar "arr", EInt 1), EAddrOf (EVar "b")))::
+                          SExp (EAssign (EVar "a", EChar ?C))::
+                          SExp (EAssign (EVar "b", EChar ?D))::
+                          SExp (ECall ("putpc", (ESubscript (EVar "arr", EInt 0))::nil))::
+                          SExp (ECall ("putpc", (ESubscript (EVar "arr", EInt 1))::nil))::
+                          nil)))::
+           nil
+

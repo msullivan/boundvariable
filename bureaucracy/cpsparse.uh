@@ -1,0 +1,48 @@
+exception Fail of string
+	  
+fun fail(n) =  raise (Fail n)
+			      
+fun parseExp nil = fail "end of input while parsing staplification expression"
+  | parseExp (?0 :: tl) = (Int 0, tl) 
+  | parseExp (?1 :: tl) = (Int 1, tl) 
+  | parseExp (?2 :: tl) = (Int 2, tl) 
+  | parseExp (?3 :: tl) = (Int 3, tl) 
+  | parseExp (?4 :: tl) = (Int 4, tl) 
+  | parseExp (?5 :: tl) = (Int 5, tl) 
+  | parseExp (?6 :: tl) = (Int 6, tl) 
+  | parseExp (?7 :: tl) = (Int 7, tl) 
+  | parseExp (?8 :: tl) = (Int 8, tl) 
+  | parseExp (?9 :: tl) = (Int 9, tl) 
+			  
+  | parseExp (?_ :: tl) = (It, tl) 
+  | parseExp (?[ :: tl) = let 
+		  val (e1, tl) = parseExp tl
+		  val (e2, tl) = parseExp tl
+	      in
+		  (Staple(e1, e2), tl)
+	      end
+  | parseExp (?< :: tl) = let 
+	val (e, tl) = parseExp tl
+    in
+	(TearL e, tl)
+    end
+  | parseExp (?> :: tl) = let 
+	val (e, tl) = parseExp tl
+    in
+	(TearR e, tl)
+    end
+	
+fun parseAdd nil = fail "end of input while parsing recipient"
+  | parseAdd (?= :: tl) = (Prim Eq, tl) 
+  | parseAdd (?+ :: tl) = (Prim Plus, tl) 
+  | parseAdd (?- :: tl) = (Prim Minus, tl) 
+  | parseAdd (?? :: tl) = (Prim If, tl) 
+  | parseAdd (?* :: tl) = (Prim Times, tl) 
+  | parseAdd cs = let val (e, tl) = parseExp cs in (Exp e, tl) end
+		      
+fun parseOffice cs = 
+    let val (a, tl) = parseAdd cs
+	val (e, tl) = parseExp tl
+    in
+	((a, e), tl)
+    end    

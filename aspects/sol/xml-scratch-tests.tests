@@ -1,0 +1,65 @@
+{ ---------------------------------------------------------------------- }
+{ bugs }
+
+{ non-confluence small example }
+
+SNF (Seq (Seq (Tag Maj A) (Tag Maj B)) A)
+-> Seq (Tag Maj A) (Seq (Tag Maj B) A);
+{ or 
+-> Seq (Tag Maj (Seq A B)) A; }
+
+{ non-confluence investigation }
+
+SNF (Seq 
+     (Tag Bold (Seq (Seq A A) (Seq A B)))
+     (Seq (Seq (Tag Maj B) (Tag Maj B))
+	  (Tag Emph (Tag Emph A))))
+{
+results under stepToStuckAll with solution rules:
+
+collapse duplicate Emph
+->  Seq 
+    (Tag Bold (Seq (Seq A A) (Seq A B)))
+    (Seq (Seq (Tag Maj B) (Tag Maj B))
+	 (Tag Emph A))
+
+flatten
+->  Seq 
+    (Tag Bold (Seq A (Seq A (Seq A B))))
+    (Seq (Tag Maj B) 
+	 (Seq (Tag Maj B) 
+	      (Tag Emph A)))
+}
+{ result under stack:
+  pull the Maj out before flattening }
+-> ((Seq ((Tag Bold) ((Seq A) ((Seq A) ((Seq A) B)))))
+    ((Seq 
+      ((Tag Maj) ((Seq B) B)))  
+     ((Tag Emph) A)));
+
+{ same kind of thing, but checks against the all result }
+
+SNF (Seq (Tag Bold (Seq (Seq A A) (Seq A B))) (Seq (Seq (Tag Maj B) (Tag Maj B)) (Tag Emph (Tag Emph A))))
+-> 
+((Seq ((Tag Bold) ((Seq A) ((Seq A) ((Seq A) B))))) ((Seq ((Tag Maj) B)) ((Seq ((Tag Maj) B)) ((Tag Emph) A))));
+
+{ ---------------------------------------------------------------------- }
+{ basic ones } 
+
+{ collapse duplicate tags }
+SNF (Tag Emph (Tag Emph A)) -> Tag Emph A; 
+
+{ don't collapse the same tag }
+SNF (Tag Emph (Tag Maj A)) -> Tag Emph (Tag Maj A); 
+
+{ distribute then collapse }
+SNF (Tag Emph (Seq (Tag Emph A) (Tag Emph B))) -> Tag Emph (Seq A B);
+
+{ sequencing }
+SNF (Seq (Seq (Seq A B) A ) (Seq B B)) -> Seq A (Seq B (Seq A (Seq B B))); 
+
+{ same rule on both sides, but not really! }
+
+SNF (Seq (Tag Emph (Tag Emph A)) (Tag Bold (Tag Bold B))) -> Seq (Tag Emph A) (Tag Bold B);
+
+.

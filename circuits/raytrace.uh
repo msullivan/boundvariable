@@ -1,0 +1,281 @@
+
+datatype raytrace-intensity = RTI_None | RTI_Medium | RTI_All
+datatype raytrace-orientation = RTD_Towards | RTD_Away
+  
+type raytrace-surface = { D : raytrace-orientation,
+                          R : raytrace-intensity,
+                          T : raytrace-intensity,
+                          E : raytrace-intensity }
+  
+type raytrace-scene = raytrace-surface list
+  
+exception RayTrace of string
+
+datatype raytrace-testresult =
+  RaytraceSuccess
+| RaytraceFail of { scene : raytrace-scene,
+                    correct : string,
+                    actual : string }
+
+val { raytrace-test } = 
+  let
+    val require-list = provide-list
+    val require-int  = provide-int
+
+    fun intensityToString RTI_All = "All"
+      | intensityToString RTI_Medium = "Medium"
+      | intensityToString RTI_None = "None"
+
+    fun raytrace-print-scene name (scene, ls, rs) =
+        let 
+	    fun itos RTI_All = "All, "
+            | itos RTI_Medium = "Med, "
+            | itos RTI_None = "None,"
+            
+          fun pr (n, {D,R,T,E} :: surfs, lp :: ls, rp :: rs) =
+              let 
+                val sd = 
+                  case D of 
+                    RTD_Towards => "(dir: towards) - " 
+                  | RTD_Away =>    "(dir: away   ) - "
+                      
+                val N = int-tostring n
+              in
+                print
+                ("\nL" ^ N ^ ": " ^ itos lp ^ "- " ^
+                 "Surface " ^ int-tostring (n+1) ^ sd ^
+                 " R: " ^ itos R ^ " T: " ^ itos T ^ " E: " ^ itos E ^ "- "^
+                 "R" ^ N ^ ": " ^ itos rp );
+                pr (n + 1, surfs, ls, rs)
+              end
+            | pr (n, nil, lp :: ls, rp :: rs) =
+              let
+                val N = int-tostring n
+              in
+                print
+                ("\nL" ^ N ^ ": " ^ itos lp ^ " - " ^
+                 "R" ^ N ^ ": " ^ itos rp ^ "\n\n")
+              end
+	    | pr _ = raise RayTrace "internal scene invt violated"
+        in
+          pr (0, scene, ls, rs)
+        end
+
+    fun gen-long-clear _ refl 0 = nil
+      | gen-long-clear trans refl n =
+        let
+          val dir = if n mod 2 = 1 then RTD_Away
+                    else RTD_Towards
+        in
+          { D = dir, R = refl,
+            T = trans, E = RTI_None } :: (gen-long-clear trans refl (n - 1))
+        end
+   
+    val pita_tests = 
+      let
+        val clear_none = gen-long-clear RTI_All RTI_All 28
+        val foggy_none = gen-long-clear RTI_Medium RTI_Medium 27
+        val black_none = gen-long-clear RTI_None RTI_All 26
+        val st_noref = gen-long-clear RTI_All RTI_None 16
+        val end_none = {D=RTD_Towards, R = RTI_None, T = RTI_All,
+                        E = RTI_None}
+        val end_med = {D=RTD_Towards, R = RTI_None, T = RTI_All,
+                       E = RTI_Medium}
+        val end_all = {D=RTD_Towards, R = RTI_None, T = RTI_All,
+                        E = RTI_All}
+        val ba_none = list-rev (end_none::st_noref)
+        val ba_med = list-rev (end_med::st_noref)
+        val ba_all = list-rev (end_all::st_noref)
+      in
+        (clear_none:: (foggy_none:: (black_none:: (ba_none::
+            (ba_med:: (ba_all:: nil))))))
+      end
+
+
+    (* r: (unit -> int) -> bool -> surface list *)
+   fun raytrace-generate-scene r long =
+        let
+          val n = if long then 15 + (r () mod 6 + r () mod 7)
+                  else 5 + (r () mod 5 + r () mod 5)
+          fun genscene 0 = nil
+            | genscene m =
+              let
+                val x = (r ()) mod 1000
+                val rR = (r ()) mod 1000
+                val rT = (r ()) mod 1000
+                val rE = (r ()) mod 1000
+              in
+                { D = if x < 500
+                      then RTD_Towards
+                      else RTD_Away,
+                  R = if rR < 100 then RTI_All else
+                      if rR < 500 then RTI_Medium else
+                         RTI_None,
+                  T = if rT < 100 then RTI_All else
+                      if rT < 975 then RTI_Medium else
+                         RTI_None,
+                  E = if rE < 700 then RTI_None else
+                      if rE < 925 then RTI_Medium else
+                         RTI_All } :: 
+                (genscene (m - 1))
+              end
+        in
+          genscene n
+        end
+
+    (* attempt to simplify the above in order to port to minml *)
+    fun raytrace-trace-optimized scene =
+        let
+          fun ** (RTI_None, _) = RTI_None
+            | ** (_, RTI_None) = RTI_None
+            | ** (RTI_All, x)  = x
+            | ** (x, RTI_All)  = x
+            | ** (RTI_Medium, RTI_Medium) = RTI_Medium
+          fun ++ (RTI_None, x) = x
+            | ++ (x, RTI_None) = x
+            | ++ (RTI_All, x)  = RTI_All
+            | ++ (x, RTI_All)  = RTI_All
+            | ++ (RTI_Medium, RTI_Medium) = RTI_All
+            
+          (* not-equals on intensities *)
+          fun <<>> (RTI_None, RTI_None) = false
+            | <<>> (RTI_All, RTI_All) = false
+            | <<>> (RTI_Medium, RTI_Medium) = false
+            | <<>> _ = true
+            
+          infix ** infix ++ infix <<>>
+            
+          val rays = RTI_None :: list-map (fn _ => RTI_None) scene
+
+          fun flow (s :: surfs, lp :: ln :: ls, rp :: rn :: rs) =
+              let
+                val lp0 = lp
+                val rn0 = rn
+                (* compute next value of lp, rn *)
+                val (lp, rn) =
+                    let 
+                      val {D, R, T, E} = s
+                    in
+                      case D of
+                        (* towards eye: affects lp *)
+                        RTD_Towards =>
+                          ( (R ** rp) ++
+                           (T ** ln) ++
+                           E,
+                           rp )
+                          
+                      (* away from eye: affects rn *)
+                      | RTD_Away =>
+                          ( ln,
+                           (R ** ln) ++
+                           (T ** rp) ++
+                           E )
+                    end
+              
+                val (lns, rns, ch) = flow(surfs, ln :: ls, rn :: rs)
+              in
+                (* print "iter..\n"; *)
+                (lp :: lns, rp :: rns, 
+                 ch orelse (lp <<>> lp0) orelse (rn <<>> rn0))
+              end
+            | flow (nil, _ (* RTI_None :: nil *), rlast :: nil) = (RTI_None :: nil, rlast :: nil, false)
+            | flow _ = raise RayTrace "impossible"
+              
+          fun loop (ls, rs) =
+              let
+                (* do print "LOOP:\n" *)
+                val (ls, rs, changed) = flow(scene, ls, rs)
+              in
+                if changed then loop(ls, rs)
+                else 
+                  let in
+                    raytrace-print-scene "optimized" (scene, ls, rs);
+                    (case ls of
+                       l0 :: _ => l0
+                     | _ => raise RayTrace "no eye ray??")
+                  end
+              end
+        in
+          loop(rays, rays)
+        end
+      
+      
+    (* for a random three-sided coin,
+       1/(3^20) = 1 in 3.5 billion *)
+    val NUM-SHORT-TESTS = 10
+    val NUM-LONG-TESTS = 8
+
+    (* r : unit -> int
+       f : scene -> intensity *)
+    fun raytrace-test (r, f) =
+        let
+          fun eq-in (RTI_None, RTI_None) = true
+            | eq-in (RTI_Medium, RTI_Medium) = true
+            | eq-in (RTI_All, RTI_All) = true
+            | eq-in _ = false
+
+          val hardscenes = 	
+             ({D = RTD_Towards, R = RTI_None, E = RTI_Medium, T = RTI_None} :: 
+             nil) :: 
+             nil ::
+            ((* refl *)
+             {D = RTD_Away, R = RTI_None, E = RTI_Medium, T = RTI_None} ::
+             {D = RTD_Towards, R = RTI_All, E = RTI_None, T = RTI_None} :: 
+             nil) ::
+            ((* loop-dark *)
+             {D = RTD_Away, R = RTI_All, E = RTI_None, T = RTI_None} ::
+             {D = RTD_Towards, R = RTI_All, E = RTI_None, T = RTI_All} :: 
+             nil) ::
+            ((* loop-laser *)
+             {D = RTD_Away, R = RTI_All, E = RTI_None, T = RTI_None} :: 
+             {D = RTD_Towards, R = RTI_All, E = RTI_None, T = RTI_All} ::
+             {D = RTD_Towards, R = RTI_None, E = RTI_Medium, T = RTI_None} ::
+             nil) ::
+            nil
+
+          val htnum = list-length hardscenes
+
+          fun test-list (_, nil) = RaytraceSuccess
+            | test-list (n, sc::scs) =
+              let
+                val cor = raytrace-trace-optimized sc
+                val res = f sc
+              in
+                print ("Testing (" ^ (int-tostring n) ^ " left)... ");
+                if eq-in (cor, res)
+                then (print "OK!\n"; test-list (n - 1, scs))
+                else (print "FAIL!\n";
+                      RaytraceFail { scene = sc,
+                                     correct = intensityToString cor,
+                                     actual = intensityToString res })
+              end 
+
+          val loc = (r ()) mod NUM-LONG-TESTS
+            
+          fun build-tests 0 0 accum = 
+                (list-length accum + list-length hardscenes,
+                 (list-rev accum)@hardscenes)
+            | build-tests short 0 accum =
+                build-tests (short - 1) 0 
+                            ((raytrace-generate-scene r false)::accum)
+            | build-tests short long accum  =
+                if long = loc then
+                   build-tests short (long - 1) (pita_tests@accum)
+                else
+                  build-tests short (long - 1) 
+                  ((raytrace-generate-scene r true)::accum)
+                
+            
+          fun run-tests () =
+            let
+              val tests = build-tests NUM-SHORT-TESTS NUM-LONG-TESTS nil
+            in
+              test-list tests
+            end
+        in
+          run-tests ()
+        end
+  in
+    { raytrace-test = raytrace-test }
+  end
+

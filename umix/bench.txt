@@ -1,0 +1,88 @@
+Instruction counts for shorter input:
+== Halted. ==
+-----------------------------------------
+cmov_don't:   7749309
+cmov_do:      2223822
+goto_zero:    10246072
+goto_nonzero: 0
+literal:      53581375
+halt:         1
+read:         54
+write:        6360
+alloc:        1477404
+free:         1471731
+asub_zero:    7816585
+asub_nonzero: 8005489
+upd_zero:     6966873
+upd_nonzero:  7571990
+add:          2722652
+nand:         25457820
+mul:          272913
+div:          2312
+nonstandard:  460
+-----------------------------------------
+
+
+
+On Tom's office computer:
+
+
+-- revision 253 --
+-rw-r--r--    1 tom7     users     2054652 May  4 10:11 umix.um
+real    2m23.642s
+user    1m57.810s
+sys     0m0.680s
+
+(* don't alloc array indices *)
+-rw-r--r--    1 tom7     users     1878488 May  4 10:48 umix.um
+real    2m22.933s
+user    1m56.190s
+sys     0m0.590s
+
+(* don't alloc ints in primops *)
+-rw-r--r--    1 tom7     users     1854236 May  4 11:07 umix.um
+real    2m18.965s
+user    1m54.110s
+sys     0m0.470s
+
+(* optimize some string ops in stdlib *)
+-rw-r--r--    1 tom7     users     1851680 May  4 11:17 umix.um
+real    2m21.863s
+user    1m53.360s
+sys     0m0.510s
+
+(* maxrecord = 64 instead of 3 *)
+-rw-r--r--    1 tom7     users     1455632 May  4 11:28 umix.um
+real    2m2.951s
+user    1m40.490s
+sys     0m0.490s
+
+(* (INJ) and (SPLIT) optimizations (first try) *)
+-rw-r--r--    1 tom7     users     1354140 May 11 23:35 umix.um
+real    1m38.947s
+user    1m20.640s
+sys     0m0.370s
+
+(* turned off uniquesum -- no change *)
+
+
+(* dunno what I changed *)
+-rw-r--r--    1 tom7     users     1361072 May 17 13:16 umix.um
+real    1m46.746s
+user    1m25.830s
+sys     0m0.550s
+
+(* removed return () from appropriate primops.
+   (made bigger?? why? fewer optimization rounds?) *)
+
+-rw-r--r--    1 tom7     users     1487344 May 17 15:01 umix.um
+real    1m48.706s
+user    1m26.750s
+sys     0m0.360s
+
+(* previous optimization disabled non-alloced literals in
+   some primitives; fixed that. *)
+-rw-r--r--    1 tom7     users     1326992 May 17 15:23 umix.um
+real    1m47.424s
+user    1m26.050s
+sys     0m0.460s

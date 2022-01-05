@@ -1,0 +1,77 @@
+
+fun exp-todb cctx ctx Unit = Unit
+  | exp-todb cctx ctx (String s) = String s
+  | exp-todb cctx ctx (Int i) = Int i
+  | exp-todb cctx ctx (Var v) = Var (idxof v ctx)
+  | exp-todb cctx ctx (Construct (c, es)) =
+    let val i = lookup cctx c 
+        val es = list-map (fn (_, e) => e) es
+        val es = list-map (exp-todb cctx ctx) es
+        val es = list-map (fn e => (false, e)) es
+    in
+      Construct (i, es)
+    end
+  | exp-todb cctx ctx (Prim (primop, e1, e2)) =
+    Prim (primop, exp-todb cctx ctx e1, exp-todb cctx ctx e2)
+  | exp-todb cctx ctx (Call (f, args)) =
+    let val i = idxof f ctx
+    in
+      Call (i, list-map (exp-todb cctx ctx) args)
+    end
+  | exp-todb cctx ctx (SecureString _) = raise RML "BUG: didn't expect SecureString in exp-todb"
+  | exp-todb cctx ctx (Room _) = raise RML "BUG: didn't expect Room in exp-todb"
+  | exp-todb cctx ctx (Item _) = raise RML "BUG: didn't expect Item in exp-todb"
+  | exp-todb cctx ctx (Kind _) = raise RML "BUG: didn't expect Kind in exp-todb"
+  | exp-todb cctx ctx (Fun _) = raise RML "BUG: didn't expect Fun in exp-todb"
+
+fun stmts-todb cctx ctx ((Do e)::sts) = 
+    (Do (exp-todb cctx ctx e))::(stmts-todb cctx ctx sts)
+  | stmts-todb cctx ctx ((Type (t, cnstrs))::sts) = 
+            (* must sort cnstrs! *)
+    let val cnstrs = list-sort cnstr-compare cnstrs
+        val cctx = (list-rev (list-map (fn (c, _) => (c, idxof' c cnstrs)) 
+                                       cnstrs))
+                  @ cctx
+    in
+      (* datatype declarations have no run-time component *)
+      stmts-todb cctx ctx sts
+    end
+  | stmts-todb cctx ctx ((Extern (f, args, res))::sts) = 
+    (Extern (f, nil, nil))::(stmts-todb cctx (f::ctx) sts)
+    (* drop extern types as they have no effect and create no term bindings *)
+  | stmts-todb cctx ctx ((ExternType _)::sts) = stmts-todb cctx ctx sts
+  | stmts-todb cctx ctx ((FunDecl (f, args, res, body))::sts) = 
+    let val ctx = f::ctx
+        val ctx' = (list-rev (list-map (fn (arg, _) => arg) args)) @ ctx 
+        val body = stmts-todb cctx ctx' body
+    in
+      (FunDecl (0, nil, NONE, body))::(stmts-todb cctx ctx sts)
+    end
+  | stmts-todb cctx ctx ((Case (e, branches))::sts) = 
+    let val e = exp-todb cctx ctx e
+        fun branch-todb (_, args, sts) = 
+            let val ctx = (list-rev args) @ ctx
+                val sts = stmts-todb cctx ctx sts
+            in
+              (0, nil, sts)
+            end
+        val branches = list-sort (fn ((c1, _, _), (c2, _, _)) => 
+                                     string-compare (c1, c2))
+                                 branches
+        val branches = list-map branch-todb branches
+    in
+      (Case (e, branches))::(stmts-todb cctx ctx sts)
+    end
+  | stmts-todb cctx ctx ((Bind (x, e))::sts) = 
+    let val e = exp-todb cctx ctx e
+    in
+      (Bind (0, e))::(stmts-todb cctx (x::ctx) sts)
+    end
+  | stmts-todb cctx ctx ((Return e)::nil) =
+    (Return (exp-todb cctx ctx e))::nil
+  | stmts-todb cctx ctx ((Return _)::_) = raise RML "BUG: stmt following return"
+  | stmts-todb cctx ctx (Skip::sts) = raise RML "BUG: didn't expect Skip in todb"
+  | stmts-todb cctx ctx ((Block sts')::sts) = 
+    (Block (stmts-todb cctx ctx sts'))::(stmts-todb cctx ctx sts)
+  | stmts-todb cctx ctx nil = nil
+

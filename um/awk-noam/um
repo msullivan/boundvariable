@@ -1,0 +1,12 @@
+#!/bin/sh
+if [ $# -lt 1 ] ; then
+  echo "Usage: um [binary]"
+  exit 1
+fi
+
+if [ ! -p input ] ; then
+  mkfifo input
+fi
+
+FILE=$1
+`dirname $0`/ppum.sh < $FILE | awk -f `dirname $0`/um.awk

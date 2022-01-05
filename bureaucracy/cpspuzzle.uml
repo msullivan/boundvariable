@@ -1,0 +1,119 @@
+let
+  import "std.uh"
+  import "string.uh"
+  import "int.uh"
+  import "list.uh"
+  import "random.uh"
+  import "growarray.uh"
+  import "io.uh"
+
+  import "cpstypes.uh"
+  import "cpsparse.uh"
+  import "cpsinterp.uh"
+  
+  import "win.uh"
+  import "messages.uh"
+
+  exception Stop
+  exception Success 
+  
+  type task = string
+  type world = { task : task, policy : office list }
+  val start_world  = { task = start_task, policy = nil }
+
+  type action = world -> string -> (world * string)
+ 
+  fun enact_policy {task, policy} off =
+      let
+          val n = list-length policy
+          val p = policy @ (off :: nil)
+      in
+          ({task = task, policy = p}, "Policy for office "
+                                      ^ int-tostring n ^ 
+                                      " is now " ^ office-tostring off ^ "\n")
+      end
+
+  fun show (world as {task, policy}) input = 
+      let
+          fun f(off, i) = int-tostring i ^ ": " ^ office-tostring off ^ "\n"
+      in
+          (world, string-concat (list-mapi f policy))
+      end
+  fun enact world input = (let
+                               val (off, tl) = parseOffice (explode input)
+                           in
+                               enact_policy world off
+                           end handle Fail s => (world, "Error: " ^ s ^ "\n"))
+  fun clear (world as {task, policy}) input = ({task = task, policy = nil},
+                                               "All policy cleared.\n")
+  fun test (world as {task, policy}) input = 
+      let
+          val (e,_) = parseExp (explode input)
+          val p = eval_closed e
+          val _ = run policy p
+      in
+          (world, "Done.\n")
+      end
+          handle Fail s => (world, "Error: " ^ s ^ "\n")
+
+  fun done (world as {task, policy}) input = 
+      let
+          val p = run policy VPackage
+      in
+          case p of
+              VPackage => raise Success
+            | p => (world, "Failure - got paperwork " ^ val-tostring p ^ " instead.\n")
+      end
+          handle Fail s => (world, "Error: " ^ s ^ "\n")
+
+  fun not_understood world input = 
+      (world, if (length input) = 0 then ""
+              else "UNRECOGNIZED COMMAND " ^ input ^ "\n")
+
+  fun what (world as {task, policy}) input = (world, task)
+  fun doc msg world input = (world, msg)
+  val actions = (("enact ", enact)::
+                 ("show", show)::
+                 ("clear", clear)::
+                 ("test ", test)::
+                 ("done", done)::
+                 ("0", doc doc0_msg)::
+                 ("1", doc doc1_msg)::
+                 ("2", doc doc2_msg)::
+                 ("3", doc doc3_msg)::
+                 ("4", doc doc4_msg)::
+                 ("5", doc doc5_msg)::
+                 ("6", doc doc6_msg)::
+                 ("what", what)::
+                 nil) : (string * action) list
+
+  fun lookup_action input = 
+      let fun lookup ((name, action)::actions) =
+              if string-prefix (name, input) then
+                (action, substring' (input, length name))
+              else lookup actions
+            | lookup nil = (not_understood, input)
+      in
+        lookup actions
+      end
+
+
+  fun prompt (world, output) =
+      let do print (output)
+          do print "> "
+          val input = getline () handle IO => raise Stop
+          val (action, remaining_input) = lookup_action input
+          val (world, output) = action world remaining_input
+      in 
+        prompt (world, output)
+      end
+
+
+  do print intro_msg 
+in
+
+  prompt (start_world, "")
+  handle Stop => ()
+       | Success => win()
+
+end

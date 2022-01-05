@@ -1,0 +1,13 @@
+
+    Bird Seed-Based Computing                        16 Jul 2007
+
+  This is a "deleted scene" from the contest.  Check out notes.txt for some
+  ideas about where we were going or seeds.sml for a sample implementation.
+  If you're really into it, try writing an implementation of XOR (using the
+  assembly language in seeds.sml) that computes the right answer 75% of the
+  time.  It turns out we weren't the only ones with this idea:
+
+  "Static Typing for a Faulty Lambda Calculus" David Walker, Lester Mackey,
+  Jay Ligatti, George Reis, and David August.
+  International Conference on Functional Programming 2006. Portland, Oregon.
+

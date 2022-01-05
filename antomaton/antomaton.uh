@@ -1,0 +1,667 @@
+(* PERF: I disabled arrows in parsing because
+   they're not that interesting (?) and they 
+   complicate the story a bit. If we decide
+   not to use them, then we should remove
+   support all over, which will improve
+   performance substantially. *)
+
+exception Ant of string
+
+val { runant = antomaton-runant,
+      inputs = antomaton-inputs } = 
+
+let
+  val require-publications = provide-publications
+  val require-parse = provide-parse
+
+  exception Done
+  datatype dir = N | S | E | W
+
+  fun dir-cw N = E
+    | dir-cw E = S
+    | dir-cw S = W
+    | dir-cw W = N
+
+  fun dir-ccw N = W
+    | dir-ccw W = S
+    | dir-ccw S = E
+    | dir-ccw E = N
+
+  fun dir-opp N = S
+    | dir-opp S = N
+    | dir-opp W = E
+    | dir-opp E = W
+
+  fun dir-eq (N, N) = true
+    | dir-eq (W, W) = true
+    | dir-eq (E, E) = true
+    | dir-eq (S, S) = true
+    | dir-eq _      = false
+
+  datatype cell =
+      Wall
+    | Open of { ant : (int * dir) option
+                }
+    | Hole
+    | Goal
+    (* used only on pattern boards. *)
+    | Wild
+
+
+  fun cell-eq (Wall, Wall) = true
+    | cell-eq (Hole, Hole) = true
+    | cell-eq (Goal, Goal) = true
+    | cell-eq (Wild, Wild) = true (* ? *)
+    | cell-eq (Open { ant = an },
+               Open { ant = bn }) =
+      (case (an, bn) of
+           (NONE, NONE) => true
+         | (SOME (i, d), SOME (i', d')) => i = i' andalso dir-eq (d, d')
+         | _ => false)
+    | cell-eq _ = false
+
+  (* width and height the size of the actual board;
+     the cell arrays have a border of Wall around them. *)
+  type board = { width : int, 
+                 height : int,
+                 (* max length 10 *)
+                 program : (dir * dir * dir * 
+                            dir * dir * dir * dir) array, 
+                 (* size = (width + 2) * (height + 2). 
+                    must not contain Wild. *)
+                 cells : cell array,
+                 (* same size; contents ignored *)
+                 ocells : cell array }
+
+  type pattern = { title : string, 
+                   width : int, height : int,
+                   program : (dir option * dir option * dir option *
+                              dir option * dir option * dir option * dir option) array,
+                   (* may contain Wild *)
+                   cells : cell array }
+
+  (* ANSI. *)
+  fun cls () =
+      let in
+          putc (chr 27);
+          putc ?[; putc ?2; putc ?J; (* ] *)
+          ()
+      end
+
+  fun formfeed () =
+      let in
+          putc (chr 27);
+          putc ?[; putc ?H; (* ] *)
+          ()
+      end
+
+  fun putd N = putc ?^
+    | putd S = putc ?v
+    | putd W = putc ?<
+    | putd E = putc ?>
+
+  fun putdigit i = putc (chr(ord ?0 + i))
+
+  fun pc_top Wall = (putc ?#; putc ?#)
+    | pc_top Hole = (putc ?/; putc ?\\)
+    | pc_top (Open { ant = SOME (i, ant) }) =
+      (putdigit i; putd ant)
+    | pc_top (Open _) = (putc ? ; putc ? )
+    | pc_top Goal = (putc ?$; putc ?$)
+    | pc_top Wild = (putc ??; putc ??)
+
+  fun pc_bot Wall = (putc ?#; putc ?#)
+    | pc_bot Hole = (putc ?\\; putc ?/)
+    | pc_bot (Open { ant = SOME _ }) = (putc ?@; putc ?@)
+    | pc_bot (Open _) = (putc ?.; putc ? )
+    | pc_bot Goal = (putc ?$; putc ?$)
+    | pc_bot Wild = (putc ??; putc ??)
+
+  fun printboard { width, height, program = _, cells, ocells = _, checking = _ } =
+  (*     if true
+   then print "."
+   else *)
+      let 
+          fun loopy y =
+              if y > height then ()
+              else
+                  let 
+                      fun loopx1 x =
+                          if x > width
+                          then ()
+                          else
+                              let in
+                                  pc_top (sub(cells,
+                                              ((width + 2) * y) + x));
+                                  loopx1 (x + 1)
+                              end
+
+                      fun loopx2 x =
+                          if x > width
+                          then ()
+                          else
+                              let in
+                                  pc_bot (sub(cells,
+                                              ((width + 2) * y) + x));
+                                  loopx2 (x + 1)
+                              end
+                  in
+                      loopx1 1; putc ?\n;
+                      loopx2 1; putc ?\n;
+                      loopy (y + 1)
+                  end
+      in
+          (* print ("(BOARD: " ^ int-tostring width ^ " x " ^ int-tostring height ^ ")\n"); *)
+          loopy 1
+      end
+
+  fun eval { width, height, 
+             program, 
+             cells, ocells, checking } =
+      let
+
+          fun p-one   i = #1/7 (sub(program, i))
+          fun p-two   i = #2/7 (sub(program, i))
+          fun p-three i = #3/7 (sub(program, i))
+
+          fun p-north i = #4/7 (sub(program, i))
+          fun p-east  i = #5/7 (sub(program, i))
+          fun p-south i = #6/7 (sub(program, i))
+          fun p-west  i = #7/7 (sub(program, i))
+
+          (* dir-angle (d, dd)
+             when an ant runs into another ant, compute its
+             resulting angle as a function of the ant's direction
+             d and its obstacle's direction dd. *)
+          fun dir-angle (i, N, N) = p-north i
+            | dir-angle (i, N, E) = p-east i
+            | dir-angle (i, N, S) = p-south i
+            | dir-angle (i, N, W) = p-west i
+
+            | dir-angle (i, S, N) = dir-opp (p-south i)
+            | dir-angle (i, S, E) = dir-opp (p-west i)
+            | dir-angle (i, S, S) = dir-opp (p-north i)
+            | dir-angle (i, S, W) = dir-opp (p-east i)
+
+            | dir-angle (i, W, N) = dir-ccw (p-east i)
+            | dir-angle (i, W, E) = dir-ccw (p-south i)
+            | dir-angle (i, W, S) = dir-ccw (p-west i)
+            | dir-angle (i, W, W) = dir-ccw (p-north i)
+
+            | dir-angle (i, E, N) = dir-cw  (p-west i)
+            | dir-angle (i, E, E) = dir-cw  (p-north i)
+            | dir-angle (i, E, S) = dir-cw  (p-east i)
+            | dir-angle (i, E, W) = dir-cw  (p-south i)
+
+            (* take a tuple (n, s, w, e) that indicates
+               whether there is an inward-facing ant in
+               that position (reporting its program number
+               if an ant is present). return the resulting
+               ant, if any. *)
+          fun antmix nswe =
+              case nswe of
+                (* single ant is unperturbed *)
+                  (SOME i, NONE,   NONE,   NONE)    => SOME (i, dir-opp (p-one i))
+                | (NONE,   SOME i, NONE,   NONE)    => SOME (i,         (p-one i))
+                | (NONE,   NONE,   SOME i, NONE)    => SOME (i, dir-cw  (p-one i))
+                | (NONE,   NONE,   NONE,   SOME i)  => SOME (i, dir-ccw (p-one i))
+
+                (* three ants. Use the id of the middle ant. *)
+                | (NONE,   SOME i, SOME _, SOME _)  => SOME (i,         (p-three i))
+                | (SOME i, NONE,   SOME _, SOME _)  => SOME (i, dir-opp (p-three i))
+                | (SOME _, SOME _, NONE,   SOME i)  => SOME (i, dir-ccw (p-three i))
+                | (SOME _, SOME _, SOME i, NONE)    => SOME (i, dir-cw  (p-three i))
+
+                (* two at right angle; use the id of the ant to the right. *)
+                | (SOME i, NONE,   NONE,   SOME _)  => SOME (i, dir-opp (p-two i))
+                | (SOME _, NONE,   SOME i, NONE)    => SOME (i, dir-cw  (p-two i))
+                | (NONE,   SOME _, NONE,   SOME i)  => SOME (i, dir-ccw (p-two i))
+                | (NONE,   SOME i, SOME _, NONE)    => SOME (i,         (p-two i))
+
+                (* in all other conditions, the ants die *)
+  (*
+                (* no ants *)
+                | (false, false, false, false) => NONE
+
+                (* full ants: all die *)
+                | (true,  true,  true,  true)  => NONE
+
+                (* two head on: crash! we do this
+                   because we want the rules to be
+                   rotation-invariant, but there is
+                   no way to tell these from their
+                   180-degree rotations. *)
+                | (true,  true,  false, false) => NONE
+                | (false, false, true,  true)  => NONE
+  *)
+                | _ => NONE
+
+          (* PERF could instead place this walled 
+             boundary around the board itself at read-time *)
+          fun cell (x, y) = sub(cells, y * (width + 2) + x)
+  (*
+              if x < 0 orelse y < 0
+                 orelse x >= width orelse y >= height
+              then Wall
+              else sub(cells, y * width + x)
+  *)
+
+          fun celldir (x, y, N) = cell (x, y - 1)
+            | celldir (x, y, S) = cell (x, y + 1)
+            | celldir (x, y, W) = cell (x - 1, y)
+            | celldir (x, y, E) = cell (x + 1, y)
+
+          fun loopy y =
+              if y > height then ()
+              else 
+              let fun loopx x =
+                  if x > width then ()
+                  else
+                  let 
+                      val old = cell(x, y)
+                      val new =
+                      (case old of
+                           Wall => old
+                         | Hole => old
+                         | Wild => raise Ant "BUG: tried to eval board with wild"
+                         | Goal => old
+
+                         | Open { ant = SOME (i, d) } => 
+                               (* ant might walk. *)
+                               (case celldir(x, y, d) of
+                                    (* ant turns right, regardless of
+                                       program. *)
+                                    Wall => 
+                                        Open { ant = SOME (i, dir-cw d) }
+                                  (* ant walks into hole *)
+                                  | Hole => Open { ant = NONE }
+                                  (* ant turns according to program *)
+                                  | Open { ant = SOME (_, dd) } =>
+                                            Open { ant = SOME (i, dir-angle (i, d, dd)) }
+                                  (* ant walks *)
+                                  | Open { ant = NONE } => Open {ant = NONE }
+
+                                  (* goal! success! *)
+                                  | Goal =>
+                                        let in
+                                            print "Ant reached goal!\n";
+                                            (case checking of
+                                                 NONE => ()
+                                               | SOME (s, d) =>
+                                                  let in
+                                                   print
+                                                   (gen-publication { problem = "ANTWO",
+                                                                      task    = s,
+                                                                      score   = bi-fromint d } ^
+                                                    "\n")
+                                                  end);
+                                            raise Done
+                                        end
+                                  (* should be exhaustive *)
+                                  | Wild => raise Ant "BUG: tried to eval board with wild"
+
+                                        )
+                         | Open {ant = NONE} => 
+                               (* need to look at cells around this
+                                  to see what happens next *)
+                                  let
+                                      (* is there an ant facing this
+                                         direction? return its program if so *)
+                                      fun antin d =
+                                          case (celldir(x, y, d)) of
+                                              Open {ant = SOME (i, d') } =>
+                                                  if dir-eq (dir-opp d, d')
+                                                  then SOME i
+                                                  else NONE
+                                            | _ => NONE
+
+                                      (* returns ant option  
+                                         (before it is affected by the arrow) *)
+                                      val res = 
+                                        antmix (antin N, antin S, antin W, antin E)
+
+                                      val ant = res
+(*
+                                        (case res of
+                                             (NONE) => NONE
+                                           (* no arrow: keep dir *)
+                                           | (SOME _, NONE) => res
+                                           (* arrow and ant: use arrow *)
+                                           | (SOME (i, _), SOME d) => SOME(i, d))
+*)
+
+                                  in
+                                      Open { ant = ant }
+                                  end)
+                  in
+                      update(ocells, ((width + 2) * y) + x, new);
+                      loopx (x + 1)
+                  end
+              in
+                  loopx 1;
+                  loopy (y + 1)
+              end
+      in
+          loopy 1;
+          { width = width, height = height, program = program,
+            cells = ocells, ocells = cells, checking = checking }
+      end
+
+  fun parseboard str =
+   let
+       fun stream-getline s =
+           let
+               fun go (acc, s) =
+                   case stream-force s of
+                       Cons (?\n, s') => (implode(list-rev acc), s')
+                     | Cons (?\r, s') => go (acc, s')
+                     | Cons (c, s') => go (c :: acc, s')
+                     | Nil => raise Ant "unexpected end of line"
+           in
+               go(nil, s)
+           end
+
+       val (title, str) = stream-getline str 
+   (* SUSP: should strip ws, \r 
+      instead, only check prefix
+       *)
+   in
+       (title,
+        fn () =>
+        let
+
+            (* PERF repeated *)
+            (* import "parse.uh" *)
+
+          val ws = parse-repeat (parse-matching (fn ?   => ()
+                                                  | ?\t => ()
+                                                  | ?\r => ()
+                                                  | _ => raise Match))
+
+          val d = parse-matching (fn ?N => SOME N
+                                   | ?S => SOME S
+                                   | ?E => SOME E
+                                   | ?W => SOME W
+                                   | ?* => NONE
+                                   | _ => raise Match)
+
+          fun get-programs-and-size str =
+              let
+                  val p = (d && d && d &&
+                           d && d && d && d << ws) parse-wth LEFT
+                      ||  (ws >> (parse-char-decimal << ws) &&
+                           (parse-char-decimal << ws)) parse-wth RIGHT
+
+                  val (thisline, str) = stream-getline str
+              in
+                  (case parse-string p thisline of
+                       NONE => raise Ant ("expected program (7 directions N,E,S,W)\n or " ^
+                                          "width and height (two numerals separated by space)")
+                     | SOME (LEFT ((((((one, two), three), north), east), south), west)) =>
+                           let
+                               val (prs, w, h, str) = get-programs-and-size str
+                           in
+                               ((one, two, three, north, east, south, west) :: prs, w, h, str)
+                           end
+                     | SOME (RIGHT (w, h)) => (nil, w, h, str))
+              end
+
+
+          val (programs, width, height, str) = get-programs-and-size str
+
+          val program = list-toarray programs
+          val () = (length program > 10) andthen (raise Ant "more than 10 programs")
+              
+          val () = if width <= 0 orelse width >= 5000
+                      orelse height <= 0 orelse height >= 5000 
+                   then raise Ant "board too big or too small"
+                   else ()
+
+          val a = array((width + 2) * (height + 2), Wall)
+
+          fun prog ((ord) p) =
+              if p < ord ?0
+                 orelse p > ord ?9
+              then raise Ant 
+                  ("Ant program must be a digit 0-9 (saw '" ^ array(1, chr p)
+                   ^ "' instead)")
+              else let val n = p - ord ?0
+                   in
+                       if n >= length program
+                       then raise Ant ("There is no ant program #" ^ int-tostring n)
+                       else n
+                   end
+
+          fun doline (str, y) = 
+              if y >= height
+              then ()
+              else
+              let 
+                  val (l, str) = stream-getline str
+
+                  fun docell x =
+                      if x >= width then ()
+                      else
+                      let
+                          val c =
+                              (case (sub (l, x * 2), sub(l, x * 2 + 1)) of
+                                   (_, ?#) => Wall
+                                 | (_, ?O) => Hole
+                                 | (_, ?o) => Hole
+                                 | (p, ?^) => Open { ant = SOME (prog p, N) }
+                                 | (p, ?>) => Open { ant = SOME (prog p, E) }
+                                 | (p, ?v) => Open { ant = SOME (prog p, S) }
+                                 | (p, ?<) => Open { ant = SOME (prog p, W) }
+                                 | (p, ?-) => Open { ant = NONE }
+                                 | (p, ? ) => Open { ant = NONE }
+                                 | (p, ?.) => Open { ant = NONE }
+                                 | (_, ?*) => Wild
+                                 | (_, ?$) => Goal
+                                 | (_, ch) => raise Ant ("unexpected char '" ^
+                                                         array(1, ch) ^ "' while reading board"))
+                      in
+                          (* print (int-tostring x ^ "," ^ int-tostring y ^ " -> "
+                             ^ int-tostring (((y + 1) * (width + 2)) + (x + 1)) ^ "\n"); *)
+                          update(a, ((y + 1) * (width + 2)) + (x + 1), c);
+                          docell (x + 1)
+                      end handle Subscript => raise Ant "line too short while reading board"
+              in
+                  docell 0;
+                  doline (str, y + 1)
+              end
+        in
+          (* print (title ^ "\n"); *)
+          (* print ("Board is " ^ int-tostring width ^ " x " ^ int-tostring height ^ "\n"); *)
+          doline(str, 0);
+
+          (* printboard { width = width, height = height, program = (), cells = a, ocells = () }; *)
+
+          { width = width, height = height, program = program,
+            cells = a }
+        end)
+   end
+
+  (* promotes a pattern to a board. *)
+  fun promote checking { width, height, program = proa, cells } =
+      let
+          fun cp (SOME d) = d
+            | cp NONE = raise Ant ("Error: Program not specified (saw wildcard *)")
+
+          fun onep (one, two, three, north, east, south, west) =
+              let
+                  val one = cp one
+                  val two = cp two
+                  val three = cp three
+                  val north = cp north
+                  val east = cp east
+                  val south = cp south
+                  val west = cp west
+              in
+                  (one, two, three, north, east, south, west)
+              end
+      in
+          array-app (fn Wild =>
+                     raise Ant "Error: Board not specified (saw wildcard *)"
+                      | _ => ()) cells;
+
+          { width = width, height = height,
+            program = array-map onep proa,
+            cells = cells,
+            checking = checking,
+            ocells = array(length cells, Wall) }
+      end
+
+  (* checks that 'brd' matches 'pat'. *)
+  fun checkmatch (pat as { width = pw, height = ph, program = pp, cells = pc },
+                  brd as { width = bw, height = bh, program = bp, cells = bc }) =
+      let
+         fun sub1program ((a1, a2, a3, a4, a5, a6, a7),
+                          (b1, b2, b3, b4, b5, b6, b7)) =
+             let
+                 fun sp (SOME d, SOME d') = dir-eq (d, d') (* both spec'd *)
+                   | sp (_,      NONE)    = raise Ant "Program must not contain wildcards"
+                   | sp (NONE,   SOME _)  = true  (* anything matches wildcard *)
+             in
+                 sp (a1, b1) andalso
+                 sp (a2, b2) andalso
+                 sp (a3, b3) andalso
+                 sp (a4, b4) andalso
+                 sp (a5, b5) andalso
+                 sp (a6, b6) andalso
+                 sp (a7, b7)
+             end
+
+         fun subprogram (pa, pb) =
+             (* ENH <= ? *)
+             if length pa = length pb 
+             then
+                 let
+                     fun checkall n =
+                         if n >= length pa
+                         then true
+                         else sub1program(sub(pa, n),
+                                          sub(pb, n))
+                              andalso checkall (n + 1)
+                 in
+                     checkall 0
+                 end
+             else raise Ant "not the same number of programs"
+
+         fun subcellular (a, b) =
+             let
+                val max = (pw + 2) * (ph + 2)
+                fun loop i =
+                    if i >= max then true
+                    else
+                    let in
+                        (* print ("@ " ^ int-tostring i ^ "\n"); *)
+                        if
+                           (case (sub (a, i), sub (b, i)) of
+                                (Wild, Goal) => raise Ant "Can't place goal in wildcard region"
+                              | (_,    Wild) => raise Ant "Must fill entire wildcard region"
+                              | (Wild, _) => true
+                              | (x, y) => cell-eq (x, y))
+                        then loop (i + 1)
+                        else false
+                    end
+             in
+                 loop 0
+             end
+
+      in
+          if pw = bw andalso ph = bh
+          then if subprogram (pp, bp)
+               then if subcellular (pc, bc)
+                    then ()
+                    else raise Ant "Board does not match pattern!"
+               else raise Ant "Program does not match pattern!"
+          else raise Ant "Solution has wrong size!"
+      end
+
+  val inputs = (("puzzle1.ant", datafile "contest1.ant", "001", 5  ) ::
+                ("puzzle2.ant", datafile "contest2.ant", "002", 15 ) :: 
+                ("puzzle3.ant", datafile "contest3.ant", "003", 30 ) ::
+                ("puzzle4.ant", datafile "contest4.ant", "004", 30 ) ::
+                ("puzzle5.ant", datafile "contest5.ant", "005", 20 ) ::
+                ("puzzle6.ant", datafile "contest6.ant", "006", 70 ) ::
+                ("puzzle7.ant", datafile "contest7.ant", "007", 30 ) ::
+                ("puzzle8.ant", datafile "contest8.ant", "008", 60 ) ::
+                ("puzzle9.ant", datafile "contest9.ant", "009", 140) ::
+                ("puzzle10.ant", datafile "contest10.ant", "010", 50) ::
+                ("puzzle11.ant", datafile "contest11.ant", "011", 70) ::
+                ("puzzle12.ant", datafile "contest12.ant", "012", 40) ::
+                ("puzzle13.ant", datafile "contest13.ant", "013", 40) ::
+                ("puzzle14.ant", datafile "contest14.ant", "014", 250) ::
+                ("puzzle15.ant", datafile "contest15.ant", "015", 10) ::
+
+                nil)
+
+  val puzzles = list-map (fn (_, s, n, sc) => 
+                          let val (a, b) = parseboard (stream-fromstring s)
+                          in
+                              (a, b, n, sc)
+                          end) inputs
+
+
+  fun run-puzzle (interactive, silent, input) =
+      let
+          val (intitle, inboard) = parseboard input
+
+          (* force this right away *)
+          val inboard = inboard ()
+              
+          (* now figure out if the inboard is meant to be a solution to a puzzle. *)
+              
+          val () = cls ()
+          val () = formfeed ()
+              
+          fun findpuz nil =
+              (* not found. *)
+              let in
+                  print "Freeform mode.\n";
+                  promote NONE inboard
+              end
+            | findpuz ( pat :: rest ) =
+              if string-prefix (#1/4 pat, intitle)
+              then (print ("Checking solution to puzzle '" ^
+                           intitle ^ "'...\n");
+                    checkmatch ((#2/4 pat) (), inboard);
+                    promote (SOME (#3/4 pat, #4/4 pat) ) inboard)
+              else findpuz rest
+                  
+          val b = findpuz puzzles
+              
+          val iters = ref 0
+
+          fun showloop b =
+              let in
+                  silent otherwise 
+                  let in
+                      formfeed ();
+                      putc ?\n;
+                      printboard b
+                  end;
+                  
+                  (interactive andthen
+                   let 
+                       do print [\n-- iter #[int-tostring (!iters)] (enter: continue. q: quit) --\n]
+                       val l = getline ()
+                   in
+                       if length l > 0
+                          andalso (ord(sub(l, 0)) orb 32) = ord ?q
+                       then (print "exit.\n"; raise Done)
+                       else ()
+                   end handle IO => (print "exit.\n"; raise Done));
+
+                  iters := !iters + 1;
+                  showloop (eval b)
+              end
+      in
+          showloop b
+      end handle Done => ()
+               | Ant s => print ("Antomaton error: " ^ s ^ "\n")
+
+in
+    { runant = fn (interactive, silent, s)  => run-puzzle (interactive, silent, stream-fromstring s),
+      inputs = inputs }
+end

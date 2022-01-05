@@ -1,0 +1,10 @@
+.svn
+*~
+.cm
+.CM
+core
+*.uma
+*.sym
+*.bins
+*.cps
+

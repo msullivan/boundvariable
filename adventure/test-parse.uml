@@ -1,0 +1,233 @@
+
+let
+  import "std.uh"
+  import "string.uh"
+  import "array.uh"
+  import "int.uh"
+  import "list.uh"
+  import "listpair.uh"
+  import "growarray.uh"
+  import "random.uh"
+  import "io.uh"
+  import "stream.uh"
+  import "hash.uh"
+  import "parse.uh"
+  import "bigint.uh"
+  import "des.uh"
+  import "obfuscate.uh"
+  import "publications.uh"
+
+
+  exception Adventure of string
+
+  datatype chapter =
+     FirstChapter
+   | SequelChapter
+
+  fun doInFirst chapter f =
+      (case chapter of
+          FirstChapter => f ()
+        | SequelChapter => ())
+
+  fun doInSequel chapter f =
+      (case chapter of
+          FirstChapter => ()
+        | SequelChapter => f ())
+
+  fun chapter-equals (FirstChapter, FirstChapter) = true
+    | chapter-equals (SequelChapter, SequelChapter) = true
+    | chapter-equals (_, _) = false
+
+  import "nouns.uh"
+  import "adjectives.uh"
+  import "rooms.uh"
+
+  datatype itemdescription = 
+     S of string
+   | Classified of obs-string
+   | Exemplary
+
+  type item = { idx : int,
+                nounphrase : nounphrase,
+                adjectives : adjective list, (* a unique set for this noun *)
+                portable : bool,
+                description : itemdescription,
+                location : location }
+
+  fun item-noun item = nounphrase-noun (#nounphrase/item item)
+
+  datatype datum =
+     Atom of string
+   | Seq of datum * datum
+   | Assoc of string * datum * datum
+   | NoData
+   | Redacted
+
+  (* icing: only used for ANSI goggles *)
+  val ansiscore = ref 0
+  val ansiroom = ref "?"
+
+  (* Different ways of printing out the current player environment *)
+  import "goggles.uh"
+
+  (* Integers are often offsets into the list of local items. NB local items
+     are defined differently for each action (e.g. Take must carry an index in
+     the list of items in the room but not the inventory). *)
+  datatype command = 
+     Go of int
+   | Take of int
+   | Incinerate of int
+   | Combine of int * int
+   | Break of int
+   | Drop of int
+   | Use of int
+   | LookAround
+   | ShowInventory
+   | Examine of int
+   | Whistle
+   | Hum
+   | Speak of string
+   | SwitchGoggles of goggles
+   | Save
+   | Restore of string
+   | Help of string
+   | Unparsable of string (* error message *)
+
+  (* CURRENT STATE *)
+  (* Set up default values... the real initial values are set in populate.uh. *)
+  val current_loc = ref 0
+  val items_locs = array (num_rooms, nil)
+  val current_goggles = ref EnglishGoggles
+  val history = ref nil
+  val items = (growarray-new
+                (* growarray needs a default element *)
+                { idx = ~1,
+                  nounphrase = Noun Trash,
+                  adjectives = nil, 
+                  portable = true,
+                  description = S "",
+                  location = TrashHeap }) : item growarray
+
+  datatype itemswhere = InventoryItems | RoomItems | InventoryAndRoomItems
+  fun local_items InventoryItems = sub (items_locs, location-toidx InventoryA87312)
+    | local_items RoomItems = sub (items_locs, !current_loc)
+    | local_items InventoryAndRoomItems = (sub (items_locs, location-toidx InventoryA87312)) 
+                                          @ (sub (items_locs, !current_loc))
+
+  type pub = unit -> string option
+  type pubs =
+     { 
+      incinerate_item : pub,
+      combine_items : pub,
+      use_keypad : pub,
+
+      fix_usbcable : pub,
+      get_progressbar : pub,
+      fix_display : pub,
+      fix_powercord : pub,
+      fix_jumpershunt : pub,
+      use_downloader : pub,
+
+      fix_battery : pub,
+      fix_epromburner : pub,
+      fix_rs232adapter : pub,
+      fix_statusled : pub,
+      fix_mosfet : pub,
+      use_uploader : pub,
+
+      move_to_museum : pub,
+      use_crowbar : pub,
+      read_console : pub,
+                     
+      fix_racecar : pub,
+      fix_poussegame : pub,
+      fix_packagerobot : pub,
+      fix_robber : pub,
+      fix_fsm : pub,
+      fix_codex : pub
+     }
+  val pubs = ref
+     { 
+      incinerate_item = fn () => NONE,
+      combine_items = fn () => NONE,
+      use_keypad = fn () => NONE,
+      fix_usbcable = fn () => NONE,
+
+      get_progressbar = fn () => NONE,
+      fix_display = fn () => NONE,
+      fix_powercord = fn () => NONE,
+      fix_jumpershunt = fn () => NONE,
+      use_downloader = fn () => NONE,
+
+      fix_battery = fn () => NONE,
+      fix_epromburner = fn () => NONE,
+      fix_rs232adapter = fn () => NONE,
+      fix_statusled = fn () => NONE,
+      fix_mosfet = fn () => NONE,
+      use_uploader = fn () => NONE,
+
+      move_to_museum = fn () => NONE,
+      use_crowbar = fn () => NONE,
+      read_console = fn () => NONE,
+
+      fix_racecar = fn () => NONE,
+      fix_poussegame = fn () => NONE,
+      fix_packagerobot = fn () => NONE,
+      fix_robber = fn () => NONE,
+      fix_fsm = fn () => NONE,
+      fix_codex = fn () => NONE
+     }
+  val censor_output = ref true
+
+  (* support for interpreted command processors *)
+  import "rml.uh"
+
+  val mind_source = ref ""
+  val mind = ref Unit (* dummy rml exp *)
+
+  (* adds items to rooms, etc *)
+  import "populate.uh"
+
+  do print "[Waiting for mind]\n"
+  fun progress n = print ("Burned " ^ int-tostring n ^ "...\n")
+  val source = all-lines-progress "EOM" progress
+  do print "[Parsing source]\n"
+
+  do let val source = case source of SOME s => s | NONE => raise RML "mind too large"
+         val parsed_mind = (rml-parse source)
+         do print "[Checking code against specification]\n"
+         val mind : int exp = rml-load parsed_mind
+         do print "[Installing compiled image]\n"
+(*
+         val keypad = case growarray-find
+                             (fn (item) => noun-equals (Keypad, 
+                                                          item-noun item)) 
+                             items of
+                         SOME idx => growarray-sub (items, idx)
+                       | NONE => raise RML "couldn't find keypad"
+*)
+          do (  print "[Building vocabulary]\n";
+
+                (* Set up the initial world: *)
+                nouns-initialize ();
+                adjectives-initialize ();
+                rooms-initialize FirstChapter;
+                populate (SOME source) FirstChapter)
+
+
+          val cmd = Examine 0
+          val result = rml-process-command mind cmd
+      in
+        goggle-view EnglishGoggles result
+      end
+        handle Adventure s => print ("Adventure BUG: " ^ s ^ "\n")
+             | RML s => print ("Runtime RML error " ^ s ^ "\n")
+             | Subscript => print ("Adventure BUG: Subscript\n")
+             | Match => print ("Adventure BUG: Match\n")
+             | List => print ("Adventure BUG: List\n")
+             | UnequalLengths => print ("Adventure BUG: UnequalLengths\n")
+             | IO => ()
+             | _ => print "Adventure BUG: unknown exception\n"
+in
+  ()
+end

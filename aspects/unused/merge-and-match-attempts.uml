@@ -1,0 +1,234 @@
+
+
+
+
+(*
+(* original *)
+fun merge (nil : bindings, b : bindings) = SOME b
+  | merge (b, nil) = SOME b 
+  | merge (b1 as (n1, t1)::rest1, b2 as (n2,t2)::rest2) = 
+    if symbol-equals(n1, n2) 
+    then
+	if equalTerms (t1, t2) 
+	then
+	    case merge(rest1, rest2) of 
+		NONE => NONE
+	      | SOME bRest => SOME ((n1, t1) :: bRest)
+	else
+	    NONE
+    else
+	let val recAndMerge = 
+	    (fn (rec1, rec2, firstName, firstTerm) => 
+	     case merge (rec1, rec2) of
+		 NONE => NONE
+	       | SOME bRest => SOME ((firstName, firstTerm) :: bRest))
+	in
+	    if symbol-lessThan (n1, n2) 
+	    then recAndMerge (rest1, b2, n1, t1)
+	    else recAndMerge (b1, rest2, n2, t2)
+	end
+*)  
+
+(*
+(* exn *)
+fun merge (b1 : bindings, b2 : bindings) : bindings option= 
+    let
+	exception NoMerge 
+	
+	fun mloop (nil, b) = b
+	  | mloop (b, nil) = b
+	  | mloop (b1 as (n1, t1)::rest1, b2 as (n2, t2) :: rest2) =
+	    if symbol-equals(n1, n2) 
+	    then
+		if equalTerms (t1, t2) 
+		then (n1, t1) :: (mloop(rest1, rest2))
+		else raise NoMerge
+	    else
+		if symbol-lessThan (n1, n2)
+		then (n1,t1) :: (mloop(rest1, b2))
+		else (n2,t2) :: (mloop(b1, rest2))
+		    
+    in
+	(SOME (mloop (b1, b2)))
+	handle NoMerge => NONE
+    end
+*)
+
+(*
+(* exn with fast path *)
+fun merge (b1 : bindings, b2 : bindings) : bindings option= 
+    let
+	exception NoMerge 
+	
+	fun single (it, nil, acc) = it :: acc
+	  | single (b1 as (n1, t1), 
+		    bs as (n2,t2)::tl,
+		    acc) = 
+	    if symbol-equals (n1, n2) 
+	    then if equalTerms (t1, t2)
+		 then bs @ acc
+		 else raise NoMerge
+	    else single (b1, tl, (n2,t2) :: acc)
+		
+	fun mloop (nil, b) = b
+	  | mloop (b, nil) = b
+	  (* redundant fast paths:
+	     eliminate the < and try to be more optimizable
+	     *)
+	  | mloop (b :: nil, bs) = single (b, bs, nil)
+	  | mloop (bs, b :: nil) = single (b, bs, nil)
+	  (* end fast paths *)
+	  | mloop (b1 as (n1, t1)::rest1, b2 as (n2, t2) :: rest2) =
+	    if symbol-equals(n1, n2) 
+	    then
+		if equalTerms (t1, t2) 
+		then (n1, t1) :: (mloop(rest1, rest2))
+		else raise NoMerge
+	    else
+		if symbol-lessThan (n1, n2)
+		then (n1,t1) :: (mloop(rest1, b2))
+		else (n2,t2) :: (mloop(b1, rest2))
+		    
+    in
+	(SOME (mloop (b1, b2)))
+	handle NoMerge => NONE
+    end
+*)
+
+
+(* original
+
+(* determine whether a term matches a pattern exactly
+   (NOT whether the pattern matches somewhere in a term)
+   
+   if they don't match, NONE
+   if they do, some of bindings to variables *)
+fun match ((PVar n) : pattern, e : term) : bindings option = SOME ((n, e)::nil)
+  | match (PConst n, Const n') = 
+    if symbol-equals (n, n') then SOME nil else NONE
+  | match (PApp (p1, p2), App(e1, e2)) = 
+       (* do one side before the other so we can fail fast 
+	  doing the left first is probably better... ?
+	  *)
+       (case match (p1, e1) of
+	    NONE => NONE
+	  | SOME b1 => 
+		(case match (p2, e2) of
+		     NONE => NONE
+		   | SOME b2 => merge (b1, b2)))
+  | match _ = NONE
+*)
+
+(*
+(* combine merge and match with one exn *)
+fun match (p : pattern, e : term) : bindings option= 
+    let
+	exception NoMatch
+	
+	fun mergeLoop (nil, b) = b
+	  | mergeLoop (b, nil) = b
+	  | mergeLoop (b1 as (n1, t1)::rest1, b2 as (n2, t2) :: rest2) =
+	    if symbol-equals(n1, n2) 
+	    then
+		if equalTerms (t1, t2) 
+		then (n1, t1) :: (mergeLoop(rest1, rest2))
+		else raise NoMatch
+	    else
+		if symbol-lessThan (n1, n2)
+		then (n1,t1) :: (mergeLoop(rest1, b2))
+		else (n2,t2) :: (mergeLoop(b1, rest2))
+
+	fun matchLoop (PVar n, e) = (n, e)::nil
+	  | matchLoop (PConst n, Const n') = 
+	    if symbol-equals (n, n') 
+	    then nil 
+	    else raise NoMatch
+	  | matchLoop (PApp (p1, p2), App(e1, e2)) = 
+		mergeLoop (matchLoop (p1, e1),
+			   matchLoop (p2, e2))
+	  | matchLoop _ = raise NoMatch
+
+    in
+	(SOME (matchLoop (p, e)))
+	handle NoMatch => NONE
+    end
+*)
+
+(* tail-recursive match with single bindings fiddler *)
+fun match (p : pattern, e : term) : bindings option= 
+    let
+	exception NoMatch
+
+	fun single (it, nil, acc) = it :: acc
+	  | single (b1 as (n1, t1), 
+		    bs as (n2,t2)::tl,
+		    acc) = 
+	    if symbol-equals (n1, n2) 
+	    then if equalTerms (t1, t2)
+		 then acc @ bs
+		 else raise NoMatch
+	    else single (b1, tl, (n2,t2) :: acc)
+
+	fun matchLoop (PVar n, e, acc) = single ((n, e), acc, nil)
+	  | matchLoop (PConst n, Const n', acc) = 
+	    if symbol-equals (n, n') 
+	    then acc
+	    else raise NoMatch
+	  | matchLoop (PApp (p1, p2), App(e1, e2), acc) = 
+		matchLoop (p1, e1, 
+			   matchLoop (p2, e2, acc))
+	  | matchLoop _ = raise NoMatch
+
+    in
+	(SOME (matchLoop (p, e, nil)))
+	handle NoMatch => NONE
+    end
+
+(* tail-recursive match with single bindings fiddler 
+   options instead of exns
+   *)
+fun single (it, nil, acc) = SOME (it :: acc)
+  | single (b1 as (n1, t1), 
+	    bs as (n2,t2)::tl,
+	    acc) = 
+    if symbol-equals (n1, n2) 
+    then if equalTerms (t1, t2)
+	 then SOME (acc @ bs)
+	 else NONE
+    else single (b1, tl, (n2,t2) :: acc)
+fun matchLoop (PVar n, e, acc) = single ((n, e), acc, nil)
+  | matchLoop (PConst n, Const n', acc) = 
+    if symbol-equals (n, n') 
+    then SOME acc
+    else NONE
+  | matchLoop (PApp (p1, p2), App(e1, e2), acc) = 
+	case matchLoop (p1, e1, acc) of
+		    NONE => NONE
+		  | SOME newAcc => matchLoop (p2, e2, newAcc)
+  | matchLoop _ = NONE
+fun match (p : pattern, e : term) : bindings option= matchLoop (p, e, nil)
+
+
+(* inline recAndMerge *)
+fun merge (nil : bindings, b : bindings) = SOME b
+  | merge (b, nil) = SOME b 
+  | merge (b1 as (n1, t1)::rest1, b2 as (n2,t2)::rest2) = 
+    if symbol-equals(n1, n2) 
+    then
+	if equalTerms (t1, t2) 
+	then
+	    case merge(rest1, rest2) of 
+		NONE => NONE
+	      | SOME bRest => SOME ((n1, t1) :: bRest)
+	else
+	    NONE
+    else
+	if symbol-lessThan (n1, n2) 
+	then 
+	    case merge (rest1, b2) of
+		NONE => NONE
+	      | SOME bRest => SOME ((n1, t1) :: bRest)
+	else
+	    case merge (b1, rest2) of
+		NONE => NONE
+	      | SOME bRest => SOME ((n2, t2) :: bRest)

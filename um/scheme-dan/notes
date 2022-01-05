@@ -1,0 +1,30 @@
+
+Add tests
+*********
+Don't increment finger after load_prog
+
+Check that load_prod copies the vector: these shouldn't share
+
+Probably not: Test for scheme number wackiness 
+	      the major obstacle is the bitwise operations, and these
+	      aren't even R5RS
+
+Notes on writeup
+****************
+- alloc: bit pattern in B is actually the ID of the new array
+- input/output: stdin and stdout??
+- initial array comes from file?  this should be specified somewhere
+- shout more about load_prog copying the array
+- shout more about incrementing finger *before* op
+
+Bugs
+****
+- decoding op/registers: bit selection was broken
+  problem: ping-pong needs to mod after the first shift, 'cause it does
+  the shift as a bignum
+
+- random doesn't allow big enough bound; use srfi 
+
+- after load_prog, you don't want to increment the finger
+
+- not copying on load_prog

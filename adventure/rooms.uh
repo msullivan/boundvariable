@@ -1,0 +1,295 @@
+(* XX should be auto-generated *)
+
+datatype location = 
+    InventoryA87312 
+  | TrashHeap 
+  | RoomWithaDoor
+  | JunkRoom
+  (* For the talk! *)
+  | SalonE
+
+  (* Start from last year: 54th and Ridgewood *)
+  | FiftyFourthStreetandRidgewood
+
+  | FiftySecondandDorchester
+  | FiftyThirdandDorchester
+  | FiftyFourthStreetandDorchester
+  | FiftyFourthPlaceandDorchester
+
+  | FiftySecondandBlackstone
+  | FiftyThirdandBlackstone
+  | FiftyFourthStreetandBlackstone
+  | FiftyFourthPlaceandBlackstone
+
+  | FiftySecondandHarper
+  | FiftyThirdandHarper
+  | FiftyFourthStreetandHarper
+  | FiftyFourthPlaceandHarper
+
+  | MuseumofScienceandIndustry
+  | Rotunda
+  | GamesExhibit
+  | MachineRoom
+  | HistoryExhibitEntrance
+
+  | HistoryExhibit1
+  | HistoryExhibit2
+  | HistoryExhibit3
+  | HistoryExhibit4
+  | HistoryExhibit5
+  | HistoryExhibit6
+
+type room = { idx : int,
+              location : location,
+              description : string,
+              exits : location option array }
+
+(* SUSP these strings are copied below in the hash map setup *)
+fun location-tostring InventoryA87312 = "InventoryA87312"
+  | location-tostring TrashHeap = "Trash Heap"
+  | location-tostring RoomWithaDoor = "Room With a Door"
+  | location-tostring JunkRoom = "Junk Room"
+  | location-tostring SalonE = "Salon E"
+
+  | location-tostring FiftyFourthStreetandRidgewood = "54th Street and Ridgewood Court"
+
+  | location-tostring FiftySecondandDorchester = "52nd Street and Dorchester Avenue"
+  | location-tostring FiftyThirdandDorchester = "53th Street and Dorchester Avenue"
+  | location-tostring FiftyFourthStreetandDorchester = "54th Street and Dorchester Avenue"
+  | location-tostring FiftyFourthPlaceandDorchester = "54th Place and Dorchester Avenue"
+
+  | location-tostring FiftySecondandBlackstone = "52nd Street and Blackstone Avenue"
+  | location-tostring FiftyThirdandBlackstone = "53th Street and Blackstone Avenue"
+  | location-tostring FiftyFourthStreetandBlackstone = "54th Street and Blackstone Avenue"
+  | location-tostring FiftyFourthPlaceandBlackstone = "54th Place and Blackstone Avenue"
+
+  | location-tostring FiftySecondandHarper = "52nd Street and Harper Avenue"
+  | location-tostring FiftyThirdandHarper = "53th Street and Harper Avenue"
+  | location-tostring FiftyFourthStreetandHarper = "54th Street and Harper Avenue"
+  | location-tostring FiftyFourthPlaceandHarper = "54th Place and Harper Avenue"
+
+  | location-tostring MuseumofScienceandIndustry = "Museum of Science and Industry"
+  | location-tostring Rotunda = "Rotunda"
+  | location-tostring GamesExhibit = "Games and Amusements Exhibit"
+    (* Duplicated in populate.uh and below *)
+  | location-tostring MachineRoom = "Machine Room M4"
+  | location-tostring HistoryExhibitEntrance = "History of Technology Exhibit, Entrance"
+
+  | location-tostring HistoryExhibit1 = "History of Technology Exhibit, Part 1"
+  | location-tostring HistoryExhibit2 = "History of Technology Exhibit, Part 2"
+  | location-tostring HistoryExhibit3 = "History of Technology Exhibit, Part 3"
+  | location-tostring HistoryExhibit4 = "History of Technology Exhibit, Part 4"
+  | location-tostring HistoryExhibit5 = "History of Technology Exhibit, Part 5"
+  | location-tostring HistoryExhibit6 = "History of Technology Exhibit, Part 6"
+
+(* NB These are not ordered!! *)
+fun location-toidx InventoryA87312 = 0
+  | location-toidx TrashHeap = 1
+  | location-toidx RoomWithaDoor = 2
+  | location-toidx JunkRoom = 3
+  | location-toidx SalonE = 28
+
+  | location-toidx FiftyFourthStreetandRidgewood = 4
+
+  | location-toidx FiftySecondandDorchester = 26
+  | location-toidx FiftyThirdandDorchester = 5
+  | location-toidx FiftyFourthStreetandDorchester = 6
+  | location-toidx FiftyFourthPlaceandDorchester = 7
+
+  | location-toidx FiftySecondandBlackstone = 25
+  | location-toidx FiftyThirdandBlackstone = 8
+  | location-toidx FiftyFourthStreetandBlackstone = 9
+  | location-toidx FiftyFourthPlaceandBlackstone = 10
+
+  | location-toidx FiftySecondandHarper = 27
+  | location-toidx FiftyThirdandHarper = 11 
+  | location-toidx FiftyFourthStreetandHarper = 12
+  | location-toidx FiftyFourthPlaceandHarper = 13
+
+  | location-toidx MuseumofScienceandIndustry = 14
+  | location-toidx Rotunda = 15
+  | location-toidx GamesExhibit = 16
+  | location-toidx MachineRoom = 17
+  | location-toidx HistoryExhibitEntrance = 18
+
+  | location-toidx HistoryExhibit1 = 19
+  | location-toidx HistoryExhibit2 = 20
+  | location-toidx HistoryExhibit3 = 21
+  | location-toidx HistoryExhibit4 = 22
+  | location-toidx HistoryExhibit5 = 23
+  | location-toidx HistoryExhibit6 = 24
+
+fun location-equals (room, room') = location-toidx room = location-toidx room'
+
+val num_rooms = 29
+
+val rooms = array (num_rooms, { idx = ~1,
+                                location = RoomWithaDoor, 
+                                description = "",
+                                exits = list-toarray nil }) : room array
+
+val North = 0
+val East = 1
+val South = 2
+val West = 3
+
+fun idx-todirection 0 = "north"
+  | idx-todirection 1 = "east"
+  | idx-todirection 2 = "south"
+  | idx-todirection 3 = "west"
+  | idx-todirection _ = raise Adventure "unknown direction"
+
+fun add_room (location, 
+              (exit_north, exit_east, exit_south, exit_west), 
+              description) =
+    let val idx = location-toidx location
+        val exit_list = exit_north::exit_east
+                         ::exit_south::exit_west::nil
+    in
+      update (rooms, idx, 
+              { idx = idx,
+                location = location, 
+                description = description,
+                exits = list-toarray exit_list } : room)
+    end
+
+(* PERF hash sizing *)
+val room_map = hash-new (string-hash, string-equals, 37)
+
+fun rooms-initialize chapter =
+  let val no_exits = (NONE, NONE, NONE, NONE)
+      fun north_exit n = (SOME n, NONE, NONE, NONE)
+      fun east_exit e = (NONE, SOME e, NONE, NONE)
+      fun south_exit s = (NONE, NONE, SOME s, NONE)
+      fun west_exit w = (NONE, NONE, NONE, SOME w)
+      fun north_east_exits n e = (SOME n, SOME e, NONE, NONE)
+      fun north_south_exits n s = (SOME n, NONE, SOME s, NONE)
+      fun north_west_exits n w = (SOME n, NONE, NONE, SOME w)
+      fun east_south_exits e s = (NONE, SOME e, SOME s, NONE)
+      fun east_west_exits e w = (NONE, SOME e, NONE, SOME w)
+      fun south_west_exits s w = (NONE, NONE, SOME s, SOME w)
+  in 
+    add_room (InventoryA87312, no_exits,
+              "Internal Inventory for Robot #A87312");
+    add_room (TrashHeap, no_exits,
+              "Trash Heap");
+    add_room (RoomWithaDoor, north_west_exits JunkRoom SalonE,
+              "You are in a room with a mechanical door. You will probably need to use a keypad to unlock it. A hallway leads north. ");
+    add_room (JunkRoom, south_exit RoomWithaDoor, 
+              "You are in a room with a pile of junk. A hallway leads south. ");
+    add_room (SalonE, east_exit RoomWithaDoor, 
+              "You are in Salon E of the Oregon Ballroom. A door leads east. ");
+
+    add_room (FiftyFourthStreetandRidgewood, east_exit FiftyFourthStreetandDorchester,
+              "You are standing at the corner of 54th Street and Ridgewood Court. From here, you can go east. ");
+
+    add_room (FiftySecondandDorchester, east_south_exits FiftySecondandBlackstone 
+                                                         FiftyThirdandDorchester,
+              "You are standing at the corner of 52nd Street and Dorchester Avenue. From here, you can go east or south. ");                                                         
+    add_room (FiftyThirdandDorchester, (SOME FiftySecondandDorchester,
+                                        SOME FiftyThirdandBlackstone,
+                                        SOME FiftyFourthStreetandDorchester,
+                                        NONE),
+              "You are standing at the corner of 53th Street and Dorchester Avenue. From here, you can go north, east, or south. ");
+    add_room (FiftyFourthStreetandDorchester, (SOME FiftyThirdandDorchester,
+                                               SOME FiftyFourthStreetandBlackstone,
+                                               SOME FiftyFourthPlaceandDorchester,
+                                               SOME FiftyFourthStreetandRidgewood),
+              "You are standing at the corner of 54th Street and Dorchester Avenue. From here, you can go north, east, south, or west. ");
+    add_room (FiftyFourthPlaceandDorchester, north_east_exits FiftyFourthStreetandDorchester 
+                                                              FiftyFourthPlaceandBlackstone,
+              "You are standing at the corner of 54th Place and Dorchester Avenue. From here, you can go north or east. ");
+
+    add_room (FiftySecondandBlackstone, (NONE, SOME FiftySecondandHarper, SOME FiftyThirdandBlackstone, SOME FiftySecondandDorchester),
+              "You are standing at the corner of 52nd Street and Blackstone Avenue. From here, you can go east, south, or west. ");
+    add_room (FiftyThirdandBlackstone, (SOME FiftySecondandBlackstone, SOME FiftyThirdandHarper, SOME FiftyFourthStreetandBlackstone, SOME FiftyThirdandDorchester),
+              "You are standing at the corner of 53th Street and Blackstone Avenue. From here, you can go north, east, south, or west. ");
+    add_room (FiftyFourthStreetandBlackstone, (SOME FiftyThirdandBlackstone,
+                                               SOME FiftyFourthStreetandHarper,
+                                               SOME FiftyFourthPlaceandBlackstone,
+                                               SOME FiftyFourthStreetandDorchester),
+              "You are standing at the corner of 54th Street and Blackstone Avenue. From here, you can go north, east, south, or west. ");
+    add_room (FiftyFourthPlaceandBlackstone, (SOME FiftyFourthStreetandBlackstone, SOME FiftyFourthPlaceandHarper, NONE, SOME FiftyFourthPlaceandDorchester),
+              "You are standing at the corner of 54th Place and Blackstone Avenue. From here, you can go north, east, or west. ");
+
+    add_room (FiftySecondandHarper, south_west_exits FiftyThirdandHarper FiftySecondandBlackstone,
+              "You are standing at the corner of 52nd Street and Harper Avenue. A sign reads, \"No access east of Lakeshore Blvd (incl. Museum of Science and Industry) due to construction.\" From here, you can go south or west. ");
+    add_room (FiftyThirdandHarper, (SOME FiftySecondandHarper, NONE, SOME FiftyFourthStreetandHarper, SOME FiftyThirdandBlackstone),
+              "You are standing at the corner of 53th Street and Harper Avenue. A sign reads, \"No access east of Lakeshore Blvd (incl. Museum of Science and Industry) due to construction.\" From here, you can go north, south, or west. ");
+    add_room (FiftyFourthStreetandHarper, (SOME FiftyThirdandHarper,
+                                           NONE,
+                                           SOME FiftyFourthPlaceandHarper,
+                                           SOME FiftyFourthStreetandBlackstone),
+              "You are standing at the corner of 54th Street and Harper Avenue. A sign reads, \"No access east of Lakeshore Blvd (incl. Museum of Science and Industry) due to construction.\" From here, you can go north, south, or west. ");
+    add_room (FiftyFourthPlaceandHarper, north_west_exits FiftyFourthStreetandHarper FiftyFourthPlaceandBlackstone,
+              "You are standing at the corner of 54th Place and Harper Avenue. A sign reads, \"No access east of Lakeshore Blvd (incl. Museum of Science and Industry) due to construction.\" From here, you can go north or west. ");
+
+    add_room (MuseumofScienceandIndustry, south_exit Rotunda,
+              "You standing in the front entrance of the Museum of Science and Industry. From here, you can go south. ");
+    add_room (Rotunda, (SOME MuseumofScienceandIndustry,
+                        SOME GamesExhibit,
+                        NONE,
+                        SOME HistoryExhibitEntrance),
+              "You are in the rotunda of the Museum of Science and Industry. From here, you can go north, east, or west. ");
+    add_room (GamesExhibit, west_exit Rotunda,
+              "You standing before an exhibit on games and amusements. From here, you can go west. ");
+
+    add_room (MachineRoom, north_exit Rotunda,
+              "You are in a machine room behind the rotunda. A secret passage leads to the north. ");
+
+    doInFirst chapter
+    (fn () =>
+        add_room (HistoryExhibitEntrance, east_exit Rotunda,
+                  "You are at the entrance of an exhibit titled, \"The History of Technology.\" A sign reads, \"Due to recent difficulties, only robots with intact warranties will be admitted.\" Since your warranty has been voided, you can only go east. "));
+
+    doInSequel chapter
+    (fn () =>
+        let in
+          add_room (HistoryExhibitEntrance, north_east_exits HistoryExhibit1 Rotunda,
+                    "You are at the entrance of an exhibit titled, \"The History of Technology.\" A sign reads, \"Due to recent difficulties, only robots with intact warranties will be admitted.\" From here, you can go north or east. ");
+          add_room (HistoryExhibit1, north_south_exits HistoryExhibit2 HistoryExhibitEntrance,
+                    "You are in an exhibit on the history of technology. A placard reads, \"Race Car.\" From here, you can go north or south. ");
+          add_room (HistoryExhibit2, north_south_exits HistoryExhibit3 HistoryExhibit1,
+              "You are in an exhibit on the history of technology. A placard reads, \"Pousse Game.\" From here, you can go north or south. ");
+          add_room (HistoryExhibit3, north_south_exits HistoryExhibit4 HistoryExhibit2,
+                    "You are in an exhibit on the history of technology. A placard reads, \"Package Robot.\" From here, you can go north or south. ");
+          add_room (HistoryExhibit4, north_south_exits HistoryExhibit5 HistoryExhibit3,
+                    "You are in an exhibit on the history of technology. A placard reads, \"Robber.\" From here, you can go north or south. ");
+          add_room (HistoryExhibit5, north_south_exits HistoryExhibit6 HistoryExhibit4,
+                    "You are in an exhibit on the history of technology. A placard reads, \"Finite-State Machine.\" From here, you can go north or south. ");
+          add_room (HistoryExhibit6, south_exit HistoryExhibit5,
+                    "You are in an exhibit on the history of technology. A placard reads, \"Codex.\" From here, you can go south. ")
+        end);
+
+    (* SUSP these strings must be lower case! *)
+    hash-put (room_map, "inventorya87312", InventoryA87312);
+    hash-put (room_map, "trash heap", TrashHeap);
+    hash-put (room_map, "room with a door", RoomWithaDoor);
+    hash-put (room_map, "junk room", JunkRoom);
+    hash-put (room_map, "salon e", SalonE);
+    hash-put (room_map, "54th street and ridgewood court", FiftyFourthStreetandRidgewood);
+    hash-put (room_map, "52nd street and dorchester avenue", FiftySecondandDorchester);
+    hash-put (room_map, "53th street and dorchester avenue", FiftyThirdandDorchester);
+    hash-put (room_map, "54th street and dorchester avenue", FiftyFourthStreetandDorchester);
+    hash-put (room_map, "54th place and dorchester avenue", FiftyFourthPlaceandDorchester);
+    hash-put (room_map, "52nd street and blackstone avenue", FiftySecondandBlackstone);
+    hash-put (room_map, "53th street and blackstone avenue", FiftyThirdandBlackstone);
+    hash-put (room_map, "54th street and blackstone avenue", FiftyFourthStreetandBlackstone);
+    hash-put (room_map, "54th place and blackstone avenue", FiftyFourthPlaceandBlackstone);
+    hash-put (room_map, "52nd street and harper avenue", FiftySecondandHarper);
+    hash-put (room_map, "53th street and harper avenue", FiftyThirdandHarper);
+    hash-put (room_map, "54th street and harper avenue", FiftyFourthStreetandHarper);
+    hash-put (room_map, "54th place and harper avenue", FiftyFourthPlaceandHarper);
+    hash-put (room_map, "museum of science and industry", MuseumofScienceandIndustry);
+    hash-put (room_map, "rotunda", Rotunda);
+    hash-put (room_map, "games and amusements exhibit", GamesExhibit);
+    hash-put (room_map, "machine room m4", MachineRoom);
+    hash-put (room_map, "history of technology exhibit, entrance", HistoryExhibitEntrance);
+    hash-put (room_map, "history of technology exhibit, part 1", HistoryExhibit1);
+    hash-put (room_map, "history of technology exhibit, part 2", HistoryExhibit2);
+    hash-put (room_map, "history of technology exhibit, part 3", HistoryExhibit3);
+    hash-put (room_map, "history of technology exhibit, part 4", HistoryExhibit4);
+    hash-put (room_map, "history of technology exhibit, part 5", HistoryExhibit5);
+    hash-put (room_map, "history of technology exhibit, part 6", HistoryExhibit6)
+
+  end

@@ -1,0 +1,80 @@
+n
+sw english
+l
+n
+n
+n
+n
+l robber
+l aquamarine robber
+l
+t X-4832-TFT
+get X-4832-TFT
+l
+get L-4832-RKR
+get aquamarine L-4832-RKR
+get amethyst L-4832-RKR
+inc amethyst L-4832-RKR
+get aquamarine robber
+inc aquamarine robber
+get azure L-4832-RKR
+inc azure L-4832-RKR
+get beige L-4832-RKR
+inc beige L-4832-RKR
+get bisque L-4832-RKR
+inc bisque L-4832-RKR
+get black H-9247-MHK
+inc black H-9247-MHK
+get blanched-almond-colored D-6678-HED
+inc blanched-almond-colored D-6678-HED
+get blaze-orange L-4832-RKR
+inc blaze-orange L-4832-RKR
+get blue D-6678-HED
+inc blue D-6678-HED
+get blue-violet T-6458-BNR
+get bondi-blue X-5065-GQY
+inc bondi-blue X-5065-GQY
+get brass B-6678-LTH
+inc brass B-6678-LTH
+get bright-green F-9247-QWO
+inc bright-green F-9247-QWO
+get bright-turquoise L-4832-RKR
+inc bright-turquoise L-4832-RKR
+get bright-violet J-4832-VAV
+inc bright-violet J-4832-VAV
+get bronze N-1403-ADE
+inc bronze N-1403-ADE
+get brown R-0010-FGL
+get buff B-1403-YIC
+inc buff B-1403-YIC
+i
+comb T-6458-BNR X-4832-TFT
+i
+comb r-0010-fgl X-4832-TFT
+l cardinal B-1403-YIC
+i
+l  X-4832-TFT
+l
+get burlywood-colored X-5065-GQY
+get burgundy T-6458-BNR
+inc burgundy T-6458-BNR
+get burlywood-colored X-5065-GQY
+inc burlywood-colored X-5065-GQY
+get burnt-orange B-6678-LTH
+inc burnt-orange B-6678-LTH
+get burnt-sienna F-9247-QWO
+inc burnt-sienna F-9247-QWO
+get burnt-umber J-4832-VAV
+inc burnt-umber J-4832-VAV
+get cadet-blue N-1403-ADE
+inc cadet-blue N-1403-ADE
+get camouflage-green R-0010-FGL
+inc camouflage-green R-0010-FGL
+get B-1403-YIC
+i
+comb  B-1403-YIC X-4832-TFT
+l
+take carmine robber
+i
+comb robber B-1403-YIC
+l carmine robber

@@ -1,0 +1,72 @@
+let
+  import "std.uh"
+  import "string.uh"
+  import "list.uh"
+  import "int.uh"
+  import "growarray.uh"
+  import "random.uh"
+  import "io.uh"    
+  import "raytrace.uh"
+  import "random.uh"
+
+  exception BadProgram
+  
+  fun trace-minml scene =
+    let
+	    import "minml.uh" 
+	    import "raytrace.minml"
+        
+	    fun scene-to-mml nil = Inr Unit
+	      | scene-to-mml (h :: t) =
+        let
+          fun intensity RTI_None = Inl Unit
+            | intensity RTI_Medium = Inr (Inl Unit)
+            | intensity RTI_All = Inr (Inr (Inl Unit))
+            
+          fun dir RTD_Towards = Inl Unit
+            | dir RTD_Away    = Inr Unit
+            
+          fun surf { D, R, T, E } =
+            Pair(dir D, 
+                 Pair(intensity R,
+                      Pair(intensity T,
+                           intensity E)))
+        in
+          Inl (Pair(surf h, scene-to-mml t))
+        end
+      
+	    fun mml-to-intensity (Inl Unit) = RTI_None
+	      | mml-to-intensity (Inr (Inl Unit)) = RTI_Medium
+	      | mml-to-intensity (Inr (Inr (Inl Unit))) = RTI_All
+	      | mml-to-intensity _ = (print "BAD VALUE FROM MINML";
+                                raise BadProgram)
+				
+	    val mme = App(minml-tracer, scene-to-mml scene :: nil)
+        
+	    (* do print "run: " *)
+        
+	    val res = (minml-eval mme)
+        handle Stuck s => (print ("minml got stuck: " ^ s ^ "\n");
+                           raise BadProgram)
+             | Match => (print "Match!";
+                         raise BadProgram)
+             | _ => (print "some other eval problem!";
+                     raise BadProgram)
+          
+    in
+	    mml-to-intensity res
+    end
+  
+    val r = ref 0xDEADBEEF
+    fun test-random () =
+	let in
+	    r := (!r * 31337) xorb 0x1F2E3A77;
+	    !r
+	end
+
+in         
+  (case raytrace-test (random-int, trace-minml) of
+     RaytraceSuccess => print "Success!\n"
+   | RaytraceFail => print "Mismatch--fail!\n")
+         handle BadProgram => print "BAD PROGRAM\n"
+end

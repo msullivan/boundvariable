@@ -1,0 +1,197 @@
+
+
+  A New Kind of Fragrance:
+
+
+     Smellular Antomata
+
+
+
+Modern science has come to know that the essence of plants can be
+described by the iterative chaos of fractals. But what of the animal
+kingdom? From which recreational mathematics shall we draw our
+understanding of the zoological critters? I herein propose a simple
+model for the behavior of ants, which I call Smellular Antomata.
+
+The world is a finite rectangular grid, composed of cells. Each cell
+has some contents: It may contain floor, a wall, a hole, food, or an
+ant. Ants can face north, south, west or east.
+
+As we know, ants are blind and so they navigate by smell. An ant can
+only smell its immediate neighborhood. It can't smell holes, so it
+walks right into them.
+
+Ants have very small brains. They know left from right, but do not
+know what grid direction they are facing, so their behavior is
+invariant under rotation. Sometimes a bunch of ants can't make a
+decision because they can't orient themselves uniquely. In this case
+some ants are eaten by an ever-present anteater, which loves the smell
+of indecision.
+
+Each ant belongs to one of ten different clans. Each clan has a fixed
+behavior when encountering certain situations. These are described
+in the model below. An ant knows what clan it is in, but can't tell
+what clan the ants it smells are in, because of all the mud.
+
+
+--------------------------------------------------
+  Ant simulation
+--------------------------------------------------
+
+The model repeatedly applies a transformation to simulate the ant
+world. This section defines the transformation.
+
+The transformation generates a new grid from the old grid. Each cell
+in the new grid is a function of the corresponding cell in the old
+grid, plus its four immediate neighbors. So that all cells have
+neighbors, we imagine the grid being surrounded by walls. This
+transformation is invariant under rotation, so I only give one of the
+four orientations.
+
+We write # for wall, - for floor, o for hole, and $ for food. An ant
+is written ^ if facing north, < if facing west, > if facing east, and
+v if facing south. We write * to indicate that the cell is ignored in
+the translation. Multiple patterns from this list may apply; in this
+case, the earliest appearing one is used.
+
+  *
+ *o*     becomes     o
+  *
+
+  *
+ *#*     becomes     #
+  *
+
+  *
+ *$*     becomes     $
+  *
+
+(That is, holes, walls, and food stay put.)
+
+  -
+ *^*     becomes     -
+  *
+
+  o
+ *^*     becomes     -
+  *
+
+(An ant facing empty space or a hole becomes empty space.)
+
+  #
+ *^*     becomes     >
+  *
+
+(An ant facing a wall always turns to its right.)
+
+
+Some of the remaining cases depend on the clan of one involved ant.
+Each clan has a particular "turning machine": the directions 
+(N, E, S, W) for it to turn in the seven different scenarios. We
+write these as p1..p7. Because patterns are invariant under rotation,
+these directions are always interpreted relative to the ant's current
+orientation. For example, an ant facing > turning "E" then faces v.
+
+  v
+ >-<     becomes     -
+  ^
+
+(The situation is non-orientable, so an anteater comes and eats
+the ants.)
+
+  *
+ >-<     becomes     p3  of the bottom ant.
+  ^
+(The middle of the three ants moves into the center cell,
+retaining its clan and turning according the third direction
+in its program. The other ants are eaten.)
+
+  v
+ *-*     becomes     -
+  ^
+(Also non-orientable.)
+
+  *
+ >-*     becomes     p2  of the bottom ant.
+  ^
+
+  *
+ *-*     becomes     p1  of the bottom ant.
+  ^
+
+  ^
+ *^*     becomes     p4  of the ant at center.
+  *
+
+  >
+ *^*     becomes     p5  of the ant at center.
+  *
+
+  v
+ *^*     becomes     p6  of the ant at center.
+  * 
+
+  <
+ *^*     becomes     p7  of the ant at center.
+  *
+
+
+An ant simulation terminates in glorious epicurean success if the
+following pattern is encountered:
+
+  *
+ *$*
+  ^
+
+--------------------------------------------------
+  Antomaton simulator
+--------------------------------------------------
+
+I have developed a high-performance antomaton simulator. It can be run
+from the UMIX system on an ant world written in a file world.ant as
+follows:
+
+./antomaton world.ant
+
+The input file format is this:
+
+Title                     (title of this world)
+NNNWWWW
+WEWENNN                   (up to 10 ant turning machines,
+SWESWEN                    each as p1..p7)
+6 7                       (width and height)
+ # # # # # #
+ # - $ -2v #
+ # - - - - #              (board)
+ # - - - - #
+ # - -0^ - #
+ #1> - - - #
+ # # # # # #
+
+Each cell is specified by two characters. The second character is
+either #, o, -, $, <, ^, v, or > as above. If the second character is
+an ant direction, then the first must be a digit 0-9 representing its
+clan. Otherwise, the first character may be anything.
+
+I have supplied an interesting example in the file example.ant.
+
+The simulator can also be run in step-by-step mode by supplying the
+flag -i on the command line.
+
+--------------------------------------------------
+  Antomaton quest
+--------------------------------------------------
+
+I have included a series of patterns. Each corresponds to ant behavior
+observed in the wild, and in each case at least one ant reached the
+food. A pattern is just like an input file, except that some of the
+grid positions, and some of the turning machine instructions, have
+been replaced by wildcards *. Grid positions marked with a wildcard
+can be filled with any contents (except $) and turning machine
+instructions with any direction. The antomaton simulator will
+automatically verify inputs against known patterns based on matching
+titles.
+
+If these patterns can be satisfied then I will have shown once and for
+all that smellular antomata accurately model real ant behavior!
+

@@ -1,0 +1,38 @@
+(* printing *)
+
+(* I think these are all the stdlibs that this library uses *)
+val require-string = provide-string
+val require-parse = provide-parse
+
+val require-language = provide-language
+
+val provide-printing = ()
+
+(* fully parenthesized *)
+
+fun termToString (Const n) = ( n)
+  | termToString (App (e1, e2)) = "(" ^ (termToString e1) ^ " " ^ (termToString e2) ^ ")"
+
+fun patternToString (PVar n) = n
+  | patternToString (PConst n) = n
+  | patternToString (PApp (p1, p2)) = "(" ^ (patternToString p1) ^ " " ^ (patternToString p2) ^ ")"
+
+(* pretty *)
+
+(* don't put parens around a left-hand side application;
+   the usual associativity means they're implicit *)
+fun termToPrettyString e =
+    let fun help _ (Const n) =  n
+	  | help appParensP (App (e1, e2)) =
+	    if appParensP 
+	    then "(" ^ (help false e1) ^ " " ^ (help true e2) ^ ")"
+	    else (help false e1) ^ " " ^ (help true e2)
+    in
+	help false e
+    end
+
+fun pairToString tts (sep, terminator) (l, r) =
+    (tts l) ^ sep ^ (tts r) ^ terminator
+
+fun ruleToString (rul : rule) = pairToString patternToString (" => ", ";") rul
+fun simpleTestToString (t : simpleTest) = pairToString termToPrettyString (" -> ", ";") t

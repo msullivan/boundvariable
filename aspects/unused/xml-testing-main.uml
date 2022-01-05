@@ -1,0 +1,70 @@
+(* WARNING: internal use only 
+            do not incorporate in production code *)
+
+let
+    import "std.uh"
+    import "string.uh"
+    import "sort.uh"
+    import "int.uh"
+    import "list.uh"
+    import "array.uh"
+    import "growarray.uh"
+    import "stream.uh"
+    import "parse.uh"
+    import "io.uh"
+    import "random.uh"
+    import "bigint.uh"
+    import "des.uh"
+    import "publications.uh"
+
+    import "language.uh"
+    import "aspects-util.uh"
+    import "parsing.uh"
+    import "printing.uh"
+    import "xml-testing.uh"
+
+    val rulesString = (datafile "xml-easy-sol.adv")
+
+    (* first depth, then number 
+
+       SUSP: the results at the end come out in the reverse of this order??
+              bug in one of the list functions?
+       *)
+    val inputArgs = (generateTerms (3, 20)) @
+	            (generateTerms (5, 20)) @
+	            (generateTerms (6, 20)) @
+		    (generateTerms (10, 20))
+	            (* (generateTerms (20, 10)) *)
+
+    val inputs = list-map (fn t => App (Const "Optimize", t)) inputArgs
+
+    val outputs = 
+	let 
+	    fun mts (srp : singleRulePolicy) 
+		(printer : term -> unit) = 
+		stepToStuck printer (stepWithFirstMatchingRule srp)
+	    
+	    val stepToStuckLHMNSingle = 
+		mts (stepIfMatch (stepInsideLHMN (stepIfMatch stepInsideSingle)))
+		
+	    val rules = 
+		case parseStreamViaTokens tokenParser rulesParser 
+		    (stream-fromstring rulesString) of 
+		    SOME x => x
+
+	    fun fst (x, y) = x
+
+	in
+	    
+	    list-map (fn (t : term) => 
+		      fst (stepToStuckLHMNSingle (fn _ => ()) (rules, t)))
+	             inputs
+	end
+
+in
+    
+    list-map 
+    (fn (inp, outp)  => print ((testToString termToPrettyString (inp, outp)) ^ "\n"))
+    (list-zip (inputs, outputs))
+    
+end 

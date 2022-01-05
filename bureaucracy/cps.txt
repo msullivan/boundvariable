@@ -1,0 +1,39 @@
+Some notes from 2006.3.3 meeting.
+
+f 0 = 1
+f x = f(x-1) * 2
+
+!! (x,(p,k))
+f0: = ~ 0 [ <_ [ _ [ f1.
+!! (b,(x,(p,k))
+f1: ? ~ <_ [ (>_ [ f2) [ (>_ [ f3).
+!! (x,(p,k))
+f2: >>_ ~ 1 [ <>_.
+!! (x,(p,k))
+f3: - ~ <_ [ 1 [ >_ [ f4.
+!! (x,(p,k))
+f4: f0 ~ <_ [ >_ [ f5.
+!! (r,(p,k))
+f5: * ~ <_ [ 2 >_.
+
+~
++ * ? =
+[ < >
+
+CPS reports
+vector in office space
+binders
+
+* ~ x[y[p[k
+ -> k ~ (x*y) [ p
+
+? ~ b [ (p [ k) [ (p' [ k')
+ -> k ~ p (if b true)
+ -> k' ~ p' (if b false)
+
+| (p [ a) [ (p' [ a') [ pk
+ -> a ~ p [ x,
+    a' ~ p' [ x',
+    @ ~ x [ x' [ pk
+@ ~ x [ p, @ ~ x' [ p', @ ~ x [ x' [ p'' [ k
+ -> k ~ p [ p' [ p''

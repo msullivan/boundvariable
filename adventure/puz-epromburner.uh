@@ -1,0 +1,1174 @@
+(* Uses items 30-41 *)
+(* was correctness-needs-coalesce-5inv 
+  then added some more!
+*)
+ do add_item_ex(FiftyThirdandHarper, Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Noun X-1623-GTO)::(Missing (Noun X-1623-GTO, (Noun T-0010-BQH)::nil))::nil), true, Exemplary, foreign::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Noun X-1623-GTO)::(Missing (Noun X-1623-GTO, (Noun T-0010-BQH)::nil))::nil))::(Noun X-1623-GTO)::(Missing (Noun X-1623-GTO, (Noun T-0010-BQH)::nil))::nil), (Missing (Missing (Noun X-1623-GTO, (Noun T-0010-BQH)::(Noun T-0010-BQH)::nil), (Noun B-4292-LWV)::(Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Noun X-1623-GTO)::nil))::(Missing (Noun T-0010-BQH, (Noun F-9887-QAE)::(Noun X-1623-GTO)::(Noun B-4292-LWV)::(Noun F-9887-QAE)::(Noun X-1623-GTO)::(Noun X-1623-GTO)::nil))::(Missing (Noun J-6458-VDL, (Noun T-0010-BQH)::(Noun F-9887-QAE)::nil))::(Noun F-9887-QAE)::nil))::nil), true, Exemplary, old-gold::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun X-1623-GTO, (Noun T-0010-BQH)::(Noun T-0010-BQH)::nil), (Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Noun X-1623-GTO)::nil))::(Missing (Noun J-6458-VDL, (Noun T-0010-BQH)::(Noun F-9887-QAE)::nil))::(Noun F-9887-QAE)::(Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Noun X-1623-GTO)::(Missing (Noun X-1623-GTO, (Noun T-0010-BQH)::nil))::nil))::(Missing (Noun T-0010-BQH, (Noun F-9887-QAE)::(Noun X-1623-GTO)::(Noun B-4292-LWV)::(Noun F-9887-QAE)::(Noun X-1623-GTO)::(Noun X-1623-GTO)::nil))::(Noun B-4292-LWV)::nil), true, Exemplary, brass::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun EPROMBurner, (Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Noun X-1623-GTO)::(Missing (Noun X-1623-GTO, (Noun T-0010-BQH)::nil))::nil))::nil), (Missing (Missing (Noun X-1623-GTO, (Noun T-0010-BQH)::(Noun T-0010-BQH)::nil), (Noun B-4292-LWV)::(Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Noun X-1623-GTO)::nil))::(Missing (Noun T-0010-BQH, (Noun F-9887-QAE)::(Noun X-1623-GTO)::(Noun B-4292-LWV)::(Noun F-9887-QAE)::(Noun X-1623-GTO)::(Noun X-1623-GTO)::nil))::(Missing (Noun J-6458-VDL, (Noun T-0010-BQH)::(Noun F-9887-QAE)::nil))::(Noun F-9887-QAE)::nil))::nil), true, S "device with the usual non-warranty", nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Noun N-5065-AGS)::(Noun B-4292-LWV)::(Noun R-6678-FJZ)::nil), (Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Noun X-1623-GTO)::(Missing (Noun X-1623-GTO, (Noun T-0010-BQH)::nil))::nil))::nil), true, Exemplary, indigo::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun V-9247-KMI, (Noun X-1623-GTO)::(Missing (Noun T-0010-BQH, (Noun V-9247-KMI)::(Noun Z-4832-PPP)::(Noun N-5065-AGS)::nil))::(Noun F-9887-QAE)::(Noun X-1623-GTO)::(Missing (Missing (Noun D-1403-USW, (Noun F-9887-QAE)::(Noun Z-4832-PPP)::nil), (Noun H-0010-ZVF)::(Noun V-9247-KMI)::(Noun V-9247-KMI)::(Noun T-0010-BQH)::nil))::nil), true, Exemplary, steel-blue::nil)
+(* do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun X-1623-GTO, (Noun T-0010-BQH)::(Noun T-0010-BQH)::nil), (Missing (Noun T-0010-BQH, (Noun F-9887-QAE)::(Noun X-1623-GTO)::(Noun B-4292-LWV)::(Noun F-9887-QAE)::(Noun X-1623-GTO)::(Noun X-1623-GTO)::nil))::(Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Noun X-1623-GTO)::nil))::(Missing (Missing (Noun X-1623-GTO, (Noun T-0010-BQH)::(Noun T-0010-BQH)::nil), (Noun B-4292-LWV)::(Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Noun X-1623-GTO)::nil))::(Missing (Noun T-0010-BQH, (Noun F-9887-QAE)::(Noun X-1623-GTO)::(Noun B-4292-LWV)::(Noun F-9887-QAE)::(Noun X-1623-GTO)::(Noun X-1623-GTO)::nil))::(Missing (Noun J-6458-VDL, (Noun T-0010-BQH)::(Noun F-9887-QAE)::nil))::(Noun F-9887-QAE)::nil))::(Missing (Noun J-6458-VDL, (Noun T-0010-BQH)::(Noun F-9887-QAE)::nil))::(Noun B-4292-LWV)::(Noun F-9887-QAE)::nil), true, Exemplary, ivory::nil) *)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun V-9247-KMI, (Noun X-1623-GTO)::(Missing (Noun T-0010-BQH, (Noun V-9247-KMI)::(Noun Z-4832-PPP)::(Noun N-5065-AGS)::nil))::(Noun F-9887-QAE)::(Noun X-1623-GTO)::(Missing (Missing (Noun D-1403-USW, (Noun F-9887-QAE)::(Noun Z-4832-PPP)::nil), (Noun H-0010-ZVF)::(Noun V-9247-KMI)::(Noun V-9247-KMI)::(Noun T-0010-BQH)::nil))::nil), true, Exemplary, miniature::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Noun X-1623-GTO)::(Missing (Noun X-1623-GTO, (Noun T-0010-BQH)::nil))::nil), (Missing (Noun V-9247-KMI, (Noun X-1623-GTO)::(Missing (Noun T-0010-BQH, (Noun V-9247-KMI)::(Noun Z-4832-PPP)::(Noun N-5065-AGS)::nil))::(Noun F-9887-QAE)::(Noun X-1623-GTO)::(Missing (Missing (Noun D-1403-USW, (Noun F-9887-QAE)::(Noun Z-4832-PPP)::nil), (Noun H-0010-ZVF)::(Noun V-9247-KMI)::(Noun V-9247-KMI)::(Noun T-0010-BQH)::nil))::nil))::nil), true, Exemplary, gray-tea-green::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Noun X-1623-GTO)::(Missing (Noun X-1623-GTO, (Noun T-0010-BQH)::nil))::nil), true, Exemplary, prussian-blue::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun X-1623-GTO, (Noun T-0010-BQH)::(Noun T-0010-BQH)::nil), (Missing (Noun T-0010-BQH, (Noun F-9887-QAE)::(Noun X-1623-GTO)::(Noun B-4292-LWV)::(Noun F-9887-QAE)::(Noun X-1623-GTO)::(Noun X-1623-GTO)::nil))::(Noun F-9887-QAE)::(Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Noun X-1623-GTO)::nil))::(Noun B-4292-LWV)::(Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Noun X-1623-GTO)::(Missing (Noun X-1623-GTO, (Noun T-0010-BQH)::nil))::nil))::(Missing (Noun J-6458-VDL, (Noun T-0010-BQH)::(Noun F-9887-QAE)::nil))::nil), true, Exemplary, snow::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Noun X-1623-GTO)::(Missing (Noun X-1623-GTO, (Noun T-0010-BQH)::nil))::nil), true, Exemplary, imaginary::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun V-9247-KMI, (Noun X-1623-GTO)::(Missing (Noun T-0010-BQH, (Noun V-9247-KMI)::(Noun Z-4832-PPP)::(Noun N-5065-AGS)::nil))::(Noun F-9887-QAE)::(Noun X-1623-GTO)::(Missing (Missing (Noun D-1403-USW, (Noun F-9887-QAE)::(Noun Z-4832-PPP)::nil), (Noun H-0010-ZVF)::(Noun V-9247-KMI)::(Noun V-9247-KMI)::(Noun T-0010-BQH)::nil))::nil), true, Exemplary, foreign::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Noun X-1623-GTO)::(Missing (Noun X-1623-GTO, (Noun T-0010-BQH)::nil))::nil), true, Exemplary, raw-umber::nil)
+
+(* 1 *)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Missing (Missing (Missing (Noun X-1623-GTO, (Noun T-0010-BQH)::(Noun T-0010-BQH)::nil), (Missing (Missing (Noun X-1623-GTO, (Noun T-0010-BQH)::(Noun T-0010-BQH)::nil), (Noun B-4292-LWV)::(Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Noun X-1623-GTO)::nil))::(Missing (Noun T-0010-BQH, (Noun F-9887-QAE)::(Noun X-1623-GTO)::(Noun B-4292-LWV)::(Noun F-9887-QAE)::(Noun X-1623-GTO)::(Noun X-1623-GTO)::nil))::(Missing (Noun J-6458-VDL, (Noun T-0010-BQH)::(Noun F-9887-QAE)::nil))::(Noun F-9887-QAE)::nil))::(Missing (Noun X-1623-GTO, (Noun B-4292-LWV)::(Noun F-9887-QAE)::(Noun B-4292-LWV)::nil))::(Missing (Noun T-0010-BQH, (Noun X-1623-GTO)::(Noun X-1623-GTO)::nil))::(Missing (Noun T-0010-BQH, (Noun F-9887-QAE)::(Noun X-1623-GTO)::(Noun B-4292-LWV)::(Noun F-9887-QAE)::(Noun X-1623-GTO)::(Noun X-1623-GTO)::nil))::(Noun B-4292-LWV)::(Missing (Noun J-6458-VDL, (Noun T-0010-BQH)::(Noun F-9887-QAE)::nil))::(Noun F-9887-QAE)::nil), (Missing (Noun J-6458-VDL, (Noun N-5065-AGS)::(Noun R-6678-FJZ)::(Noun V-9247-KMI)::nil))::nil), (Missing (Noun X-1623-GTO, (Noun B-4292-LWV)::(Noun F-9887-QAE)::(Noun B-4292-LWV)::nil))::nil), (Missing (Noun X-1623-GTO, (Noun B-4292-LWV)::(Noun F-9887-QAE)::(Noun B-4292-LWV)::nil))::nil), true, Exemplary, ivory::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun X-1623-GTO, (Noun F-9887-QAE)::(Missing (Noun Z-4832-PPP, (Noun D-1403-USW)::(Missing (Noun H-0010-ZVF, (Noun L-1623-EYM)::(Noun P-4292-JCT)::nil))::(Noun T-9887-OFC)::nil))::(Noun B-4292-LWV)::(Noun B-4292-LWV)::nil), true, Exemplary, gray80::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun Z-4832-PPP, (Noun D-1403-USW)::(Missing (Noun H-0010-ZVF, (Noun L-1623-EYM)::(Noun P-4292-JCT)::nil))::(Noun T-9887-OFC)::nil), (Missing (Noun J-6458-VDL, (Noun N-5065-AGS)::(Noun R-6678-FJZ)::(Noun V-9247-KMI)::nil))::nil), true, Exemplary, coral::nil)
+do add_item_ex(FiftyThirdandHarper, Noun X-6458-TIJ, true, Exemplary, wisteria::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun Z-4832-PPP, (Noun D-1403-USW)::(Missing (Noun H-0010-ZVF, (Noun L-1623-EYM)::(Noun P-4292-JCT)::nil))::(Noun T-9887-OFC)::nil), true, Exemplary, mustard::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun J-6458-VDL, (Noun N-5065-AGS)::(Noun X-6458-TIJ)::(Missing (Noun F-9887-QAE, (Missing (Noun B-5065-YLQ, (Noun H-0010-ZVF)::(Noun F-6678-DOX)::nil))::(Noun J-9247-IRG)::(Noun N-4832-NUN)::nil))::(Noun R-6678-FJZ)::(Noun V-9247-KMI)::(Missing (Noun Z-4832-PPP, (Noun D-1403-USW)::(Missing (Noun H-0010-ZVF, (Noun L-1623-EYM)::(Noun P-4292-JCT)::nil))::(Noun T-9887-OFC)::nil))::nil), true, Exemplary, heliotrope::nil)
+do add_item_ex(FiftyThirdandHarper, Noun R-1403-SXU, true, Exemplary, sapphire::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun X-1623-GTO, (Noun V-0010-XBD)::(Noun B-4292-LWV)::(Noun F-9887-QAE)::(Noun B-4292-LWV)::nil), true, Exemplary, pastel-pink::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun Z-1623-CEK, (Noun D-4292-HHR)::(Noun H-9887-MKY)::(Noun L-6458-RNH)::nil), (Noun P-5065-WQO)::(Noun T-6678-BTV)::nil), true, Exemplary, sturdy::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun F-9887-QAE, (Missing (Noun B-5065-YLQ, (Noun H-0010-ZVF)::(Noun F-6678-DOX)::nil))::(Noun J-9247-IRG)::(Noun N-4832-NUN)::nil), (Noun R-1403-SXU)::nil), true, Exemplary, persian-blue::nil)
+(* do add_item_ex(FiftyThirdandHarper, Noun V-0010-XBD, true, Exemplary, pale-goldenrod::nil) *)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun X-9247-GWE, (Noun B-4832-LAL)::(Noun F-1403-QDS)::(Noun J-0010-VGZ)::nil), (Missing (Noun X-1623-GTO, (Noun B-4292-LWV)::(Noun F-9887-QAE)::(Noun B-4292-LWV)::nil))::nil), true, Exemplary, wisteria::nil)
+
+(* do add_item_ex(FiftyThirdandHarper, Missing (Noun X-1623-GTO, (Noun B-4292-LWV)::(Noun F-9887-QAE)::(Noun B-4292-LWV)::nil), true, Exemplary, old::nil) *)
+
+do add_item_ex(FiftyThirdandHarper, Missing (Noun J-6458-VDL, (Noun N-5065-AGS)::(Noun R-6678-FJZ)::(Noun V-9247-KMI)::nil), true, Exemplary, sturdy::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun J-6458-VDL, (Noun N-5065-AGS)::(Noun R-6678-FJZ)::(Noun V-9247-KMI)::nil), true, Exemplary, camouflage-green::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun V-9887-KPW, (Noun Z-6458-PSF)::(Noun H-0010-ZVF)::nil), (Noun B-5065-YLQ)::(Noun H-6678-ZYT)::(Noun R-1403-SXU)::(Noun D-5065-UVM)::nil), true, Exemplary, sturdy::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun R-4292-FMP, (Missing (Missing (Noun V-9887-KPW, (Noun Z-6458-PSF)::(Noun H-0010-ZVF)::nil), (Noun B-5065-YLQ)::(Noun D-5065-UVM)::(Noun H-6678-ZYT)::nil))::nil), (Missing (Noun F-9887-QAE, (Missing (Noun B-5065-YLQ, (Noun H-0010-ZVF)::(Noun F-6678-DOX)::nil))::(Noun J-9247-IRG)::(Noun N-4832-NUN)::nil))::nil), true, Exemplary, gray90::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun Z-1623-CEK, (Noun D-4292-HHR)::(Noun H-9887-MKY)::(Noun L-6458-RNH)::nil), (Noun P-5065-WQO)::(Noun T-6678-BTV)::nil), true, Exemplary, sandy-brown::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun F-9887-QAE, (Noun N-4832-NUN)::(Noun J-9247-IRG)::(Missing (Noun Z-4832-PPP, (Noun D-1403-USW)::(Missing (Noun H-0010-ZVF, (Noun L-1623-EYM)::(Noun P-4292-JCT)::nil))::(Noun T-9887-OFC)::nil))::(Missing (Noun B-5065-YLQ, (Noun H-0010-ZVF)::(Noun F-6678-DOX)::nil))::nil), true, Exemplary, gray10::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun Z-4832-PPP, (Noun D-1403-USW)::(Missing (Noun H-0010-ZVF, (Noun L-1623-EYM)::(Noun P-4292-JCT)::nil))::(Noun T-9887-OFC)::nil), true, Exemplary, sea-green::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Missing (Noun X-1623-GTO, (Noun B-4292-LWV)::(Noun F-9887-QAE)::(Noun B-4292-LWV)::nil), (Noun R-4292-FMP)::(Noun N-1623-AJI)::nil), (Missing (Missing (Noun Z-1623-CEK, (Noun D-4292-HHR)::(Noun H-9887-MKY)::(Noun L-6458-RNH)::nil), (Noun P-5065-WQO)::(Noun T-6678-BTV)::nil))::nil), true, Exemplary, sapphire::nil)
+do add_item_ex(FiftyThirdandHarper, Noun R-1403-SXU, true, Exemplary, imitation::nil)
+do add_item_ex(FiftyThirdandHarper, Noun N-1623-AJI, true, Exemplary, lawn-green::nil)
+
+(* 2 *)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun X-1623-GTO, (Missing (Missing (Noun B-4292-LWV, (Noun F-9887-QAE)::nil), (Noun J-6458-VDL)::(Noun N-5065-AGS)::(Noun R-6678-FJZ)::nil))::nil), true, Exemplary, sangria::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun V-0010-XBD, (Noun X-1623-GTO)::nil), (Noun X-1623-GTO)::nil), true, Exemplary, pale-goldenrod::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun V-9247-KMI, (Noun Z-4832-PPP)::(Noun D-1403-USW)::nil), (Noun H-0010-ZVF)::(Missing (Noun L-1623-EYM, (Noun P-4292-JCT)::nil))::nil), true, Exemplary, spring-green::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun B-4292-LWV, (Noun F-9887-QAE)::nil), (Noun J-6458-VDL)::(Noun R-6678-FJZ)::(Missing (Missing (Noun B-4292-LWV, (Noun F-9887-QAE)::nil), (Noun J-6458-VDL)::(Noun N-5065-AGS)::(Noun R-6678-FJZ)::nil))::(Noun N-5065-AGS)::nil), true, Exemplary, black::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun F-9887-QAE, (Missing (Noun T-9887-OFC, (Noun X-6458-TIJ)::(Noun B-5065-YLQ)::(Noun F-6678-DOX)::nil))::nil), true, Exemplary, white::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Missing (Noun B-4292-LWV, (Noun F-9887-QAE)::nil), (Noun J-6458-VDL)::(Noun N-5065-AGS)::(Noun R-6678-FJZ)::nil), (Missing (Noun J-9247-IRG, (Noun N-4832-NUN)::(Noun R-1403-SXU)::(Noun F-6678-DOX)::nil))::(Noun F-9887-QAE)::nil), true, Exemplary, honeydew::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun T-9887-OFC, (Noun X-6458-TIJ)::(Noun B-5065-YLQ)::(Noun F-6678-DOX)::nil), (Missing (Noun J-9247-IRG, (Noun N-4832-NUN)::(Noun R-1403-SXU)::(Noun F-6678-DOX)::nil))::nil), true, Exemplary, lemon::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun J-9247-IRG, (Noun N-4832-NUN)::(Noun R-1403-SXU)::(Noun F-6678-DOX)::nil), (Noun F-9887-QAE)::nil), true, Exemplary, reverse-chirality::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun J-9247-IRG, (Noun N-4832-NUN)::(Noun R-1403-SXU)::(Noun F-6678-DOX)::nil), true, Exemplary, amethyst::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun X-1623-GTO, (Missing (Noun J-9247-IRG, (Noun N-4832-NUN)::(Noun R-1403-SXU)::(Noun F-6678-DOX)::nil))::nil), (Missing (Noun V-0010-XBD, (Noun Z-1623-CEK)::nil))::nil), true, Exemplary, low-carb::nil)
+do add_item_ex(FiftyThirdandHarper, Noun F-9887-QAE, true, Exemplary, lemon::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Missing (Noun J-9247-IRG, (Noun N-4832-NUN)::(Noun R-1403-SXU)::(Noun F-6678-DOX)::nil), (Missing (Noun D-4292-HHR, (Noun L-1623-EYM)::(Missing (Noun V-9247-KMI, (Noun H-9887-MKY)::nil))::nil))::nil), (Missing (Noun D-4292-HHR, (Noun L-1623-EYM)::(Missing (Noun V-9247-KMI, (Noun H-9887-MKY)::nil))::nil))::nil), true, Exemplary, cinnamon::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun D-4292-HHR, (Noun L-1623-EYM)::(Missing (Noun V-9247-KMI, (Noun H-9887-MKY)::nil))::nil), (Missing (Missing (Noun L-6458-RNH, (Noun P-5065-WQO)::(Noun J-9247-IRG)::(Noun T-6678-BTV)::nil), (Missing (Noun X-9247-GWE, (Noun B-4832-LAL)::(Noun F-1403-QDS)::(Noun D-1403-USW)::nil))::(Noun J-0010-VGZ)::(Missing (Noun N-1623-AJI, (Noun R-4292-FMP)::(Noun V-9887-KPW)::(Noun Z-6458-PSF)::nil))::nil))::nil), true, Exemplary, flax::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun L-6458-RNH, (Noun P-5065-WQO)::(Noun J-9247-IRG)::(Noun T-6678-BTV)::nil), (Missing (Noun X-9247-GWE, (Noun B-4832-LAL)::(Noun F-1403-QDS)::(Noun D-1403-USW)::nil))::(Noun J-0010-VGZ)::(Missing (Noun N-1623-AJI, (Noun R-4292-FMP)::(Noun V-9887-KPW)::(Noun Z-6458-PSF)::nil))::nil), true, Exemplary, discounted::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun D-4292-HHR, (Noun L-1623-EYM)::(Missing (Noun V-9247-KMI, (Noun H-9887-MKY)::nil))::nil), (Missing (Noun D-4292-HHR, (Noun L-1623-EYM)::(Missing (Noun V-9247-KMI, (Noun H-9887-MKY)::nil))::nil))::(Missing (Noun J-9247-IRG, (Noun N-4832-NUN)::(Noun R-1403-SXU)::(Noun F-6678-DOX)::nil))::nil), true, Exemplary, pink::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun J-9247-IRG, (Noun N-4832-NUN)::(Noun R-1403-SXU)::(Noun F-6678-DOX)::nil), (Missing (Noun D-5065-UVM, (Noun H-6678-ZYT)::(Noun L-9247-ECC)::(Noun Z-4832-PPP)::nil))::nil), true, Exemplary, ultramarine::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun V-9247-KMI, (Noun Z-4832-PPP)::(Noun D-1403-USW)::nil), (Noun H-0010-ZVF)::(Missing (Noun L-1623-EYM, (Noun P-4292-JCT)::nil))::nil), true, Exemplary, pear::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun D-5065-UVM, (Noun H-6678-ZYT)::(Missing (Noun P-4832-JFJ, (Noun T-1403-OIQ)::nil))::(Noun L-9247-ECC)::(Noun Z-4832-PPP)::nil), true, Exemplary, low-carb::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Missing (Noun D-4292-HHR, (Noun L-1623-EYM)::(Missing (Noun V-9247-KMI, (Noun H-9887-MKY)::nil))::nil), (Missing (Noun X-0010-TLX, (Noun B-1623-YOG)::(Missing (Noun X-6458-TIJ, (Noun F-4292-DRN)::(Noun J-9887-IUU)::nil))::(Noun X-6458-TIJ)::nil))::nil), true, Exemplary, denim::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun X-0010-TLX, (Noun B-1623-YOG)::(Missing (Noun X-6458-TIJ, (Noun F-4292-DRN)::(Noun J-9887-IUU)::nil))::(Noun X-6458-TIJ)::nil), true, Exemplary, gamboge::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun P-4832-JFJ, (Noun T-1403-OIQ)::nil), true, Exemplary, blue-violet::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun V-0010-XBD, (Noun Z-1623-CEK)::nil), true, Exemplary, corn::nil)
+do add_item_ex(FiftyThirdandHarper, Missing (Noun X-1623-GTO, (Noun B-4292-LWV)::(Noun F-9887-QAE)::(Noun B-4292-LWV)::nil), true, Exemplary, old::nil)
+
+
+(*
+  val missing_percent_chance = 60
+  val max_missing = 3
+  val lambda_percent_chance = 70
+  val duplicate_percent_chance = 20
+  val reuse_prop = 50
+  val break_mult = 5
+  val drop_mult = 1
+  val phoenixize_mult = 1
+
+val goal = Missing (Missing (Noun "Part(31)", (Noun "Part(30)")::(Noun "Part(30)")::nil), (Missing (Noun "Part(30)", (Noun "Part(33)")::(Noun "Part(31)")::(Noun "Part(32)")::(Noun "Part(33)")::(Noun "Part(31)")::(Noun "Part(31)")::nil))::(Missing (Noun "Part(30)", (Noun "Part(31)")::(Noun "Part(31)")::nil))::(Missing (Missing (Noun "Part(31)", (Noun "Part(30)")::(Noun "Part(30)")::nil), (Noun "Part(32)")::(Missing (Noun "Part(30)", (Noun "Part(31)")::(Noun "Part(31)")::nil))::(Missing (Noun "Part(30)", (Noun "Part(33)")::(Noun "Part(31)")::(Noun "Part(32)")::(Noun "Part(33)")::(Noun "Part(31)")::(Noun "Part(31)")::nil))::(Missing (Noun "Part(34)", (Noun "Part(30)")::(Noun "Part(33)")::nil))::(Noun "Part(33)")::nil))::(Missing (Noun "Part(34)", (Noun "Part(30)")::(Noun "Part(33)")::nil))::(Noun "Part(32)")::(Noun "Part(33)")::nil);
+
+val (pf, (goal, pile)) = Generator.generate 30 (ref (0wx3AD8B33, 0wx39D75F)) 40 5 (nil, (nil, (goal, "ivory"::nil)::nil, goal));
+
+val goal =
+  Missing
+    (Missing (Noun (Part 31),[Noun (Part 30),Noun (Part 30)]),
+     [Missing
+        (Noun (Part 30),
+         [Noun (Part 33),Noun (Part 31),Noun (Part 32),Noun (Part 33),
+          Noun (Part 31),Noun (Part 31)]),
+      Missing (Noun (Part 30),[Noun (Part 31),Noun (Part 31)]),
+      Missing
+        (Missing (Noun (Part 31),[Noun (Part 30),Noun (Part 30)]),
+         [Noun (Part 32),
+          Missing (Noun (Part 30),[Noun (Part 31),Noun (Part 31)]),
+          Missing
+            (Noun (Part 30),
+             [Noun (Part 33),Noun (Part 31),Noun (Part 32),Noun (Part 33),
+              Noun (Part 31),Noun (Part 31)]),
+          Missing (Noun (Part 34),[Noun (Part 30),Noun (Part 33)]),
+          Noun (Part 33)]),
+      Missing (Noun (Part 34),[Noun (Part 30),Noun (Part 33)]),
+      Noun (Part 32),Noun (Part 33)]) : prop
+val pile =
+  [(Noun (Part 61),["lawn-green"]),(Noun (Part 49),["imitation"]),
+   (Missing
+      (Missing
+         (Missing
+            (Noun (Part 31),
+             [Noun (Part 32),Noun (Part 33),Noun (Part 32)]),
+          [Noun (Part 62),Noun (Part 61)]),
+       [Missing
+          (Missing
+             (Noun (Part 51),
+              [Noun (Part 52),Noun (Part 53),Noun (Part 54)]),
+           [Noun (Part 55),Noun (Part 56)])]),["sapphire"]),
+   (Missing
+      (Noun (Part 38),
+       [Noun (Part 39),
+        Missing (Noun (Part 40),[Noun (Part 41),Noun (Part 42)]),
+        Noun (Part 43)]),["sea-green"]),
+   (Missing
+      (Noun (Part 33),
+       [Noun (Part 48),Noun (Part 47),
+        Missing
+          (Noun (Part 38),
+           [Noun (Part 39),
+            Missing (Noun (Part 40),[Noun (Part 41),Noun (Part 42)]),
+            Noun (Part 43)]),
+        Missing (Noun (Part 45),[Noun (Part 40),Noun (Part 46)])]),
+    ["gray10"]),
+   (Missing
+      (Missing
+         (Noun (Part 51),[Noun (Part 52),Noun (Part 53),Noun (Part 54)]),
+       [Noun (Part 55),Noun (Part 56)]),["sandy-brown"]),
+   (Missing
+      (Missing
+         (Noun (Part 62),
+          [Missing
+             (Missing (Noun (Part 63),[Noun (Part 64),Noun (Part 40)]),
+              [Noun (Part 45),Noun (Part 65),Noun (Part 66)])]),
+       [Missing
+          (Noun (Part 33),
+           [Missing (Noun (Part 45),[Noun (Part 40),Noun (Part 46)]),
+            Noun (Part 47),Noun (Part 48)])]),["gray90"]),
+   (Missing
+      (Missing (Noun (Part 63),[Noun (Part 64),Noun (Part 40)]),
+       [Noun (Part 45),Noun (Part 66),Noun (Part 49),Noun (Part 65)]),
+    ["sturdy"]),
+   (Missing
+      (Noun (Part 34),[Noun (Part 35),Noun (Part 36),Noun (Part 37)]),
+    ["camouflage-green"]),
+   (Missing
+      (Noun (Part 34),[Noun (Part 35),Noun (Part 36),Noun (Part 37)]),
+    ["sturdy"]),
+   (* (Missing
+      (Noun (Part 31),[Noun (Part 32),Noun (Part 33),Noun (Part 32)]),
+    ["old"]), *)
+   (Missing
+      (Missing
+         (Noun (Part 57),[Noun (Part 58),Noun (Part 59),Noun (Part 60)]),
+       [Missing
+          (Noun (Part 31),[Noun (Part 32),Noun (Part 33),Noun (Part 32)])]),
+    ["wisteria"]), (* (Noun (Part 50),["pale-goldenrod"]), *)
+   (Missing
+      (Missing
+         (Noun (Part 33),
+          [Missing (Noun (Part 45),[Noun (Part 40),Noun (Part 46)]),
+           Noun (Part 47),Noun (Part 48)]),[Noun (Part 49)]),
+    ["persian-blue"]),
+   (Missing
+      (Missing
+         (Noun (Part 51),[Noun (Part 52),Noun (Part 53),Noun (Part 54)]),
+       [Noun (Part 55),Noun (Part 56)]),["sturdy"]),
+   (Missing
+      (Noun (Part 31),
+       [Noun (Part 50),Noun (Part 32),Noun (Part 33),Noun (Part 32)]),
+    ["pastel-pink"]),(Noun (Part 49),["sapphire"]),
+   (Missing
+      (Noun (Part 34),
+       [Noun (Part 35),Noun (Part 44),
+        Missing
+          (Noun (Part 33),
+           [Missing (Noun (Part 45),[Noun (Part 40),Noun (Part 46)]),
+            Noun (Part 47),Noun (Part 48)]),Noun (Part 36),Noun (Part 37),
+        Missing
+          (Noun (Part 38),
+           [Noun (Part 39),
+            Missing (Noun (Part 40),[Noun (Part 41),Noun (Part 42)]),
+            Noun (Part 43)])]),["heliotrope"]),
+   (Missing
+      (Noun (Part 38),
+       [Noun (Part 39),
+        Missing (Noun (Part 40),[Noun (Part 41),Noun (Part 42)]),
+        Noun (Part 43)]),["mustard"]),(Noun (Part 44),["wisteria"]),
+   (Missing
+      (Missing
+         (Noun (Part 38),
+          [Noun (Part 39),
+           Missing (Noun (Part 40),[Noun (Part 41),Noun (Part 42)]),
+           Noun (Part 43)]),
+       [Missing
+          (Noun (Part 34),[Noun (Part 35),Noun (Part 36),Noun (Part 37)])]),
+    ["coral"]),
+   (Missing
+      (Noun (Part 31),
+       [Noun (Part 33),
+        Missing
+          (Noun (Part 38),
+           [Noun (Part 39),
+            Missing (Noun (Part 40),[Noun (Part 41),Noun (Part 42)]),
+            Noun (Part 43)]),Noun (Part 32),Noun (Part 32)]),["gray80"]),
+   (Missing
+      (Missing
+         (Missing
+            (Missing
+               (Missing (Noun (Part 31),[Noun (Part 30),Noun (Part 30)]),
+                [Missing
+                   (Missing
+                      (Noun (Part 31),[Noun (Part 30),Noun (Part 30)]),
+                    [Noun (Part 32),
+                     Missing
+                       (Noun (Part 30),[Noun (Part 31),Noun (Part 31)]),
+                     Missing
+                       (Noun (Part 30),
+                        [Noun (Part 33),Noun (Part 31),Noun (Part 32),
+                         Noun (Part 33),Noun (Part 31),Noun (Part 31)]),
+                     Missing
+                       (Noun (Part 34),[Noun (Part 30),Noun (Part 33)]),
+                     Noun (Part 33)]),
+                 Missing
+                   (Noun (Part 31),
+                    [Noun (Part 32),Noun (Part 33),Noun (Part 32)]),
+                 Missing (Noun (Part 30),[Noun (Part 31),Noun (Part 31)]),
+                 Missing
+                   (Noun (Part 30),
+                    [Noun (Part 33),Noun (Part 31),Noun (Part 32),
+                     Noun (Part 33),Noun (Part 31),Noun (Part 31)]),
+                 Noun (Part 32),
+                 Missing (Noun (Part 34),[Noun (Part 30),Noun (Part 33)]),
+                 Noun (Part 33)]),
+             [Missing
+                (Noun (Part 34),
+                 [Noun (Part 35),Noun (Part 36),Noun (Part 37)])]),
+          [Missing
+             (Noun (Part 31),
+              [Noun (Part 32),Noun (Part 33),Noun (Part 32)])]),
+       [Missing
+          (Noun (Part 31),[Noun (Part 32),Noun (Part 33),Noun (Part 32)])]),
+    ["ivory"])] : (prop * string list) list
+val pf =
+  ([Pickup (Noun (Part 61),["lawn-green"]),
+    Incinerate (Noun (Part 61),["lawn-green"]),
+    Pickup (Noun (Part 49),["imitation"]),
+    Incinerate (Noun (Part 49),["imitation"]),
+    Pickup
+      (Missing
+         (Missing
+            (Missing
+               (Noun (Part 31),
+                [Noun (Part 32),Noun (Part 32),Noun (Part 33)]),
+             [Noun (Part 61),Noun (Part 62)]),
+          [Missing
+             (Missing
+                (Noun (Part 51),
+                 [Noun (Part 52),Noun (Part 53),Noun (Part 54)]),
+              [Noun (Part 55),Noun (Part 56)])]),["sapphire"]),
+    Incinerate
+      (Missing
+         (Missing
+            (Missing
+               (Noun (Part 31),
+                [Noun (Part 32),Noun (Part 32),Noun (Part 33)]),
+             [Noun (Part 61),Noun (Part 62)]),
+          [Missing
+             (Missing
+                (Noun (Part 51),
+                 [Noun (Part 52),Noun (Part 53),Noun (Part 54)]),
+              [Noun (Part 55),Noun (Part 56)])]),["sapphire"]),
+    Pickup
+      (Missing
+         (Noun (Part 38),
+          [Noun (Part 39),Noun (Part 43),
+           Missing (Noun (Part 40),[Noun (Part 41),Noun (Part 42)])]),
+       ["sea-green"]),
+    Incinerate
+      (Missing
+         (Noun (Part 38),
+          [Noun (Part 39),Noun (Part 43),
+           Missing (Noun (Part 40),[Noun (Part 41),Noun (Part 42)])]),
+       ["sea-green"]),
+    Pickup
+      (Missing
+         (Noun (Part 33),
+          [Noun (Part 47),Noun (Part 48),
+           Missing
+             (Noun (Part 38),
+              [Noun (Part 39),Noun (Part 43),
+               Missing (Noun (Part 40),[Noun (Part 41),Noun (Part 42)])]),
+           Missing (Noun (Part 45),[Noun (Part 40),Noun (Part 46)])]),
+       ["gray10"]),
+    Incinerate
+      (Missing
+         (Noun (Part 33),
+          [Noun (Part 47),Noun (Part 48),
+           Missing
+             (Noun (Part 38),
+              [Noun (Part 39),Noun (Part 43),
+               Missing (Noun (Part 40),[Noun (Part 41),Noun (Part 42)])]),
+           Missing (Noun (Part 45),[Noun (Part 40),Noun (Part 46)])]),
+       ["gray10"]),
+    Pickup
+      (Missing
+         (Missing
+            (Noun (Part 51),
+             [Noun (Part 52),Noun (Part 53),Noun (Part 54)]),
+          [Noun (Part 55),Noun (Part 56)]),["sandy-brown"]),
+    Incinerate
+      (Missing
+         (Missing
+            (Noun (Part 51),
+             [Noun (Part 52),Noun (Part 53),Noun (Part 54)]),
+          [Noun (Part 55),Noun (Part 56)]),["sandy-brown"]),
+    Pickup
+      (Missing
+         (Missing
+            (Noun (Part 62),
+             [Missing
+                (Missing (Noun (Part 63),[Noun (Part 40),Noun (Part 64)]),
+                 [Noun (Part 45),Noun (Part 65),Noun (Part 66)])]),
+          [Missing
+             (Noun (Part 33),
+              [Noun (Part 47),Noun (Part 48),
+               Missing (Noun (Part 45),[Noun (Part 40),Noun (Part 46)])])]),
+       ["gray90"]),
+    Incinerate
+      (Missing
+         (Missing
+            (Noun (Part 62),
+             [Missing
+                (Missing (Noun (Part 63),[Noun (Part 40),Noun (Part 64)]),
+                 [Noun (Part 45),Noun (Part 65),Noun (Part 66)])]),
+          [Missing
+             (Noun (Part 33),
+              [Noun (Part 47),Noun (Part 48),
+               Missing (Noun (Part 45),[Noun (Part 40),Noun (Part 46)])])]),
+       ["gray90"]),
+    Pickup
+      (Missing
+         (Missing (Noun (Part 63),[Noun (Part 40),Noun (Part 64)]),
+          [Noun (Part 45),Noun (Part 49),Noun (Part 65),Noun (Part 66)]),
+       ["sturdy"]),
+    Incinerate
+      (Missing
+         (Missing (Noun (Part 63),[Noun (Part 40),Noun (Part 64)]),
+          [Noun (Part 45),Noun (Part 49),Noun (Part 65),Noun (Part 66)]),
+       ["sturdy"]),
+    Pickup
+      (Missing
+         (Noun (Part 34),[Noun (Part 35),Noun (Part 36),Noun (Part 37)]),
+       ["camouflage-green"]),
+    Incinerate
+      (Missing
+         (Noun (Part 34),[Noun (Part 35),Noun (Part 36),Noun (Part 37)]),
+       ["camouflage-green"]),
+    Pickup
+      (Missing
+         (Noun (Part 34),[Noun (Part 35),Noun (Part 36),Noun (Part 37)]),
+       ["sturdy"]),
+    Pickup
+      (Missing
+         (Noun (Part 31),[Noun (Part 32),Noun (Part 32),Noun (Part 33)]),
+       ["old"]),
+    Pickup
+      (Missing
+         (Missing
+            (Noun (Part 57),
+             [Noun (Part 58),Noun (Part 59),Noun (Part 60)]),
+          [Missing
+             (Noun (Part 31),
+              [Noun (Part 32),Noun (Part 32),Noun (Part 33)])]),
+       ["wisteria"]),
+    Incinerate
+      (Missing
+         (Missing
+            (Noun (Part 57),
+             [Noun (Part 58),Noun (Part 59),Noun (Part 60)]),
+          [Missing
+             (Noun (Part 31),
+              [Noun (Part 32),Noun (Part 32),Noun (Part 33)])]),
+       ["wisteria"]),Pickup (Noun (Part 50),["pale-goldenrod"]),
+    Pickup
+      (Missing
+         (Missing
+            (Noun (Part 33),
+             [Noun (Part 47),Noun (Part 48),
+              Missing (Noun (Part 45),[Noun (Part 40),Noun (Part 46)])]),
+          [Noun (Part 49)]),["persian-blue"]),
+    Incinerate
+      (Missing
+         (Missing
+            (Noun (Part 33),
+             [Noun (Part 47),Noun (Part 48),
+              Missing (Noun (Part 45),[Noun (Part 40),Noun (Part 46)])]),
+          [Noun (Part 49)]),["persian-blue"]),
+    Pickup
+      (Missing
+         (Missing
+            (Noun (Part 51),
+             [Noun (Part 52),Noun (Part 53),Noun (Part 54)]),
+          [Noun (Part 55),Noun (Part 56)]),["sturdy"]),
+    Incinerate
+      (Missing
+         (Missing
+            (Noun (Part 51),
+             [Noun (Part 52),Noun (Part 53),Noun (Part 54)]),
+          [Noun (Part 55),Noun (Part 56)]),["sturdy"]),
+    Pickup
+      (Missing
+         (Noun (Part 31),
+          [Noun (Part 32),Noun (Part 32),Noun (Part 33),Noun (Part 50)]),
+       ["pastel-pink"]),
+    Combine
+      ((Missing
+          (Noun (Part 31),
+           [Noun (Part 32),Noun (Part 32),Noun (Part 33),Noun (Part 50)]),
+        ["pastel-pink"]),(Noun (Part 50),["pale-goldenrod"])),
+    Pickup (Noun (Part 49),["sapphire"]),
+    Incinerate (Noun (Part 49),["sapphire"]),
+    Pickup
+      (Missing
+         (Noun (Part 34),
+          [Noun (Part 35),Noun (Part 36),Noun (Part 37),Noun (Part 44),
+           Missing
+             (Noun (Part 38),
+              [Noun (Part 39),Noun (Part 43),
+               Missing (Noun (Part 40),[Noun (Part 41),Noun (Part 42)])]),
+           Missing
+             (Noun (Part 33),
+              [Noun (Part 47),Noun (Part 48),
+               Missing (Noun (Part 45),[Noun (Part 40),Noun (Part 46)])])]),
+       ["heliotrope"]),
+    Incinerate
+      (Missing
+         (Noun (Part 34),
+          [Noun (Part 35),Noun (Part 36),Noun (Part 37),Noun (Part 44),
+           Missing
+             (Noun (Part 38),
+              [Noun (Part 39),Noun (Part 43),
+               Missing (Noun (Part 40),[Noun (Part 41),Noun (Part 42)])]),
+           Missing
+             (Noun (Part 33),
+              [Noun (Part 47),Noun (Part 48),
+               Missing (Noun (Part 45),[Noun (Part 40),Noun (Part 46)])])]),
+       ["heliotrope"]),
+    Pickup
+      (Missing
+         (Noun (Part 38),
+          [Noun (Part 39),Noun (Part 43),
+           Missing (Noun (Part 40),[Noun (Part 41),Noun (Part 42)])]),
+       ["mustard"]),Pickup (Noun (Part 44),["wisteria"]),
+    Incinerate (Noun (Part 44),["wisteria"]),
+    Pickup
+      (Missing
+         (Missing
+            (Noun (Part 38),
+             [Noun (Part 39),Noun (Part 43),
+              Missing (Noun (Part 40),[Noun (Part 41),Noun (Part 42)])]),
+          [Missing
+             (Noun (Part 34),
+              [Noun (Part 35),Noun (Part 36),Noun (Part 37)])]),["coral"]),
+    Incinerate
+      (Missing
+         (Missing
+            (Noun (Part 38),
+             [Noun (Part 39),Noun (Part 43),
+              Missing (Noun (Part 40),[Noun (Part 41),Noun (Part 42)])]),
+          [Missing
+             (Noun (Part 34),
+              [Noun (Part 35),Noun (Part 36),Noun (Part 37)])]),["coral"]),
+    Pickup
+      (Missing
+         (Noun (Part 31),
+          [Noun (Part 32),Noun (Part 32),Noun (Part 33),
+           Missing
+             (Noun (Part 38),
+              [Noun (Part 39),Noun (Part 43),
+               Missing (Noun (Part 40),[Noun (Part 41),Noun (Part 42)])])]),
+       ["gray80"]),
+    Combine
+      ((Missing
+          (Noun (Part 31),
+           [Noun (Part 32),Noun (Part 32),Noun (Part 33),
+            Missing
+              (Noun (Part 38),
+               [Noun (Part 39),Noun (Part 43),
+                Missing (Noun (Part 40),[Noun (Part 41),Noun (Part 42)])])]),
+        ["gray80"]),
+       (Missing
+          (Noun (Part 38),
+           [Noun (Part 39),Noun (Part 43),
+            Missing (Noun (Part 40),[Noun (Part 41),Noun (Part 42)])]),
+        ["mustard"])),
+    Pickup
+      (Missing
+         (Missing
+            (Missing
+               (Missing
+                  (Missing (Noun (Part 31),[Noun (Part 30),Noun (Part 30)]),
+                   [Noun (Part 32),Noun (Part 33),
+                    Missing
+                      (Noun (Part 34),[Noun (Part 30),Noun (Part 33)]),
+                    Missing
+                      (Noun (Part 30),[Noun (Part 31),Noun (Part 31)]),
+                    Missing
+                      (Noun (Part 30),
+                       [Noun (Part 31),Noun (Part 31),Noun (Part 31),
+                        Noun (Part 32),Noun (Part 33),Noun (Part 33)]),
+                    Missing
+                      (Noun (Part 31),
+                       [Noun (Part 32),Noun (Part 32),Noun (Part 33)]),
+                    Missing
+                      (Missing
+                         (Noun (Part 31),[Noun (Part 30),Noun (Part 30)]),
+                       [Noun (Part 32),Noun (Part 33),
+                        Missing
+                          (Noun (Part 34),[Noun (Part 30),Noun (Part 33)]),
+                        Missing
+                          (Noun (Part 30),[Noun (Part 31),Noun (Part 31)]),
+                        Missing
+                          (Noun (Part 30),
+                           [Noun (Part 31),Noun (Part 31),Noun (Part 31),
+                            Noun (Part 32),Noun (Part 33),Noun (Part 33)])])]),
+                [Missing
+                   (Noun (Part 34),
+                    [Noun (Part 35),Noun (Part 36),Noun (Part 37)])]),
+             [Missing
+                (Noun (Part 31),
+                 [Noun (Part 32),Noun (Part 32),Noun (Part 33)])]),
+          [Missing
+             (Noun (Part 31),
+              [Noun (Part 32),Noun (Part 32),Noun (Part 33)])]),["ivory"]),
+    Combine
+      ((Missing
+          (Missing
+             (Missing
+                (Missing
+                   (Missing
+                      (Noun (Part 31),[Noun (Part 30),Noun (Part 30)]),
+                    [Noun (Part 32),Noun (Part 33),
+                     Missing
+                       (Noun (Part 34),[Noun (Part 30),Noun (Part 33)]),
+                     Missing
+                       (Noun (Part 30),[Noun (Part 31),Noun (Part 31)]),
+                     Missing
+                       (Noun (Part 30),
+                        [Noun (Part 31),Noun (Part 31),Noun (Part 31),
+                         Noun (Part 32),Noun (Part 33),Noun (Part 33)]),
+                     Missing
+                       (Noun (Part 31),
+                        [Noun (Part 32),Noun (Part 32),Noun (Part 33)]),
+                     Missing
+                       (Missing
+                          (Noun (Part 31),[Noun (Part 30),Noun (Part 30)]),
+                        [Noun (Part 32),Noun (Part 33),
+                         Missing
+                           (Noun (Part 34),[Noun (Part 30),Noun (Part 33)]),
+                         Missing
+                           (Noun (Part 30),[Noun (Part 31),Noun (Part 31)]),
+                         Missing
+                           (Noun (Part 30),
+                            [Noun (Part 31),Noun (Part 31),Noun (Part 31),
+                             Noun (Part 32),Noun (Part 33),Noun (Part 33)])])]),
+                 [Missing
+                    (Noun (Part 34),
+                     [Noun (Part 35),Noun (Part 36),Noun (Part 37)])]),
+              [Missing
+                 (Noun (Part 31),
+                  [Noun (Part 32),Noun (Part 32),Noun (Part 33)])]),
+           [Missing
+              (Noun (Part 31),
+               [Noun (Part 32),Noun (Part 32),Noun (Part 33)])]),["ivory"]),
+       (Missing
+          (Noun (Part 31),[Noun (Part 32),Noun (Part 32),Noun (Part 33)]),
+        ["gray80"])),
+    Combine
+      ((Missing
+          (Missing
+             (Missing
+                (Missing (Noun (Part 31),[Noun (Part 30),Noun (Part 30)]),
+                 [Noun (Part 32),Noun (Part 33),
+                  Missing (Noun (Part 34),[Noun (Part 30),Noun (Part 33)]),
+                  Missing (Noun (Part 30),[Noun (Part 31),Noun (Part 31)]),
+                  Missing
+                    (Noun (Part 30),
+                     [Noun (Part 31),Noun (Part 31),Noun (Part 31),
+                      Noun (Part 32),Noun (Part 33),Noun (Part 33)]),
+                  Missing
+                    (Noun (Part 31),
+                     [Noun (Part 32),Noun (Part 32),Noun (Part 33)]),
+                  Missing
+                    (Missing
+                       (Noun (Part 31),[Noun (Part 30),Noun (Part 30)]),
+                     [Noun (Part 32),Noun (Part 33),
+                      Missing
+                        (Noun (Part 34),[Noun (Part 30),Noun (Part 33)]),
+                      Missing
+                        (Noun (Part 30),[Noun (Part 31),Noun (Part 31)]),
+                      Missing
+                        (Noun (Part 30),
+                         [Noun (Part 31),Noun (Part 31),Noun (Part 31),
+                          Noun (Part 32),Noun (Part 33),Noun (Part 33)])])]),
+              [Missing
+                 (Noun (Part 34),
+                  [Noun (Part 35),Noun (Part 36),Noun (Part 37)])]),
+           [Missing
+              (Noun (Part 31),
+               [Noun (Part 32),Noun (Part 32),Noun (Part 33)])]),["ivory"]),
+       (Missing
+          (Noun (Part 31),[Noun (Part 32),Noun (Part 32),Noun (Part 33)]),
+        ["pastel-pink"])),
+    Combine
+      ((Missing
+          (Missing
+             (Missing (Noun (Part 31),[Noun (Part 30),Noun (Part 30)]),
+              [Noun (Part 32),Noun (Part 33),
+               Missing (Noun (Part 34),[Noun (Part 30),Noun (Part 33)]),
+               Missing (Noun (Part 30),[Noun (Part 31),Noun (Part 31)]),
+               Missing
+                 (Noun (Part 30),
+                  [Noun (Part 31),Noun (Part 31),Noun (Part 31),
+                   Noun (Part 32),Noun (Part 33),Noun (Part 33)]),
+               Missing
+                 (Noun (Part 31),
+                  [Noun (Part 32),Noun (Part 32),Noun (Part 33)]),
+               Missing
+                 (Missing (Noun (Part 31),[Noun (Part 30),Noun (Part 30)]),
+                  [Noun (Part 32),Noun (Part 33),
+                   Missing (Noun (Part 34),[Noun (Part 30),Noun (Part 33)]),
+                   Missing (Noun (Part 30),[Noun (Part 31),Noun (Part 31)]),
+                   Missing
+                     (Noun (Part 30),
+                      [Noun (Part 31),Noun (Part 31),Noun (Part 31),
+                       Noun (Part 32),Noun (Part 33),Noun (Part 33)])])]),
+           [Missing
+              (Noun (Part 34),
+               [Noun (Part 35),Noun (Part 36),Noun (Part 37)])]),["ivory"]),
+       (Missing
+          (Noun (Part 34),[Noun (Part 35),Noun (Part 36),Noun (Part 37)]),
+        ["sturdy"])),
+    Combine
+      ((Missing
+          (Missing (Noun (Part 31),[Noun (Part 30),Noun (Part 30)]),
+           [Noun (Part 32),Noun (Part 33),
+            Missing (Noun (Part 34),[Noun (Part 30),Noun (Part 33)]),
+            Missing (Noun (Part 30),[Noun (Part 31),Noun (Part 31)]),
+            Missing
+              (Noun (Part 30),
+               [Noun (Part 31),Noun (Part 31),Noun (Part 31),
+                Noun (Part 32),Noun (Part 33),Noun (Part 33)]),
+            Missing
+              (Noun (Part 31),
+               [Noun (Part 32),Noun (Part 32),Noun (Part 33)]),
+            Missing
+              (Missing (Noun (Part 31),[Noun (Part 30),Noun (Part 30)]),
+               [Noun (Part 32),Noun (Part 33),
+                Missing (Noun (Part 34),[Noun (Part 30),Noun (Part 33)]),
+                Missing (Noun (Part 30),[Noun (Part 31),Noun (Part 31)]),
+                Missing
+                  (Noun (Part 30),
+                   [Noun (Part 31),Noun (Part 31),Noun (Part 31),
+                    Noun (Part 32),Noun (Part 33),Noun (Part 33)])])]),
+        ["ivory"]),
+       (Missing
+          (Noun (Part 31),[Noun (Part 32),Noun (Part 32),Noun (Part 33)]),
+        ["old"]))],9565) : (prop * adjective list) step list * int
+
+
+
+
+
+val goal2 = Noun (Part 50) : prop
+val pile2 =
+  [(Missing
+      (Noun (Part 31),[Noun (Part 32),Noun (Part 33),Noun (Part 32)]),
+    ["old"]),(Missing (Noun (Part 50),[Noun (Part 51)]),["corn"]),
+   (Missing (Noun (Part 68),[Noun (Part 69)]),["blue-violet"]),
+   (Missing
+      (Noun (Part 70),
+       [Noun (Part 71),
+        Missing (Noun (Part 44),[Noun (Part 72),Noun (Part 73)]),
+        Noun (Part 44)]),["gamboge"]),
+   (Missing
+      (Missing
+         (Noun (Part 52),
+          [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])]),
+       [Missing
+          (Noun (Part 70),
+           [Noun (Part 71),
+            Missing (Noun (Part 44),[Noun (Part 72),Noun (Part 73)]),
+            Noun (Part 44)])]),["denim"]),
+   (Missing
+      (Noun (Part 65),
+       [Noun (Part 66),Missing (Noun (Part 68),[Noun (Part 69)]),
+        Noun (Part 67),Noun (Part 38)]),["low-carb"]),
+   (Missing
+      (Missing (Noun (Part 37),[Noun (Part 38),Noun (Part 39)]),
+       [Noun (Part 40),Missing (Noun (Part 41),[Noun (Part 42)])]),
+    ["pear"]),
+   (Missing
+      (Missing
+         (Noun (Part 47),[Noun (Part 48),Noun (Part 49),Noun (Part 46)]),
+       [Missing
+          (Noun (Part 65),[Noun (Part 66),Noun (Part 67),Noun (Part 38)])]),
+    ["ultramarine"]),
+   (Missing
+      (Missing
+         (Noun (Part 52),
+          [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])]),
+       [Missing
+          (Noun (Part 52),
+           [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])]),
+        Missing
+          (Noun (Part 47),[Noun (Part 48),Noun (Part 49),Noun (Part 46)])]),
+    ["pink"]),
+   (Missing
+      (Missing
+         (Noun (Part 54),[Noun (Part 55),Noun (Part 47),Noun (Part 56)]),
+       [Missing
+          (Noun (Part 57),[Noun (Part 58),Noun (Part 59),Noun (Part 39)]),
+        Noun (Part 60),
+        Missing
+          (Noun (Part 61),[Noun (Part 62),Noun (Part 63),Noun (Part 64)])]),
+    ["discounted"]),
+   (Missing
+      (Missing
+         (Noun (Part 52),
+          [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])]),
+       [Missing
+          (Missing
+             (Noun (Part 54),
+              [Noun (Part 55),Noun (Part 47),Noun (Part 56)]),
+           [Missing
+              (Noun (Part 57),
+               [Noun (Part 58),Noun (Part 59),Noun (Part 39)]),
+            Noun (Part 60),
+            Missing
+              (Noun (Part 61),
+               [Noun (Part 62),Noun (Part 63),Noun (Part 64)])])]),
+    ["flax"]),
+   (Missing
+      (Missing
+         (Missing
+            (Noun (Part 47),
+             [Noun (Part 48),Noun (Part 49),Noun (Part 46)]),
+          [Missing
+             (Noun (Part 52),
+              [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])])]),
+       [Missing
+          (Noun (Part 52),
+           [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])])]),
+    ["cinnamon"]),(Noun (Part 33),["lemon"]),
+   (Missing
+      (Missing
+         (Noun (Part 31),
+          [Missing
+             (Noun (Part 47),
+              [Noun (Part 48),Noun (Part 49),Noun (Part 46)])]),
+       [Missing (Noun (Part 50),[Noun (Part 51)])]),["low-carb"]),
+   (Missing
+      (Noun (Part 47),[Noun (Part 48),Noun (Part 49),Noun (Part 46)]),
+    ["amethyst"]),
+   (Missing
+      (Missing
+         (Noun (Part 47),[Noun (Part 48),Noun (Part 49),Noun (Part 46)]),
+       [Noun (Part 33)]),["reverse-chirality"]),
+   (Missing
+      (Missing
+         (Noun (Part 43),[Noun (Part 44),Noun (Part 45),Noun (Part 46)]),
+       [Missing
+          (Noun (Part 47),[Noun (Part 48),Noun (Part 49),Noun (Part 46)])]),
+    ["lemon"]),
+   (Missing
+      (Missing
+         (Missing (Noun (Part 32),[Noun (Part 33)]),
+          [Noun (Part 34),Noun (Part 35),Noun (Part 36)]),
+       [Missing
+          (Noun (Part 47),[Noun (Part 48),Noun (Part 49),Noun (Part 46)]),
+        Noun (Part 33)]),["honeydew"]),
+   (Missing
+      (Noun (Part 33),
+       [Missing
+          (Noun (Part 43),[Noun (Part 44),Noun (Part 45),Noun (Part 46)])]),
+    ["white"]),
+   (Missing
+      (Missing (Noun (Part 32),[Noun (Part 33)]),
+       [Noun (Part 34),Noun (Part 36),
+        Missing
+          (Missing (Noun (Part 32),[Noun (Part 33)]),
+           [Noun (Part 34),Noun (Part 35),Noun (Part 36)]),Noun (Part 35)]),
+    ["black"]),
+   (Missing
+      (Missing (Noun (Part 37),[Noun (Part 38),Noun (Part 39)]),
+       [Noun (Part 40),Missing (Noun (Part 41),[Noun (Part 42)])]),
+    ["spring-green"]),
+   (Missing (Missing (Noun (Part 50),[Noun (Part 31)]),[Noun (Part 31)]),
+    ["pale-goldenrod"]),
+   (Missing
+      (Noun (Part 31),
+       [Missing
+          (Missing (Noun (Part 32),[Noun (Part 33)]),
+           [Noun (Part 34),Noun (Part 35),Noun (Part 36)])]),["sangria"])]
+  : (prop * string list) list
+val pf2 =
+  ([Pickup
+      (Missing
+         (Noun (Part 31),[Noun (Part 32),Noun (Part 32),Noun (Part 33)]),
+       ["old"]),
+    Incinerate
+      (Missing
+         (Noun (Part 31),[Noun (Part 32),Noun (Part 32),Noun (Part 33)]),
+       ["old"]),Pickup (Missing (Noun (Part 50),[Noun (Part 51)]),["corn"]),
+    Pickup (Missing (Noun (Part 68),[Noun (Part 69)]),["blue-violet"]),
+    Incinerate (Missing (Noun (Part 68),[Noun (Part 69)]),["blue-violet"]),
+    Pickup
+      (Missing
+         (Noun (Part 70),
+          [Noun (Part 44),Noun (Part 71),
+           Missing (Noun (Part 44),[Noun (Part 72),Noun (Part 73)])]),
+       ["gamboge"]),
+    Pickup
+      (Missing
+         (Missing
+            (Noun (Part 52),
+             [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])]),
+          [Missing
+             (Noun (Part 70),
+              [Noun (Part 44),Noun (Part 71),
+               Missing (Noun (Part 44),[Noun (Part 72),Noun (Part 73)])])]),
+       ["denim"]),
+    Combine
+      ((Missing
+          (Missing
+             (Noun (Part 52),
+              [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])]),
+           [Missing
+              (Noun (Part 70),
+               [Noun (Part 44),Noun (Part 71),
+                Missing (Noun (Part 44),[Noun (Part 72),Noun (Part 73)])])]),
+        ["denim"]),
+       (Missing
+          (Noun (Part 70),
+           [Noun (Part 44),Noun (Part 71),
+            Missing (Noun (Part 44),[Noun (Part 72),Noun (Part 73)])]),
+        ["gamboge"])),
+    Pickup
+      (Missing
+         (Noun (Part 65),
+          [Noun (Part 38),Noun (Part 66),Noun (Part 67),
+           Missing (Noun (Part 68),[Noun (Part 69)])]),["low-carb"]),
+    Incinerate
+      (Missing
+         (Noun (Part 65),
+          [Noun (Part 38),Noun (Part 66),Noun (Part 67),
+           Missing (Noun (Part 68),[Noun (Part 69)])]),["low-carb"]),
+    Pickup
+      (Missing
+         (Missing (Noun (Part 37),[Noun (Part 38),Noun (Part 39)]),
+          [Noun (Part 40),Missing (Noun (Part 41),[Noun (Part 42)])]),
+       ["pear"]),
+    Incinerate
+      (Missing
+         (Missing (Noun (Part 37),[Noun (Part 38),Noun (Part 39)]),
+          [Noun (Part 40),Missing (Noun (Part 41),[Noun (Part 42)])]),
+       ["pear"]),
+    Pickup
+      (Missing
+         (Missing
+            (Noun (Part 47),
+             [Noun (Part 46),Noun (Part 48),Noun (Part 49)]),
+          [Missing
+             (Noun (Part 65),
+              [Noun (Part 38),Noun (Part 66),Noun (Part 67)])]),
+       ["ultramarine"]),
+    Incinerate
+      (Missing
+         (Missing
+            (Noun (Part 47),
+             [Noun (Part 46),Noun (Part 48),Noun (Part 49)]),
+          [Missing
+             (Noun (Part 65),
+              [Noun (Part 38),Noun (Part 66),Noun (Part 67)])]),
+       ["ultramarine"]),
+    Pickup
+      (Missing
+         (Missing
+            (Noun (Part 52),
+             [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])]),
+          [Missing
+             (Noun (Part 52),
+              [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])]),
+           Missing
+             (Noun (Part 47),
+              [Noun (Part 46),Noun (Part 48),Noun (Part 49)])]),["pink"]),
+    Incinerate
+      (Missing
+         (Missing
+            (Noun (Part 52),
+             [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])]),
+          [Missing
+             (Noun (Part 52),
+              [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])]),
+           Missing
+             (Noun (Part 47),
+              [Noun (Part 46),Noun (Part 48),Noun (Part 49)])]),["pink"]),
+    Pickup
+      (Missing
+         (Missing
+            (Noun (Part 54),
+             [Noun (Part 47),Noun (Part 55),Noun (Part 56)]),
+          [Noun (Part 60),
+           Missing
+             (Noun (Part 57),
+              [Noun (Part 39),Noun (Part 58),Noun (Part 59)]),
+           Missing
+             (Noun (Part 61),
+              [Noun (Part 62),Noun (Part 63),Noun (Part 64)])]),
+       ["discounted"]),
+    Pickup
+      (Missing
+         (Missing
+            (Noun (Part 52),
+             [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])]),
+          [Missing
+             (Missing
+                (Noun (Part 54),
+                 [Noun (Part 47),Noun (Part 55),Noun (Part 56)]),
+              [Noun (Part 60),
+               Missing
+                 (Noun (Part 57),
+                  [Noun (Part 39),Noun (Part 58),Noun (Part 59)]),
+               Missing
+                 (Noun (Part 61),
+                  [Noun (Part 62),Noun (Part 63),Noun (Part 64)])])]),
+       ["flax"]),
+    Combine
+      ((Missing
+          (Missing
+             (Noun (Part 52),
+              [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])]),
+           [Missing
+              (Missing
+                 (Noun (Part 54),
+                  [Noun (Part 47),Noun (Part 55),Noun (Part 56)]),
+               [Noun (Part 60),
+                Missing
+                  (Noun (Part 57),
+                   [Noun (Part 39),Noun (Part 58),Noun (Part 59)]),
+                Missing
+                  (Noun (Part 61),
+                   [Noun (Part 62),Noun (Part 63),Noun (Part 64)])])]),
+        ["flax"]),
+       (Missing
+          (Missing
+             (Noun (Part 54),
+              [Noun (Part 47),Noun (Part 55),Noun (Part 56)]),
+           [Noun (Part 60),
+            Missing
+              (Noun (Part 57),
+               [Noun (Part 39),Noun (Part 58),Noun (Part 59)]),
+            Missing
+              (Noun (Part 61),
+               [Noun (Part 62),Noun (Part 63),Noun (Part 64)])]),
+        ["discounted"])),
+    Pickup
+      (Missing
+         (Missing
+            (Missing
+               (Noun (Part 47),
+                [Noun (Part 46),Noun (Part 48),Noun (Part 49)]),
+             [Missing
+                (Noun (Part 52),
+                 [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])])]),
+          [Missing
+             (Noun (Part 52),
+              [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])])]),
+       ["cinnamon"]),
+    Combine
+      ((Missing
+          (Missing
+             (Missing
+                (Noun (Part 47),
+                 [Noun (Part 46),Noun (Part 48),Noun (Part 49)]),
+              [Missing
+                 (Noun (Part 52),
+                  [Noun (Part 41),
+                   Missing (Noun (Part 37),[Noun (Part 53)])])]),
+           [Missing
+              (Noun (Part 52),
+               [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])])]),
+        ["cinnamon"]),
+       (Missing
+          (Noun (Part 52),
+           [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])]),
+        ["flax"])),
+    Combine
+      ((Missing
+          (Missing
+             (Noun (Part 47),
+              [Noun (Part 46),Noun (Part 48),Noun (Part 49)]),
+           [Missing
+              (Noun (Part 52),
+               [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])])]),
+        ["cinnamon"]),
+       (Missing
+          (Noun (Part 52),
+           [Noun (Part 41),Missing (Noun (Part 37),[Noun (Part 53)])]),
+        ["denim"])),Pickup (Noun (Part 33),["lemon"]),
+    Pickup
+      (Missing
+         (Missing
+            (Noun (Part 31),
+             [Missing
+                (Noun (Part 47),
+                 [Noun (Part 46),Noun (Part 48),Noun (Part 49)])]),
+          [Missing (Noun (Part 50),[Noun (Part 51)])]),["low-carb"]),
+    Combine
+      ((Missing
+          (Missing
+             (Noun (Part 31),
+              [Missing
+                 (Noun (Part 47),
+                  [Noun (Part 46),Noun (Part 48),Noun (Part 49)])]),
+           [Missing (Noun (Part 50),[Noun (Part 51)])]),["low-carb"]),
+       (Missing (Noun (Part 50),[Noun (Part 51)]),["corn"])),
+    Combine
+      ((Missing
+          (Noun (Part 31),
+           [Missing
+              (Noun (Part 47),
+               [Noun (Part 46),Noun (Part 48),Noun (Part 49)])]),
+        ["low-carb"]),
+       (Missing
+          (Noun (Part 47),[Noun (Part 46),Noun (Part 48),Noun (Part 49)]),
+        ["cinnamon"])),
+    Pickup
+      (Missing
+         (Noun (Part 47),[Noun (Part 46),Noun (Part 48),Noun (Part 49)]),
+       ["amethyst"]),
+    Pickup
+      (Missing
+         (Missing
+            (Noun (Part 47),
+             [Noun (Part 46),Noun (Part 48),Noun (Part 49)]),
+          [Noun (Part 33)]),["reverse-chirality"]),
+    Incinerate
+      (Missing
+         (Missing
+            (Noun (Part 47),
+             [Noun (Part 46),Noun (Part 48),Noun (Part 49)]),
+          [Noun (Part 33)]),["reverse-chirality"]),
+    Pickup
+      (Missing
+         (Missing
+            (Noun (Part 43),
+             [Noun (Part 44),Noun (Part 45),Noun (Part 46)]),
+          [Missing
+             (Noun (Part 47),
+              [Noun (Part 46),Noun (Part 48),Noun (Part 49)])]),["lemon"]),
+    Incinerate
+      (Missing
+         (Missing
+            (Noun (Part 43),
+             [Noun (Part 44),Noun (Part 45),Noun (Part 46)]),
+          [Missing
+             (Noun (Part 47),
+              [Noun (Part 46),Noun (Part 48),Noun (Part 49)])]),["lemon"]),
+    Pickup
+      (Missing
+         (Missing
+            (Missing (Noun (Part 32),[Noun (Part 33)]),
+             [Noun (Part 34),Noun (Part 35),Noun (Part 36)]),
+          [Noun (Part 33),
+           Missing
+             (Noun (Part 47),
+              [Noun (Part 46),Noun (Part 48),Noun (Part 49)])]),
+       ["honeydew"]),
+    Combine
+      ((Missing
+          (Missing
+             (Missing (Noun (Part 32),[Noun (Part 33)]),
+              [Noun (Part 34),Noun (Part 35),Noun (Part 36)]),
+           [Noun (Part 33),
+            Missing
+              (Noun (Part 47),
+               [Noun (Part 46),Noun (Part 48),Noun (Part 49)])]),
+        ["honeydew"]),
+       (Missing
+          (Noun (Part 47),[Noun (Part 46),Noun (Part 48),Noun (Part 49)]),
+        ["amethyst"])),
+    Combine
+      ((Missing
+          (Missing
+             (Missing (Noun (Part 32),[Noun (Part 33)]),
+              [Noun (Part 34),Noun (Part 35),Noun (Part 36)]),
+           [Noun (Part 33)]),["honeydew"]),(Noun (Part 33),["lemon"])),
+    Pickup
+      (Missing
+         (Noun (Part 33),
+          [Missing
+             (Noun (Part 43),
+              [Noun (Part 44),Noun (Part 45),Noun (Part 46)])]),["white"]),
+    Incinerate
+      (Missing
+         (Noun (Part 33),
+          [Missing
+             (Noun (Part 43),
+              [Noun (Part 44),Noun (Part 45),Noun (Part 46)])]),["white"]),
+    Pickup
+      (Missing
+         (Missing (Noun (Part 32),[Noun (Part 33)]),
+          [Noun (Part 34),Noun (Part 35),Noun (Part 36),
+           Missing
+             (Missing (Noun (Part 32),[Noun (Part 33)]),
+              [Noun (Part 34),Noun (Part 35),Noun (Part 36)])]),["black"]),
+    Incinerate
+      (Missing
+         (Missing (Noun (Part 32),[Noun (Part 33)]),
+          [Noun (Part 34),Noun (Part 35),Noun (Part 36),
+           Missing
+             (Missing (Noun (Part 32),[Noun (Part 33)]),
+              [Noun (Part 34),Noun (Part 35),Noun (Part 36)])]),["black"]),
+    Pickup
+      (Missing
+         (Missing (Noun (Part 37),[Noun (Part 38),Noun (Part 39)]),
+          [Noun (Part 40),Missing (Noun (Part 41),[Noun (Part 42)])]),
+       ["spring-green"]),
+    Incinerate
+      (Missing
+         (Missing (Noun (Part 37),[Noun (Part 38),Noun (Part 39)]),
+          [Noun (Part 40),Missing (Noun (Part 41),[Noun (Part 42)])]),
+       ["spring-green"]),
+    Pickup
+      (Missing (Missing (Noun (Part 50),[Noun (Part 31)]),[Noun (Part 31)]),
+       ["pale-goldenrod"]),
+    Combine
+      ((Missing
+          (Missing (Noun (Part 50),[Noun (Part 31)]),[Noun (Part 31)]),
+        ["pale-goldenrod"]),(Noun (Part 31),["low-carb"])),
+    Pickup
+      (Missing
+         (Noun (Part 31),
+          [Missing
+             (Missing (Noun (Part 32),[Noun (Part 33)]),
+              [Noun (Part 34),Noun (Part 35),Noun (Part 36)])]),
+       ["sangria"]),
+    Combine
+      ((Missing
+          (Noun (Part 31),
+           [Missing
+              (Missing (Noun (Part 32),[Noun (Part 33)]),
+               [Noun (Part 34),Noun (Part 35),Noun (Part 36)])]),
+        ["sangria"]),
+       (Missing
+          (Missing (Noun (Part 32),[Noun (Part 33)]),
+           [Noun (Part 34),Noun (Part 35),Noun (Part 36)]),["honeydew"])),
+    Combine
+      ((Missing (Noun (Part 50),[Noun (Part 31)]),["pale-goldenrod"]),
+       (Noun (Part 31),["sangria"]))],133209)
+  : (prop * adjective list) step list * int
+*)

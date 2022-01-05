@@ -1,0 +1,10 @@
+Running: 
+********
+make run expects both the rules and the tests on stdin
+or run through umix
+
+Structure:
+**********
+ingame	: files used to generate the executaable
+sol	: solutions to the puzzles
+testing : files used to test the code

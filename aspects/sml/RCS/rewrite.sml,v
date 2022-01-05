@@ -1,0 +1,202 @@
+head	1.1;
+access;
+symbols;
+locks
+	drl:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2006.05.24.16.14.34;	author drl;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@
+structure Rewrite = 
+struct
+
+    (* ---------------------------------------------------------------------- *)
+    (* syntax *)
+    
+    structure N :> NAME_ORD = Name
+
+    datatype term = 
+	Var of N.name 
+      | Const of N.name
+      | App of term * term
+	
+    type rule = term * term
+    type state = rule list * term
+    type bindings = (N.name * term) list
+	
+    fun equalTerms (Var n, Var n') = N.equal (n, n')
+      | equalTerms (Const n, Const n') = N.equal (n, n')
+      | equalTerms (App (e1, e2), App (e1', e2')) = 
+	equalTerms (e1, e1') andalso 
+	equalTerms (e2, e2') 
+      | equalTerms _ = false
+
+    fun termToString (Var n) = ":"^ (N.toString n)
+      | termToString (Const n) = (N.toString n)
+      | termToString (App (e1, e2)) = "(" ^ (termToString e1) ^ " " ^ (termToString e2) ^ ")"
+
+    (* ---------------------------------------------------------------------- *)
+    (* operational semantics *)
+
+    (* merge two bindings *)
+    fun merge ([], b) = SOME b
+      | merge (b, []) = SOME b
+      | merge (b1 as (n1, t1)::rest1, b2 as (n2,t2)::rest2) = 
+	if N.equal(n1, n2) 
+	then
+	    if equalTerms (t1, t2) 
+	    then
+		case merge(rest1, rest2) of 
+		    NONE => NONE
+		  | SOME bRest => SOME ((n1, t1) :: bRest)
+	    else
+		NONE
+	else
+	    let val recAndMerge = 
+		(fn (rec1, rec2, firstName, firstTerm) => 
+		 case merge (rec1, rec2) of
+		     NONE => NONE
+		   | SOME bRest => SOME ((firstName, firstTerm) :: bRest))
+	    in
+		if N.lessThan (n1, n2) 
+		then recAndMerge (rest1, b2, n1, t1)
+		else recAndMerge (b1, rest2, n2, t2)
+	    end
+	
+    (* given a pattern and a term
+       if they don't match, NONE
+       if they do, some of bindings to variables *)
+    fun match (Var n, e) = SOME [(n, e)] (* ??? consistent *)
+      | match (Const n, Const n') = 
+	if N.equal (n, n') then SOME [] else NONE
+      | match (App (e1, e2), App(e1', e2')) = 
+	(case (match (e1, e1'), match (e2, e2')) of
+	     (NONE, NONE) => NONE
+	   | (SOME _, NONE) => NONE
+	   | (NONE, SOME _) => NONE
+	   | (SOME b1, SOME b2) => merge (b1, b2))
+      | match _ = NONE
+	
+    (* apply a bindings to a term *)
+    fun subst b e = 
+	let val s = subst b 
+	in
+	    case e of
+		App (e1, e2) => App (s e1, s e2)
+	      | Var n => 
+		    (case (List.find (fn (curName, _) => N.equal (n, curName))) b of
+			 NONE => e 
+		       | SOME (_, bindingVal) => bindingVal)
+	      | _ => e
+	end
+	     
+    fun lift (f : 'a -> 'b option) : ('a * 'b option -> 'b option) =
+	(fn (a, bOpt) =>
+	 case bOpt of 
+	     SOME x => SOME x
+	   | NONE => f a)
+		 
+    fun step (ruleList : rule list, e : term) : term option = 
+	let 
+	    fun stepSingle (rule as (pattern, result), e) = 
+		case match (pattern, e) of
+		    SOME bindings => SOME (subst bindings result)
+		  | NONE => (* go inside e *)
+			(case e of 
+			     App (e1, e2) => 
+				 (* left to right for now, 
+				    always takes rule if it matches anywhere *)
+				 (case stepSingle (rule, e1) of
+				      SOME e1' => SOME (App (e1', e2))
+				    | NONE => 
+					  (case stepSingle (rule, e2) of
+					       SOME e2' => SOME (App (e1, e2'))
+					     | NONE => NONE))
+			   (* if variables or constants don't match, 
+			      there are no subterms to check *)
+			   | _ => NONE)
+	in
+	    (* left or right to get first match?? *)
+	    List.foldl (lift (fn r : rule => stepSingle (r, e))) NONE ruleList
+	end
+
+    fun stepToStuck (rl, e) = 
+	case step (rl, e) of 
+	    NONE => e
+	  | SOME e' => stepToStuck (rl, e')
+    
+    (* ---------------------------------------------------------------------- *)
+    (* tests *)
+
+    local 
+	val plus = Const (N.new "plus")
+	val mult = Const (N.new "mult")
+	val fact = Const (N.new "fact")
+	val z = Const (N.new "z")
+	val s = Const (N.new "s")
+	val v = Var (N.new "v")
+	val v1 = Var (N.new "v1")
+	val v2 = Var (N.new "v2")
+    in
+	val plusRules = 
+	    [(App (App (plus, z), v),
+	      v),
+	     (App (App (plus, App(s, v1)), v2),
+	      App(s, (App (App (plus, v1), v2))))]
+
+	val multRules = 
+	    (plusRules @@
+	     [(App (App (mult, z), v),
+	       z),
+	      (App (App (mult, App(s, v1)), v2),
+	       App (App(plus, v2), (App (App (mult, v1), v2))))])
+	     
+	val factRules = 
+	    (multRules @@ 
+	     [(App (fact, z),
+	       App (s, z)),
+	      (App (fact, App(s, v1)),
+	       App (App(mult, App(s, v1)), (App (fact, v1))))])
+	    
+	fun numeral 0 = z
+	  | numeral n = App (s, numeral (n - 1))
+	
+	fun unnumeral (Const name) = 
+	    let val Const zName = z 
+	    in 
+		if N.equal (name, zName) 
+		then 0
+		else raise Fail "not a numeral"
+	    end
+	  | unnumeral (App (Const shouldBeSName, t2)) =
+	    let val Const sName = s 
+	    in 
+		if N.equal (shouldBeSName, sName) 
+		then 1 + (unnumeral t2)
+		else raise Fail "not a numeral"
+	    end
+	
+ 	val plusTest1 = (plusRules, App (App (plus, (numeral 1)), numeral 2))
+ 	val multTest1 = (multRules, App (App (mult, (numeral 1)), numeral 2))
+	val factTest1 = (factRules, App (fact, (numeral 6)))
+	    
+    end
+
+    
+    
+end@

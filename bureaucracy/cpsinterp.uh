@@ -1,0 +1,126 @@
+val debug = true
+val newl = string-str (chr 10)
+
+fun printVal (VInt n) = print (int-tostring n)
+  | printVal (VStaple (v1, v2)) = (putc ?[;printVal v1; putc ?,; putc ? ; printVal v2; putc ?])
+  | printVal VReturnK = putc ?K
+  | printVal VGarbage = putc ?G
+  | printVal VPackage = putc ?P
+fun printExp (Int n) = putc (chr (ord ?0 + n))
+  | printExp (Staple (e1, e2)) = (putc ?[; printExp e1; printExp e2)
+  | printExp (TearL e) = (putc ?<; printExp e)
+  | printExp (TearR e) = (putc ?>; printExp e)
+  | printExp It = putc ?_
+fun printAddress (Exp e) = printExp e
+  | printAddress (Prim Eq) = putc ?=
+  | printAddress (Prim Plus) = putc ?+
+  | printAddress (Prim Minus) = putc ?-
+  | printAddress (Prim Times) = putc ?*
+  | printAddress (Prim If) = putc ??
+fun printOffice (a,e) = (printAddress a; printExp e)
+
+fun val-tostring (VInt n) = " " ^ int-tostring n
+  | val-tostring (VStaple (v1, v2)) = (string-str ?[ ^ val-tostring v1 ^ val-tostring v2)
+  | val-tostring VReturnK = string-str ?K
+  | val-tostring VGarbage = string-str ?G
+  | val-tostring VPackage = string-str ?P
+fun exp-tostring (Int n) = string-str (chr (ord ?0 + n))
+  | exp-tostring (Staple (e1, e2)) = (string-str ?[ ^ exp-tostring e1 ^ exp-tostring e2)
+  | exp-tostring (TearL e) = (string-str ?< ^ exp-tostring e)
+  | exp-tostring (TearR e) = (string-str ?> ^ exp-tostring e)
+  | exp-tostring It = string-str ?_
+fun address-tostring (Exp e) = exp-tostring e
+  | address-tostring (Prim Eq) = string-str ?=
+  | address-tostring (Prim Plus) = string-str ?+
+  | address-tostring (Prim Minus) = string-str ?-
+  | address-tostring (Prim Times) = string-str ?*
+  | address-tostring (Prim If) = string-str ??
+fun office-tostring (a,e) = (address-tostring a ^ exp-tostring e)
+			
+exception Subscript
+	  
+fun tearl (VStaple (x, y)) = x
+  | tearl _ = fail "destapling a non-stuple"
+fun tearr (VStaple (x, y)) = y
+  | tearr _ = fail "destapling a non-stuple"
+fun getInt (VInt n) = n
+  | getInt _ = fail "expected a number"
+
+fun eval_closed (TearL e) = tearl (eval_closed e)
+  | eval_closed (TearR e) = tearr (eval_closed e)
+  | eval_closed (Staple (e1, e2)) = VStaple(eval_closed e1, eval_closed e2)
+  | eval_closed It = fail "no incoming paperwork here"
+  | eval_closed (Int n) = VInt n
+	       
+fun run os p = let
+    fun nth _ nil = fail "paperwork sent to an unoccupied peripheral office"
+      | nth 0 (h :: tl) = h
+      | nth n (h :: tl) = nth (n - 1) tl
+			  
+    fun eval (e, pw) = let
+	fun go (TearL e) = tearl (go e)
+	  | go (TearR e) = tearr (go e)
+	      | go (Staple (e1, e2)) = VStaple(go e1, go e2)
+	      | go It = pw
+	      | go (Int n) = VInt n
+    in
+	go e
+    end
+	
+    fun binop opr e = 
+	let
+	    val x = getInt(tearl e)
+	    val y = getInt(tearl (tearr e))
+	    val p = tearl (tearr (tearr e))
+	    val k = tearr (tearr (tearr e))
+	in
+	    (k, VStaple(VInt(opr(x, y)), p))
+	end
+	    
+    fun handlePrim (Plus, e) = binop (op +) e
+      | handlePrim (Minus, e) = binop (op -) e
+      | handlePrim (Times, e) = binop (op *) e
+      | handlePrim (Eq, e) = binop (fn (x,y) => if x = y then 1 else 0) e
+      | handlePrim (If, e) =
+	let
+	    val b = tearl e
+	    val p1 = tearl (tearl (tearr e))
+	    val k1 = tearr (tearl (tearr e))
+	    val p2 = tearl (tearr (tearr e))
+	    val k2 = tearr (tearr (tearr e))
+	in
+	    case b of VInt n => if n = 0 then (k2, p2) else (k1, p1)
+		    | _ => fail "expected a number"
+	end
+	    
+    fun go (n, pwork) = 
+	let
+ 	    val (a, e) = nth n os 
+	    val _ = if debug then 
+			let val _ = 
+				print (" MEMORANDUM: peripheral office " ^ int-tostring n ^
+				       " received paperwork " ^ val-tostring pwork ^ newl)
+			in () end
+		    else ()
+	    val (newav, newpwork) = 
+		case a of
+		    Prim p => handlePrim (p, eval (e, pwork)) 
+		  | Exp ae => (eval (ae, pwork), eval (e, pwork)) 
+	in
+	    case newav of
+		VInt 100 => newpwork
+	      | VInt newn => go (newn, newpwork)
+	      | VReturnK => tearl newpwork
+	      | p => fail ("don't know how to interpret paperwork " ^ val-tostring p ^ " as an address")
+	end
+in
+    go (0, p)
+end
+    
+fun std_test os n = run os (VStaple(VInt n, VStaple(VGarbage, VReturnK)))
+(*
+    val _ =  (putc ?O; putc ?k; newl())
+    val os = parseOffices (slurp ())
+    val _ = if debug then app (fn x => (printOffice x; newl ())) os else ()
+    val _ = print (int-tostring( run os 10)) 
+*)

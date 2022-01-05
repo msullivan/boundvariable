@@ -1,0 +1,229 @@
+
+(* ENH: make a stand-alone executable that parses and compiles a file *)
+
+
+val (check-aspects-in-2d : (expr2D -> expr2D) -> string option, 
+     (* NONE indicates success, SOME err is failure with an error
+      * message *)
+
+     aspects-in-2d-cheating : (expr2D -> expr2D),
+     compile-aspects-to-2d-rulelist : (rule list -> expr2D),
+     compile-aspects-to-2d-term : (term -> expr2D)
+     ) = 
+let
+    
+    val require-language = provide-language
+    val require-parsing = provide-parsing
+    val require-arith-testing = provide-arith-testing
+    val require-aspects = provide-aspects
+
+    (* ---------------------------------------------------------------------- *)
+    (* encoding and decoding *)
+
+    (* SUSP: the decode functions are for testing only!  
+       they should never be called on the output of a contestant's solution, 
+       they just die when the output cannot be unparsed as an aspects term *)
+
+
+    (* [[-]] encodes an aspects term in 2D *)
+        
+    (* [[zero]] is Inl(Empty)
+       [[s(n)]] is Inr([[n]]) *)
+    fun int-enc 0 = EInl2D (EUnit2D)
+      | int-enc n = EInr2D (int-enc(n - 1))
+    fun int-dec (EInl2D (EUnit2D)) = 0
+      | int-dec (EInr2D e) = 1  + (int-dec e)
+      | int-dec _ = raise AspectsInternal "2D exp not a number"
+
+    (* 
+       [[App(e1,e2)]] = Inl (Pair ([[e1]], [[e2]]))
+       [[Const s]] = Inr([[s]]) *)
+    fun term-enc (Const s) = EInr2D (int-enc (symbol-toint s))
+      | term-enc (App (e1, e2)) = EInl2D (EPair2D (term-enc e1, term-enc e2))
+    fun term-dec (EInr2D n) = Const (symbol-fromint (int-dec n))
+      | term-dec (EInl2D (EPair2D (e1, e2))) = App (term-dec e1, term-dec e2)
+      | term-dec _ = raise AspectsInternal "2D exp not a term"
+
+    (* [[App(p1,p2)]] = Inl (Pair ([[p1]], [[p2]]))
+       [[Const s]] = Inr(Inl([[s]]))
+       [[Var s]] = Inr(Inr([[s]])) *)
+    fun pattern-enc (PConst s) = EInr2D (EInl2D(int-enc (symbol-toint s)))
+      | pattern-enc (PVar s) = EInr2D (EInr2D(int-enc (symbol-toint s)))
+      | pattern-enc (PApp (e1, e2)) = EInl2D (EPair2D (pattern-enc e1, pattern-enc e2))
+    fun pattern-dec (EInr2D (EInl2D n)) = PConst (symbol-fromint (int-dec n))
+      | pattern-dec (EInr2D (EInr2D n)) = PVar (symbol-fromint (int-dec n))
+      | pattern-dec (EInl2D (EPair2D (e1, e2))) = PApp (pattern-dec e1, pattern-dec e2)
+      | pattern-dec _ = raise AspectsInternal "2D exp not a pattern"
+        
+    (* [[(p1,p2)]] = Pair ([[p1]], [[p2]]) *)
+    (* [[(e1,e2)]] = Pair ([[p1]], [[p2]]) *)
+    fun pair-enc r (p1, p2) = EPair2D (r p1, r p2)
+    val rule-enc = pair-enc pattern-enc
+    fun pair-dec r (EPair2D (p1, p2)) = (r p1, r p2)
+      | pair-dec r _ = raise AspectsInternal "2D exp not a pair"
+    val rule-dec = pair-dec pattern-dec
+
+    (* [[nil]] = Inl Empty
+       [[cons(h,t)]] = Inr (Pair ([[h]], [[t]])) *)
+    fun list-enc h-enc nil = EInl2D EUnit2D
+      | list-enc h-enc (h :: t) = EInr2D (EPair2D (h-enc h, list-enc h-enc t))
+    fun list-dec h-dec (EInl2D EUnit2D) = nil
+      | list-dec h-dec (EInr2D (EPair2D (h, t))) = (h-dec h) :: (list-dec h-dec t)
+      | list-dec h-dec _ = raise AspectsInternal "2D exp not a list"
+
+    val rulelist-enc = list-enc rule-enc
+    val rulelist-dec = list-dec rule-dec
+
+    fun option-enc s-enc NONE = EInl2D EUnit2D
+      | option-enc s-enc (SOME x) = EInr2D (s-enc x)
+    fun option-dec s-dec (EInl2D EUnit2D) = NONE
+      | option-dec s-dec (EInr2D x) = (SOME (s-dec x))
+      | option-dec _ _ = raise AspectsInternal "2D exp not an option"
+    
+    (* ---------------------------------------------------------------------- *)
+    (* tests *)
+
+    (* always run for at most N steps *)
+    fun arithInput (t : test) : (term * int) = (#1/2 t, 20)
+    val baseAddInputs = stream-map arithInput addBaseTests
+    fun randomAddInputs r = stream-map arithInput (addRandomTests r)
+	
+    val sSymb = intTST ("S")
+    val kSymb = intTST ("K")
+
+    fun chooseComb () =     
+	case randomBoundedInt 2 of
+	    0 => Const sSymb
+	  | 1 => Const kSymb
+	  | _ => raise AspectsInternal "generated int not in the proper range"
+
+    (* run at most 30 steps *)
+    fun combinatorInput (t : term) = (t, 30)
+    fun randomCombinatorInput depth = 
+	let 
+	    fun help depth = 
+		if depth = 1 
+		then chooseComb ()
+		else App (help (depth - 1), help (depth - 1))
+	in
+	    combinatorInput (help depth)
+	end
+    fun randomCombinatorInputs {depth, howMany} = 
+	stream-tabulate (howMany, fn _ => randomCombinatorInput depth)
+
+    (* PERF: make the outer level a stream, too? *)
+    val theTests : (rule list * (term * int) stream) list = 
+        let 
+            fun getRules s = 
+                case parseRules (stream-fromstring s) of 
+                    SOME rules => rules
+                  | NONE => raise AspectsInternal "parsing compile-time rules file failed"
+
+	    val brokenArithRules = getRules (datafile "ASPECTS_CONTEST_arith.adv")
+	    val brokenCombinatorRules = getRules (datafile "combinator.adv")
+        in
+            (* FIXME: add more rules and tests ! *)
+            (brokenArithRules, 
+	     stream-append (baseAddInputs, 
+			    randomAddInputs {depth=3, howMany=30, maxInt=5})) ::
+	    (brokenCombinatorRules,
+	     (* FIXME tune these params.
+		      hardcode some tests, too *)
+	     randomCombinatorInputs {depth=6, howMany=30})
+            :: nil
+        end
+
+    (* ---------------------------------------------------------------------- *)
+    (* putting it all together *)
+
+    fun aspects-in-2d-cheating prob = 
+      case prob of 
+        EPair2D (rl, t) => option-enc term-enc (theSingleStepper (rulelist-dec rl, term-dec t))
+      | _ => raise AspectsInternal "2D exp not a pair"
+          
+    (* FIXME: seed random number generator with their solution *)
+
+    (* NOTE: prints out the result of each step of each test *)
+    fun check-aspects-in-2d theirSol = 
+      let 
+        fun listOptAll (_,nil) = NONE
+          | listOptAll (t,(x::xs)) = 
+          (case t x of 
+             NONE => listOptAll (t,xs)
+           | s => s)
+      in
+        listOptAll
+        (fn (rules, tests) => 
+         let 
+           val rules-enc = rulelist-enc rules
+             
+           (* returns NONE if their sol matches ours 
+              until the term is stuck or for stepsLeft steps,
+              whichever happens first *)
+           fun lockstepUntilStuckBounded (test, stepsLeft) = 
+             let 
+               val input-enc = term-enc test
+               val their-output =  theirSol (EPair2D(rules-enc, input-enc))
+                 
+               do print [Next Term   : [(expr2D-tostring their-output)]\n]
+                 
+               val correct-output = (theSingleStepper (rules, test))
+               val correct-output-enc = option-enc term-enc correct-output
+               val correctP = expr2D-eq(their-output, correct-output-enc)
+             in
+               if correctP 
+               then let 
+                      do print "Correct!\n"
+                    in
+                      case correct-output of 
+                        NONE => NONE
+                      | SOME newtest => 
+                          if stepsLeft > 0 
+                          then lockstepUntilStuckBounded (newtest, 
+                                                          stepsLeft - 1)
+                          else NONE
+                    end
+               else SOME [INCORRECT!
+                          Expected    : [(expr2D-tostring correct-output-enc)]\n]
+             end
+         in
+           let 
+             fun streamOptAll t s =
+               case stream-force s of
+                 Nil => NONE
+               | Cons(h, s') =>
+                   (case t h of
+                      NONE => streamOptAll t s'
+                    | e => e)
+           in
+             streamOptAll
+             (fn (input, steps) => 
+              let 
+                val input-enc = term-enc input
+                do print "----------------------------------------------------------------------\n"
+                do print [\nInitial Term: [(expr2D-tostring input-enc)]\n]
+                do print "Applying advice...\n"
+                  
+                val correctP = lockstepUntilStuckBounded(input, steps)
+                  
+                do print "\n"
+                do print "----------------------------------------------------------------------\n\n"
+              in
+                correctP
+              end)
+             tests
+           end
+         end,
+       theTests)
+      end
+(* ---------------------------------------------------------------------- *)
+(* exports *)
+         
+in
+    (check-aspects-in-2d, 
+     aspects-in-2d-cheating,
+     rulelist-enc,
+     term-enc
+     )
+end
+

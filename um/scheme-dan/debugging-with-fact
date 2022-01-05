@@ -1,0 +1,56 @@
+from running fact.um, correspondence with fact.uma:
+
+*** cmove in correct endian, something else if flipped
+Machine-lang op: 80000d0
+Opcode: cmove
+Operation Register Indices:(3 2 0)
+Machine Register Values:#(0 0 0 0 0 0 0 0)
+
+*** add in correct endian, something else if flipped
+Machine-lang op: 300000c0
+Opcode: add
+Operation Register Indices:(3 0 0)
+Machine Register Values:#(0 0 0 0 0 0 0 0)
+
+*** XXXX?BAD in assembly are macros that expand to possibly more than one instr
+[  expansion of first macro (literal_addr)
+Machine-lang op: d000048c
+Opcode: load_to_reg
+Operation Register Indices:(2 1 4)
+Machine Register Values:#(0 0 0 0 0 0 0 0)
+]
+
+Machine-lang op: c0000030
+Opcode: load_prog
+Operation Register Indices:(0 6 0)
+Machine Register Values:#(1164 0 0 0 0 0 0 0)
+
+***expansion of second macro (jnz if register zz is not zero)
+[
+Machine-lang op: d2000490
+Opcode: load_to_reg
+Operation Register Indices:(2 2 0)
+Machine Register Values:#(1164 0 0 0 0 0 0 0)
+
+Machine-lang op: 46
+Opcode: cmove
+Operation Register Indices:(1 0 6)
+Machine Register Values:#(1164 1168 0 0 0 0 0 0)
+
+Machine-lang op: c0000031
+Opcode: load_prog
+Operation Register Indices:(0 6 1)
+Machine Register Values:#(1164 1168 0 0 0 0 0 0)
+]
+
+BUG: lost a load_into_reg here (D4000004)
+
+Machine-lang op: 80000002
+Opcode: alloc
+Operation Register Indices:(0 0 2)
+Machine Register Values:#(1164 1168 0 0 0 0 0 0)
+
+Machine-lang op: 20000032
+Opcode: array_amend
+Operation Register Indices:(0 6 2)
+Machine Register Values:#(3682515858 1168 0 0 0 0 0 0)

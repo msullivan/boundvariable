@@ -1,0 +1,205 @@
+(*  An evaluator for the circuits language.
+ *
+ *  Written by Chris, with pieces and ideas shamelessly stolen 
+ *  from Spoons' first pass.
+ *  Then revised with Tom's ideas about a simpler evaluator
+ *)
+
+val require-std = provide-std
+val require-string = provide-string
+val require-list = provide-list
+val require-2d = provide-2d
+val provide-2d-eval = ()
+
+fun is-wire-active w = (case !w of SOME _ => true | NONE => false) 
+  
+fun is-box-active {com, north, east, south, west} =
+  let
+    val na = case north of 
+      SOME w => is-wire-active w
+    | NONE => true
+    val wa = case west of 
+      SOME w => is-wire-active w
+    | NONE => true
+  in
+    na andalso wa
+  end
+
+fun find-active-boxes bl = list-partition is-box-active bl
+  
+
+(* step-world is the main evaluation function.
+   step-world : (box list * module list) -> box list option
+   
+   The input is the top level running module and a list of modules we know
+   about.
+   
+   Invariant:  A wire can never contain an expression of the form
+               EIface x.  (Whenever someone "send"s something that
+               looks like this, we actually take the value of the wire).
+ *)
+fun step-world (bxs, mods) =
+  let
+    val (abxs, ibxs) = find-active-boxes bxs
+      
+    (* run-box : box2D -> unit
+       
+       Execute the command within a box, updating wires as necessary.
+       If the box is a use command, fully evaluate the submodule and
+       set the output wire
+     *)
+    fun run-box {com, north, east, south, west} =
+      let
+        fun set-output ex i = 
+          case i of
+            SOME w => w := (SOME ex)
+          | NONE => raise EvalError2D
+              ("[2D] Eval Error : box " ^cmd2D-tostring com^ " used an output"
+               ^ " interface that doesn't exist\n")
+              
+        fun get-send-out outi ex = 
+          case outi of 
+            ISouth2D  => set-output ex south
+          | IEast2D => set-output ex east
+              
+        fun find-module-by-name nm mlst = 
+          case list-alist-find string-equals nm mlst of
+            NONE => raise EvalError2D
+              ("[2D] Eval Error : tried to find module " ^ nm ^ " but it "
+               ^ "doesn't exist\n")
+          | SOME a => a
+
+        fun get-inp-w inp =
+          let
+            val wro = case inp of 
+              INorth2D => north
+            | IWest2D => west
+          in
+            case wro of 
+              NONE => raise EvalError2D
+              ("[2D] Eval Error : box " ^ cmd2D-tostring com ^ " used an input"
+               ^ " interface that doesn't exist\n")
+            | SOME wr => wr
+          end
+
+        fun get-inp-v inp =
+          case !(get-inp-w inp) of
+            NONE => raise EvalError2D
+              ("[2D] Eval Error : box " ^ cmd2D-tostring com ^ " used an input"
+               ^ " interface that doesn't exist\n")
+          | SOME ex => ex
+              
+        fun elim-ex-iface ex =
+          case ex of
+            EUnit2D => EUnit2D
+          | EPair2D (e1,e2) => EPair2D (elim-ex-iface e1, elim-ex-iface e2)
+          | EInl2D e1 => EInl2D (elim-ex-iface e1)
+          | EInr2D e2 => EInr2D (elim-ex-iface e2)
+          | EIface2D inface => get-inp-v inface
+              
+        val com' = 
+          case com of
+            CSend2D LOne2D (ex,oi) => CSend2D (LOne2D(elim-ex-iface ex, oi))
+          | CSend2D (LTwo2D ((ex1,oi1),(ex2,oi2))) =>
+              CSend2D (LTwo2D ((elim-ex-iface ex1, oi1), 
+                           (elim-ex-iface ex2, oi2)))
+          | CCase2D (ex,oi1,oi2) => CCase2D (elim-ex-iface ex, oi1, oi2)
+          | CSplit2D (ex) => CSplit2D (elim-ex-iface ex)
+          | z => z
+              
+      in
+        case com' of
+          CSend2D sl => 
+            (case sl of 
+               LNil2D => ()
+             | LOne2D (ex,oi) => get-send-out oi ex
+             | LTwo2D ((ex1,oi1),(ex2,oi2)) =>
+               (case (oi1,oi2) of
+                  (ISouth2D,ISouth2D) =>
+                  raise EvalError2D
+                    ("[2D] Eval Error: box '" ^ cmd2D-tostring com ^ 
+                     "' tried to output twice on its south interface.\n")
+                | (IEast2D,IEast2D) =>
+                  raise EvalError2D
+                    ("[2D] Eval Error: box '" ^ cmd2D-tostring com
+                     ^ "' tried to output twice on its east interface.\n")
+                | (IEast2D,ISouth2D) => (set-output ex1 east;
+                                         set-output ex2 south)
+                | (ISouth2D,IEast2D) => (set-output ex1 south;
+                                         set-output ex2 east)))
+        | CCase2D (ex,o1,o2) => 
+            (case ex of
+               EInl2D ex' => get-send-out o1 ex'
+             | EInr2D ex' => get-send-out o2 ex'
+             | _ => raise EvalError2D
+                 ("[2D] Eval Error : Wrong Form - A case was passed " 
+                  ^ expr2D-tostring ex ^ "!\n"))
+            | CSplit2D ex => 
+              (case ex of
+                 EPair2D (e1,e2) =>
+                 (set-output e1 south;
+                  set-output e2 east)
+               | _ => raise EvalError2D
+                 ("[2D] Eval Error : Wrong Form - A split was passed " 
+                  ^ (expr2D-tostring ex) ^ "!\n"))
+            | CUse2D mname =>
+                 let
+                   val umod_fun = find-module-by-name mname mods
+                   val (bl,wl) = 
+                     umod_fun (case north of 
+                                 NONE => NONE
+                               | SOME wr => !wr, 
+                               case west of 
+                                 NONE => NONE
+                               | SOME wr => !wr)
+                   val outp = eval-world (bl, wl, mods)
+                 in
+                   set-output outp east
+                 end
+      end
+  in
+    case abxs of
+      nil => NONE
+    | _ => (list-app run-box abxs; SOME ibxs)
+  end
+      
+(* eval-world : (box list, wire list, module list) expr *)
+and eval-world (bxs, wrs, mods) = 
+  let
+    fun getOutput nil accum = 
+      (case accum of
+         NONE => raise EvalError2D 
+           ("[2D] Eval Error : A module finished running but had no output.\n")
+       | SOME ex => ex)
+      | getOutput (wr::wrs) accum =
+         (case (!wr, accum) of
+            (NONE,_) => getOutput wrs accum
+          | (z,NONE) => getOutput wrs z
+          | _ => raise EvalError2D 
+              ("[2D] Eval Error : A module had multiple outputs!\n"))
+
+    fun loop remaining_bxs = 
+      (case step-world (remaining_bxs, mods) of
+         NONE => getOutput wrs NONE
+       | SOME remaining_bxs' => 
+           (case remaining_bxs' of
+              nil => loop remaining_bxs'
+            | _ => loop remaining_bxs'))
+  in
+    loop bxs
+  end
+
+(* take an input program (list of module declarations)
+   the module to invoke first,
+   and two arguments (north, west) and evaluate that to
+   a value, and return the value. *)
+fun run-program-2d (prog, main, argn, argw) : expr2D =
+  let
+    val (bxs,wrs) = 
+      case list-alist-find string-equals main prog of
+        SOME m => m (argn, argw)
+      | NONE => raise EvalError2D
+          ("[2D] Eval Error : program had no " ^ main ^ " module\n")
+  in
+    eval-world (bxs,wrs,prog)
+  end

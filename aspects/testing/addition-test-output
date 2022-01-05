@@ -1,0 +1,2878 @@
+../um/humlock/humlock -root ../um/humlock/ aspects.uml
+Parsing and elaborating...
+warning: match non-exhaustive at growarray.uh:10.1-10.39
+warning: match non-exhaustive at growarray.uh:12.1-14.18
+warning: match non-exhaustive at growarray.uh:17.1-19.24
+warning: match non-exhaustive at language.uh:130.1-130.21
+warning: match non-exhaustive at language.uh:131.1-131.23
+warning: match non-exhaustive at language.uh:136.1-140.36
+warning: match non-exhaustive at language.uh:318.1-320.65
+warning: match non-exhaustive at parsing.uh:126.35-126.36
+warning: match non-exhaustive at parsing.uh:128.35-128.36
+warning: match non-exhaustive at parsing.uh:130.36-130.37
+warning: match non-exhaustive at parsing.uh:131.49-131.50
+warning: match non-exhaustive at parsing.uh:151.41-151.42
+warning: match non-exhaustive at parsing.uh:152.41-152.42
+warning: match non-exhaustive at parsing.uh:154.41-154.42
+warning: match non-exhaustive at parsing.uh:155.41-155.42
+warning: match non-exhaustive at parsing.uh:157.61-157.62
+Optimizing IL...
+CPS converting...
+Optimizing CPS...
+Closure converting...
+Alloc converting...
+UM conversion...
+Adding runtime...
+Assembling...
+time ../um/c-tom/um aspects.um
+
+Running 5 input tests...
+************************
+
+Initial Term:	Add (S (S Z)) (S (S Z))
+Applying advice...
+Final Term:	(S (S (S (S Z))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Mult (S (S Z)) (S (S Z))
+Applying advice...
+Final Term:	(S (S (S (S Z))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Mult (S (S (S (S (S (S Z)))))) (S (S (S (S Z))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z))))))))))))))))))))))))
+Correct!
+Total Steps: 37
+
+
+Initial Term:	Mult (S (S (S (S Z)))) (S (S (S (S (S (S Z))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z))))))))))))))))))))))))
+Correct!
+Total Steps: 33
+
+
+Initial Term:	Fact (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S Z))))))
+Correct!
+Total Steps: 74
+
+
+Running internal tests...
+*************************
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S Z)) (S Z)
+Applying advice...
+Final Term:	(S (S (S Z)))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S Z)) (S Z)
+Applying advice...
+Final Term:	(S (S (S Z)))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S Z)) (S Z)
+Applying advice...
+Final Term:	(S (S (S Z)))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add Z (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S Z)))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add Z (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S Z)))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S Z)) (S Z)
+Applying advice...
+Final Term:	(S (S (S Z)))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add Z (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S Z)))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add Z (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S Z)))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S Z)) (S Z)
+Applying advice...
+Final Term:	(S (S (S Z)))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add Z (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S Z)))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S Z)) (S Z)
+Applying advice...
+Final Term:	(S (S (S Z)))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add Z (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S Z)))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add Z (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S Z)))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S Z)) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add Z (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S Z)))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S Z)) (S Z)
+Applying advice...
+Final Term:	(S (S (S Z)))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S Z)
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S Z)))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add Z (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S Z)))))))
+Correct!
+Total Steps: 1
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S Z)))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 5
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S Z)) (S Z)
+Applying advice...
+Final Term:	(S (S (S Z)))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 15
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S Z)))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 11
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))
+Correct!
+Total Steps: 19
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))) (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 13
+
+
+Initial Term:	Add (S (S (S (S (S (S Z)))))) (S (S (S (S (S (S (S (S (S Z)))))))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))
+Correct!
+Total Steps: 7
+
+
+Initial Term:	Add (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S Z)))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))))))
+Correct!
+Total Steps: 17
+
+
+Initial Term:	Mult (S (S (S (S (S (S Z)))))) (S (S (S (S (S Z)))))
+Applying advice...
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z))))))))))))))))))))))))))))))
+Correct!
+Total Steps: 43
+
+
+Initial Term:	Mult (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))))))) (S (S (S (S (S (S (S (S (S (S (S Z)))))))))))
+Applying advice...

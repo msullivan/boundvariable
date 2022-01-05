@@ -1,0 +1,12 @@
+{ the obvious thing }
+
+{ collapse duplicates }
+Tag t (Tag t d) => Tag t d;
+
+{ flatten }
+Seq (Seq d1 d2) d3 => Seq d1 (Seq d2 d3);
+
+{ distribute }
+Seq (Tag t d1) (Tag t d2) => Tag t (Seq d1 d2);
+
+.

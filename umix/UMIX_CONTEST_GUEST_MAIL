@@ -1,0 +1,19 @@
+To whom it may concern:
+
+Guest access is provided as a courtesy to the community. We have
+recently observed an increase in abuse using the guest account. For
+example, the following sequence of commands obviously represents an
+attempt to gain unauthorized access to the account "howie":
+
+  cd code
+  /bin/umodem hack.bas STOP
+  /bin/qbasic hack.bas
+  ls /home
+  ./hack.exe howie
+  
+Moreover, the file that you uploaded with umodem appears to be 
+corrupted and did not compile.
+
+Please have respect for your fellow users,
+Admin
+

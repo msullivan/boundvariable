@@ -1,0 +1,35 @@
+{ karl's cursor solution:
+  use a cursor to ensure that a rule applies only one place in a term
+ }
+
+E Z => V Z;
+
+E (S x) => S (E x);
+S (V x) => V (S x);
+
+E (Add x y) => Add (E x) y;
+Add (V x) y => Add x (E y);
+Add Z (V y) => V y;
+Add (S x) (V y) => S (Add x (V y));
+
+E (Mult x y) => Mult (E x) y;
+Mult (V x) y => Mult x (E y);
+Mult Z (V y) => V Z;
+Mult (S x) (V y) => Add y (Mult x (V y));
+
+E (Fact x) => Fact (E x);
+Fact (V Z) => V (S Z);
+Fact (V (S x)) => Mult (S x) (Fact (V x));
+
+
+{ initial setup }
+
+Compute (Add x y) => Top (Add (E x) y);
+Compute (Mult x y) => Top (Mult (E x) y);
+Compute (Fact x) => Top (Fact (E x));
+
+{ termination }
+
+Top (V x) => x;
+
+. { end of rules }

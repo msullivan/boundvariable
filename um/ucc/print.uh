@@ -1,0 +1,90 @@
+
+val inst-tostring =
+let
+
+  fun regtos 0 = "rethi"
+    | regtos 1 = "retlo"
+    | regtos 2 = "tmp1"
+    | regtos 3 = "tmp2"
+    | regtos 4 = "SP"
+    | regtos 5 = "FO"
+    | regtos 6 = "zero"
+    | regtos 7 = "one"
+    | regtos _ = "XXX-bad-reg-XXX"
+
+  fun tryprint (COMMENT _) = false
+    | tryprint _           = true
+
+  fun inst-tostring i =
+    let
+      val r = regtos
+      val enc = "        "
+        (*
+        if tryprint i 
+        then
+          (StringCvt.padLeft #"0" 8 (int-tohexstring (UMA.encode i)))
+          handle UMA.UMA _ => "XXXX?BAD"
+        else                  "        "
+        *)
+
+      fun is i =
+      (case i of
+         CMOV (ra, rb, rc) => "cmov " ^ r ra ^ " <- " ^ r rb ^ " (?" ^ r rc ^ ")"
+       | LOADPROG (ra, rb) => "loadprog " ^ r ra ^ " @ " ^ r rb
+       | LITERAL (ra, w) => "literal " ^ r ra ^ " <- " ^ int-tohexstring w
+       | HALT => "halt"
+       | WRITE ra => "write " ^ r ra
+       | READ ra => "read " ^ r ra ^ " <- "
+       | ALLOC (ra, rb) => "alloc " ^ r ra ^ " <- (" ^ r rb ^ " words)"
+       | FREE ra => "free " ^ r ra
+       | ASUB (ra, rb, rc) => "asub " ^ r ra ^ " <- " ^ r rb ^ "[" ^ r rc ^ "]"
+       | UPD  (ra, rb, rc) => "upd " ^ r ra ^ "[" ^ r rb ^ "] <- " ^ r rc
+       | ADD (ra, rb, rc) => "add " ^ r ra ^ " <- " ^ r rb ^ " + " ^ r rc
+       | MUL (ra, rb, rc) => "mul " ^ r ra ^ " <- " ^ r rb ^ " * " ^ r rc
+       | DIV (ra, rb, rc) => "div " ^ r ra ^ " <- " ^ r rb ^ " / " ^ r rc
+       | NAND (ra, rb, rc) => "nand " ^ r ra ^ " <- " ^ r rb ^ " ~& " ^ r rc
+
+       | COMMENT s => "/* " ^ s ^ " */"
+
+       | JNZ (rt, v, ra, rb) => "jnz " ^ r rt ^ " " ^ var-tostring v ^ 
+                                    " (X " ^ r ra ^ " " ^ r rb ^ ")"
+       | JZ (rt, v, ra, rb)  => "jz " ^ r rt ^ " " ^ var-tostring v ^ 
+                                    " (X " ^ r ra ^ " " ^ r rb ^ ")"
+       | JLZ (rt, v, ra, rb)  => "jlz " ^ r rt ^ " " ^ var-tostring v ^ 
+                                    " (X " ^ r ra ^ " " ^ r rb ^ ")"
+       | LITERAL_ADDR (ra, v) => "literal_addr " ^ r ra ^ " <- " ^ 
+                                    var-tostring v
+       | LITERAL_ANY (ra, w, rb) => "literal_any " ^ r ra ^ " <- " ^ 
+                                      int-tohexstring w ^ " (X " ^ r rb ^ ")"
+       | SUB (ra, rb, rc) => "sub " ^ r ra ^ " <- " ^ r rb ^ " - " ^ r rc
+
+       | OR (ra, rb, rc, rd) => "or " ^ r ra ^ " <- " ^ r rb ^ " | " ^ r rc ^
+                                      "(X " ^ r rd ^ ")"
+
+       | AND (ra, rb, rc) => "and " ^ r ra ^ " <- " ^ r rb ^ " & " ^ r rc
+       | XOR (ra, rb, rc, rd) => "xor " ^ r ra ^ " <- " ^ r rb ^ " ^ " ^ r rc ^
+                                      "(X " ^ r rd ^ ")"
+
+       | NOT (ra, rb) => "not " ^ r ra ^ " <- ~" ^ r rb
+       | DEC (ra, rb) => "dec " ^ r ra ^ " <- (X " ^ r rb ^ ")"
+       | DECTO (ra, rb) => "decto " ^ r ra ^ " <- " ^ r rb
+
+
+       | CALLWITH (ra, v, rb) => "call " ^ var-tostring v ^ " (ret: " 
+                                      ^ r ra ^ ") (X " ^ r rb ^ ")"
+
+       | MANY l => "MANY:\n " ^ string-delimit ("\n ") (list-map inst-tostring l)
+
+       | DATA w => "DATA " ^ int-tohexstring w
+       | DATALAB l => "DATALAB " ^ var-tostring l
+       | LABEL v => "-------- " ^ var-tostring v ^ ":"
+       | BSSDATA => "BSSDATA"
+       | SWAPEND i => "(SWAP-END) " ^ is i)
+    in
+      enc ^ "   " ^ is i
+    end
+
+in
+  inst-tostring
+end
+

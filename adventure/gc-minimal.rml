@@ -1,0 +1,30 @@
+(* A minimal robot mind; useful for debugging the RML run-time. *)
+
+extern type string.
+extern type room.
+extern type item.
+
+type direction = North { } | South { } | East { } | West { }.
+
+type command = 
+    Go { direction }
+  | Take { item }
+  | Incinerate { item }
+  | Combine { item, item }
+  | Break { item }
+  | Drop { item }
+  | Use { item }
+  | Whistle { }
+  | Hum { }
+  | Speak { string }
+  | LookAround { }
+  | ShowInventory { }
+  | Examine { item }.
+
+type datum =
+    Atom { string }
+  | Seq { datum, datum } (* value, rest of data *)
+  | Assoc { string, datum, datum }  (* key, value, rest of data *)
+  | NoData { }.
+
+fun process (c : command) : datum = return Atom { "Using minimal robot mind... use the uploader to get something done." }.

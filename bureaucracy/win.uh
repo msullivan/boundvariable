@@ -1,0 +1,59 @@
+fun mkcat-string s =
+    let val offset = 4
+        fun loop n = if n = length s then (putc (chr 112); (* Halt *)
+                                           putc (chr 0);
+                                           putc (chr 0);
+                                           putc (chr 0))
+                     else (putc (chr 208); (* Literal *)
+                           putc (chr 0);
+                           putc (chr 0);
+                           putc (chr ((ord (sub (s, n))) - offset));
+                           putc (chr 48); (* Add *)
+                           putc (chr 0);
+                           putc (chr 0);
+                           putc (chr 1);
+                           putc (chr 160); (* Write *)
+                           putc (chr 0);
+                           putc (chr 0);
+                           putc (chr 0);
+                           loop (n + 1))
+    in
+        putc (chr 210); (* Literal *)
+        putc (chr 0);
+        putc (chr 0);
+        putc (chr offset);
+        loop 0
+    end
+
+val clue = 
+"Congratulations for solving the trivial puzzle. Some ideas for\n" ^ 
+"slightly less trivial puzzles include:\n" ^ 
+"\n" ^ 
+"* Optimizing boolean/arithmetic expressions for one particular operation, e.g.\n" ^ 
+"  \n" ^ 
+"  (A ^ C) v (A ^ D) v (B ^ D) can be \"optimized\" to (A v D) ^ (A v B) ^ (C v D)\n" ^ 
+"  one has fewer disjunctions, the other has fewer conjunctions\n" ^ 
+"\n" ^ 
+"* Saying \"the copy machine is out of order\" and forcing linear use of paperwork.\n" ^ 
+"  This is even stronger than jaked's \"triplicate\" suggestion, and it's not a\n" ^ 
+"  serious restriction since you can \"code up\" duplication of numbers by\n" ^ 
+"  basically primitive recursion.\n" ^ 
+"\n" ^ 
+"  However, overcoming the \"you can only write digits 0-9\" thing becomes an\n" ^ 
+"  actual problem if your program gets nontrivially big. I don't know, maybe\n" ^ 
+"  it's just an annoyance, but maybe it's a valid puzzle; it requires some\n" ^ 
+"  kind of bootstrapping little program to fit in the first 10 offices that\n" ^ 
+"  populates the current paperwork with a lot of big numbers that you can\n" ^ 
+"  refer to to actually carry out jumps.\n" ^ 
+"\n" ^ 
+"  If we told a little story about the destaplifier \"overheating\" we could\n" ^ 
+"  prevent linear solutions, but this is starting to sound like needlessly\n" ^ 
+"  forcing more complicated solutions, dunno.\n"
+
+fun win() =
+    let val _ = print
+		    ("CPS REPORT ALERT: a package has been inserted into your office\n" ^
+		     "mail slot. The system has scanned it in. Its contents are as follows:\n")
+    in
+	mkcat-string clue
+    end

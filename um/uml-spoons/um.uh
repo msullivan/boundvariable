@@ -1,0 +1,158 @@
+(* 
+  Universal Universal Machine
+*)
+val um-run =
+let
+  exception UM of string
+
+  (* eight registers ABCDEFGH *)
+  type reg = int
+
+  type word = int
+    
+  (* invt: mem[0] always has something in it *)
+  type mach = { mem : int array growarray,
+                (* length 8 *)
+                regs : int array,
+                (* instruction pointer *)
+                ip : int ref }
+
+  fun triple w =
+    ((w shr 6) andb 7,
+     (w shr 3) andb 7,
+     (w andb 7))
+
+  fun double w =
+    ((w shr 3) andb 7,
+     (w andb 7))
+
+  fun single w =
+    (w andb 7)
+
+  (* give array of instructions *)
+  fun newmach code =
+    let
+      val mem = growarray-new (array (0, 0))
+    in
+      growarray-push (mem, code);
+      { mem = mem,
+        regs = array (8, 0),
+        ip = ref 0 } : mach
+    end
+
+  fun copy_array a =
+      let val b = array (length a, sub (a, 0))
+          fun copy n = if n = length b then b
+                       else (update (b, n, sub (a, n));
+                             copy (n + 1))
+      in
+        copy 1 (* start at index 1 *)
+      end
+
+  exception Halt
+
+  fun step (mach as { mem, regs, ip } : mach) inst =
+    let
+      fun arr a = growarray-sub (mem, a)
+      fun reg x = sub (regs, x)
+      fun setreg x v = update (regs, x, v)
+      val opcode = inst shr 28
+    in
+      (case opcode of
+         0 (* CMOV *) =>
+         let val (dest, src, test) = triple inst in
+           if reg test <> 0
+           then setreg dest (reg src)
+           else ()
+         end
+       | 1 (* ASUB *) => 
+         let val (dst, a, off) = triple inst in
+           (* XXX check bounds *)
+           setreg dst (sub (arr (reg a), (reg off)))
+          end
+       | 2 (* UPD *) => 
+         let val (a, off, src) = triple inst in
+           (* XXX bounds *)
+           update (arr (reg a), (reg off), reg src)
+         end
+       | 3 (* ADD *) => 
+         let val (dst, s1, s2) = triple inst in
+           setreg dst ((reg s1) + (reg s2))
+         end
+       | 4 (* MUL *) => 
+         let val (dst, s1, s2) = triple inst in
+           setreg dst ((reg s1) * (reg s2))
+         end
+       | 5 (* DIV *) => 
+         let val (dst, s1, s2) = triple inst in
+           (* XXX check div0 *)
+           setreg dst ((reg s1) div (reg s2))
+         end
+       | 6 (* NAND *) => 
+         let val (dst, s1, s2) = triple inst in
+           setreg dst (notb ((reg s1) andb (reg s2)))
+         end
+       | 7 (* HALT *) => raise Halt
+       | 8 (* ALLOC *) => 
+           let val (dst, sz) = double inst 
+               val a = array ((reg sz), 0)
+               val n = growarray-length mem
+               do growarray-push (mem, a)
+           in
+             setreg dst n
+           end
+       | 9 (* FREE *) => 
+         let val r = single inst in
+           (* XXX should check it's allocated *)
+           (* XXX free list *)
+           growarray-update (mem, reg r, array (0, 0))
+         end
+       | 10 (* WRITE *) => 
+         let val r = single inst in 
+           putc (chr_ (255 andb (reg r)))
+         end
+       | 11 (* READ *) =>
+         let val r = single inst in
+           setreg r (getc_ ())
+         end
+       | 12 (* LOADPROG *) =>
+         let val (a, id) = double inst in 
+           (case reg a of
+              (* special case 0, which is very common *)
+              0 => ip := (reg id) - 1
+            | p => 
+                let
+                  val newcode = copy_array (arr p)
+                in
+                  growarray-update (mem, 0, newcode);
+                  (* one less, because it will increment *)
+                  ip := (reg id) - 1
+                end)
+         end
+       | 13 (* LITERAL *) =>
+         let val (r, w) = (7 andb (inst shr 25),
+                           inst andb (33554432 (* 0x2000000 *) - 1)) in
+           setreg r w
+         end
+       | _ => raise UM "bad instruction"
+
+      );
+
+      ip := (!ip) + 1
+
+    end
+
+  fun runprog prog =
+    let 
+      val mach as { mem, regs, ip } = newmach prog
+      val step = step mach
+      fun run () = (step (sub (growarray-sub (mem, 0), !ip)); run ())
+    in
+      run ()
+    end handle Halt => (print "\n\n== Halted. ==\n"; true)
+             | Subscript => (print "\n\n== Subscript. ==\n"; false)
+             | Div => (print ("\n\n== Div. ==\n"); false)
+             | UM s => (print ("\n\n== Error: " ^ s ^ " ==\n"); false)
+in
+  runprog
+end

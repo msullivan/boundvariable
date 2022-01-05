@@ -1,0 +1,1581 @@
+(* Items 434 - 492, 493 - 529, 530 - 564 *)
+(* lots of junk in the pile!! times 3! *)
+
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun P-5065-WLI, true, Exemplary, gray80::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun J-6678-VEJ, (Missing (Noun R-4832-FKX, (Noun V-1403-KNG)::(Noun Z-0010-PQN)::nil))::nil), true, Exemplary, green::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun J-1403-ISE, true, Exemplary, burgundy::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun V-4292-XCZ, true, Exemplary, plum::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun R-1623-SYS, (Noun V-4292-XCZ)::nil), true, Exemplary, fuchsia::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun B-9247-YMO, (Noun J-1403-ISE)::(Noun R-1623-SYS)::nil), true, Exemplary, burgundy::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun N-0010-NVL, true, Exemplary, sangria::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun F-4832-DPV, true, Exemplary, blanched-almond-colored::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun X-6678-TJH, (Noun F-4832-DPV)::nil), true, Exemplary, gray90::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Missing (Missing (Noun B-5065-YGK, (Noun F-6678-DJR)::nil), (Noun J-9247-IMY)::(Noun N-4832-NPH)::nil), (Noun R-1403-SSO)::(Noun B-9247-YMO)::(Missing (Noun V-0010-XVV, (Noun Z-1623-CYE)::nil))::nil), true, Exemplary, rust::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Missing (Noun Z-6458-PNX, (Noun D-5065-UQG)::nil), (Noun H-6678-ZTN)::(Noun L-9247-EWU)::nil), true, Exemplary, shiny::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun D-4832-HFZ, (Noun H-1403-MII)::(Noun L-0010-RLP)::(Missing (Missing (Noun Z-6458-PNX, (Noun D-5065-UQG)::nil), (Noun H-6678-ZTN)::(Noun L-9247-EWU)::nil))::nil), true, Exemplary, gargantuan::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Missing (Noun H-4292-ZWD, (Noun L-9887-EAK)::(Noun P-6458-JDR)::nil), (Missing (Noun D-4832-HFZ, (Noun H-1403-MII)::(Noun L-0010-RLP)::nil))::(Noun T-5065-OGY)::nil), true, Exemplary, hypoallergenic::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun R-4832-FKX, (Noun V-1403-KNG)::(Missing (Missing (Noun H-4292-ZWD, (Noun L-9887-EAK)::(Noun P-6458-JDR)::nil), (Noun T-5065-OGY)::nil))::(Noun Z-0010-PQN)::nil), true, Exemplary, snow::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun D-1623-UTU, true, Exemplary, gray70::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun P-1623-WOW, true, Exemplary, viridian::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun N-9247-AHQ, true, Exemplary, lemon-cream::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun X-9887-GUM, (Noun J-6678-VEJ)::(Missing (Noun T-6678-BOP, (Noun X-9247-GRW)::nil))::(Noun N-9247-AHQ)::(Noun B-6458-LXT)::nil), true, Exemplary, blaze-orange::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun F-5065-QBC, true, Exemplary, periwinkle::nil)
+(* do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun T-6678-BOP, (Noun F-5065-QBC)::(Noun X-9247-GRW)::nil), true, Exemplary, amethyst::nil) *)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun D-4832-HFZ, (Noun H-1403-MII)::(Noun L-0010-RLP)::nil), true, Exemplary, flax::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun P-4832-JAD, (Missing (Noun X-9887-GUM, (Noun B-6458-LXT)::nil))::nil), true, Exemplary, cyan::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun D-4292-HCL, (Noun P-4832-JAD)::(Noun H-9887-MFS)::nil), true, Exemplary, jade::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun D-4292-HCL, (Noun H-9887-MFS)::(Missing (Noun D-4832-HFZ, (Noun H-1403-MII)::(Noun L-0010-RLP)::nil))::nil), true, Exemplary, sapphire::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun D-4832-HFZ, (Noun H-1403-MII)::(Noun L-0010-RLP)::(Noun T-4292-BRF)::nil), true, Exemplary, spring-green::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun T-4292-BRF, true, Exemplary, pale-violet-red::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Missing (Noun Z-6458-PNX, (Noun D-5065-UQG)::nil), (Noun H-6678-ZTN)::(Noun L-9247-EWU)::(Missing (Noun D-4832-HFZ, (Noun H-1403-MII)::(Noun L-0010-RLP)::nil))::nil), true, Exemplary, blue::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun D-4292-HCL, (Noun H-9887-MFS)::nil), true, Exemplary, water-logged::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun T-1403-ODK, true, Exemplary, blue::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun P-4832-JAD, true, Exemplary, gamboge::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Missing (Missing (Noun X-0010-TGR, (Noun B-1623-YJY)::(Missing (Noun F-4292-DMH, (Noun J-9887-IPO)::(Noun N-6458-NSV)::nil))::nil), (Noun R-5065-SVE)::(Noun V-6678-XYL)::nil), (Noun Z-9247-CCS)::nil), true, Exemplary, gargantuan::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun L-6458-RIZ, (Noun T-1403-ODK)::(Missing (Missing (Noun Z-6458-PNX, (Noun D-5065-UQG)::nil), (Noun H-6678-ZTN)::(Noun L-9247-EWU)::nil))::nil), true, Exemplary, gray90::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun P-4832-JAD, true, Exemplary, dodger-blue::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun T-6678-BOP, (Noun X-9247-GRW)::nil), true, Exemplary, mauve::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun R-4292-FHJ, (Noun V-9887-KKQ)::nil), true, Exemplary, low-carb::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun B-4832-LUF, (Missing (Noun F-1403-QXM, (Noun J-0010-VBT)::(Noun N-1623-AEC)::nil))::nil), true, Exemplary, peach-yellow::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun JumperShunt, (Missing (Noun D-4292-HCL, (Noun H-9887-MFS)::nil))::(Missing (Noun T-6678-BOP, (Noun X-9247-GRW)::nil))::(Missing (Missing (Missing (Noun B-5065-YGK, (Noun F-6678-DJR)::nil), (Noun J-9247-IMY)::(Noun N-4832-NPH)::nil), (Noun R-1403-SSO)::(Missing (Noun V-0010-XVV, (Noun Z-1623-CYE)::nil))::nil))::(Noun L-6458-RIZ)::nil), true, S "an ordinary shunt allowing sand to flow between two neighboring pins", nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Missing (Missing (Noun B-5065-YGK, (Noun F-6678-DJR)::nil), (Noun J-9247-IMY)::(Noun N-4832-NPH)::nil), (Noun R-1403-SSO)::(Missing (Noun V-0010-XVV, (Noun Z-1623-CYE)::nil))::nil), true, Exemplary, indigo::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun D-4292-HCL, (Noun H-9887-MFS)::nil), true, Exemplary, discounted::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun P-5065-WLI, true, Exemplary, celadon::nil)
+
+
+(* 2 *)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Missing (Noun N-9887-AKG, (Noun R-6458-FNN)::nil), (Noun V-5065-KQU)::nil), true, Exemplary, dodger-blue::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun D-6458-HIP, true, Exemplary, pear::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun Z-1403-CIW, (Noun D-0010-HLF)::(Missing (Noun H-1623-MOM, (Noun L-4292-RRT)::nil))::nil), true, Exemplary, goldenrod::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun N-1403-ANU, true, Exemplary, pale-pink::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun P-0010-JGH, (Noun B-9887-YPE)::(Missing (Noun Z-1403-CIW, (Noun D-0010-HLF)::(Missing (Noun H-1623-MOM, (Noun L-4292-RRT)::nil))::nil))::(Missing (Noun Z-1403-CIW, (Noun D-0010-HLF)::(Missing (Noun H-1623-MOM, (Noun L-4292-RRT)::nil))::nil))::(Noun N-1403-ANU)::(Noun V-4832-XFP)::(Missing (Noun T-1623-OJO, (Noun X-4292-TMV)::nil))::nil), true, Exemplary, tan::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun F-6458-DSL, (Missing (Missing (Noun T-6458-BXJ, (Noun X-5065-GBQ)::(Noun B-6678-LEX)::nil), (Noun F-9247-QHG)::(Noun J-4832-VKN)::nil))::nil), true, Exemplary, pale-magenta::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Missing (Noun T-6458-BXJ, (Noun X-5065-GBQ)::(Noun B-6678-LEX)::nil), (Noun F-9247-QHG)::(Noun J-4832-VKN)::nil), true, Exemplary, rosy-brown::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun F-6458-DSL, (Noun D-6458-HIP)::nil), true, Exemplary, school-bus-yellow::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun Z-1403-CIW, (Noun D-0010-HLF)::(Missing (Noun H-1623-MOM, (Noun L-4292-RRT)::nil))::(Noun F-6458-DSL)::nil), true, Exemplary, bright-green::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun P-9887-WUC, true, Exemplary, momemtum-preserving::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun V-4832-XFP, true, Exemplary, magenta::nil)
+(* do add_item_ex(FiftyFourthPlaceandBlackstone, Noun L-6678-ROF, true, Exemplary, mysterious::nil) *)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun J-5065-IVS, (Noun R-9247-SCI)::(Noun N-6678-NYZ)::(Noun L-6678-ROF)::nil), true, Exemplary, celadon::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun R-9247-SCI, true, Exemplary, persian-blue::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun N-6678-NYZ, true, Exemplary, water-logged::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun D-6458-HIP, (Missing (Noun P-0010-JGH, (Missing (Noun T-1623-OJO, (Noun X-4292-TMV)::nil))::(Noun B-9887-YPE)::nil))::(Noun J-5065-IVS)::nil), true, Exemplary, gray20::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun H-5065-MLW, true, Exemplary, blanched-almond-colored::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Missing (Noun N-9887-AKG, (Noun R-6458-FNN)::nil), (Noun V-5065-KQU)::nil), true, Exemplary, sapphire::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun B-0010-LBJ, (Missing (Missing (Noun N-9887-AKG, (Noun R-6458-FNN)::nil), (Noun V-5065-KQU)::nil))::nil), true, Exemplary, lime::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Missing (Noun Z-6678-PTD, (Noun D-9247-UWK)::(Noun H-4832-ZAR)::nil), (Noun L-1403-EDY)::nil), true, Exemplary, reverse-chirality::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Missing (Noun N-9887-AKG, (Noun R-6458-FNN)::nil), (Noun V-5065-KQU)::nil), true, Exemplary, lemon-cream::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun J-4292-VHX, (Missing (Missing (Noun N-9887-AKG, (Noun R-6458-FNN)::nil), (Noun V-5065-KQU)::nil))::nil), true, Exemplary, lavender::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun F-1623-QEQ, (Noun J-4292-VHX)::nil), true, Exemplary, fuchsia::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun L-6678-ROF, (Noun F-1623-QEQ)::nil), true, Exemplary, organic::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun D-6458-HIP, (Noun B-0010-LBJ)::nil), true, Exemplary, cornflower-blue::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun P-9247-WRM, (Noun T-4832-BUT)::(Noun X-1403-GXC)::nil), true, Exemplary, moccasin::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun L-6678-ROF, (Noun L-6678-ROF)::(Noun D-6458-HIP)::nil), true, Exemplary, pink::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun T-6678-BOP, (Noun D-6458-HIP)::(Noun X-9247-GRW)::(Noun H-5065-MLW)::(Noun L-6678-ROF)::(Noun F-5065-QBC)::nil), true, Exemplary, amethyst::nil)
+
+
+(* 3 *)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun L-5065-EGO, true, Exemplary, pale-green::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun L-5065-EGO, true, Exemplary, gray20::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun H-6458-ZDH, (Missing (Noun P-6678-JJV, (Missing (Noun T-9247-OME, (Noun X-4832-TPL)::nil))::(Missing (Noun B-1403-YSS, (Noun F-0010-DVZ)::(Noun J-1623-IYI)::nil))::nil))::(Noun L-5065-EGO)::nil), true, Exemplary, camouflage-green::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun P-6678-JJV, (Missing (Noun T-9247-OME, (Noun X-4832-TPL)::nil))::(Missing (Noun B-1403-YSS, (Noun F-0010-DVZ)::(Noun J-1623-IYI)::nil))::nil), true, Exemplary, slate-gray::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun R-9887-SFW, true, Exemplary, rust::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun N-4292-NCP, (Noun R-9887-SFW)::(Missing (Noun V-6458-XIF, (Noun Z-5065-CLM)::nil))::nil), true, Exemplary, ivory::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun V-6458-XIF, (Noun Z-5065-CLM)::(Noun R-9887-SFW)::nil), true, Exemplary, old-gold::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun R-9887-SFW, true, Exemplary, peach::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun L-6678-ROF, (Noun D-6678-HOT)::(Missing (Noun H-9247-MRC, (Noun L-4832-RUJ)::nil))::(Missing (Noun V-1623-KTK, (Noun Z-4292-PWR)::(Noun D-9887-UAY)::nil))::(Missing (Noun V-1623-KTK, (Noun Z-4292-PWR)::(Noun D-9887-UAY)::nil))::nil), true, Exemplary, mysterious::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun H-9247-MRC, (Noun L-4832-RUJ)::(Noun P-1403-WXQ)::nil), true, Exemplary, hot-pink::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun D-6678-HOT, (Missing (Missing (Noun T-0010-BBX, (Noun X-1623-GEG)::(Noun B-4292-LHN)::nil), (Missing (Noun F-9887-QKU, (Noun J-6458-VND)::(Noun N-5065-AQK)::nil))::nil))::nil), true, Exemplary, vegan::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Missing (Noun T-0010-BBX, (Noun X-1623-GEG)::(Noun B-4292-LHN)::nil), (Noun R-6678-FTR)::(Missing (Noun F-9887-QKU, (Noun J-6458-VND)::(Noun N-5065-AQK)::nil))::nil), true, Exemplary, selective-yellow::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun R-6678-FTR, (Noun V-9247-KWY)::nil), true, Exemplary, peach-yellow::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun P-1403-WXQ, (Missing (Missing (Noun Z-4832-PAH, (Noun D-1403-UDO)::(Noun H-0010-ZGV)::nil), (Noun L-1623-EJE)::(Noun P-4292-JML)::nil))::nil), true, Exemplary, old-lace::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Missing (Noun Z-4832-PAH, (Noun D-1403-UDO)::(Noun H-0010-ZGV)::nil), (Noun P-4292-JML)::(Noun R-9887-SFW)::(Noun L-1623-EJE)::nil), true, Exemplary, dim-gray::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun V-9247-KWY, true, Exemplary, taupe::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun R-9887-SFW, true, Exemplary, mint-green::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun T-9887-OPS, true, Exemplary, pale-violet-red::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun T-9887-OPS, (Missing (Noun V-1623-KTK, (Noun Z-4292-PWR)::(Noun D-9887-UAY)::nil))::nil), true, Exemplary, carrot::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun V-1623-KTK, (Noun Z-4292-PWR)::(Noun D-9887-UAY)::nil), true, Exemplary, pale-carmine::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Noun X-6458-TSZ, true, Exemplary, taupe::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun V-1623-KTK, (Noun Z-4292-PWR)::(Noun D-9887-UAY)::nil), true, Exemplary, dodger-blue::nil)
+do add_item_ex(FiftyFourthPlaceandBlackstone, Missing (Noun V-1623-KTK, (Noun Z-4292-PWR)::(Noun D-9887-UAY)::nil), true, Exemplary, blaze-orange::nil)
+
+
+(*
+  val missing_percent_chance = 40
+  val max_missing = 2
+  val lambda_percent_chance = 0
+  val duplicate_percent_chance = 0
+  val reuse_prop = 20
+  val break_mult = 5
+  val drop_mult = 1
+  val phoenixize_mult = 2
+
+val (pf, (goal, pile)) = Generator.generate 434 (ref (0wx1EADBE3F, 0wx7EED83F)) 75 5 (nil, (nil, (Noun "JumperShunt", nil)::nil, Noun "JumperShunt"));
+
+val (pf, (goal, pile)) = Generator.generate 493 (ref (0wx1EA00E3F, 0wx173ED83F)) 50 5 (nil, (nil, (Missing (Noun (Part 446),[Noun (Part 447),Noun (Part 475)]),["amethyst"])::nil, Missing (Noun (Part 446),[Noun (Part 447),Noun (Part 475)])));
+
+val (pf3, (goal3, pile3)) = Generator.generate 530 (ref (0wx19900E3F, 0wx173ED81F)) 40 5 (nil, (nil, (Noun (Part 496),["mysterious"])::nil, (Noun (Part 496),["mysterious"])));
+
+
+val pf =
+  ([Pickup (Noun (Part 445),["celadon"]),
+    Incinerate (Noun (Part 445),["celadon"]),
+    Pickup (Missing (Noun (Part 442),[Noun (Part 443)]),["discounted"]),
+    Incinerate (Missing (Noun (Part 442),[Noun (Part 443)]),["discounted"]),
+    Pickup
+      (Missing
+         (Missing
+            (Missing (Noun (Part 435),[Noun (Part 436)]),
+             [Noun (Part 437),Noun (Part 438)]),
+          [Noun (Part 439),Missing (Noun (Part 440),[Noun (Part 441)])]),
+       ["indigo"]),
+    Incinerate
+      (Missing
+         (Missing
+            (Missing (Noun (Part 435),[Noun (Part 436)]),
+             [Noun (Part 437),Noun (Part 438)]),
+          [Noun (Part 439),Missing (Noun (Part 440),[Noun (Part 441)])]),
+       ["indigo"]),
+    Pickup
+      (Missing
+         (Noun "JumperShunt",
+          [Noun (Part 444),
+           Missing
+             (Missing
+                (Missing (Noun (Part 435),[Noun (Part 436)]),
+                 [Noun (Part 437),Noun (Part 438)]),
+              [Noun (Part 439),Missing (Noun (Part 440),[Noun (Part 441)])]),
+           Missing (Noun (Part 442),[Noun (Part 443)]),
+           Missing (Noun (Part 446),[Noun (Part 447)])]),[]),
+    Pickup
+      (Missing
+         (Noun (Part 448),
+          [Missing (Noun (Part 449),[Noun (Part 450),Noun (Part 451)])]),
+       ["peach-yellow"]),
+    Incinerate
+      (Missing
+         (Noun (Part 448),
+          [Missing (Noun (Part 449),[Noun (Part 450),Noun (Part 451)])]),
+       ["peach-yellow"]),
+    Pickup (Missing (Noun (Part 452),[Noun (Part 453)]),["low-carb"]),
+    Incinerate (Missing (Noun (Part 452),[Noun (Part 453)]),["low-carb"]),
+    Pickup (Missing (Noun (Part 446),[Noun (Part 447)]),["mauve"]),
+    Incinerate (Missing (Noun (Part 446),[Noun (Part 447)]),["mauve"]),
+    Pickup (Noun (Part 458),["dodger-blue"]),
+    Incinerate (Noun (Part 458),["dodger-blue"]),
+    Pickup
+      (Missing
+         (Noun (Part 444),
+          [Noun (Part 459),
+           Missing
+             (Missing (Noun (Part 454),[Noun (Part 455)]),
+              [Noun (Part 456),Noun (Part 457)])]),["gray90"]),
+    Pickup
+      (Missing
+         (Missing
+            (Missing
+               (Noun (Part 460),
+                [Noun (Part 461),
+                 Missing
+                   (Noun (Part 462),[Noun (Part 463),Noun (Part 464)])]),
+             [Noun (Part 465),Noun (Part 466)]),[Noun (Part 467)]),
+       ["gargantuan"]),
+    Incinerate
+      (Missing
+         (Missing
+            (Missing
+               (Noun (Part 460),
+                [Noun (Part 461),
+                 Missing
+                   (Noun (Part 462),[Noun (Part 463),Noun (Part 464)])]),
+             [Noun (Part 465),Noun (Part 466)]),[Noun (Part 467)]),
+       ["gargantuan"]),Pickup (Noun (Part 458),["gamboge"]),
+    Incinerate (Noun (Part 458),["gamboge"]),
+    Pickup (Noun (Part 459),["blue"]),
+    Combine
+      ((Missing
+          (Noun (Part 444),
+           [Noun (Part 459),
+            Missing
+              (Missing (Noun (Part 454),[Noun (Part 455)]),
+               [Noun (Part 456),Noun (Part 457)])]),["gray90"]),
+       (Noun (Part 459),["blue"])),
+    Pickup (Missing (Noun (Part 442),[Noun (Part 443)]),["water-logged"]),
+    Incinerate
+      (Missing (Noun (Part 442),[Noun (Part 443)]),["water-logged"]),
+    Pickup
+      (Missing
+         (Missing (Noun (Part 454),[Noun (Part 455)]),
+          [Noun (Part 456),Noun (Part 457),
+           Missing (Noun (Part 468),[Noun (Part 469),Noun (Part 470)])]),
+       ["blue"]),
+    Incinerate
+      (Missing
+         (Missing (Noun (Part 454),[Noun (Part 455)]),
+          [Noun (Part 456),Noun (Part 457),
+           Missing (Noun (Part 468),[Noun (Part 469),Noun (Part 470)])]),
+       ["blue"]),Pickup (Noun (Part 472),["pale-violet-red"]),
+    Incinerate (Noun (Part 472),["pale-violet-red"]),
+    Pickup
+      (Missing
+         (Noun (Part 468),
+          [Noun (Part 469),Noun (Part 470),Noun (Part 472)]),
+       ["spring-green"]),
+    Incinerate
+      (Missing
+         (Noun (Part 468),
+          [Noun (Part 469),Noun (Part 470),Noun (Part 472)]),
+       ["spring-green"]),
+    Pickup
+      (Missing
+         (Noun (Part 442),
+          [Noun (Part 443),
+           Missing (Noun (Part 468),[Noun (Part 469),Noun (Part 470)])]),
+       ["sapphire"]),
+    Pickup
+      (Missing (Noun (Part 442),[Noun (Part 443),Noun (Part 458)]),
+       ["jade"]),
+    Incinerate
+      (Missing (Noun (Part 442),[Noun (Part 443),Noun (Part 458)]),
+       ["jade"]),
+    Pickup
+      (Missing
+         (Noun (Part 458),[Missing (Noun (Part 473),[Noun (Part 474)])]),
+       ["cyan"]),
+    Incinerate
+      (Missing
+         (Noun (Part 458),[Missing (Noun (Part 473),[Noun (Part 474)])]),
+       ["cyan"]),
+    Pickup
+      (Missing (Noun (Part 468),[Noun (Part 469),Noun (Part 470)]),
+       ["flax"]),
+    Combine
+      ((Missing
+          (Noun (Part 442),
+           [Noun (Part 443),
+            Missing (Noun (Part 468),[Noun (Part 469),Noun (Part 470)])]),
+        ["sapphire"]),
+       (Missing (Noun (Part 468),[Noun (Part 469),Noun (Part 470)]),
+        ["flax"])),
+    Combine
+      ((Missing
+          (Noun "JumperShunt",
+           [Noun (Part 444),
+            Missing
+              (Missing
+                 (Missing (Noun (Part 435),[Noun (Part 436)]),
+                  [Noun (Part 437),Noun (Part 438)]),
+               [Noun (Part 439),
+                Missing (Noun (Part 440),[Noun (Part 441)])]),
+            Missing (Noun (Part 442),[Noun (Part 443)]),
+            Missing (Noun (Part 446),[Noun (Part 447)])]),[]),
+       (Missing (Noun (Part 442),[Noun (Part 443)]),["sapphire"])),
+    Pickup
+      (Missing (Noun (Part 446),[Noun (Part 447),Noun (Part 475)]),
+       ["amethyst"]),Pickup (Noun (Part 475),["periwinkle"]),
+    Combine
+      ((Missing (Noun (Part 446),[Noun (Part 447),Noun (Part 475)]),
+        ["amethyst"]),(Noun (Part 475),["periwinkle"])),
+    Combine
+      ((Missing
+          (Noun "JumperShunt",
+           [Noun (Part 444),
+            Missing
+              (Missing
+                 (Missing (Noun (Part 435),[Noun (Part 436)]),
+                  [Noun (Part 437),Noun (Part 438)]),
+               [Noun (Part 439),
+                Missing (Noun (Part 440),[Noun (Part 441)])]),
+            Missing (Noun (Part 446),[Noun (Part 447)])]),[]),
+       (Missing (Noun (Part 446),[Noun (Part 447)]),["amethyst"])),
+    Pickup
+      (Missing
+         (Noun (Part 473),
+          [Noun (Part 474),Noun (Part 476),Noun (Part 477),
+           Missing (Noun (Part 446),[Noun (Part 447)])]),["blaze-orange"]),
+    Incinerate
+      (Missing
+         (Noun (Part 473),
+          [Noun (Part 474),Noun (Part 476),Noun (Part 477),
+           Missing (Noun (Part 446),[Noun (Part 447)])]),["blaze-orange"]),
+    Pickup (Noun (Part 477),["lemon-cream"]),
+    Incinerate (Noun (Part 477),["lemon-cream"]),
+    Pickup (Noun (Part 471),["viridian"]),
+    Incinerate (Noun (Part 471),["viridian"]),
+    Pickup (Noun (Part 481),["gray70"]),
+    Incinerate (Noun (Part 481),["gray70"]),
+    Pickup
+      (Missing
+         (Noun (Part 478),
+          [Noun (Part 479),Noun (Part 480),
+           Missing
+             (Missing (Noun (Part 482),[Noun (Part 483),Noun (Part 484)]),
+              [Noun (Part 485)])]),["snow"]),
+    Incinerate
+      (Missing
+         (Noun (Part 478),
+          [Noun (Part 479),Noun (Part 480),
+           Missing
+             (Missing (Noun (Part 482),[Noun (Part 483),Noun (Part 484)]),
+              [Noun (Part 485)])]),["snow"]),
+    Pickup
+      (Missing
+         (Missing (Noun (Part 482),[Noun (Part 483),Noun (Part 484)]),
+          [Noun (Part 485),
+           Missing (Noun (Part 468),[Noun (Part 469),Noun (Part 470)])]),
+       ["hypoallergenic"]),
+    Incinerate
+      (Missing
+         (Missing (Noun (Part 482),[Noun (Part 483),Noun (Part 484)]),
+          [Noun (Part 485),
+           Missing (Noun (Part 468),[Noun (Part 469),Noun (Part 470)])]),
+       ["hypoallergenic"]),
+    Pickup
+      (Missing
+         (Noun (Part 468),
+          [Noun (Part 469),Noun (Part 470),
+           Missing
+             (Missing (Noun (Part 454),[Noun (Part 455)]),
+              [Noun (Part 456),Noun (Part 457)])]),["gargantuan"]),
+    Incinerate
+      (Missing
+         (Noun (Part 468),
+          [Noun (Part 469),Noun (Part 470),
+           Missing
+             (Missing (Noun (Part 454),[Noun (Part 455)]),
+              [Noun (Part 456),Noun (Part 457)])]),["gargantuan"]),
+    Pickup
+      (Missing
+         (Missing (Noun (Part 454),[Noun (Part 455)]),
+          [Noun (Part 456),Noun (Part 457)]),["shiny"]),
+    Combine
+      ((Missing
+          (Noun (Part 444),
+           [Missing
+              (Missing (Noun (Part 454),[Noun (Part 455)]),
+               [Noun (Part 456),Noun (Part 457)])]),["gray90"]),
+       (Missing
+          (Missing (Noun (Part 454),[Noun (Part 455)]),
+           [Noun (Part 456),Noun (Part 457)]),["shiny"])),
+    Combine
+      ((Missing
+          (Noun "JumperShunt",
+           [Noun (Part 444),
+            Missing
+              (Missing
+                 (Missing (Noun (Part 435),[Noun (Part 436)]),
+                  [Noun (Part 437),Noun (Part 438)]),
+               [Noun (Part 439),
+                Missing (Noun (Part 440),[Noun (Part 441)])])]),[]),
+       (Noun (Part 444),["gray90"])),
+    Pickup
+      (Missing
+         (Missing
+            (Missing (Noun (Part 435),[Noun (Part 436)]),
+             [Noun (Part 437),Noun (Part 438)]),
+          [Noun (Part 439),Noun (Part 487),
+           Missing (Noun (Part 440),[Noun (Part 441)])]),["rust"]),
+    Pickup (Missing (Noun (Part 486),[Noun (Part 488)]),["gray90"]),
+    Incinerate (Missing (Noun (Part 486),[Noun (Part 488)]),["gray90"]),
+    Pickup (Noun (Part 488),["blanched-almond-colored"]),
+    Incinerate (Noun (Part 488),["blanched-almond-colored"]),
+    Pickup (Noun (Part 490),["sangria"]),
+    Incinerate (Noun (Part 490),["sangria"]),
+    Pickup
+      (Missing (Noun (Part 487),[Noun (Part 489),Noun (Part 491)]),
+       ["burgundy"]),
+    Pickup (Missing (Noun (Part 491),[Noun (Part 492)]),["fuchsia"]),
+    Pickup (Noun (Part 492),["plum"]),
+    Combine
+      ((Missing (Noun (Part 491),[Noun (Part 492)]),["fuchsia"]),
+       (Noun (Part 492),["plum"])),
+    Combine
+      ((Missing (Noun (Part 487),[Noun (Part 489),Noun (Part 491)]),
+        ["burgundy"]),(Noun (Part 491),["fuchsia"])),
+    Pickup (Noun (Part 489),["burgundy"]),
+    Combine
+      ((Missing (Noun (Part 487),[Noun (Part 489)]),["burgundy"]),
+       (Noun (Part 489),["burgundy"])),
+    Combine
+      ((Missing
+          (Missing
+             (Missing (Noun (Part 435),[Noun (Part 436)]),
+              [Noun (Part 437),Noun (Part 438)]),
+           [Noun (Part 439),Noun (Part 487),
+            Missing (Noun (Part 440),[Noun (Part 441)])]),["rust"]),
+       (Noun (Part 487),["burgundy"])),
+    Combine
+      ((Missing
+          (Noun "JumperShunt",
+           [Missing
+              (Missing
+                 (Missing (Noun (Part 435),[Noun (Part 436)]),
+                  [Noun (Part 437),Noun (Part 438)]),
+               [Noun (Part 439),
+                Missing (Noun (Part 440),[Noun (Part 441)])])]),[]),
+       (Missing
+          (Missing
+             (Missing (Noun (Part 435),[Noun (Part 436)]),
+              [Noun (Part 437),Noun (Part 438)]),
+           [Noun (Part 439),Missing (Noun (Part 440),[Noun (Part 441)])]),
+        ["rust"]))],631892) : (prop * adjective list) step list * int
+
+val goal = Noun "JumperShunt" : prop
+val pile =
+  [(Noun (Part 445),["gray80"]),
+   (Missing
+      (Noun (Part 476),
+       [Missing (Noun (Part 478),[Noun (Part 479),Noun (Part 480)])]),
+    ["green"]),(Noun (Part 489),["burgundy"]),(Noun (Part 492),["plum"]),
+   (Missing (Noun (Part 491),[Noun (Part 492)]),["fuchsia"]),
+   (Missing (Noun (Part 487),[Noun (Part 489),Noun (Part 491)]),
+    ["burgundy"]),(Noun (Part 490),["sangria"]),
+   (Noun (Part 488),["blanched-almond-colored"]),
+   (Missing (Noun (Part 486),[Noun (Part 488)]),["gray90"]),
+   (Missing
+      (Missing
+         (Missing (Noun (Part 435),[Noun (Part 436)]),
+          [Noun (Part 437),Noun (Part 438)]),
+       [Noun (Part 439),Noun (Part 487),
+        Missing (Noun (Part 440),[Noun (Part 441)])]),["rust"]),
+   (Missing
+      (Missing (Noun (Part 454),[Noun (Part 455)]),
+       [Noun (Part 456),Noun (Part 457)]),["shiny"]),
+   (Missing
+      (Noun (Part 468),
+       [Noun (Part 469),Noun (Part 470),
+        Missing
+          (Missing (Noun (Part 454),[Noun (Part 455)]),
+           [Noun (Part 456),Noun (Part 457)])]),["gargantuan"]),
+   (Missing
+      (Missing (Noun (Part 482),[Noun (Part 483),Noun (Part 484)]),
+       [Missing (Noun (Part 468),[Noun (Part 469),Noun (Part 470)]),
+        Noun (Part 485)]),["hypoallergenic"]),
+   (Missing
+      (Noun (Part 478),
+       [Noun (Part 479),
+        Missing
+          (Missing (Noun (Part 482),[Noun (Part 483),Noun (Part 484)]),
+           [Noun (Part 485)]),Noun (Part 480)]),["snow"]),
+   (Noun (Part 481),["gray70"]),(Noun (Part 471),["viridian"]),
+   (Noun (Part 477),["lemon-cream"]),
+   (Missing
+      (Noun (Part 473),
+       [Noun (Part 476),Missing (Noun (Part 446),[Noun (Part 447)]),
+        Noun (Part 477),Noun (Part 474)]),["blaze-orange"]),
+   (Noun (Part 475),["periwinkle"]),
+   (Missing (Noun (Part 446),[Noun (Part 475),Noun (Part 447)]),
+    ["amethyst"]),
+   (Missing (Noun (Part 468),[Noun (Part 469),Noun (Part 470)]),["flax"]),
+   (Missing (Noun (Part 458),[Missing (Noun (Part 473),[Noun (Part 474)])]),
+    ["cyan"]),
+   (Missing (Noun (Part 442),[Noun (Part 458),Noun (Part 443)]),["jade"]),
+   (Missing
+      (Noun (Part 442),
+       [Noun (Part 443),
+        Missing (Noun (Part 468),[Noun (Part 469),Noun (Part 470)])]),
+    ["sapphire"]),
+   (Missing
+      (Noun (Part 468),[Noun (Part 469),Noun (Part 470),Noun (Part 472)]),
+    ["spring-green"]),(Noun (Part 472),["pale-violet-red"]),
+   (Missing
+      (Missing (Noun (Part 454),[Noun (Part 455)]),
+       [Noun (Part 456),Noun (Part 457),
+        Missing (Noun (Part 468),[Noun (Part 469),Noun (Part 470)])]),
+    ["blue"]),
+   (Missing (Noun (Part 442),[Noun (Part 443)]),["water-logged"]),
+   (Noun (Part 459),["blue"]),(Noun (Part 458),["gamboge"]),
+   (Missing
+      (Missing
+         (Missing
+            (Noun (Part 460),
+             [Noun (Part 461),
+              Missing (Noun (Part 462),[Noun (Part 463),Noun (Part 464)])]),
+          [Noun (Part 465),Noun (Part 466)]),[Noun (Part 467)]),
+    ["gargantuan"]),
+   (Missing
+      (Noun (Part 444),
+       [Noun (Part 459),
+        Missing
+          (Missing (Noun (Part 454),[Noun (Part 455)]),
+           [Noun (Part 456),Noun (Part 457)])]),["gray90"]),
+   (Noun (Part 458),["dodger-blue"]),
+   (Missing (Noun (Part 446),[Noun (Part 447)]),["mauve"]),
+   (Missing (Noun (Part 452),[Noun (Part 453)]),["low-carb"]),
+   (Missing
+      (Noun (Part 448),
+       [Missing (Noun (Part 449),[Noun (Part 450),Noun (Part 451)])]),
+    ["peach-yellow"]),
+   (Missing
+      (Noun "JumperShunt",
+       [Missing (Noun (Part 442),[Noun (Part 443)]),
+        Missing (Noun (Part 446),[Noun (Part 447)]),
+        Missing
+          (Missing
+             (Missing (Noun (Part 435),[Noun (Part 436)]),
+              [Noun (Part 437),Noun (Part 438)]),
+           [Noun (Part 439),Missing (Noun (Part 440),[Noun (Part 441)])]),
+        Noun (Part 444)]),[]),
+   (Missing
+      (Missing
+         (Missing (Noun (Part 435),[Noun (Part 436)]),
+          [Noun (Part 437),Noun (Part 438)]),
+       [Noun (Part 439),Missing (Noun (Part 440),[Noun (Part 441)])]),
+    ["indigo"]),
+   (Missing (Noun (Part 442),[Noun (Part 443)]),["discounted"]),
+   (Noun (Part 445),["celadon"])] : (prop * string list) list
+
+
+
+
+val pf2 =
+  [Pickup
+     (Missing
+        (Missing (Noun (Part 503),[Noun (Part 504)]),[Noun (Part 505)]),
+      ["dodger-blue"]),Pickup (Noun (Part 494),["pear"]),
+   Pickup
+     (Missing
+        (Noun (Part 519),
+         [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)])]),
+      ["goldenrod"]),Pickup (Noun (Part 529),["pale-pink"]),
+   Pickup
+     (Missing
+        (Noun (Part 510),
+         [Noun (Part 513),
+          Missing
+            (Noun (Part 519),
+             [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)])]),
+          Missing
+            (Noun (Part 519),
+             [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)])]),
+          Noun (Part 529),Noun (Part 518),
+          Missing (Noun (Part 511),[Noun (Part 512)])]),["tan"]),
+   Combine
+     ((Missing
+         (Noun (Part 510),
+          [Noun (Part 513),
+           Missing
+             (Noun (Part 519),
+              [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)])]),
+           Missing
+             (Noun (Part 519),
+              [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)])]),
+           Noun (Part 529),Noun (Part 518),
+           Missing (Noun (Part 511),[Noun (Part 512)])]),["tan"]),
+      (Noun (Part 529),["pale-pink"])),
+   Combine
+     ((Missing
+         (Noun (Part 510),
+          [Missing
+             (Noun (Part 519),
+              [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)])]),
+           Noun (Part 518),Noun (Part 513),
+           Missing (Noun (Part 511),[Noun (Part 512)]),
+           Missing
+             (Noun (Part 519),
+              [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)])])]),
+       ["tan"]),
+      (Missing
+         (Noun (Part 519),
+          [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)])]),
+       ["goldenrod"])),
+   Pickup
+     (Missing
+        (Noun (Part 514),
+         [Missing
+            (Missing (Noun (Part 524),[Noun (Part 525),Noun (Part 526)]),
+             [Noun (Part 527),Noun (Part 528)])]),["pale-magenta"]),
+   Pickup
+     (Missing
+        (Missing (Noun (Part 524),[Noun (Part 525),Noun (Part 526)]),
+         [Noun (Part 527),Noun (Part 528)]),["rosy-brown"]),
+   Combine
+     ((Missing
+         (Noun (Part 514),
+          [Missing
+             (Missing (Noun (Part 524),[Noun (Part 525),Noun (Part 526)]),
+              [Noun (Part 527),Noun (Part 528)])]),["pale-magenta"]),
+      (Missing
+         (Missing (Noun (Part 524),[Noun (Part 525),Noun (Part 526)]),
+          [Noun (Part 527),Noun (Part 528)]),["rosy-brown"])),
+   Pickup
+     (Missing (Noun (Part 514),[Noun (Part 494)]),["school-bus-yellow"]),
+   Combine
+     ((Missing (Noun (Part 514),[Noun (Part 494)]),["school-bus-yellow"]),
+      (Noun (Part 494),["pear"])),
+   Pickup
+     (Missing
+        (Noun (Part 519),
+         [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)]),
+          Noun (Part 514)]),["bright-green"]),
+   Combine
+     ((Missing
+         (Noun (Part 519),
+          [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)]),
+           Noun (Part 514)]),["bright-green"]),
+      (Noun (Part 514),["school-bus-yellow"])),
+   Pickup (Noun (Part 523),["momemtum-preserving"]),
+   Incinerate (Noun (Part 523),["momemtum-preserving"]),
+   Combine
+     ((Missing
+         (Noun (Part 510),
+          [Noun (Part 513),Noun (Part 518),
+           Missing
+             (Noun (Part 519),
+              [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)])]),
+           Missing (Noun (Part 511),[Noun (Part 512)])]),["tan"]),
+      (Missing
+         (Noun (Part 519),
+          [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)])]),
+       ["bright-green"])),Pickup (Noun (Part 518),["magenta"]),
+   Combine
+     ((Missing
+         (Noun (Part 510),
+          [Noun (Part 518),Missing (Noun (Part 511),[Noun (Part 512)]),
+           Noun (Part 513)]),["tan"]),(Noun (Part 518),["magenta"])),
+   Pickup (Noun (Part 496),["mysterious"]),
+   Pickup
+     (Missing
+        (Noun (Part 515),
+         [Noun (Part 517),Noun (Part 516),Noun (Part 496)]),["celadon"]),
+   Combine
+     ((Missing
+         (Noun (Part 515),
+          [Noun (Part 517),Noun (Part 516),Noun (Part 496)]),["celadon"]),
+      (Noun (Part 496),["mysterious"])),
+   Pickup (Noun (Part 517),["persian-blue"]),
+   Combine
+     ((Missing (Noun (Part 515),[Noun (Part 517),Noun (Part 516)]),
+       ["celadon"]),(Noun (Part 517),["persian-blue"])),
+   Pickup (Noun (Part 516),["water-logged"]),
+   Combine
+     ((Missing (Noun (Part 515),[Noun (Part 516)]),["celadon"]),
+      (Noun (Part 516),["water-logged"])),
+   Pickup
+     (Missing
+        (Noun (Part 494),
+         [Missing
+            (Noun (Part 510),
+             [Missing (Noun (Part 511),[Noun (Part 512)]),Noun (Part 513)]),
+          Noun (Part 515)]),["gray20"]),
+   Combine
+     ((Missing
+         (Noun (Part 494),
+          [Missing
+             (Noun (Part 510),
+              [Missing (Noun (Part 511),[Noun (Part 512)]),Noun (Part 513)]),
+           Noun (Part 515)]),["gray20"]),(Noun (Part 515),["celadon"])),
+   Incinerate (Noun (Part 514),["pale-magenta"]),
+   Combine
+     ((Missing
+         (Noun (Part 494),
+          [Missing
+             (Noun (Part 510),
+              [Missing (Noun (Part 511),[Noun (Part 512)]),Noun (Part 513)])]),
+       ["gray20"]),
+      (Missing
+         (Noun (Part 510),
+          [Missing (Noun (Part 511),[Noun (Part 512)]),Noun (Part 513)]),
+       ["tan"])),Pickup (Noun (Part 495),["blanched-almond-colored"]),
+   Pickup
+     (Missing
+        (Missing (Noun (Part 503),[Noun (Part 504)]),[Noun (Part 505)]),
+      ["sapphire"]),
+   Pickup
+     (Missing
+        (Noun (Part 500),
+         [Missing
+            (Missing (Noun (Part 503),[Noun (Part 504)]),[Noun (Part 505)])]),
+      ["lime"]),
+   Incinerate
+     (Missing
+        (Missing (Noun (Part 503),[Noun (Part 504)]),[Noun (Part 505)]),
+      ["sapphire"]),
+   Pickup
+     (Missing
+        (Missing (Noun (Part 506),[Noun (Part 507),Noun (Part 508)]),
+         [Noun (Part 509)]),["reverse-chirality"]),
+   Incinerate
+     (Missing
+        (Missing (Noun (Part 506),[Noun (Part 507),Noun (Part 508)]),
+         [Noun (Part 509)]),["reverse-chirality"]),
+   Pickup
+     (Missing
+        (Missing (Noun (Part 503),[Noun (Part 504)]),[Noun (Part 505)]),
+      ["lemon-cream"]),
+   Combine
+     ((Missing
+         (Noun (Part 500),
+          [Missing
+             (Missing (Noun (Part 503),[Noun (Part 504)]),
+              [Noun (Part 505)])]),["lime"]),
+      (Missing
+         (Missing (Noun (Part 503),[Noun (Part 504)]),[Noun (Part 505)]),
+       ["lemon-cream"])),
+   Pickup
+     (Missing
+        (Noun (Part 502),
+         [Missing
+            (Missing (Noun (Part 503),[Noun (Part 504)]),[Noun (Part 505)])]),
+      ["lavender"]),
+   Combine
+     ((Missing
+         (Noun (Part 502),
+          [Missing
+             (Missing (Noun (Part 503),[Noun (Part 504)]),
+              [Noun (Part 505)])]),["lavender"]),
+      (Missing
+         (Missing (Noun (Part 503),[Noun (Part 504)]),[Noun (Part 505)]),
+       ["dodger-blue"])),
+   Pickup (Missing (Noun (Part 501),[Noun (Part 502)]),["fuchsia"]),
+   Combine
+     ((Missing (Noun (Part 501),[Noun (Part 502)]),["fuchsia"]),
+      (Noun (Part 502),["lavender"])),
+   Pickup (Missing (Noun (Part 496),[Noun (Part 501)]),["organic"]),
+   Combine
+     ((Missing (Noun (Part 496),[Noun (Part 501)]),["organic"]),
+      (Noun (Part 501),["fuchsia"])),
+   Pickup (Missing (Noun (Part 494),[Noun (Part 500)]),["cornflower-blue"]),
+   Combine
+     ((Missing (Noun (Part 494),[Noun (Part 500)]),["cornflower-blue"]),
+      (Noun (Part 500),["lime"])),
+   Pickup
+     (Missing (Noun (Part 497),[Noun (Part 498),Noun (Part 499)]),
+      ["moccasin"]),
+   Incinerate
+     (Missing (Noun (Part 497),[Noun (Part 498),Noun (Part 499)]),
+      ["moccasin"]),
+   Pickup
+     (Missing (Noun (Part 496),[Noun (Part 496),Noun (Part 494)]),["pink"]),
+   Combine
+     ((Missing (Noun (Part 496),[Noun (Part 496),Noun (Part 494)]),
+       ["pink"]),(Noun (Part 496),["organic"])),
+   Pickup
+     (Missing
+        (Noun "T-6678-BOP",
+         [Noun (Part 494),Noun "X-9247-GRW",Noun (Part 495),
+          Noun (Part 496),Noun "F-5065-QBC"]),["amethyst"]),
+   Combine
+     ((Missing (Noun (Part 496),[Noun (Part 494)]),["pink"]),
+      (Noun (Part 494),["cornflower-blue"])),
+   Combine
+     ((Missing
+         (Noun "T-6678-BOP",
+          [Noun (Part 494),Noun "X-9247-GRW",Noun (Part 495),
+           Noun (Part 496),Noun "F-5065-QBC"]),["amethyst"]),
+      (Noun (Part 496),["pink"])),
+   Combine
+     ((Missing
+         (Noun "T-6678-BOP",
+          [Noun "X-9247-GRW",Noun "F-5065-QBC",Noun (Part 494),
+           Noun (Part 495)]),["amethyst"]),
+      (Noun (Part 495),["blanched-almond-colored"])),
+   Combine
+     ((Missing
+         (Noun "T-6678-BOP",
+          [Noun "F-5065-QBC",Noun (Part 494),Noun "X-9247-GRW"]),
+       ["amethyst"]),(Noun (Part 494),["gray20"]))]
+  : (prop * string list) step list
+val goal2 = Missing (Noun "T-6678-BOP",[Noun "X-9247-GRW",Noun "F-5065-QBC"])
+  : prop
+val pile2 =
+  [(Missing (Missing (Noun (Part 503),[Noun (Part 504)]),[Noun (Part 505)]),
+    ["dodger-blue"]),(Noun (Part 494),["pear"]),
+   (Missing
+      (Noun (Part 519),
+       [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)])]),
+    ["goldenrod"]),(Noun (Part 529),["pale-pink"]),
+   (Missing
+      (Noun (Part 510),
+       [Noun (Part 513),
+        Missing
+          (Noun (Part 519),
+           [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)])]),
+        Missing
+          (Noun (Part 519),
+           [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)])]),
+        Noun (Part 529),Noun (Part 518),
+        Missing (Noun (Part 511),[Noun (Part 512)])]),["tan"]),
+   (Missing
+      (Noun (Part 514),
+       [Missing
+          (Missing (Noun (Part 524),[Noun (Part 525),Noun (Part 526)]),
+           [Noun (Part 527),Noun (Part 528)])]),["pale-magenta"]),
+   (Missing
+      (Missing (Noun (Part 524),[Noun (Part 525),Noun (Part 526)]),
+       [Noun (Part 527),Noun (Part 528)]),["rosy-brown"]),
+   (Missing (Noun (Part 514),[Noun (Part 494)]),["school-bus-yellow"]),
+   (Missing
+      (Noun (Part 519),
+       [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)]),
+        Noun (Part 514)]),["bright-green"]),
+   (Noun (Part 523),["momemtum-preserving"]),(Noun (Part 518),["magenta"]),
+   (Noun (Part 496),["mysterious"]),
+   (Missing
+      (Noun (Part 515),[Noun (Part 517),Noun (Part 516),Noun (Part 496)]),
+    ["celadon"]),(Noun (Part 517),["persian-blue"]),
+   (Noun (Part 516),["water-logged"]),
+   (Missing
+      (Noun (Part 494),
+       [Missing
+          (Noun (Part 510),
+           [Missing (Noun (Part 511),[Noun (Part 512)]),Noun (Part 513)]),
+        Noun (Part 515)]),["gray20"]),
+   (Noun (Part 495),["blanched-almond-colored"]),
+   (Missing (Missing (Noun (Part 503),[Noun (Part 504)]),[Noun (Part 505)]),
+    ["sapphire"]),
+   (Missing
+v      (Noun (Part 500),
+       [Missing
+          (Missing (Noun (Part 503),[Noun (Part 504)]),[Noun (Part 505)])]),
+    ["lime"]),
+   (Missing
+      (Missing (Noun (Part 506),[Noun (Part 507),Noun (Part 508)]),
+       [Noun (Part 509)]),["reverse-chirality"]),
+   (Missing (Missing (Noun (Part 503),[Noun (Part 504)]),[Noun (Part 505)]),
+    ["lemon-cream"]),
+   (Missing
+      (Noun (Part 502),
+       [Missing
+          (Missing (Noun (Part 503),[Noun (Part 504)]),[Noun (Part 505)])]),
+    ["lavender"]),(Missing (Noun (Part 501),[Noun (Part 502)]),["fuchsia"]),
+   (Missing (Noun (Part 496),[Noun (Part 501)]),["organic"]),
+   (Missing (Noun (Part 494),[Noun (Part 500)]),["cornflower-blue"]),
+   (Missing (Noun (Part 497),[Noun (Part 498),Noun (Part 499)]),
+    ["moccasin"]),
+   (Missing (Noun (Part 496),[Noun (Part 496),Noun (Part 494)]),["pink"]),
+   (Missing
+      (Noun "T-6678-BOP",
+       [Noun (Part 494),Noun "X-9247-GRW",Noun (Part 495),Noun (Part 496),
+        Noun "F-5065-QBC"]),["amethyst"])] : (prop * string list) list
+
+val pf2 =
+  ([Pickup
+      (Missing
+         (Noun "T-6678-BOP",
+          [Noun "F-5065-QBC",Noun (Part 494),Noun (Part 495),
+           Noun (Part 496),Noun "X-9247-GRW"]),["amethyst"]),
+    Pickup
+      (Missing (Noun (Part 496),[Noun (Part 494),Noun (Part 496)]),
+       ["pink"]),
+    Incinerate
+      (Missing (Noun (Part 496),[Noun (Part 494),Noun (Part 496)]),
+       ["pink"]),
+    Pickup
+      (Missing (Noun (Part 497),[Noun (Part 498),Noun (Part 499)]),
+       ["moccasin"]),
+    Incinerate
+      (Missing (Noun (Part 497),[Noun (Part 498),Noun (Part 499)]),
+       ["moccasin"]),
+    Pickup (Missing (Noun (Part 494),[Noun (Part 500)]),["cornflower-blue"]),
+    Incinerate
+      (Missing (Noun (Part 494),[Noun (Part 500)]),["cornflower-blue"]),
+    Pickup (Missing (Noun (Part 496),[Noun (Part 501)]),["organic"]),
+    Incinerate (Missing (Noun (Part 496),[Noun (Part 501)]),["organic"]),
+    Pickup (Missing (Noun (Part 501),[Noun (Part 502)]),["fuchsia"]),
+    Incinerate (Missing (Noun (Part 501),[Noun (Part 502)]),["fuchsia"]),
+    Pickup
+      (Missing
+         (Noun (Part 502),
+          [Missing
+             (Missing (Noun (Part 503),[Noun (Part 504)]),
+              [Noun (Part 505)])]),["lavender"]),
+    Incinerate
+      (Missing
+         (Noun (Part 502),
+          [Missing
+             (Missing (Noun (Part 503),[Noun (Part 504)]),
+              [Noun (Part 505)])]),["lavender"]),
+    Pickup
+      (Missing
+         (Missing (Noun (Part 503),[Noun (Part 504)]),[Noun (Part 505)]),
+       ["lemon-cream"]),
+    Incinerate
+      (Missing
+         (Missing (Noun (Part 503),[Noun (Part 504)]),[Noun (Part 505)]),
+       ["lemon-cream"]),
+    Pickup
+      (Missing
+         (Missing (Noun (Part 506),[Noun (Part 507),Noun (Part 508)]),
+          [Noun (Part 509)]),["reverse-chirality"]),
+    Incinerate
+      (Missing
+         (Missing (Noun (Part 506),[Noun (Part 507),Noun (Part 508)]),
+          [Noun (Part 509)]),["reverse-chirality"]),
+    Pickup
+      (Missing
+         (Noun (Part 500),
+          [Missing
+             (Missing (Noun (Part 503),[Noun (Part 504)]),
+              [Noun (Part 505)])]),["lime"]),
+    Incinerate
+      (Missing
+         (Noun (Part 500),
+          [Missing
+             (Missing (Noun (Part 503),[Noun (Part 504)]),
+              [Noun (Part 505)])]),["lime"]),
+    Pickup
+      (Missing
+         (Missing (Noun (Part 503),[Noun (Part 504)]),[Noun (Part 505)]),
+       ["sapphire"]),
+    Incinerate
+      (Missing
+         (Missing (Noun (Part 503),[Noun (Part 504)]),[Noun (Part 505)]),
+       ["sapphire"]),Pickup (Noun (Part 495),["blanched-almond-colored"]),
+    Combine
+      ((Missing
+          (Noun "T-6678-BOP",
+           [Noun "F-5065-QBC",Noun (Part 494),Noun (Part 495),
+            Noun (Part 496),Noun "X-9247-GRW"]),["amethyst"]),
+       (Noun (Part 495),["blanched-almond-colored"])),
+    Pickup
+      (Missing
+         (Noun (Part 494),
+          [Noun (Part 515),
+           Missing
+             (Noun (Part 510),
+              [Noun (Part 513),Missing (Noun (Part 511),[Noun (Part 512)])])]),
+       ["gray20"]),
+    Incinerate
+      (Missing
+         (Noun (Part 494),
+          [Noun (Part 515),
+           Missing
+             (Noun (Part 510),
+              [Noun (Part 513),Missing (Noun (Part 511),[Noun (Part 512)])])]),
+       ["gray20"]),Pickup (Noun (Part 516),["water-logged"]),
+    Incinerate (Noun (Part 516),["water-logged"]),
+    Pickup (Noun (Part 517),["persian-blue"]),
+    Incinerate (Noun (Part 517),["persian-blue"]),
+    Pickup
+      (Missing
+         (Noun (Part 515),
+          [Noun (Part 496),Noun (Part 516),Noun (Part 517)]),["celadon"]),
+    Incinerate
+      (Missing
+         (Noun (Part 515),
+          [Noun (Part 496),Noun (Part 516),Noun (Part 517)]),["celadon"]),
+    Pickup (Noun (Part 496),["mysterious"]),
+    Combine
+      ((Missing
+          (Noun "T-6678-BOP",
+           [Noun "F-5065-QBC",Noun (Part 494),Noun (Part 496),
+            Noun "X-9247-GRW"]),["amethyst"]),
+       (Noun (Part 496),["mysterious"])),
+    Pickup (Noun (Part 518),["magenta"]),
+    Incinerate (Noun (Part 518),["magenta"]),
+    Pickup (Noun (Part 523),["momemtum-preserving"]),
+    Incinerate (Noun (Part 523),["momemtum-preserving"]),
+    Pickup
+      (Missing
+         (Noun (Part 519),
+          [Noun (Part 514),Noun (Part 520),
+           Missing (Noun (Part 521),[Noun (Part 522)])]),["bright-green"]),
+    Incinerate
+      (Missing
+         (Noun (Part 519),
+          [Noun (Part 514),Noun (Part 520),
+           Missing (Noun (Part 521),[Noun (Part 522)])]),["bright-green"]),
+    Pickup
+      (Missing (Noun (Part 514),[Noun (Part 494)]),["school-bus-yellow"]),
+    Incinerate
+      (Missing (Noun (Part 514),[Noun (Part 494)]),["school-bus-yellow"]),
+    Pickup
+      (Missing
+         (Missing (Noun (Part 524),[Noun (Part 525),Noun (Part 526)]),
+          [Noun (Part 527),Noun (Part 528)]),["rosy-brown"]),
+    Incinerate
+      (Missing
+         (Missing (Noun (Part 524),[Noun (Part 525),Noun (Part 526)]),
+          [Noun (Part 527),Noun (Part 528)]),["rosy-brown"]),
+    Pickup
+      (Missing
+         (Noun (Part 514),
+          [Missing
+             (Missing (Noun (Part 524),[Noun (Part 525),Noun (Part 526)]),
+              [Noun (Part 527),Noun (Part 528)])]),["pale-magenta"]),
+    Incinerate
+      (Missing
+         (Noun (Part 514),
+          [Missing
+             (Missing (Noun (Part 524),[Noun (Part 525),Noun (Part 526)]),
+              [Noun (Part 527),Noun (Part 528)])]),["pale-magenta"]),
+    Pickup
+      (Missing
+         (Noun (Part 510),
+          [Noun (Part 513),Noun (Part 518),Noun (Part 529),
+           Missing (Noun (Part 511),[Noun (Part 512)]),
+           Missing
+             (Noun (Part 519),
+              [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)])]),
+           Missing
+             (Noun (Part 519),
+              [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)])])]),
+       ["tan"]),
+    Incinerate
+      (Missing
+         (Noun (Part 510),
+          [Noun (Part 513),Noun (Part 518),Noun (Part 529),
+           Missing (Noun (Part 511),[Noun (Part 512)]),
+           Missing
+             (Noun (Part 519),
+              [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)])]),
+           Missing
+             (Noun (Part 519),
+              [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)])])]),
+       ["tan"]),Pickup (Noun (Part 529),["pale-pink"]),
+    Incinerate (Noun (Part 529),["pale-pink"]),
+    Pickup
+      (Missing
+         (Noun (Part 519),
+          [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)])]),
+       ["goldenrod"]),
+    Incinerate
+      (Missing
+         (Noun (Part 519),
+          [Noun (Part 520),Missing (Noun (Part 521),[Noun (Part 522)])]),
+       ["goldenrod"]),Pickup (Noun (Part 494),["pear"]),
+    Combine
+      ((Missing
+          (Noun "T-6678-BOP",
+           [Noun "F-5065-QBC",Noun (Part 494),Noun "X-9247-GRW"]),
+        ["amethyst"]),(Noun (Part 494),["pear"]))],439202)
+  : (prop * adjective list) step list * int
+
+
+
+
+OLD
+
+  *** make phoenixize more likely (?) ***
+
+  val missing_percent_chance = ?
+  val max_missing = 1
+  val lambda_percent_chance = ?
+  val duplicate_percent_chance = 0
+  val reuse_prop = 0
+
+val (pf, (goal, pile)) = Generator.generate 84 (ref (0wx1EADBE3F, 0wx7EED83F)) 75 5 (nil, (nil, (Noun "JumperShunt", nil)::nil, Noun "JumperShunt"));
+val pf =
+  [Pickup
+     (Missing
+        (Missing (Noun (Part(121)),[Noun (Part(122))]),
+         [Missing (Noun (Part(128)),[Noun (Part(129))])]),["slate-gray"]),
+   Pickup
+     (Missing
+        (Missing
+           (Missing
+              (Missing
+                 (Missing
+                    (Missing (Noun (Part(130)),[Noun (Part(131))]),
+                     [Noun (Part(132))]),[Noun (Part(133))]),
+               [Noun (Part(134))]),[Noun (Part(136))]),[Noun (Part(137))]),
+      ["azure"]),
+   Pickup
+     (Missing
+        (Noun (Part(138)),
+         [Missing
+            (Noun (Part(139)),[Missing (Noun (Part(140)),[Noun (Part(141))])])]),
+      ["brown"]),Pickup (Noun (Part(142)),["lavender"]),
+   Pickup (Noun (Part(143)),["gray70"]),
+   Incinerate (Noun (Part(143)),["gray70"]),
+   Pickup
+     (Missing
+        (Noun (Part(139)),[Missing (Noun (Part(140)),[Noun (Part(141))])]),
+      ["pale-carmine"]),Incinerate (Noun (Part(142)),["lavender"]),
+   Pickup (Noun (Part(136)),["water-logged"]),
+   Combine
+     ((Missing
+         (Noun (Part(138)),
+          [Missing
+             (Noun (Part(139)),
+              [Missing (Noun (Part(140)),[Noun (Part(141))])])]),["brown"]),
+      (Missing
+         (Noun (Part(139)),[Missing (Noun (Part(140)),[Noun (Part(141))])]),
+       ["pale-carmine"])),Pickup (Noun (Part(137)),["wheat-colored"]),
+   Incinerate (Noun (Part(138)),["brown"]),
+   Pickup (Missing (Noun (Part(128)),[Noun (Part(129))]),["vegan"]),
+   Combine
+     ((Missing
+         (Missing
+            (Missing
+               (Missing
+                  (Missing
+                     (Missing (Noun (Part(130)),[Noun (Part(131))]),
+                      [Noun (Part(132))]),[Noun (Part(133))]),
+                [Noun (Part(134))]),[Noun (Part(136))]),[Noun (Part(137))]),
+       ["azure"]),(Noun (Part(137)),["wheat-colored"])),
+   Combine
+     ((Missing
+         (Missing
+            (Missing
+               (Missing
+                  (Missing (Noun (Part(130)),[Noun (Part(131))]),
+                   [Noun (Part(132))]),[Noun (Part(133))]),[Noun (Part(134))]),
+          [Noun (Part(136))]),["azure"]),(Noun (Part(136)),["water-logged"])),
+   Pickup (Noun (Part(124)),["royal-blue"]),
+   Pickup (Noun (Part(135)),["left-handed"]),
+   Incinerate (Noun (Part(135)),["left-handed"]),
+   Incinerate
+     (Missing
+        (Missing
+           (Missing
+              (Missing (Noun (Part(130)),[Noun (Part(131))]),
+               [Noun (Part(132))]),[Noun (Part(133))]),[Noun (Part(134))]),
+      ["azure"]),
+   Combine
+     ((Missing
+         (Missing (Noun (Part(121)),[Noun (Part(122))]),
+          [Missing (Noun (Part(128)),[Noun (Part(129))])]),["slate-gray"]),
+      (Missing (Noun (Part(128)),[Noun (Part(129))]),["vegan"])),
+   Pickup
+     (Missing
+        (Missing
+           (Missing (Noun (Part(116)),[Noun (Part(117))]),
+            [Missing (Noun (Part(125)),[Noun (Part(126))])]),
+         [Noun (Part(127))]),["violet-eggplant"]),
+   Pickup (Noun (Part(127)),["forest-green"]),
+   Pickup (Missing (Noun (Part(125)),[Noun (Part(126))]),["cyan"]),
+   Combine
+     ((Missing
+         (Missing
+            (Missing (Noun (Part(116)),[Noun (Part(117))]),
+             [Missing (Noun (Part(125)),[Noun (Part(126))])]),
+          [Noun (Part(127))]),["violet-eggplant"]),
+      (Noun (Part(127)),["forest-green"])),
+   Pickup (Noun (Part(123)),["burnt-orange"]),
+   Combine
+     ((Missing
+         (Missing (Noun (Part(116)),[Noun (Part(117))]),
+          [Missing (Noun (Part(125)),[Noun (Part(126))])]),
+       ["violet-eggplant"]),
+      (Missing (Noun (Part(125)),[Noun (Part(126))]),["cyan"])),
+   Incinerate (Noun (Part(124)),["royal-blue"]),
+   Incinerate (Noun (Part(123)),["burnt-orange"]),
+   Pickup (Noun (Part(118)),["vermilion"]),
+   Pickup
+     (Missing
+        (Noun (Part(115)),[Missing (Noun (Part(121)),[Noun (Part(122))])]),
+      ["shiny"]),
+   Pickup (Missing (Noun (Part(119)),[Noun (Part(120))]),["celadon"]),
+   Combine
+     ((Missing
+         (Noun (Part(115)),[Missing (Noun (Part(121)),[Noun (Part(122))])]),
+       ["shiny"]),
+      (Missing (Noun (Part(121)),[Noun (Part(122))]),["slate-gray"])),
+   Pickup
+     (Missing
+        (Missing (Noun (Part(103)),[Noun (Part(104))]),[Noun (Part(109))]),
+      ["bronze"]),
+   Incinerate (Missing (Noun (Part(119)),[Noun (Part(120))]),["celadon"]),
+   Pickup (Missing (Noun (Part(110)),[Noun (Part(118))]),["powder-blue"]),
+   Combine
+     ((Missing (Noun (Part(110)),[Noun (Part(118))]),["powder-blue"]),
+      (Noun (Part(118)),["vermilion"])),
+   Pickup (Noun (Part(111)),["midnight-blue"]),
+   Incinerate
+     (Missing (Noun (Part(116)),[Noun (Part(117))]),["violet-eggplant"]),
+   Pickup (Noun (Part(104)),["floating"]),
+   Incinerate (Noun (Part(115)),["shiny"]),
+   Pickup (Noun (Part(114)),["bright-turquoise"]),
+   Incinerate (Noun (Part(114)),["bright-turquoise"]),
+   Pickup (Missing (Noun (Part(112)),[Noun (Part(113))]),["bright-violet"]),
+   Incinerate
+     (Missing (Noun (Part(112)),[Noun (Part(113))]),["bright-violet"]),
+   Pickup
+     (Missing
+        (Noun (Part(105)),
+         [Missing
+            (Missing (Noun (Part(106)),[Noun (Part(107))]),[Noun (Part(108))])]),
+      ["discounted"]),Incinerate (Noun (Part(111)),["midnight-blue"]),
+   Pickup (Noun (Part(109)),["cobalt"]),
+   Incinerate (Noun (Part(110)),["powder-blue"]),
+   Combine
+     ((Missing
+         (Missing (Noun (Part(103)),[Noun (Part(104))]),[Noun (Part(109))]),
+       ["bronze"]),(Noun (Part(109)),["cobalt"])),
+   Pickup
+     (Missing
+        (Missing (Noun (Part(106)),[Noun (Part(107))]),[Noun (Part(108))]),
+      ["old"]),
+   Combine
+     ((Missing
+         (Noun (Part(105)),
+          [Missing
+             (Missing (Noun (Part(106)),[Noun (Part(107))]),
+              [Noun (Part(108))])]),["discounted"]),
+      (Missing
+         (Missing (Noun (Part(106)),[Noun (Part(107))]),[Noun (Part(108))]),
+       ["old"])),Incinerate (Noun (Part(105)),["discounted"]),
+   Combine
+     ((Missing (Noun (Part(103)),[Noun (Part(104))]),["bronze"]),
+      (Noun (Part(104)),["floating"])),
+   Pickup
+     (Missing
+        (Missing
+           (Noun (Part(86)),[Missing (Noun (Part(101)),[Noun (Part(102))])]),
+         [Noun (Part(103))]),["foreign"]),
+   Combine
+     ((Missing
+         (Missing
+            (Noun (Part(86)),[Missing (Noun (Part(101)),[Noun (Part(102))])]),
+          [Noun (Part(103))]),["foreign"]),(Noun (Part(103)),["bronze"])),
+   Pickup (Missing (Noun (Part(92)),[Noun (Part(93))]),["persian-blue"]),
+   Pickup (Missing (Noun (Part(101)),[Noun (Part(102))]),["rotating"]),
+   Combine
+     ((Missing
+         (Noun (Part(86)),[Missing (Noun (Part(101)),[Noun (Part(102))])]),
+       ["foreign"]),
+      (Missing (Noun (Part(101)),[Noun (Part(102))]),["rotating"])),
+   Pickup (Noun (Part(96)),["olive-drab"]),
+   Pickup (Noun (Part(100)),["pine-green"]),
+   Pickup
+     (Missing (Noun (Part(97)),[Missing (Noun (Part(98)),[Noun (Part(99))])]),
+      ["misty-rose"]),Incinerate (Noun (Part(100)),["pine-green"]),
+   Pickup
+     (Missing
+        (Missing (Noun "JumperShunt",[Noun (Part(85))]),[Noun (Part(86))]),[]),
+   Incinerate
+     (Missing (Noun (Part(97)),[Missing (Noun (Part(98)),[Noun (Part(99))])]),
+      ["misty-rose"]),
+   Pickup (Missing (Noun (Part(94)),[Noun (Part(95))]),["violet-red"]),
+   Incinerate (Noun (Part(96)),["olive-drab"]),
+   Pickup
+     (Missing (Noun (Part(91)),[Missing (Noun (Part(94)),[Noun (Part(95))])]),
+      ["tepid"]),
+   Combine
+     ((Missing (Noun (Part(91)),[Missing (Noun (Part(94)),[Noun (Part(95))])]),
+       ["tepid"]),
+      (Missing (Noun (Part(94)),[Noun (Part(95))]),["violet-red"])),
+   Pickup
+     (Missing (Noun (Part(87)),[Missing (Noun (Part(92)),[Noun (Part(93))])]),
+      ["hot-pink"]),
+   Combine
+     ((Missing (Noun (Part(87)),[Missing (Noun (Part(92)),[Noun (Part(93))])]),
+       ["hot-pink"]),
+      (Missing (Noun (Part(92)),[Noun (Part(93))]),["persian-blue"])),
+   Pickup (Noun (Part(85)),["green"]),Incinerate (Noun (Part(91)),["tepid"]),
+   Pickup (Noun (Part(90)),["thistle-colored"]),
+   Incinerate (Noun (Part(90)),["thistle-colored"]),
+   Pickup (Missing (Noun (Part(88)),[Noun (Part(89))]),["cream"]),
+   Incinerate (Missing (Noun (Part(88)),[Noun (Part(89))]),["cream"]),
+   Incinerate (Noun (Part(87)),["hot-pink"]),
+   Combine
+     ((Missing
+         (Missing (Noun "JumperShunt",[Noun (Part(85))]),[Noun (Part(86))]),
+       []),(Noun (Part(86)),["foreign"])),
+   Combine
+     ((Missing (Noun "JumperShunt",[Noun (Part(85))]),[]),
+      (Noun (Part(85)),["green"]))] : (prop * string list) step list
+val goal = Noun "JumperShunt" : prop
+val pile =
+  [(Missing
+      (Missing (Noun (Part(121)),[Noun (Part(122))]),
+       [Missing (Noun (Part(128)),[Noun (Part(129))])]),["slate-gray"]),
+   (Missing
+      (Missing
+         (Missing
+            (Missing
+               (Missing
+                  (Missing (Noun (Part(130)),[Noun (Part(131))]),
+                   [Noun (Part(132))]),[Noun (Part(133))]),[Noun (Part(134))]),
+          [Noun (Part(136))]),[Noun (Part(137))]),["azure"]),
+   (Missing
+      (Noun (Part(138)),
+       [Missing
+          (Noun (Part(139)),[Missing (Noun (Part(140)),[Noun (Part(141))])])]),
+    ["brown"]),(Noun (Part(142)),["lavender"]),(Noun (Part(143)),["gray70"]),
+   (Missing (Noun (Part(139)),[Missing (Noun (Part(140)),[Noun (Part(141))])]),
+    ["pale-carmine"]),(Noun (Part(136)),["water-logged"]),
+   (Noun (Part(137)),["wheat-colored"]),
+   (Missing (Noun (Part(128)),[Noun (Part(129))]),["vegan"]),
+   (Noun (Part(124)),["royal-blue"]),(Noun (Part(135)),["left-handed"]),
+   (Missing
+      (Missing
+         (Missing (Noun (Part(116)),[Noun (Part(117))]),
+          [Missing (Noun (Part(125)),[Noun (Part(126))])]),[Noun (Part(127))]),
+    ["violet-eggplant"]),(Noun (Part(127)),["forest-green"]),
+   (Missing (Noun (Part(125)),[Noun (Part(126))]),["cyan"]),
+   (Noun (Part(123)),["burnt-orange"]),(Noun (Part(118)),["vermilion"]),
+   (Missing (Noun (Part(115)),[Missing (Noun (Part(121)),[Noun (Part(122))])]),
+    ["shiny"]),(Missing (Noun (Part(119)),[Noun (Part(120))]),["celadon"]),
+   (Missing (Missing (Noun (Part(103)),[Noun (Part(104))]),[Noun (Part(109))]),
+    ["bronze"]),
+   (Missing (Noun (Part(110)),[Noun (Part(118))]),["powder-blue"]),
+   (Noun (Part(111)),["midnight-blue"]),(Noun (Part(104)),["floating"]),
+   (Noun (Part(114)),["bright-turquoise"]),
+   (Missing (Noun (Part(112)),[Noun (Part(113))]),["bright-violet"]),
+   (Missing
+      (Noun (Part(105)),
+       [Missing
+          (Missing (Noun (Part(106)),[Noun (Part(107))]),[Noun (Part(108))])]),
+    ["discounted"]),(Noun (Part(109)),["cobalt"]),
+   (Missing (Missing (Noun (Part(106)),[Noun (Part(107))]),[Noun (Part(108))]),
+    ["old"]),
+   (Missing
+      (Missing
+         (Noun (Part(86)),[Missing (Noun (Part(101)),[Noun (Part(102))])]),
+       [Noun (Part(103))]),["foreign"]),
+   (Missing (Noun (Part(92)),[Noun (Part(93))]),["persian-blue"]),
+   (Missing (Noun (Part(101)),[Noun (Part(102))]),["rotating"]),
+   (Noun (Part(96)),["olive-drab"]),(Noun (Part(100)),["pine-green"]),
+   (Missing (Noun (Part(97)),[Missing (Noun (Part(98)),[Noun (Part(99))])]),
+    ["misty-rose"]),
+   (Missing (Missing (Noun "JumperShunt",[Noun (Part(85))]),[Noun (Part(86))]),
+    []),(Missing (Noun (Part(94)),[Noun (Part(95))]),["violet-red"]),
+   (Missing (Noun (Part(91)),[Missing (Noun (Part(94)),[Noun (Part(95))])]),
+    ["tepid"]),
+   (Missing (Noun (Part(87)),[Missing (Noun (Part(92)),[Noun (Part(93))])]),
+    ["hot-pink"]),(Noun (Part(85)),["green"]),
+   (Noun (Part(90)),["thistle-colored"]),
+   (Missing (Noun (Part(88)),[Noun (Part(89))]),["cream"])]
+  : (prop * string list) list
+
+
+val pf3 =
+  [Pickup
+     (Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)]),
+      ["blaze-orange"]),
+   Pickup
+     (Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)]),
+      ["dodger-blue"]),Pickup (Noun (Part 564),["taupe"]),
+   Pickup
+     (Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)]),
+      ["pale-carmine"]),
+   Pickup
+     (Missing
+        (Noun (Part 563),
+         [Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)])]),
+      ["carrot"]),
+   Combine
+     ((Missing
+         (Noun (Part 563),
+          [Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)])]),
+       ["carrot"]),
+      (Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)]),
+       ["pale-carmine"])),Pickup (Noun (Part 563),["pale-violet-red"]),
+   Incinerate (Noun (Part 563),["pale-violet-red"]),
+   Incinerate (Noun (Part 564),["taupe"]),
+   Incinerate (Noun (Part 563),["carrot"]),
+   Pickup (Noun (Part 543),["mint-green"]),
+   Pickup (Noun (Part 557),["taupe"]),
+   Pickup
+     (Missing
+        (Missing (Noun (Part 558),[Noun (Part 559),Noun (Part 560)]),
+         [Noun (Part 562),Noun (Part 543),Noun (Part 561)]),["dim-gray"]),
+   Combine
+     ((Missing
+         (Missing (Noun (Part 558),[Noun (Part 559),Noun (Part 560)]),
+          [Noun (Part 562),Noun (Part 543),Noun (Part 561)]),["dim-gray"]),
+      (Noun (Part 543),["mint-green"])),
+   Pickup
+     (Missing
+        (Noun (Part 549),
+         [Missing
+            (Missing (Noun (Part 558),[Noun (Part 559),Noun (Part 560)]),
+             [Noun (Part 561),Noun (Part 562)])]),["old-lace"]),
+   Combine
+     ((Missing
+         (Noun (Part 549),
+          [Missing
+             (Missing (Noun (Part 558),[Noun (Part 559),Noun (Part 560)]),
+              [Noun (Part 561),Noun (Part 562)])]),["old-lace"]),
+      (Missing
+         (Missing (Noun (Part 558),[Noun (Part 559),Noun (Part 560)]),
+          [Noun (Part 561),Noun (Part 562)]),["dim-gray"])),
+   Pickup (Missing (Noun (Part 556),[Noun (Part 557)]),["peach-yellow"]),
+   Combine
+     ((Missing (Noun (Part 556),[Noun (Part 557)]),["peach-yellow"]),
+      (Noun (Part 557),["taupe"])),
+   Pickup
+     (Missing
+        (Missing (Noun (Part 550),[Noun (Part 551),Noun (Part 552)]),
+         [Noun (Part 556),
+          Missing (Noun (Part 553),[Noun (Part 554),Noun (Part 555)])]),
+      ["selective-yellow"]),
+   Combine
+     ((Missing
+         (Missing (Noun (Part 550),[Noun (Part 551),Noun (Part 552)]),
+          [Noun (Part 556),
+           Missing (Noun (Part 553),[Noun (Part 554),Noun (Part 555)])]),
+       ["selective-yellow"]),(Noun (Part 556),["peach-yellow"])),
+   Pickup
+     (Missing
+        (Noun (Part 546),
+         [Missing
+            (Missing (Noun (Part 550),[Noun (Part 551),Noun (Part 552)]),
+             [Missing (Noun (Part 553),[Noun (Part 554),Noun (Part 555)])])]),
+      ["vegan"]),
+   Combine
+     ((Missing
+         (Noun (Part 546),
+          [Missing
+             (Missing (Noun (Part 550),[Noun (Part 551),Noun (Part 552)]),
+              [Missing (Noun (Part 553),[Noun (Part 554),Noun (Part 555)])])]),
+       ["vegan"]),
+      (Missing
+         (Missing (Noun (Part 550),[Noun (Part 551),Noun (Part 552)]),
+          [Missing (Noun (Part 553),[Noun (Part 554),Noun (Part 555)])]),
+       ["selective-yellow"])),
+   Pickup
+     (Missing (Noun (Part 547),[Noun (Part 548),Noun (Part 549)]),
+      ["hot-pink"]),
+   Combine
+     ((Missing (Noun (Part 547),[Noun (Part 548),Noun (Part 549)]),
+       ["hot-pink"]),(Noun (Part 549),["old-lace"])),
+   Pickup
+     (Missing
+        (Noun (Part 496),
+         [Noun (Part 546),Missing (Noun (Part 547),[Noun (Part 548)]),
+          Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)]),
+          Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)])]),
+      ["mysterious"]),
+   Combine
+     ((Missing
+         (Noun (Part 496),
+          [Noun (Part 546),Missing (Noun (Part 547),[Noun (Part 548)]),
+           Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)]),
+           Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)])]),
+       ["mysterious"]),
+      (Missing (Noun (Part 547),[Noun (Part 548)]),["hot-pink"])),
+   Combine
+     ((Missing
+         (Noun (Part 496),
+          [Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)]),
+           Noun (Part 546),
+           Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)])]),
+       ["mysterious"]),(Noun (Part 546),["vegan"])),
+   Pickup (Noun (Part 543),["peach"]),
+   Pickup
+     (Missing (Noun (Part 544),[Noun (Part 545),Noun (Part 543)]),
+      ["old-gold"]),
+   Combine
+     ((Missing (Noun (Part 544),[Noun (Part 545),Noun (Part 543)]),
+       ["old-gold"]),(Noun (Part 543),["peach"])),
+   Pickup
+     (Missing
+        (Noun (Part 542),
+         [Noun (Part 543),Missing (Noun (Part 544),[Noun (Part 545)])]),
+      ["ivory"]),
+   Combine
+     ((Missing
+         (Noun (Part 542),
+          [Noun (Part 543),Missing (Noun (Part 544),[Noun (Part 545)])]),
+       ["ivory"]),
+      (Missing (Noun (Part 544),[Noun (Part 545)]),["old-gold"])),
+   Pickup (Noun (Part 543),["rust"]),
+   Combine
+     ((Missing (Noun (Part 542),[Noun (Part 543)]),["ivory"]),
+      (Noun (Part 543),["rust"])),
+   Pickup
+     (Missing
+        (Noun (Part 536),
+         [Missing (Noun (Part 537),[Noun (Part 538)]),
+          Missing (Noun (Part 539),[Noun (Part 540),Noun (Part 541)])]),
+      ["slate-gray"]),Incinerate (Noun (Part 542),["ivory"]),
+   Pickup
+     (Missing
+        (Noun (Part 534),
+         [Missing
+            (Noun (Part 536),
+             [Missing (Noun (Part 537),[Noun (Part 538)]),
+              Missing (Noun (Part 539),[Noun (Part 540),Noun (Part 541)])]),
+          Noun (Part 535)]),["camouflage-green"]),
+   Combine
+     ((Missing
+         (Noun (Part 534),
+          [Missing
+             (Noun (Part 536),
+              [Missing (Noun (Part 537),[Noun (Part 538)]),
+               Missing (Noun (Part 539),[Noun (Part 540),Noun (Part 541)])]),
+           Noun (Part 535)]),["camouflage-green"]),
+      (Missing
+         (Noun (Part 536),
+          [Missing (Noun (Part 537),[Noun (Part 538)]),
+           Missing (Noun (Part 539),[Noun (Part 540),Noun (Part 541)])]),
+       ["slate-gray"])),Pickup (Noun (Part 535),["gray20"]),
+   Incinerate (Noun (Part 535),["gray20"]),
+   Pickup (Noun (Part 535),["pale-green"]),
+   Combine
+     ((Missing (Noun (Part 534),[Noun (Part 535)]),["camouflage-green"]),
+      (Noun (Part 535),["pale-green"])),
+   Incinerate (Noun (Part 534),["camouflage-green"]),
+   Combine
+     ((Missing
+         (Noun (Part 496),
+          [Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)]),
+           Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)])]),
+       ["mysterious"]),
+      (Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)]),
+       ["dodger-blue"])),
+   Combine
+     ((Missing
+         (Noun (Part 496),
+          [Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)])]),
+       ["mysterious"]),
+      (Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)]),
+       ["blaze-orange"]))] : (prop * string list) step list
+val goal3 = (Noun (Part 496),["mysterious"]) : prop * string list
+val pile3 =
+  [(Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)]),
+    ["blaze-orange"]),
+   (Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)]),
+    ["dodger-blue"]),(Noun (Part 564),["taupe"]),
+   (Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)]),
+    ["pale-carmine"]),
+   (Missing
+      (Noun (Part 563),
+       [Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)])]),
+    ["carrot"]),(Noun (Part 563),["pale-violet-red"]),
+   (Noun (Part 543),["mint-green"]),(Noun (Part 557),["taupe"]),
+   (Missing
+      (Missing (Noun (Part 558),[Noun (Part 559),Noun (Part 560)]),
+       [Noun (Part 562),Noun (Part 543),Noun (Part 561)]),["dim-gray"]),
+   (Missing
+      (Noun (Part 549),
+       [Missing
+          (Missing (Noun (Part 558),[Noun (Part 559),Noun (Part 560)]),
+           [Noun (Part 561),Noun (Part 562)])]),["old-lace"]),
+   (Missing (Noun (Part 556),[Noun (Part 557)]),["peach-yellow"]),
+   (Missing
+      (Missing (Noun (Part 550),[Noun (Part 551),Noun (Part 552)]),
+       [Noun (Part 556),
+        Missing (Noun (Part 553),[Noun (Part 554),Noun (Part 555)])]),
+    ["selective-yellow"]),
+   (Missing
+      (Noun (Part 546),
+       [Missing
+          (Missing (Noun (Part 550),[Noun (Part 551),Noun (Part 552)]),
+           [Missing (Noun (Part 553),[Noun (Part 554),Noun (Part 555)])])]),
+    ["vegan"]),
+   (Missing (Noun (Part 547),[Noun (Part 548),Noun (Part 549)]),
+    ["hot-pink"]),
+   (Missing
+      (Noun (Part 496),
+       [Noun (Part 546),Missing (Noun (Part 547),[Noun (Part 548)]),
+        Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)]),
+        Missing (Noun (Part 531),[Noun (Part 532),Noun (Part 533)])]),
+    ["mysterious"]),(Noun (Part 543),["peach"]),
+   (Missing (Noun (Part 544),[Noun (Part 545),Noun (Part 543)]),
+    ["old-gold"]),
+   (Missing
+      (Noun (Part 542),
+       [Noun (Part 543),Missing (Noun (Part 544),[Noun (Part 545)])]),
+    ["ivory"]),(Noun (Part 543),["rust"]),
+   (Missing
+      (Noun (Part 536),
+       [Missing (Noun (Part 537),[Noun (Part 538)]),
+        Missing (Noun (Part 539),[Noun (Part 540),Noun (Part 541)])]),
+    ["slate-gray"]),
+   (Missing
+      (Noun (Part 534),
+       [Missing
+          (Noun (Part 536),
+           [Missing (Noun (Part 537),[Noun (Part 538)]),
+            Missing (Noun (Part 539),[Noun (Part 540),Noun (Part 541)])]),
+        Noun (Part 535)]),["camouflage-green"]),
+   (Noun (Part 535),["gray20"]),(Noun (Part 535),["pale-green"])]
+  : (prop * string list) list
+
+
+*)

@@ -1,0 +1,38 @@
+
+Daring Maneuvers:
+
+  ((A=>A) => B) => G
+
+  recognize that [a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z] => G
+   is useless BEFORE we expand it into exponentially many things!
+
+  goal is just in (very big) pile (tests corner case)
+
+  have     (A,B,C,D=>E) and B and full inventory;
+     require combination with B to get (A,C,D=>E)
+     in order to free up slot with which to grab A
+
+  have both (A,B,C=>D) and (A,C,B=>D) around, requiring
+     application to A... the theorem prover should then
+     identify (B,C=>D) and (C,B=>D)
+
+  require that you have two items of the same (function?) type
+     around.
+  
+  A
+  (A=>A)
+  ((A=>A) => Goal)
+
+Optimizations we should force them to include:
+
+  don't search combine(tree, squirrel) and combine(squirrel, tree)
+  since they have the same result
+
+  prune out items that are useless (can't ever be combined); maybe
+  there is some hereditary notion of this too
+
+  don't incinerate things that you've combined
+
+
+Be careful that if we add any optional proofs, we check that contestants actually
+solved them (without abusing the "physics engine")!

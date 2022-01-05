@@ -1,0 +1,24 @@
+let
+  import "std.uh"
+  import "string.uh"
+  import "int.uh"
+  import "list.uh"
+  import "array.uh"
+  import "growarray.uh"
+  import "random.uh"
+  import "io.uh"
+
+
+  import "blackknots.uh"
+in
+
+
+  print (bk-machine-tostring 
+         (parse-blackknots-stdin ()))
+  handle Subscript => print "subscript\n"
+       | Match     => print "match\n"
+       | BlackknotsParseError s => print s
+
+
+(*  interactive-blackknots () *)
+end

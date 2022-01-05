@@ -1,0 +1,23 @@
+let 
+    import "std.uh"
+    import "string.uh"
+    import "int.uh"
+    import "list.uh"
+    import "array.uh"
+    import "growarray.uh"
+    import "random.uh"
+    import "io.uh"
+    import "stream.uh"
+    import "des.uh"
+    import "bigint.uh"
+    import "publications.uh"
+    import "parse.uh"
+        
+    import "antomaton.uh"
+
+    val txt = allinput ()
+in
+    (* not interactive, not silent. *)
+    antomaton-runant (false, false, txt);
+    print "main exited\n"
+end

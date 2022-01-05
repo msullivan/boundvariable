@@ -1,0 +1,30 @@
+val stdlib = 
+	    (DVar (TPtr TInt, POW2_TABLE, 
+                   SOME (EArray (list-tabulate (31, (fn i => EInt (1 shl i)))))))::
+            (DStruct ("__unit", nil))::
+            (DFun (TUnit, "putc", (TChar, "c")::nil, 
+                  SBlock (nil,
+                          (SExp (EVar "c"))::
+                          (* know that c is in rethi *)
+                          (SAsm (WRITE (rethi)))::
+                          nil)))::
+           (DFun (TChar, "getc", nil, 
+                  SBlock (nil,
+                          (SAsm (READ (rethi)))::
+                          nil)))::
+           (DFun (TUnit, "free", (TPtr (nil, AChar), "p")::nil, 
+                  SBlock (nil,
+                          (SExp (EVar "p"))::
+                          (* know that p is in (rethi, retlo) *)
+                          (* XXX debug could check that retlo is 0 *)
+                          (SAsm (FREE (rethi)))::
+                          nil)))::
+           (DFun (TPtr (nil, AChar), "malloc", (TInt, "sz")::nil, 
+                  SBlock (nil,
+                          (SExp (EVar "sz"))::
+                          (* know that sz is in rethi *)
+                          (SAsm (ALLOC (rethi, rethi)))::
+                          (* clear the result offset *)
+                          (SAsm (ADD (retlo, zero, zero)))::
+                          nil)))::
+           nil

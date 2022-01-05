@@ -1,0 +1,235 @@
+
+08092006
+********
+
+changing test params for arith:
+   50 tests instead of 30: 22s
+   and then depth 4: too slow
+   maxint 6: 27s (22s karl)
+
+...for xml: 
+   50 tests instead of 30: 79s
+   depths 7,8 instead of 6,7: 205s
+   all of depth 7: 114s
+
+arith-sol-stack: 12s
+arith-sol-karl: 17s (but seems unluckier in its test cases than before)
+xml-sol-stack: 58s
+
+sometime in august, with new humlock backend
+********************************************
+arith-sol-stack: 17s
+xml-sol-stack: 78s
+
+180706
+******
+
+15547676  comment out applications
+15690108  start
+
+170706
+******
+user times, 'cause X is freaking out
+
+optimizable return option
+xml-sol-stack: 107s
+
+one-pass LNMHRecFast with suspensions and hope
+arith-sol-stack: 14s
+arith-sol-karl: 18s
+arith-attempt1: 2s
+xml-sol-stack: 106s
+
+one-pass LNMHRecFast with suspensions
+arith-sol-stack: 
+arith-sol-karl: 
+xml-sol-stack: 119s
+
+one-pass LNMHRecFast
+arith-sol-stack: 15s
+arith-sol-karl: 18s
+arith-attemp1: 2s
+xml-attempt1: 3s
+xml-sol-stack: 114s
+
+letcc match and merge for exit:
+slower
+
+inline recAndMerge in merge:
+arith-sol-stack: 15s
+arith-sol-karl: 18s
+
+inline doStep cases, etc:
+arith-sol-stack: 12s (fluke?)
+arith-sol-karl: 18s
+xml-sol-stack: 105
+
+avoid extra countMatches in Fast:
+arith-sol-stack: 16s
+arith-sol-karl: 21s
+
+combine tail-recusive match with single merge, no exns, pulled outside:
+arith-sol-stack: 15s
+arith-sol-karl: 24s 
+
+combine tail-recusive match with single merge:
+arith-sol-stack: 26s 
+arith-sol-karl: 40s 
+   so even worse
+
+combine merge and match with one exn:
+arith-sol-stack: 24s 
+arith-sol-karl: 33s 
+   so much slower
+
+exn merge with fast tail recursive
+arith-sol-stack : 14s
+arith-sol-karl: 23s
+  so it doesn't help or hurt
+
+exn merge with fast path
+arith-sol-stack : 14s
+arith-sol-karl: 24s
+   so it hurts just a little
+
+make merge use an exn rather than a case:
+arith-sol-stack : 14s
+arith-sol-karl : 23s
+   so it doesn't seem to make a difference
+
+make countPatternMatches tail recursive
+arith-sol-stack : 14s
+xml-sol-stack: 105s
+
+with printing back on for runTest:
+xml-sol-stack: 116s (wtf?--faster when it's computing the strings and printing than when it's not???)
+
+stop walking rule list as soon as there is a match
+xml-sol-stack: 125s
+
+removed some curried functions:
+arith-sol-stack: 16s
+xml-sol-stack: 128s
+
+without printing tests (or creating printed strings):
+arith-sol-stack: 17s
+arith-sol-karl: 26s
+xml-sol-stack: 135s (wtf?)
+xml-attempt1: 3s
+
+with Fast single-step OS:
+arith-sol-stack: 16s
+arith-sol-karl: 27s
+xml-sol-stack: 127s
+xml-attempt1: 4s
+
+with symbol table:
+arith-sol-stack: 17s
+arith-sol-karl: 26s
+xml-sol-stack: 124s
+xml-attempt1: 4s
+
+before symbol table: 
+arith-sol-stack: 17s
+arith-sol-karl: 26s
+xml-sol-stack: 128s
+xml-attempt1: 4s
+
+140706
+******
+
+arith-sol-stack: 33 seconds with printing, 30 seconds without
+BUT I didn't turn off term generation
+
+**********************************************************************
+
+100706
+******
+number of tests = 3 * number of rules
+
+{depth=3, maxInt=4}
+arith-sol-stack: 27s
+arith-sol-karl: 23s
+
+{depth=3, maxInt=6}
+arith-sol-stack: 66s
+arith-sol-karl: 180s
+
+{depth=3, maxInt=6}
+numbers seem to get too big
+
+arith-sol-stack : 4 * 4 * 4 * 4 finishes in a reasonable amount of time
+arith-sol-stack : 5 * 5 * 5 * 5 does too
+arith-sol-karl : both in under 10 minutes
+
+---
+
+number of tests = 3 * number of rules
+xml-sol-stack.adv
+
+depths of 3::5::7 : 2 minutes
+depths of 5::7 : 2 minutes
+depths of 6::7 : 2 minutes, 10 s 
+depths of 6::8 : 5 minutes, 34 s 
+
+
+**********************************************************************
+
+
+100706
+******
+
+arithmetic random base tests
+{depth=4, maxInt=5, howMany=80}
+running sol/arith-sol-stack.adv (20 rules)
+
+time for running the 80 tests once
+(not very good statistically, prolly)
+
+orig			         average 20s/test 
+match fail-fast			 average 12s/test
+stream of tests			 average 13s/test
+new humlock			 average 12s/test
+new humlock, back to lists	 average 11s/test
+
+**********************************************************************
+
+
+270606 after new GC
+********************
+
+randomly-generated (n<20) 400 add 400 mult tests all at once: under a walk home (chris rules)
+			  900	  900                       : 45 minutes (dan rules by accident, but that only adds a minute or less)
+
+----------------------------------------------------------------------
+
+fact 6, chris rules, standalone: 125 sec
+fact 7, chris rules, standalone: not within a couple of hours
+
+----------------------------------------------------------------------
+
+computing (factorial 5)
+
+conditions:
+dan's machine, 
+running only the input test, 
+only (fact 5) in test file, 
+no specified answer to test
+
+umix interaction: log in, umodem the rule file and the test file, run
+		  trying not to do anything else
+		  except watch date 2s
+
+dan rules, standalone: 
+73.08user 0.14system 1:13.36elapsed 99%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (360major+2207minor)pagefaults 0swaps
+
+chris rules, standalone:
+4.17user 0.00system 0:04.25elapsed 97%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (82major+889minor)pagefaults 0swaps
+
+dan rules, umix:
+wall time: 91 sec
+
+chris rules, umix:
+wall time: 6 sec

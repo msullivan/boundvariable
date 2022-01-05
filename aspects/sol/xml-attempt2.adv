@@ -1,0 +1,17 @@
+
+{ 
+try something recursive
+}
+
+{ collapse duplicates }
+SNF (Tag t (Tag t d)) => SNF (Tag t (SNF d));
+
+{ flatten }
+SNF (Seq (Seq d1 d2) d3) => SNF (Seq (SNF d1) (SNF (Seq (SNF d2) (SNF d3))));
+
+{ distribute }
+SNF (Seq (Tag t d1) (Tag t d2)) => SNF(Tag t (SNF (Seq (SNF d1) (SNF d2))));
+
+{ if nothing else applies! }
+SNF x => x;
+.

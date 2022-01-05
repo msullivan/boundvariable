@@ -1,0 +1,277 @@
+val require-string = provide-string
+val require-list = provide-list
+(*  val require-random = provide-random *)
+
+val require-aspects-util = provide-aspects-util
+val require-language = provide-language
+val require-aspects = provide-aspects
+
+val provide-xml-testing = ()
+
+(* note that this file depends on the term representation of xml documents 
+   and the specification of short normal form, display, etc.
+*)
+
+
+(* ---------------------------------------------------------------------- *)
+
+(* abstract syntax term and pattern constructors for xml documents *)
+
+val boldSymb = (intTST "Bold")
+val bold = Const boldSymb
+val emphSymb = (intTST "Emph")
+val emph = Const emphSymb
+val majSymb = (intTST "Maj")
+val maj = Const majSymb
+
+val seSymb = (intTST "Seq")
+val tagSymb = (intTST "Tag")
+(* seq is infix in the stdlibs! *)
+fun se d1 d2 = App(App (Const seSymb, d1), d2)
+fun tag q d = App(App (Const tagSymb, q), d)
+val aSymb = (intTST "A")
+val a = Const aSymb
+val bSymb = (intTST "B")
+val b = Const bSymb
+
+val pbold = PConst boldSymb
+val pemph = PConst emphSymb
+val pmaj = PConst majSymb
+fun pse d1 d2 = PApp(PApp (PConst seSymb, d1), d2)
+fun ptag q d = PApp(PApp (PConst tagSymb, q), d)
+val pa = PConst aSymb
+val pb = PConst bSymb
+
+(* ---------------------------------------------------------------------- *)
+(* uml representation for xml documents;
+   displaying xml documents
+*)
+
+datatype quality = Bold | Emph | Maj
+datatype doc = A | B | Seq of doc * doc | Tag of quality * doc
+
+fun qualityEquals (Bold, Bold) = true
+  | qualityEquals (Emph, Emph) = true
+  | qualityEquals (Maj, Maj) = true
+  | qualityEquals _ = false
+
+fun qualityLessThan (Bold, Emph) = true
+  | qualityLessThan (Bold, Maj) = true
+  | qualityLessThan (Emph, Maj) = true
+  | qualityLessThan _ = false
+
+(* anything that parses is a valid document *)
+val parseDoc : term -> doc option = 
+let 
+    exception ParseError
+    
+    fun parseQuality (Const s) =
+	if symbol-equals (boldSymb,s) 
+	then Bold
+	else if symbol-equals (emphSymb,s) 
+	     then Emph
+	     else if symbol-equals (majSymb,s) 
+		  then Maj
+		  else raise ParseError
+      | parseQuality _ = raise ParseError
+
+    fun parseDoc (Const s) = 
+	if symbol-equals (aSymb,s)
+	then A 
+	else if symbol-equals (bSymb,s)
+	     then B
+	     else raise ParseError
+      | parseDoc (App (App (Const hdString, arg1), arg2)) =
+		 if symbol-equals (tagSymb, hdString) 
+		 then Tag (parseQuality arg1, parseDoc arg2)
+		 else if symbol-equals (seSymb, hdString) 
+		      then Seq (parseDoc arg1, parseDoc arg2)
+		      else  raise ParseError
+      | parseDoc _ = raise ParseError
+
+in
+    fn e => 
+    (SOME (parseDoc e)) handle ParseError => NONE
+end
+			  
+
+(* invariant: list is sorted *)
+datatype decoratedChar = 
+    ADec of quality list
+  | BDec of quality list
+
+fun applyToDecoratedCharList (f : quality list -> quality list, dc : decoratedChar) =
+    case dc of 
+	ADec l => ADec (f l)
+      | BDec l => BDec (f l)
+
+(* add the quality to the list if it is not already present, preserving order *)
+fun addQual (q : quality, dc : decoratedChar) : decoratedChar = 
+    let 
+	fun loop (q, nil) = q::nil
+	  | loop (q, l as (h::t)) = 
+	    if qualityEquals (q, h) 
+	    then l
+	    else if qualityLessThan (q, h) 
+		 then q::l
+		 else h :: (loop (q, t))
+    in
+	applyToDecoratedCharList (fn l => loop (q, l), dc)
+    end
+
+(* e must be an XML document term *)
+fun displayDoc (d : doc) : decoratedChar list = 
+    (case d of
+	 A => (ADec nil) :: nil
+       | B => (BDec nil) :: nil
+       | Tag (q, d) => list-map (fn (dc : decoratedChar) => addQual (q, dc)) 
+	               (displayDoc d)
+       | Seq (d1, d2) => (displayDoc d1) @ (displayDoc d2))
+
+fun dcEquals (ADec l1, ADec l2) = list-eq qualityEquals (l1, l2)
+  | dcEquals (BDec l1, BDec l2) = list-eq qualityEquals (l1, l2)
+  | dcEquals _ = false
+
+fun sameDisplay (d1 : doc, d2 : doc) : bool = 
+    list-eq dcEquals (displayDoc d1, displayDoc d2)
+
+(* ---------------------------------------------------------------------- *)
+(* generate random documents *)
+
+fun chooseQual () = 
+    case randomBoundedInt 3 of 
+	0 => emph
+      | 1 => bold
+      | 2 => maj
+      | _ => raise AspectsInternal "generated int not in the proper range"
+
+fun chooseSpine () = 
+    case randomBoundedInt 2 of
+	0 => LEFT se
+      | 1 => RIGHT tag
+      | _ => raise AspectsInternal "generated int not in the proper range"
+
+fun chooseTerminal () = 
+    case randomBoundedInt 2 of
+	0 => a
+      | 1 => b
+      | _ => raise AspectsInternal "generated int not in the proper range"
+
+(* 
+number of random documents with depth d
+
+fun numberOfRandomDocuments 1 = 2
+  | numberOfRandomDocuments d = 
+    let val r = numberOfRandomDocuments (d-1) in
+	3 * r + (r * r)
+    end
+
+*)
+fun randomDocument 1 : term = chooseTerminal ()
+  | randomDocument depth = 
+    (case chooseSpine () of
+	LEFT sp => sp (randomDocument (depth - 1)) (randomDocument (depth - 1))
+      | RIGHT sp => sp (chooseQual()) (randomDocument (depth - 1)))
+
+fun randomDocuments (depth : int, number :int) : term list = 
+    list-tabulate (number, fn _ => randomDocument depth)
+
+(* ---------------------------------------------------------------------- *)
+(* generate tests *)
+
+fun isSNF (e : term) = 
+    let 
+	val pv = PVar o intTST
+	
+	(* PERF: hoise intTST so it happens only once *)
+	val disallowedPatterns : pattern list = 
+	(* a doc is in SNF if none of the following patterns match *)
+	    (ptag (pv "t")
+                  (ptag (pv "t") (pv "d"))) ::
+	    (pse (pse (pv "d1") (pv "d2")) 
+                 (pv "d3")) :: 
+	    (pse (ptag (pv "t") (pv "d1"))
+	         (ptag (pv "t") (pv "d2"))) :: 
+	    (ptag pemph (ptag pbold (pv "d"))) ::
+	    (ptag pmaj (ptag pbold (pv "d"))) ::
+	    (ptag pmaj (ptag pemph (pv "d"))) ::
+	    nil
+    in
+	list-all (fn (p : pattern) => not (deepMatch (p, e)), 
+		  disallowedPatterns)
+    end
+    
+(* assumes that the input term represents a doc *)
+fun generateXmlTest (input : term) : test =
+    case parseDoc input of 
+	NONE => raise AspectsInternal "input not a doc"
+      | SOME inputDoc => 
+	    (App (Const (intTST "SNF"), input), 
+	     (* the output is correct if 
+		(1) the term represents an actual XML document
+		(2) the document is in SNF
+		(3) it displays the same as the input
+		*)
+	     fn output => 
+	     case parseDoc output of 
+		 NONE => (false, "Final term is not an XML document.\n")
+	       | SOME outputDoc => 
+		     let 
+			 val snfBool = isSNF output
+			 val snfStr = if snfBool 
+				      then "" 
+				      else "Final term is not in short normal form.\n"
+					  
+			 val sameDispBool = sameDisplay (inputDoc, outputDoc)
+			 val sameDispStr = if sameDispBool 
+					   then ""
+					   else "Final term displays differently than the input.\n"
+					       
+		     in
+			 (snfBool andalso sameDispBool, snfStr ^  sameDispStr)
+		     end
+		 )
+
+(* generate random tests and answers *) 
+fun randomXmlTests (depth : int, number : int) = 
+    stream-tabulate (number, fn _ => generateXmlTest (randomDocument depth))
+
+fun randomXmlTestsManyDepths (depths : int list, totalNumber : int) =
+    let 
+	val numEach = (totalNumber div (list-length depths)) + 1
+
+    in
+	flattenStreamList (list-map (fn i => randomXmlTests (i, numEach)) depths)
+    end
+
+(* basic tests that we definitely want to include 
+   to make sure no one can just get very lucky on the randomly-generated tests
+
+   these should cover everything
+
+*)
+val baseXmlTests = 
+    let val snil = stream-delay (fn _ => Nil)
+	fun (a) scons (f : unit -> a * a stream) : a stream = 
+	    stream-delay (fn _ => Cons (f ()))
+
+	val t = generateXmlTest
+    in 
+
+	(* collapse duplicates *)
+	scons (fn _ => (t (tag bold (tag bold (se a b))),
+        (* reorder *)
+        scons (fn _ => (t (tag maj (tag bold (se a b))),
+        (* flatten *)
+	scons (fn _ => (t (se (se a b) a),
+	(* distribute *)
+	scons (fn _ => (t (se (tag bold a) (tag bold b)),
+	
+        (* distribute or flatten *)
+	scons (fn _ => (t (se (se (tag bold a) (tag bold b)) a),
+        (* run afoul *)
+        scons (fn _ => (t (se (tag emph (tag emph a)) (tag maj (tag maj b))),
+        scons (fn _ => (t (se (tag bold (se (se (se a a) b) (se a b))) 
+			      (se (se (se (tag emph (tag emph a)) a) b) (se a (tag maj (tag maj b))))),
+	snil))))))))))))))
+    end

@@ -1,0 +1,51 @@
+datatype mult-testresult-2d =
+  MultSuccess2d
+| MultFail2d of {prob    : expr2D * expr2D,
+                 correct : expr2D,
+                 actual  : expr2D}
+  
+
+(* mult-test-2d(r,f,n,range)
+ * r : () -> int
+ * f : (expr2D * expr2D) -> expr2D
+ * n : int
+ * range : int
+ * strtnum : int
+ * tot : int
+ *)
+
+val {mult-test-2d} =
+  let
+    fun build-int 0 = EInr2D EUnit2D
+      | build-int n = EInl2D (build-int (n - 1))
+      
+    fun check-int (EInr2D EUnit2D, 0) = true
+      | check-int (EInl2D exp,     n) = check-int (exp, n - 1)
+      | check-int _                  = false
+      
+    fun check-mult-circ (r,f,n,range,strtnum,tot) =
+        let
+          fun check-nmults (0,_) = MultSuccess2d
+            | check-nmults (n,thisnum) =
+              let
+                val () = 
+                  print ("[2D] Running mult test " ^ int-tostring thisnum
+                         ^ " of " ^ int-tostring tot ^ "\n")
+                val x = r () mod range
+                val y = r () mod range
+                val x2d = build-int x
+                val y2d = build-int y
+                val ans = f (x2d,y2d)
+              in
+                if check-int (ans, x*y)
+                then check-nmults (n - 1,thisnum + 1)
+                else MultFail2d {prob = (x2d,y2d),
+                                 correct = build-int (x*y),
+                                 actual = ans}
+              end
+        in
+          check-nmults (n,strtnum)
+        end
+  in
+    {mult-test-2d = check-mult-circ}
+  end

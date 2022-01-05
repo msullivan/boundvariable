@@ -1,0 +1,32 @@
+{ these rules worked on the old operational semantics
+   }
+
+{ old op. sem:
+  addition and multiplication each passed 
+  400 random tests on arguments in [0, 20) 
+  }
+
+Add Z y => y;
+Add (S x) y => S (Add x y);
+
+Mult Z y => Z;
+Mult (S x) y => (Add y (Mult x y));
+
+{ factorial 
+ 
+ The rules switch between two rules sets (with more or less the same
+ rules) to avoid getting the same number of applications in both
+ branches. However, this only works if we special-case (fact 2).
+
+ Under the old op. sem., these rules work on 0 ... 6.  7 didn't come
+ back...
+ 
+}
+Fact Z => (S Z);
+Fact (S (S Z)) => (S (S Z));
+Fact (S x) => Mult (S x) (Fact2 x);
+
+Fact2 Z => (S Z);
+Fact2 (S x) => Mult (S x) (Fact x);
+
+. { end of rules }

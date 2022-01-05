@@ -1,0 +1,13 @@
+
+  Adventure Puzzle Generator/Solver             16 Jul 1007
+
+This directory contains various tools used to help create the puzzles
+for the adventure game.  Puzzles were created in part by computer (to
+try to fool humans) and by humans (to fool computers).  There are
+tools to generate valid puzzles (mostly generator.sml) as well as
+solvers (solver.sml) that were used to assess the difficulty of
+particular problem instances.  proof.sml contains the datatype
+definitions and a verifier -- it is also a good place to start reading
+if you want to understand any of this code.  Most of the other files
+are probably impenetrable, especially any that are "awesome" or
+"ultra-something."

@@ -1,0 +1,49 @@
+version 2!
+
+infrastructure to implement:
+  - goggles
+    + define the structured output
+    + human, XML, s-exp, JSON, matrix, YAML, subversion-style
+  - save / restore 
+    + implement as string of actions taken up to this point
+      - optimize for common states
+      - encode items as "nth in room"
+  - proof-game engine: stream of garbage, "combine"
+
+phase 1:
+
+  - start:
+      You are in a room.  There is a wall without a door here.  A hallway
+      leads east.
+
+  - hallway leads to another with an endless pile of junk
+
+
+phase 2:
+
+  - Outside in Hyde Park at the entrance of the Waste Management Bureau.
+    There is a sack here.
+
+   + sack contains goggles, textbook explaining a bit about robots
+
+  - automated proof-game, solve for hole in street (i.e. without a ladder)
+
+phase 3:
+
+  - down the WMB (better acronym? HEAP?) underworld, more "blackouts" 
+
+  - game?  but the goal is to get into the diagnostic shop (need to distract
+    someone?)
+
+phase 4:
+
+  - need to rewrite? you sensory subsystem to eliminate blackouts? or your
+    morality subsystem to allow littering?
+
+  - or need to write an evaluator for the language of consciousness
+
+
+other funny things:
+
+  cops, donut
+  comb self and ???

@@ -1,0 +1,115 @@
+time ../um/c-tom/um aspects-main.um
+
+Running 4 input tests...
+************************
+
+Initial Term:	Add (S (S Z)) (S (S Z))
+Applying advice...
+	-> (S ((Add (S Z)) (S (S Z))))
+	-> (S (S ((Add Z) (S (S Z)))))
+	-> (S (S (S (S Z))))
+Final Term:	(S (S (S (S Z))))
+Correct!
+Total Steps: 3
+
+
+Initial Term:	Mult (S (S Z)) (S (S Z))
+Applying advice...
+	-> ((Add (S (S Z))) ((Mult (S Z)) (S (S Z))))
+	-> (S ((Add (S Z)) ((Mult (S Z)) (S (S Z)))))
+	-> (S (S ((Add Z) ((Mult (S Z)) (S (S Z))))))
+	-> (S (S ((Mult (S Z)) (S (S Z)))))
+	-> (S (S ((Add (S (S Z))) ((Mult Z) (S (S Z))))))
+	-> (S (S (S ((Add (S Z)) ((Mult Z) (S (S Z)))))))
+	-> (S (S (S (S ((Add Z) ((Mult Z) (S (S Z))))))))
+	-> (S (S (S (S ((Mult Z) (S (S Z)))))))
+	-> (S (S (S (S Z))))
+Final Term:	(S (S (S (S Z))))
+Correct!
+Total Steps: 9
+
+
+Initial Term:	Mult (S (S (S (S (S (S Z)))))) (S (S (S (S Z))))
+Applying advice...
+	-> ((Add (S (S (S (S Z))))) ((Mult (S (S (S (S (S Z)))))) (S (S (S (S Z))))))
+	-> (S ((Add (S (S (S Z)))) ((Mult (S (S (S (S (S Z)))))) (S (S (S (S Z)))))))
+	-> (S (S ((Add (S (S Z))) ((Mult (S (S (S (S (S Z)))))) (S (S (S (S Z))))))))
+	-> (S (S (S ((Add (S Z)) ((Mult (S (S (S (S (S Z)))))) (S (S (S (S Z)))))))))
+	-> (S (S (S (S ((Add Z) ((Mult (S (S (S (S (S Z)))))) (S (S (S (S Z))))))))))
+	-> (S (S (S (S ((Mult (S (S (S (S (S Z)))))) (S (S (S (S Z)))))))))
+	-> (S (S (S (S ((Add (S (S (S (S Z))))) ((Mult (S (S (S (S Z))))) (S (S (S (S Z))))))))))
+	-> (S (S (S (S (S ((Add (S (S (S Z)))) ((Mult (S (S (S (S Z))))) (S (S (S (S Z)))))))))))
+	-> (S (S (S (S (S (S ((Add (S (S Z))) ((Mult (S (S (S (S Z))))) (S (S (S (S Z))))))))))))
+	-> (S (S (S (S (S (S (S ((Add (S Z)) ((Mult (S (S (S (S Z))))) (S (S (S (S Z)))))))))))))
+	-> (S (S (S (S (S (S (S (S ((Add Z) ((Mult (S (S (S (S Z))))) (S (S (S (S Z))))))))))))))
+	-> (S (S (S (S (S (S (S (S ((Mult (S (S (S (S Z))))) (S (S (S (S Z)))))))))))))
+	-> (S (S (S (S (S (S (S (S ((Add (S (S (S (S Z))))) ((Mult (S (S (S Z)))) (S (S (S (S Z))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S ((Add (S (S (S Z)))) ((Mult (S (S (S Z)))) (S (S (S (S Z)))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S ((Add (S (S Z))) ((Mult (S (S (S Z)))) (S (S (S (S Z))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S ((Add (S Z)) ((Mult (S (S (S Z)))) (S (S (S (S Z)))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S ((Add Z) ((Mult (S (S (S Z)))) (S (S (S (S Z))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S ((Mult (S (S (S Z)))) (S (S (S (S Z)))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S (S (S (S Z))))) ((Mult (S (S Z))) (S (S (S (S Z))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S (S (S Z)))) ((Mult (S (S Z))) (S (S (S (S Z)))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S (S Z))) ((Mult (S (S Z))) (S (S (S (S Z))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S Z)) ((Mult (S (S Z))) (S (S (S (S Z)))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add Z) ((Mult (S (S Z))) (S (S (S (S Z))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Mult (S (S Z))) (S (S (S (S Z)))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S (S (S (S Z))))) ((Mult (S Z)) (S (S (S (S Z))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S (S (S Z)))) ((Mult (S Z)) (S (S (S (S Z)))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S (S Z))) ((Mult (S Z)) (S (S (S (S Z))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S Z)) ((Mult (S Z)) (S (S (S (S Z)))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add Z) ((Mult (S Z)) (S (S (S (S Z))))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Mult (S Z)) (S (S (S (S Z)))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S (S (S (S Z))))) ((Mult Z) (S (S (S (S Z))))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S (S (S Z)))) ((Mult Z) (S (S (S (S Z)))))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S (S Z))) ((Mult Z) (S (S (S (S Z))))))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S Z)) ((Mult Z) (S (S (S (S Z)))))))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add Z) ((Mult Z) (S (S (S (S Z))))))))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Mult Z) (S (S (S (S Z)))))))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z))))))))))))))))))))))))
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z))))))))))))))))))))))))
+Correct!
+Total Steps: 37
+
+
+Initial Term:	Mult (S (S (S (S Z)))) (S (S (S (S (S (S Z))))))
+Applying advice...
+	-> ((Add (S (S (S (S (S (S Z))))))) ((Mult (S (S (S Z)))) (S (S (S (S (S (S Z))))))))
+	-> (S ((Add (S (S (S (S (S Z)))))) ((Mult (S (S (S Z)))) (S (S (S (S (S (S Z)))))))))
+	-> (S (S ((Add (S (S (S (S Z))))) ((Mult (S (S (S Z)))) (S (S (S (S (S (S Z))))))))))
+	-> (S (S (S ((Add (S (S (S Z)))) ((Mult (S (S (S Z)))) (S (S (S (S (S (S Z)))))))))))
+	-> (S (S (S (S ((Add (S (S Z))) ((Mult (S (S (S Z)))) (S (S (S (S (S (S Z))))))))))))
+	-> (S (S (S (S (S ((Add (S Z)) ((Mult (S (S (S Z)))) (S (S (S (S (S (S Z)))))))))))))
+	-> (S (S (S (S (S (S ((Add Z) ((Mult (S (S (S Z)))) (S (S (S (S (S (S Z))))))))))))))
+	-> (S (S (S (S (S (S ((Mult (S (S (S Z)))) (S (S (S (S (S (S Z)))))))))))))
+	-> (S (S (S (S (S (S ((Add (S (S (S (S (S (S Z))))))) ((Mult (S (S Z))) (S (S (S (S (S (S Z))))))))))))))
+	-> (S (S (S (S (S (S (S ((Add (S (S (S (S (S Z)))))) ((Mult (S (S Z))) (S (S (S (S (S (S Z)))))))))))))))
+	-> (S (S (S (S (S (S (S (S ((Add (S (S (S (S Z))))) ((Mult (S (S Z))) (S (S (S (S (S (S Z))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S ((Add (S (S (S Z)))) ((Mult (S (S Z))) (S (S (S (S (S (S Z)))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S ((Add (S (S Z))) ((Mult (S (S Z))) (S (S (S (S (S (S Z))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S ((Add (S Z)) ((Mult (S (S Z))) (S (S (S (S (S (S Z)))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S ((Add Z) ((Mult (S (S Z))) (S (S (S (S (S (S Z))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S ((Mult (S (S Z))) (S (S (S (S (S (S Z)))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S (S (S (S (S (S Z))))))) ((Mult (S Z)) (S (S (S (S (S (S Z))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S (S (S (S (S Z)))))) ((Mult (S Z)) (S (S (S (S (S (S Z)))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S (S (S (S Z))))) ((Mult (S Z)) (S (S (S (S (S (S Z))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S (S (S Z)))) ((Mult (S Z)) (S (S (S (S (S (S Z)))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S (S Z))) ((Mult (S Z)) (S (S (S (S (S (S Z))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S Z)) ((Mult (S Z)) (S (S (S (S (S (S Z)))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add Z) ((Mult (S Z)) (S (S (S (S (S (S Z))))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Mult (S Z)) (S (S (S (S (S (S Z)))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S (S (S (S (S (S Z))))))) ((Mult Z) (S (S (S (S (S (S Z))))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S (S (S (S (S Z)))))) ((Mult Z) (S (S (S (S (S (S Z)))))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S (S (S (S Z))))) ((Mult Z) (S (S (S (S (S (S Z))))))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S (S (S Z)))) ((Mult Z) (S (S (S (S (S (S Z)))))))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S (S Z))) ((Mult Z) (S (S (S (S (S (S Z))))))))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add (S Z)) ((Mult Z) (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Add Z) ((Mult Z) (S (S (S (S (S (S Z))))))))))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S ((Mult Z) (S (S (S (S (S (S Z)))))))))))))))))))))))))))))))
+	-> (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z))))))))))))))))))))))))
+Final Term:	(S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S (S Z))))))))))))))))))))))))
+Correct!
+Total Steps: 33
+
+No internal tests specified.

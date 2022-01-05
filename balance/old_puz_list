@@ -1,0 +1,110 @@
+Puzzle: stop
+initial memory: M[0-5] = {0, 1, 0, 0, 0, 0}, remainder initialized from /etc/passwd
+initial src/dst registers: {0, 1, 2, 3} {4, 5}
+final memory: any
+final src/dst registers: any
+
+
+Puzzle: stop1
+initial memory: M[0-5] = {0, 1, 0, 0, 0, 0}, remainder intialized from /etc/passwd
+initial src/dst registers: {0, 0, 0, 0} {0, 0}
+final memory: any
+final src/dst registers: any
+
+
+Puzzle: stop127
+initial memory: all zeroes except for M[127] = 127
+initial src/dst registers: {0, 0, 0, 0} {0, 0}
+final memory: any
+final src/dst registers: any
+
+
+Puzzle: stop128
+initial memory: all zeroes except for M[128] = 128
+initial src/dst registers: {0, 0, 0, 0} {0, 0}
+final memory: any
+final src/dst registers: any
+
+
+Puzzle: copymem
+initial memory: {a, 0, ...} where a <> 0
+initial src/dst registers: {0, 0, 0, 0} {0, 0}
+final memory: any
+final src/dst registers: at least one register should contain a
+
+
+Puzzle: copymem2
+initial memory: {a, 1, 0, ...} where a <> 0
+initial src/dst registers: {0, 0, 0, 0} {0, 0}
+final memory: any
+final src/dst registers: at least one register should contain a
+
+
+Puzzle: copyreg
+initial memory: {1, 2, 4, 8, 16, 32, 64, 128, 0, ...}
+initial src/dst registers: {a, 0, 1, 2} {3, 4} where a <> 0
+final memory: at least one memory location should contain a
+final src/dst registers: any
+
+
+Puzzle: swapmem
+initial memory: {1, 2, 4, 8, 16, 32, 64, 128, 0, ...}
+initial src/dst registers: {0, 1, 2, 3} {4, 5}
+final memory: swap any two distinct memory locations in M[0..7]
+final src/dst registers: any
+
+
+Puzzle: swapreg
+initial memory: {1, ...}
+initial src/dst registers: {0, 1, 2, 3} {4, 5}
+final memory: any
+final src/dst registers: swap any two distinct registers
+
+
+Puzzle: swapreg2
+initial memory: {1, ...}
+initial src/dst registers: {a, b, c, d} {x, y} where a, b, c, d, x, y <> 0
+final memory: any
+final src/dst registers: swap any two distinct registers
+
+
+Puzzle: addmem
+initial memory: {a, b, 0, ...} where a, b <> 0
+initial src/dst registers: {0, 1, 2, 3} {4, 5}
+final memory: M[2] = a + b
+final src/dst registers: any
+
+
+Puzzle: addmem2
+initial memory: {a, b, 0, ...} where a, b <> 0
+initial src/dst registers: {0, 1, 2, 3} {4, 5}
+final memory: {a, b, a + b, 0, ...}
+final src/dst registers: any
+
+
+Puzzle: multmem
+initial memory: {a, b, 0, ...} where a, b <> 0
+initial src/dst registers: {0, 1, 2, 3} {4, 5}
+final memory: M[2] = a * b
+final src/dst registers: any
+
+
+Puzzle: multmem2
+initial memory: {a, b, 0, ...} where a, b <> 0
+initial src/dst registers: {0, 0, 0, 0} {0, 0}
+final memory: {a, b, a * b, 0, ...}
+final src/dst registers: any
+
+
+Puzzle: fillmem
+initial memory: {a, i, j, 0, 1, 2, 4, 8, 0, ...} where a <> 0, 8 <= i < j <= 255
+initial src/dst registers: {0, 1, 2, 3} {4, 5}
+final memory: M[8..i-1] = {0}, M[i..j-1] = {a}, M[j..255] = {0}
+final src/dst registers: any
+
+
+Puzzle: clearreg
+initial memory: {0, 1, 2, 3, ...}
+initial src/dst registers: {0, 1, 2, 3} {4, 5}
+final memory: any
+final src/dst registers: all zeroes

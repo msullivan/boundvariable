@@ -1,0 +1,45 @@
+
+(* I think these are all the stdlibs that this library uses *)
+val require-std = provide-std
+val require-string = provide-string
+val require-sort = provide-sort 
+val require-int = provide-int
+val require-array = provide-array
+
+val provide-name = ()
+
+(* broken because of overflow.... *)
+val name-currentSuffix = ref 0 
+
+type name = string * int
+ 
+fun name-new (s : string) : name  = 
+    (name-currentSuffix := (!name-currentSuffix)+1;
+     (s, !name-currentSuffix))
+    
+fun name-freshen ((s,_) : name) = 
+    (name-currentSuffix := (!name-currentSuffix)+1;
+     (s, !name-currentSuffix))
+
+fun name-equal((s1,i1) : name, (s2,i2) : name) = 
+    (string-equals (s1, s2)) andalso (i1 = i2) 
+
+fun string-lessThan (s1, s2) = 
+    case string-compare (s1, s2) of 
+	LESS => true
+      | _ => false
+
+fun name-lessThan ((s1, i1), (s2, i2)) = 
+    string-lessThan(s1, s2) orelse
+    (string-equals(s1, s2) andalso i1 < i2)
+
+fun name-toString (n, s) = n^ (int-tostring s) 
+
+fun name-toNonUniqueString (n, s) = n
+
+fun name-swap (x, y) z =
+    if name-equal(z, x) 
+    then y
+    else if name-equal(z, y) 
+	 then x
+	 else z 

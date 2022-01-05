@@ -1,0 +1,9 @@
+HTTPD UM Implementation
+
+  This UM implementation acts an HTTP proxy server sitting between an ordinary
+  web browser and Umix.  It uses Umix's telnet command to access the world
+  wide web circa 19100 and make these pages available to modern clients.
+  Tested with Firefox.  Running it with any UM binary besides Umix probably
+  doesn't make sense.
+
+

@@ -1,0 +1,413 @@
+
+val bal_puzzles
+=
+let
+  fun zeromem () = array (256, 0)
+  fun zeroreg () = array (6, 0)
+  fun id a (i, _) = update (a, i, i)
+  fun idxmem () = let val m = zeromem ()
+                      val () = array-appi (id m) m
+                  in m
+                  end
+  fun idxreg () = let val r = zeroreg ()
+                      val () = array-appi (id r) r
+                  in r
+                  end
+  (* there exists lo <= i <= hi such that f i *)
+  fun exists lo hi f =
+    ford lo hi false (fn (i, b) => b orelse f i)
+  (* there exist 0 <= i < j <= hi such that f i j *)
+  fun exist lo hi f =
+    ford lo hi false
+    (fn (i, b) =>
+     b orelse ford (i + 1) hi false
+     (fn (j, b) =>
+      b orelse f i j))
+  (* for every lo <= i <= hi, f i *)
+  fun all lo hi f =
+    ford lo hi true (fn (i, b) => b andalso f i)
+  fun vacuous _ = true
+  fun pick lo hi = ((random-int ()) mod ((hi - lo) + 1)) + lo
+
+
+  fun updatestring (a, start, s) =
+    let
+	    fun us z =
+        if z >= length s
+        then ()
+        else (update(a, start + z, ord (sub(s, z)));
+              us (z + 1))
+    in
+	    us 0
+    end
+  
+  val bifi = bi-fromint
+
+    val puzzles =
+        { name = "stop", task = "STP",
+          mem = fn () => let val m = zeromem ()
+                         in
+                           update (m, 1, 1);
+                           (* n.b. hard coded! *)
+                           updatestring
+                           (m, 96,  "yang:U+262F:/home/yang");
+                           updatestring 
+                           (m, 144, "gardener:mathemantica:/home/gardener");
+                           updatestring 
+                           (m, 208, "ohmega:bidirectional:/home/ohmega");
+                           m
+                         end,
+          reg = idxreg,
+          checkmem = vacuous,
+          checkreg = vacuous,
+          reps = 1,
+          sigmoid = 
+          {min-score = bifi 5, par-score = bifi 10, max-score = bifi 10,
+           correct = bifi 3, par = bifi 2, hole-in-one = bifi 2},
+          desc = 
+          {imem  = ("M[0-5] = [0, 1, 0, 0, 0, 0]\n" ^
+                    " Remainder of memory initialized from /etc/passwd\n"),
+           iregs = "{0, 1, 2, 3} {4, 5}\n",
+           fmem  = "Any\n",
+           fregs = "Any\n"
+           }}
+
+        ::
+
+        { name = "stop1", task = "ST1", 
+          mem = fn () => 
+          let 
+            val m = zeromem ()
+          in
+            update (m, 1, 1);
+            updatestring
+            (m, 96,  "yang:U+262F:/home/yang");
+            updatestring 
+            (m, 144, "gardener:mathemantica:/home/gardener");
+            updatestring 
+            (m, 208, "ohmega:bidirectional:/home/ohmega");
+            m
+          end, 
+          reg = zeroreg, 
+          checkmem = vacuous, 
+          checkreg = vacuous, 
+          reps = 1,
+          sigmoid = 
+          {min-score = bifi 5, par-score = bifi 5, max-score = bifi 10,
+           correct = bifi 3, par = bifi 3, hole-in-one = bifi 2},
+          desc =
+          {imem  = ("M[0-5] = [0, 1, 0, 0, 0, 0].\n" ^ 
+                    " Remainder of memory initialized from /etc/passwd\n"),
+           iregs = "{0, 0, 0, 0} {0, 0}\n",
+           fmem  = "Any\n",
+           fregs = "Any\n"}}
+
+        ::
+
+        { name = "stop127", task = "S27", 
+          mem = fn () => 
+          let val m = zeromem ()
+            val () = update (m, 127, 127)
+          in m
+          end, 
+          reg = zeroreg, 
+          checkmem = vacuous, 
+          checkreg = vacuous, 
+          reps = 1,
+          sigmoid = 
+          {min-score = bifi 5, par-score = bifi 10, max-score = bifi 20,
+           correct = bifi 50, par = bifi 30, hole-in-one = bifi 2}, 
+          desc = 
+          { imem  = "All zeroes except for M[127] = 127\n",
+            iregs = "{0, 0, 0, 0} {0, 0}\n",
+            fmem  = "Any\n",
+            fregs = "Any\n"}}
+        
+        ::
+
+        { name = "stop128", task = "S28", 
+          mem = fn () => let val m = zeromem ()
+                             val () = update (m, 128, 128)
+                         in m
+                         end, 
+          reg = zeroreg, 
+          checkmem = vacuous, 
+          checkreg = vacuous, 
+          reps = 1, 
+          sigmoid = 
+          {min-score = bifi 5, par-score = bifi 10, max-score = bifi 15,
+           correct = bifi 50, par = bifi 30, hole-in-one = bifi 2},
+          desc = 
+          {imem  = "All zeroes except for M[128] = 128\n",
+           iregs = "{0, 0, 0, 0} {0, 0}\n",
+           fmem  = "Any\n",
+           fregs = "Any\n" }}
+
+        ::
+
+        let
+          val a = ref 0
+        in
+        { name = "copymem", task = "CMM", 
+          mem = fn () => let val m = zeromem ()
+                             val () = update (m, 0, (a := pick 1 255; !a))
+                             val () = update (m, 1, 1)
+                         in m
+                         end, 
+          reg = zeroreg, 
+          checkmem = vacuous, 
+          checkreg = fn r => exists 0 5 (fn i => sub (r, i) = !a), 
+          reps = 5, 
+          sigmoid =
+          {min-score = bifi 60, par-score = bifi 100, max-score = bifi 200,
+           correct = bifi 500, par = bifi 100, hole-in-one = bifi 3},
+          desc =
+          {imem  = ("M[0] = a, where a <> 0.  M[1] = 1.\n" ^
+                    " All other memory locations initialized to 0\n"),
+           iregs = "{0, 0, 0, 0} {0, 0}\n",
+           fmem  = "Any\n",
+           fregs = "At least one register should contain a\n"}}
+        end
+        
+        ::
+
+        let
+          val a = ref 0
+        in
+        { name = "copyreg", task = "CRE", 
+          mem = fn () => let val m = zeromem ()
+                              val () = for 0 7 (fn i => update (m, i, 1 shl i))
+                          in m
+                          end, 
+          reg = fn () => let val r = zeroreg ()
+                             val () = update (r, 0, (a := pick 1 255; !a))
+                             val () = for 0 4 (fn i => update (r, i + 1, i))
+                         in r
+                         end, 
+          checkmem = fn m => exists 0 255 (fn i => sub (m, i) = !a), 
+          checkreg = vacuous, 
+          reps = 5,
+          sigmoid = (* SUSP *)
+          {min-score = bifi 60, par-score = bifi 100, max-score = bifi 200,
+           correct = bifi 500, par = bifi 100, hole-in-one = bifi 3},
+          desc = 
+          {imem  = ("M[0-7] = [1, 2, 4, 8, 16, 32, 64, 128].\n" ^
+                    " All other memory locations initialized to 0.\n"),
+           iregs = "{a, 0, 1, 2} {3, 4} where a <> 0\n",
+           fmem  = "At least one memory location should contain a\n",
+           fregs = "Any\n"}}
+        end
+
+        ::
+
+        { name = "swapmem", task = "SWM", 
+          mem = fn () => let val m = zeromem ()
+                             val () = for 0 7 (fn i => update (m, i, 1 shl i))
+                         in m
+                         end, 
+          reg = idxreg, 
+          checkmem = fn m => exist 0 7 (fn i => fn j => sub (m, i) =
+                                        (1 shl j) andalso sub (m, j) = 
+                                        (1 shl i)), 
+          checkreg = vacuous, 
+          reps = 1,
+          sigmoid = 
+          {min-score = bifi 10, par-score = bifi 15, max-score = bifi 40,
+           correct = bifi 50, par = bifi 20, hole-in-one = bifi 4},
+          desc = 
+          {imem  = ("M[0-7] = [1, 2, 4, 8, 16, 32, 64, 128].\n" ^
+                    " All other memory locations initialized to 0.\n"),
+           iregs = "{0, 1, 2, 3} {4, 5}\n",
+           fmem  = ("There exist i and j such that 0 <= i < j <= 7 and\n" ^
+                    "M[i] contains the original value of M[j] and M[j]\n"^
+                    "contains the original value of M[i]\n"),
+           fregs = "Any\n"}}
+
+        ::
+
+        { name = "swapreg", task = "SWR", 
+          mem = fn () => array (256, 1), 
+          reg = idxreg, 
+          checkmem = vacuous, 
+          checkreg = fn r => exist 0 5 (fn i => fn j => sub (r, i) = j andalso sub (r, j) = i), 
+          reps = 1,
+          sigmoid = 
+          {min-score = bifi 5, par-score = bifi 15, max-score = bifi 50,
+           correct = bifi 60, par = bifi 33, hole-in-one = bifi 5},
+          desc =
+          {imem  = "All memory locations initialized to 1\n",
+           iregs = "{0, 1, 2, 3} {4, 5}\n",
+           fmem  = "Any\n",
+           fregs = ("Swap any two distinct registers.  The value of the\n" ^
+                    "other registers may be anything\n")}}
+
+        ::
+
+        let val abcdxy = array (6, 0)
+            fun uregs () = for 0 5 (fn i => update (abcdxy, i, pick 1 255))
+        in { name = "swapreg2", task = "SR2", 
+             mem = fn () => array (256, 1), 
+             reg = fn () => let val r = zeroreg ()
+                                val () = uregs ()
+                                val () = for 0 5 
+                                  (fn i => update (r, i, sub (abcdxy, i)))
+                            in r
+                            end, 
+             checkmem = vacuous, 
+             checkreg = fn r => exist 0 5 
+                            (fn i => fn j => sub (r, i) = 
+                             sub (abcdxy, j) 
+                             andalso sub (r, j) = sub (abcdxy, i)), 
+             reps = 5,
+             sigmoid = 
+             {min-score = bifi 10, par-score = bifi 20, max-score = bifi 50,
+              correct = bifi 200, par = bifi 66, hole-in-one = bifi 25},
+             desc =
+             {imem  = "All memory locations initialized to 1\n",
+              iregs = "{a, b, c, d} {x, y} where a, b, c, d, x, y <> 0\n",
+              fmem  = "Any\n",
+              fregs = ("Swap any two distinct registers.  The value of the\n" ^
+                       "other registers may be anything\n")}}
+        end
+
+        ::
+
+        let val a = ref 0
+            val b = ref 0
+        in { name = "addmem", task = "AMM", 
+             mem = fn () => let val m = zeromem ()
+                                val () = update (m, 0, (a := pick 1 255; !a))
+                                val () = update (m, 1, (b := pick 1 255; !b))
+                            in m
+                            end, 
+             reg = idxreg,
+             checkmem = fn m => sub (m, 2) = (!a + !b) andb 0xFF,
+             checkreg = vacuous, 
+             reps = 5,
+             sigmoid = 
+             {min-score = bifi 5, par-score = bifi 15, max-score = bifi 40,
+              correct = bifi 60, par = bifi 10, hole-in-one = bifi 4},
+             desc = 
+             {imem  = ("M[0] = a, M[1] = b, where a, b <> 0\n" ^
+                       " All other memory locations initialized to 0\n"),
+              iregs = "{0, 1, 2, 3} {4, 5}\n",
+              fmem  = "M[2] = a + b\n",
+              fregs = "Any\n"}}
+        end
+
+        ::
+
+        let val a = ref 0
+            val b = ref 0
+        in { name = "addmem2", task = "AM2", 
+             mem = fn () => let val m = zeromem ()
+                                val () = update (m, 0, (a := pick 1 255; !a))
+                                val () = update (m, 1, (b := pick 1 255; !b))
+                            in m
+                            end, 
+             reg = idxreg, 
+             checkmem = fn m => sub (m, 0) = !a
+                                andalso sub (m, 1) = !b
+                                andalso sub (m, 2) = ((!a + !b) andb 0xff)
+                                andalso all 3 255 (fn i => sub (m, i) = 0), 
+             checkreg = vacuous, 
+             reps = 5,
+             sigmoid = 
+             {min-score = bifi 10, par-score = bifi 20, max-score = bifi 50,
+              correct = bifi 100, par = bifi 21, hole-in-one = bifi 5},
+             desc = 
+             {imem  = ("M[0] = a, M[1] = b, where a, b <> 0\n" ^
+                       " All other memory locations initialized to 0\n"),
+              iregs = "{0, 1, 2, 3} {4, 5}\n",
+              fmem  = ("M[0] = a, M[1] = b, M[2] = a + b.\n" ^
+                       " All other memory locations must be 0\n"),
+              fregs = "Any\n"}}
+        end
+
+        ::
+
+        let val a = ref 0
+            val b = ref 0
+        in { name = "multmem", task = "MMM", 
+             mem = fn () => let val m = zeromem ()
+                                val () = update (m, 0, (a := pick 1 255; !a))
+                                val () = update (m, 1, (b := pick 1 255; !b))
+                            in m
+                            end, 
+             reg = idxreg, 
+             checkmem = fn m => sub (m, 2) = (!a * !b) andb 0xFF, 
+             checkreg = vacuous, 
+             reps = 5,
+             sigmoid = (* SUSP never solved *)
+             {min-score = bifi 60, par-score = bifi 100, max-score = bifi 200,
+              correct = bifi 500, par = bifi 100, hole-in-one = bifi 3},
+             desc =
+             {imem  = ("M[0] = a, M[1] = b, where a, b <> 0\n" ^
+                       " All other memory locations initialized to 0\n"),
+              iregs = "{0, 1, 2, 3} {4, 5}\n",
+              fmem  = "M[2] = a * b\n",
+              fregs = "Any\n"}}
+        end
+
+        ::
+
+        let val a = ref 0
+            val i = ref 0
+            val j = ref 0
+        in { name = "fillmem", task = "FMM", 
+             mem = fn () => let val m = zeromem ()
+                                val () = update (m, 0,(a := pick 1 255; !a))
+                                val () = update (m, 1,(i := pick 8 254; !i))
+                                val () = update (m, 2,(j := pick (!i + 1) 255;
+                                                       !j))
+                                (*val () = update (m, 3, 0)*)
+                                val () = for 0 3 (fn i => update (m, 4 + i,
+                                                                  1 shl i))
+                            in m
+                            end, 
+             reg = idxreg, 
+             checkmem = fn m => all 8 ((!i) - 1) (fn i => sub (m, i) = 0)
+                                andalso all (!i) ((!j) - 1) 
+                                  (fn v => sub (m, v) = (!a))
+                                andalso all (!j) 255 
+                                  (fn v => sub (m, v) = 0), 
+             checkreg = vacuous, 
+             reps = 5,
+             sigmoid = (* SUSP never solved *)
+             {min-score = bifi 60, par-score = bifi 100, max-score = bifi 200,
+              correct = bifi 1000, par = bifi 100, hole-in-one = bifi 3},
+             desc =
+             {imem  = ("M[0-2] = [a, i, j], where a <> 0, 8 <= i < j <= 255\n"
+                       ^ " M[4-7] = [1, 2, 4, 8]"
+                       ^ " All other memory locations are initialized to 0\n"),
+              iregs = "{0, 1, 2, 3} {4, 5}\n",
+              fmem  = ("Memory locations from 8 to (i-1) must contain 0\n" ^
+                       " Memory locations from i to (j-1) must contain a\n" ^
+                       " Memory locations from j to 255 must contain 0\n" ^
+                       " (all ranges are inclusive)\n"),
+              fregs = "Any\n"}}
+        end
+
+        ::
+
+        { name = "clearreg", task = "CRR", 
+          mem = idxmem, 
+          reg = idxreg, 
+          checkmem = vacuous, 
+          checkreg = fn r => all 0 5 (fn i => sub (r, i) = 0), 
+          reps = 1,
+          sigmoid = (* SUSP never solved *)
+          {min-score = bifi 20, par-score = bifi 40, max-score = bifi 100,
+           correct = bifi 600, par = bifi 100, hole-in-one = bifi 5},
+          desc =
+          {imem  = "For each i from 0 to 255, M[i] = i\n",
+           iregs = "{0, 1, 2, 3} {4, 5}\n",
+           fmem  = "Any\n",
+           fregs = "All registers must be set to 0\n"}}
+
+        ::
+
+        nil
+
+in puzzles
+end

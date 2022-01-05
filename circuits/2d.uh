@@ -1,0 +1,115 @@
+(*  An abstract syntax for the circuits language
+ *
+ *  Written by Chris, with many pieces and ideas taken from Spoons' first
+ *  pass
+ *)
+
+val require-std = provide-std
+val require-string = provide-string
+val require-list = provide-list
+val provide-2d = ()
+
+exception ParseError2D of string
+exception EvalError2D of string
+exception InternalError2D of string
+ 
+datatype inIface2D = INorth2D | IWest2D
+                            
+datatype outIface2D = ISouth2D | IEast2D
+
+datatype expr2D = 
+   EUnit2D
+ | EPair2D of expr2D * expr2D
+ | EInl2D of expr2D
+ | EInr2D of expr2D
+ | EIface2D of inIface2D
+
+(* value = unit, pair(val, val), inl(val), inr(val) *)
+
+datatype sendList2D = 
+   LNil2D
+ | LOne2D of expr2D * outIface2D
+ | LTwo2D of (expr2D * outIface2D) * (expr2D * outIface2D)
+                    
+datatype command2D = 
+   CSend2D of sendList2D
+                  (* inl        inr *)
+ | CCase2D of expr2D * outIface2D * outIface2D
+ | CSplit2D of expr2D
+ | CUse2D of string
+
+(* invt: once a wire is set to SOME v,
+   it is never set back to NONE *)
+type wire2D = expr2D option ref
+
+type box2D = { com : command2D,
+               north : wire2D option,
+               east : wire2D option,
+               south : wire2D option,
+               west : wire2D option }
+
+
+(* A module is a string (its name) and a function that takes initial
+ * inputs (if any) and returns a list of boxes and a list of 
+ * output wires (a module only outputs through its East interface)
+ *
+ * Initial inputs are passed in the order (N,W)
+ *
+ *)
+type module2D = string * 
+  ((expr2D option * expr2D option) -> (box2D list * wire2D list))
+
+fun expr2D-eq (EUnit2D, EUnit2D) = true
+  | expr2D-eq (EPair2D (a,b), EPair2D (a',b')) = 
+      expr2D-eq (a,a') andalso expr2D-eq (b,b')
+  | expr2D-eq (EInl2D e, EInl2D e') = expr2D-eq (e,e')
+  | expr2D-eq (EInr2D e, EInr2D e') = expr2D-eq (e,e')
+  | expr2D-eq (EIface2D f, EIface2D f') =
+      (case (f,f') of
+         (INorth2D, INorth2D) => true
+       | (IWest2D,  IWest2D ) => true
+       | _                    => false)
+  | expr2D-eq _ = false
+
+val {expr2D-tostring, cmd2D-tostring} =
+  let
+    fun inIface-tostring iface =
+      case iface of
+        INorth2D => "N"
+      | IWest2D => "W"
+          
+    fun outIface-tostring iface =
+      case iface of
+        IEast2D => "E"
+      | ISouth2D => "S"
+          
+    fun expr-tostring ex = 
+      case ex of
+        EUnit2D => "()"
+      | EPair2D (e1,e2) => "(" ^ (expr-tostring e1) ^ "," ^ 
+          (expr-tostring e2) ^ ")"
+      | EInl2D e1 => "Inl " ^ (expr-tostring e1)
+      | EInr2D e1 => "Inr " ^ (expr-tostring e1)
+      | EIface2D iface => inIface-tostring iface
+          
+          
+    fun sl-tostring sl =
+      case sl of
+        LNil2D => "[]"
+      | LOne2D(ex,oi) => "[(" ^ expr-tostring ex ^ "," ^ outIface-tostring oi 
+          ^ ")]"
+      | LTwo2D((ex1,oi1),(ex2,oi2)) =>
+          "[(" ^ expr-tostring ex1 ^ "," ^ outIface-tostring oi1 ^ "), ("
+          ^ expr-tostring ex2 ^ "," ^ outIface-tostring oi2 ^ ")]" 
+          
+    fun cmd-tostring com = 
+      case com of 
+        CSend2D sl => "send " ^ (sl-tostring sl)
+      | CCase2D (ex,oi1,oi2) => "case " ^ expr-tostring ex ^ " of "
+          ^ outIface-tostring oi1 ^ ", "
+          ^ outIface-tostring oi2 
+      | CSplit2D ex => "split " ^ expr-tostring ex
+      | CUse2D nm => "use " ^ nm
+  in
+    {expr2D-tostring = expr-tostring, cmd2D-tostring = cmd-tostring}
+  end

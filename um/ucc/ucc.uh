@@ -1,0 +1,32 @@
+exception Assemble of string
+exception Compile of string
+exception Parse of string
+
+fun ucc-run src =
+let
+  import "variable.uh"
+  import "assemble.uh"
+
+  import "c7sus4.uh"
+  import "print.uh"
+
+  import "c7sus4-print.uh"
+  import "c7sus4-parse.uh"
+  import "compile.uh"
+
+  import "stdlib.uh"
+
+  val prog = ucc-parse src
+(*
+  do print [[string-delimit ";\n" (list-map dec-tostring prog)]\n]
+*)
+  val (header, blocks) = compile-prog (stdlib @ prog)
+
+  fun pr i = print [[inst-tostring i]\n]
+(*
+  do list-app pr header
+  do list-app (fn (label, block) => list-app pr ((LABEL label)::block)) blocks
+*)
+in
+  linearize header blocks
+end

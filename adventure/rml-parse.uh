@@ -1,0 +1,429 @@
+(* include from rml.uml *)
+
+fun rml-parse s =
+    let
+      datatype token =
+          (* string literal *)
+          TString of string
+          (* any identifier *)
+        | TId of string
+          (* separator character *)
+        | TSep of char
+          (* End of stream *)
+        | TNone
+
+      fun token-tostring (TString s) = "\"" ^ s ^ "\" "
+        | token-tostring (TId id) = id
+        | token-tostring (TSep c) = string-str c
+        | token-tostring (TNone) = ""
+
+val rml-keyword-list =
+    ("extern" :: "type" :: "fun" :: "case" :: "of" :: "return" :: "let" :: "do" ::
+     nil) 
+
+	fun get-token (pos, i, s) : (int * int) * (int * int) * int * token =
+	        let
+		    val stop = length s
+
+                    fun is-nl ?\n = true
+                      | is-nl _ = false
+
+		    fun is-ws ?   = true
+		      | is-ws ?\r = true
+		      | is-ws ?\t = true
+		      | is-ws ?\n = true
+		      | is-ws _   = false
+
+		    (* PERF use lookup table *)
+		    fun is-sep ?( = true
+		      | is-sep ?) = true
+		      | is-sep ?{ = true
+		      | is-sep ?} = true
+		      | is-sep ?[ = true
+		      | is-sep ?] = true
+		      | is-sep ?" = true (* " *)
+		      | is-sep ?= = true
+                      | is-sep ?^ = true
+		      | is-sep ?+ = true
+		      | is-sep ?- = true
+		      | is-sep ?* = true
+		      | is-sep ?/ = true
+		      | is-sep ?| = true
+		      | is-sep ?> = true
+		      | is-sep ?< = true
+		      | is-sep ?, = true
+		      | is-sep ?. = true
+		      | is-sep ?; = true
+		      | is-sep ?: = true
+		      | is-sep _  = false
+			
+                   (* skip any whitespace. might skip to the
+		      end of the string *)
+                   fun skipws ((line, char), i) =
+		       if i >= stop then ((line, char), i)
+		       else 
+                         if is-nl (sub(s, i))
+                         then skipws ((line + 1, 0), i + 1)
+                         else if is-ws (sub(s, i))
+                         then skipws ((line, char + 1), i + 1)
+                         else ((line, char), i)
+				
+		   val (pos as (line, char), i) = skipws (pos, i)
+		       
+		   (* saw at least one character (starting at i),
+		      so we're accumulating a string of chars *)
+		   fun accum ((line, char), j) =
+		       (* end of string? *)
+		       if j >= stop 
+		       then (pos, (line, char), j,
+                             TId (substring(s, i, j - i)))
+		       else
+			   let val c = sub(s, j)
+			   in
+			       if is-ws c orelse is-sep c
+			       then (pos, (line, char), j,
+                                     TId (substring(s, i, j - i)))
+			       else accum ((line, char + 1), j + 1)
+			   end
+		       
+		   (* read a string up until the closing quote *)
+		   fun readstr ((line, char), j) =
+		       if j >= stop
+		       then 
+			   let val (line, char) = pos in
+			       raise RML ("unclosed string starting at line "
+                                          ^ (int-tostring line) ^ ", character "
+                                          ^ (int-tostring char))
+			   end
+		       else
+			   if ord (sub(s, j)) = ord ?" (* " *)
+			   then (pos, (line, char), j + 1, 
+                                 TString (substring(s, i + 1, j - (i + 1))))
+                           else if is-nl (sub(s, j))
+                           then readstr ((line + 1, 0), j + 1)
+			   else readstr ((line, char + 1), j + 1)
+
+                   fun readcomment depth ((line, char), j) =
+                       if j >= stop
+                       then 
+                         let val (line, char) = pos in
+                           raise RML ("unclosed comment starting at line "
+                                      ^ (int-tostring line) ^ ", character "
+                                      ^ (int-tostring char))
+                         end
+                       else
+                         if ord (sub(s, j)) = ord ?*
+                            andalso j < stop
+                            andalso ord (sub(s, j+1)) = ord ?)
+                         then if depth = 1
+                              then get-token ((line, char + 2), j + 2, s)
+                              else readcomment (depth - 1) ((line, char + 2), j + 2)
+                         else if ord (sub(s, j)) = ord ?(
+                            andalso j < stop
+                            andalso ord (sub(s, j+1)) = ord ?*
+                         then readcomment (depth + 1) ((line, char + 2), j + 2)
+                         else if is-nl (sub(s, j))
+                         then readcomment depth ((line + 1, 0), j + 1)
+                         else readcomment depth ((line, char + 1), j + 1)
+		in
+		    (* look at first char.. *)
+		    if i >= stop
+		    then (pos, pos, i, TNone)
+		    else let val c = sub(s, i)
+			 in
+			     if ord c = ord ?" (* " *)
+			     then readstr ((line, char + 1), (i + 1))
+                             else if ord c = ord ?(
+                               andalso i < stop
+                               andalso ord (sub(s, i + 1)) = ord ?*
+                               then readcomment 1 (pos, (i + 2))
+			     else if is-sep c
+				  then (pos, pos, i + 1, TSep c)
+				  else accum (pos, (i + 1))
+			 end
+		end
+
+        val endpos = ref (1, 0)
+
+	fun tokenstream (pos, idx, s) =
+	    stream-delay
+	    (fn () =>
+	     case get-token (pos, idx, s) of
+               (_, e, _, TNone) => (endpos := e; Nil)
+             | (b, e as (line, char), idx', tok) => 
+               Cons((b, e, tok), tokenstream ((line, char + 1), idx', s)))
+
+        val toks = tokenstream (!endpos, 0, s)
+
+      (*
+        do stream-app (fn ((bl, bc), (el, ec), tok) => print ((int-tostring bl) ^ " "
+                                                              ^ (int-tostring bc) ^ " "
+                                                              ^ (int-tostring el) ^ " "
+                                                              ^ (int-tostring ec) ^ " " 
+                                                              ^ (token-tostring tok) ^ "\n")) 
+                      toks
+*)
+
+        (* (mostly) generic parsing wrappers *)
+      type (a, t, p) parserng = (p * p * t) stream * unit cont -> (p * p * a) * (p * p * t) stream
+
+      fun parseng-succeed x (ts, k) = 
+          case stream-force ts of
+            Cons ((b, e, _), t) => ((b, e, x), ts)
+          | Nil => ((!endpos, !endpos, x), ts)
+      fun parseng-done x (ts, k) =
+          case stream-force ts of
+            Cons _ => throw () to k
+          | Nil => ((!endpos, !endpos, x), ts)
+
+      fun --- (p, q, (ts, k)) = let val ((_, _, x), ts) = p (ts, k) in q x (ts, k) end
+      infix 2 ---
+      fun parseng-wth (p, f) = p -- (fn (b, e, x) => (parse-succeed (b, e, f x)))
+      fun parseng-return (p, x) = p -- (fn (b, e, _) => parse-succeed (b, e, x))
+      infix 2 parseng-wth
+      infix 2 parseng-return
+
+      fun parseng-opt p = p parseng-wth SOME || parseng-succeed NONE            
+      fun <<< (p, q) = p -- (fn (b, _, x) => q parse-wth (fn (_, e, _) => (b, e, x)))
+      fun >>> (p, q) = p -- (fn (b, _, _) => q parse-wth (fn (_, e, x) => (b, e, x)))
+      fun &&& (p, q) = p -- (fn (b, _, x) => q -- (fn (_, e, y) => parse-succeed (b, e, (x, y))))
+                       
+      infix 4 <<<
+      infix 4 >>>
+      infix 3 &&&
+
+      fun parseng-repeat p = parse-fix (fn rep => p &&& rep parseng-wth (op ::)
+                                                  || parseng-succeed nil)
+      fun parseng-repeat1 p = (p &&& parseng-repeat p) parseng-wth op ::
+      fun parseng-separate p q = (p &&& parseng-repeat (q >>> p)) parseng-wth op ::
+                                 
+      fun parseng-separate0 p q = parseng-separate p q || parseng-succeed nil
+
+      fun parseng-matching f = parse-any -- (fn (b, e, (f) x) => parse-succeed (b, e, x) | _ => parse-fail)
+
+	(* an identifier that's not a keyword *)
+	fun notkey s = 
+	    if list-exists
+	       (fn s' => string-equals (s, s'))
+	       rml-keyword-list
+	    then raise Match
+	    else s
+
+	fun is_numeral s =
+	    case int-fromstring s of
+		SOME i => i
+	      | _ => raise Match
+
+	fun is_string (TString s) = s
+	  | is_string _ = raise Match
+
+	fun is_id (TId s) = s
+	  | is_id _ = raise Match
+
+	fun is_sep (TSep c) = c
+	  | is_sep _ = raise Match
+
+	fun is c (TSep c') = 
+	    if ord c = ord c'
+	    then () else raise Match
+	  | is _ _ = raise Match
+
+	(* require a specific string *)
+	fun % s = parseng-matching is_id 
+                            -- (fn (b, e, ((sis s) _)) => parse-succeed (b, e, ())
+                                | _ => parse-fail)
+
+	fun & c = parseng-matching (is c)
+
+        fun binary_prim prim ((b, _, a1), (_, e, a2)) = (b, e, Prim (prim, a1, a2))
+	fun atomi () =
+            & ?+ parse-return (Parse-opr
+                                (Parse-infix
+                                  (Parse-left, 3, binary_prim Add)))
+         || & ?^ parse-return (Parse-opr
+                                (Parse-infix
+                                  (Parse-left, 2, binary_prim Cat)))
+         || & ?- parse-return (Parse-opr
+                                (Parse-infix
+                                  (Parse-left, 3, binary_prim Sub)))
+         || & ?< &&& & ?= parse-return (Parse-opr
+                                (Parse-infix
+                                  (Parse-left, 4, binary_prim LessEquals)))
+         || & ?< parse-return (Parse-opr
+                                (Parse-infix
+                                  (Parse-left, 4, binary_prim Less)))
+         || & ?> &&& & ?= parse-return (Parse-opr
+                                (Parse-infix
+                                  (Parse-left, 4, binary_prim GreaterEquals)))
+         || & ?> parse-return (Parse-opr
+                                (Parse-infix
+                                  (Parse-left, 4, binary_prim Greater)))
+         || & ?= parse-return (Parse-opr
+                                (Parse-infix
+                                  (Parse-left, 4, binary_prim Equals)))
+         || $ atom parse-wth Parse-atm
+
+        (* parses groups like '{ a, b, c }' *)
+(*
+        fun parse-group r p q s = 
+           (r >> p && parse-repeat (q >> p) << s) parse-wth op::
+        || (r >> p && parse-repeat (q >> p) && p parse-wth 
+            (fn _ => raise RML "Expected 'q'")
+        || (r >> p && parse-repeat (q >> p) parse-wth 
+            (fn _ => raise RML "Expected 's'")
+*)
+	and atom () = parseng-matching is_string parseng-wth String
+	        ||    parseng-matching (is_numeral o is_id) parseng-wth Int
+	        ||   (parseng-matching (notkey o is_id)) --
+		      (fn (b, e, id) => 
+			   & ?( >>> parseng-separate0 ($ exp) (& ?,)
+				<<< & ?) parse-wth (fn (_, e, el) => (b, e, Call(id, el)))
+		       || & ?{ >>> parseng-separate0 ($ exp parseng-wth (fn ex => (false, ex)))
+                                                     (& ?,)
+			       <<< & ?} parse-wth (fn (_, e, el) => (b, e, Construct(id, el)))
+		       || parse-succeed (b, e, Var id))
+	        ||   (& ?( ) >>>
+		      $ exp <<<
+		      (& ?) )
+
+	and exp () = parse-fixity ( $ atomi )
+
+        and formal_types () =
+            & ?( >>> (parseng-separate0 (parseng-matching (notkey o is_id)) (& ?,)) <<< & ?)
+         || (parseng-matching (notkey o is_id)) parseng-wth (fn id => id :: nil)
+
+        and formals () =
+            & ?( >>> (parseng-separate0 
+                      ((parseng-matching (notkey o is_id)) &&& & ?:
+                           >>> (parseng-matching (notkey o is_id)))
+                      (& ?,)) <<< & ?)
+	fun stmt () =
+            & ?[ >>> $ stmts <<< & ?] parseng-wth Block
+         (* Error *)
+         || & ?[ >>> $ stmts parse-wth 
+             (fn (_, (line, char), _) => raise RML ("expected ] or . after statements at line " 
+                                                    ^ (int-tostring line) ^ ", character "
+                                                    ^ (int-tostring char)))
+
+         || % "extern" >>> % "type" >>>
+              (parseng-matching (notkey o is_id)) parseng-wth ExternType
+         (* ENH Errors *)
+         || % "extern" >>> % "type" parse-wth
+            (fn ((line, char), _, _) => raise RML ("expected identifier after 'extern type' at line " 
+                                                   ^ (int-tostring line) ^ ", character "
+                                                   ^ (int-tostring char)))
+
+         || % "extern" >>> (parseng-matching (notkey o is_id)) &&& & ?: 
+           >>> $ formal_types &&& & ?- >>> & ?> >>> $ formal_types parseng-wth
+            (* SUSP should result be a list or just a singleton *)
+            (fn ((id, args), res) => Extern (id, args, res))
+         (* ENH Errors *)
+         || % "extern" >>> (parseng-matching (notkey o is_id)) &&& & ?: parse-wth
+            (fn (_, (line, char), _) => raise RML ("unable to parse type for external identifier at line " 
+                                                   ^ (int-tostring line) ^ ", character "
+                                                   ^ (int-tostring char)))
+         || % "extern" >>> (parseng-matching (notkey o is_id)) parse-wth
+            (fn (_, (line, char), _) => raise RML ("expected : after external identifier at line " 
+                                                   ^ (int-tostring line) ^ ", character "
+                                                   ^ (int-tostring char)))
+         || % "extern" parse-wth 
+            (fn ((line, char), _, _) => raise RML ("expected 'type' or identifier after 'extern' at line " 
+                                                   ^ (int-tostring line) ^ ", character "
+                                                   ^ (int-tostring char)))
+
+         || % "type" >>> (parseng-matching (notkey o is_id)) &&& & ?= >>>
+            (parseng-separate (parseng-matching (notkey o is_id) 
+                               &&& & ?{ >>>
+                                (parseng-separate0 (parseng-matching (notkey o is_id)) (& ?,))
+                               <<< & ?})
+                            (& ?|)) parseng-wth Type
+            (* ENH Errors *)
+         || % "type" parse-wth
+           (fn ((line, char), _, _) => raise RML ("unable to parse type definition at line " 
+                                                  ^ (int-tostring line) ^ ", character "
+                                                  ^ (int-tostring char)))
+
+         || % "fun" >>> (parseng-matching (notkey o is_id)) &&& $ formals &&& 
+            (parseng-opt (& ?: >>> (parseng-matching (notkey o is_id)))) &&& & ?= >>
+            $ stmt parseng-wth 
+             (fn (((id, args), res), body) => FunDecl (id, args, res, body::nil))
+            (* ENH Errors *)
+         || % "fun" parse-wth
+           (fn ((line, char), _, _) => raise RML ("unable to parse type definition at line " 
+                                                  ^ (int-tostring line) ^ ", character "
+                                                  ^ (int-tostring char)))
+
+         || % "case" >>> $ exp &&& % "of" >>>
+            (parseng-separate ((parseng-matching (notkey o is_id)) &&& & ?{ >>>
+                              (parseng-separate0 (parseng-matching (notkey o is_id)) (& ?,)) &&&
+                              & ?} >>> & ?= >>> & ?> >>> $ stmt 
+                            parseng-wth (fn ((x1, x2), x3) => (x1, x2, x3::nil)))
+                            (& ?|))
+              parseng-wth Case
+            (* ENH more Errors *)
+         || % "case" >>> $ exp &&& % "of" parse-wth
+           (fn (_, (line, char), _) => raise RML ("unable to parse branches after 'case' at line " 
+                                                  ^ (int-tostring line) ^ ", character "
+                                                  ^ (int-tostring char)))
+         || % "case" >>> $ exp parse-wth
+           (fn (_, (line, char), _) => raise RML ("expected 'of' after 'case' and expression" 
+                                                  ^ " at line " 
+                                                  ^ (int-tostring line) ^ ", character "
+                                                  ^ (int-tostring char)))
+         || % "case" parse-wth 
+            (fn ((line, char), _, _) => raise RML ("expected expression after 'case'"
+                                                   ^ " at line " 
+                                                   ^ (int-tostring line) ^ ", character "
+                                                   ^ (int-tostring char)))
+
+         || % "let" >>> (parseng-matching (notkey o is_id)) &&& & ?= >>> $ exp parseng-wth Bind
+            (* ENH Errors *)
+         || % "let" parse-wth
+           (fn ((line, char), _, _) => raise RML ("unable to parse variable binding at line " 
+                                                  ^ (int-tostring line) ^ ", character "
+                                                  ^ (int-tostring char)))
+
+
+         || % "return" >>> $ exp parseng-wth Return
+         || % "return" parseng-return (Return Unit)
+         (* ENH Errors *)
+         || % "do" >>> $ exp parseng-wth Do
+
+         || (parseng-matching is_id) parse-wth
+            (fn ((line, char), _, s) => raise RML ("unable to parse statement starting with '" ^ s ^ "'"
+                                                   ^ " at line " 
+                                                   ^ (int-tostring line) ^ ", character "
+                                                   ^ (int-tostring char)))
+         || (parseng-matching is_string) parse-wth
+            (fn ((line, char), _, s) => raise RML ("unable to parse statement starting with \"" ^ s ^ "\""
+                                                   ^ " at line " 
+                                                   ^ (int-tostring line) ^ ", character "
+                                                   ^ (int-tostring char)))
+            (*
+         || (parse-matching is_sep) parse-wth
+            (fn c => raise RML ("Unable to parse statement at '" ^ (string-str c) ^ "'"))
+            *)
+
+            (* Allow empty statements: *)
+         || parseng-succeed Skip
+
+            (* ENH parse error messages for things like 
+                      Atom "text here"
+             i.e. missing {} *)
+        and stmts () = parseng-separate0 ($ stmt) (& ?.)
+                                         parseng-wth (list-filter (fn Skip => false
+                                                                    | _ => true))
+        and top_stmts () = $ stmts <<< $ parseng-done 
+                        || $ stmts parse-wth 
+             (fn (_, (line, char), _) => raise RML ("unable to parse statement at line " 
+                                                    ^ (int-tostring line) ^ ", character "
+                                                    ^ (int-tostring char)))
+
+        val brain = case parse-stream ($ top_stmts) toks
+                     of (NONE) => raise RML ("syntax error, no program")
+                      | (SOME (_, _, nil)) => raise RML ("syntax error, no program")
+                      | (SOME (_, _, s)) => s
+
+    in
+      brain
+    end

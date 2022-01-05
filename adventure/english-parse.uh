@@ -1,0 +1,254 @@
+
+(* Parser for Adventure. *)
+
+val require-string = provide-string
+val require-parse = provide-parse
+val require-io = provide-io
+
+val canonicalizations =
+    (("go", "cd" :: nil) ::
+     ("at", "a" :: "an" :: "the" :: nil) ::
+     ("take", "get" :: "grab" :: nil) ::
+     ("combine", "c" :: "comb" :: nil) ::
+     ("incinerate", "inc" :: nil) ::
+     ("inventory", "i" :: "inv" :: "invent" :: "sh" :: "show" :: nil) ::
+     ("drop", "rm" :: "del" :: nil) ::
+     ("show", "sh" :: nil) ::
+     ("examine", "x" :: "ex" :: "look" :: "read" :: "l" :: "ls" :: "dir" :: "cat" :: nil) ::
+     ("and", "with" :: nil) ::
+     ("n", "north" :: nil) ::
+     ("s", "south" :: nil) ::
+     ("e", "east"  :: nil) ::
+     ("w", "west"  :: nil) ::
+     ("speak", "say" :: "utter" :: nil) ::
+     ("u", "up" :: nil) ::
+     ("d", "down" :: nil) ::
+     ("switch", "sw" :: nil) ::
+     ("goggles", "goggle" :: nil) ::
+     ("quit", "exit" :: nil) ::
+     nil)
+
+fun canonize-word w =
+    case list-find (fn (_, l) =>
+		    list-exists (fn s => string-equals (s, w)) l)
+	 canonicalizations of
+	SOME (ex, _) => ex
+      | NONE => w
+
+(* gets all matching items from the inventory or the current room *)
+fun get-items itemswhere adjectives noun' =
+    let fun list-offsets f l = 
+        let fun lo (nil, _, acc) = acc
+              | lo ((h :: t), i, acc) = if f h
+                                        then lo (t, i + 1, i::acc)
+                                        else lo (t, i + 1, acc)
+        in lo (l, 0, nil) end
+        fun filter idx = let val item = growarray-sub (items, idx)
+                         in noun-equals (item-noun item, noun')
+                            andalso 
+                            list-subset adjective-equals adjectives (#adjectives/item item)
+                         end
+    in
+      list-offsets filter (local_items itemswhere)
+    end
+
+(* tokens here are lowercase strings *)
+
+(* require a specific string *)
+fun % s = parse-any -- (fn ((sis s) _) => parse-succeed ()
+			 | _ => parse-fail)
+
+(* require a string that canonizes to s *)
+fun ` s = parse-any -- (fn ((canonize-word) ((sis s) _)) => parse-succeed s
+			| _ => parse-fail)
+			
+val id-p = parse-any
+
+val dir-p =
+     `"n" parse-return (Go North)
+  || `"s" parse-return (Go South)
+  || `"e" parse-return (Go East)
+  || `"w" parse-return (Go West)
+
+val noun-p = parse-any --
+      (fn s => (case hash-get (noun_map, s)
+                    of SOME v => parse-succeed v
+                     | NONE => parse-fail))
+  (* parse two word nouns as well: *)
+  || parse-any && parse-any --
+      (fn (s1, s2) =>
+          let val s = s1 ^ " " ^ s2 in
+            case hash-get (noun_map, s)
+             of SOME v => parse-succeed v
+              | NONE => parse-fail
+          end)
+
+val adjective-p = parse-any --
+      (fn s => (case hash-get (adjective_map, s)
+                 of SOME v => parse-succeed (v)
+                  | NONE => parse-fail))
+
+fun item-p-wth-command itemswhere command c = 
+    let fun parse (adjectives, noun) =
+            let val s = format-list "" (noun-tostring noun) " " " " 
+                                    (" " ^ (noun-tostring noun))
+                                    (list-map adjective-tostring adjectives)
+            in
+              case get-items itemswhere adjectives noun
+               of off::nil => command off
+	        | nil => Unparsable (
+                           case itemswhere 
+                            of RoomItems => "There is no " ^ s ^ " here. "
+                             | InventoryAndRoomItems => "There is no " ^ s ^ " here. "
+                             | InventoryItems => "You aren't carrying "
+                                                 ^ (articlify s) ^ ". You can only "
+                                                 ^ c ^ " items in your possession. ")
+                | offs => 
+                  let val my_items = local_items itemswhere
+                      fun get_item off = growarray-sub (items, list-nth off my_items)
+                      fun tostring item = "the "
+                                          ^ (string-delimit ", "
+                                              (list-map (fn a => adjective-tostring a)
+                                                        (#adjectives/item item)))
+                                          ^ " "
+                                          ^ (noun-tostring (item-noun item))
+                  in
+                    Unparsable (format-list "Did you mean " "" ", " " or " "?"
+                                            (list-map (tostring o get_item) offs))
+                  end
+            end
+    in
+      (parse-repeat adjective-p) && noun-p parse-wth parse
+    end
+
+val eol-p = $ parse-done
+(* parse a non-empty sequence of words *)
+val rest-p = parse-repeat1 id-p << eol-p parse-wth
+               (fn ws => case ws of w::ws => list-foldl (fn (w, s) => s ^ " " ^ w) w ws
+                                  | nil => raise Adventure "IMPOSSIBLE")
+(* parse a possibly-empty sequence of words *)
+val maybe-rest-p = parse-repeat id-p << eol-p parse-wth
+               (fn ws => case ws of nil => ""
+                                  | w::ws => list-foldl (fn (w, s) => s ^ " " ^ w) w ws)
+
+val goggles_description = format-list ("According to the markings on your goggles, "
+                                       ^ "they support following modes: ")
+                                      "" ", " ", and " "."
+                                      (list-map goggles-tostring all-goggles)
+val goggles-p = 
+	list-foldr (fn (gog, b) =>
+	            let
+			val s = string-lcase (goggles-tostring gog)
+		    in
+			`s parse-return SwitchGoggles gog || b
+		    end)
+		   (maybe-rest-p parse-wth
+		      (fn _ => Unparsable goggles_description))
+		   all-goggles
+
+val command-p =
+    `"go" >> dir-p << eol-p
+    (* direction without 'go' is fine too *)
+ || dir-p << eol-p
+
+ || `"take" >> (item-p-wth-command RoomItems Take "take") << eol-p
+
+ || `"drop" >> (item-p-wth-command InventoryItems Drop "drop") << eol-p
+
+ || `"incinerate" >> (item-p-wth-command InventoryItems Incinerate "incinerate") << eol-p
+
+ || `"switch" >> (parse-opt (`"goggles")) >> (parse-opt (%"to"))
+              >> goggles-p
+
+ (* Use Take to capture an item, twice (any single-item command would do) 
+   ENH consider refactoring item-p-wth-command *)
+ || `"combine" >> (item-p-wth-command InventoryItems Take "combine") 
+               && (parse-opt (`"and"))
+               >> (item-p-wth-command InventoryItems Take "combine") << eol-p parse-wth
+                (fn (Take off1, Take off2) => Combine (off1, off2)
+                  | (Unparsable msg, _) => Unparsable msg
+                  | (_, Unparsable msg) => Unparsable msg
+                  | (_, _) => raise Adventure "IMPOSSIBLE")
+
+ || `"break" >> (item-p-wth-command InventoryItems Break "break") << eol-p
+
+ || `"use" >> (item-p-wth-command InventoryItems Use "use") << eol-p
+
+ (* This is a bit of a hack to make "examine goggles" work, but seems the
+  * lesser of several evils. *)
+ || `"examine" >> (parse-opt (`"at")) >> `"goggles" << eol-p parse-wth 
+    (fn _ => Unparsable (goggles_description))
+
+ || `"examine" >> (parse-opt (`"at")) 
+    >> (item-p-wth-command InventoryAndRoomItems Examine "examine") << eol-p
+
+ (* incomplete or incomprehensible verb phrases *)
+ || `"combine" >> (item-p-wth-command InventoryItems Take "combine") && 
+                (parse-opt (`"and")) >> rest-p parse-wth 
+                (fn (Take off, s) => Unparsable ("You aren't carrying " 
+                                                 ^ (articlify s) ^ ".  You can only "
+                                                 ^ "combine items in your possession. ")
+                  | (Unparsable msg, _) => Unparsable msg
+                  | _ => raise Adventure "IMPOSSIBLE")
+ || `"combine" >> (item-p-wth-command InventoryItems Take "combine") parse-wth 
+                (fn (Take off) => Unparsable "You must combine two items. "
+                  | (Unparsable msg) => Unparsable msg
+                  | _ => raise Adventure "IMPOSSIBLE")
+
+ || (`"take" || `"examine") >> rest-p parse-wth 
+                             (fn s => Unparsable ("There is no " ^ s ^ " here. "))
+ || (`"drop" || `"incinerate" || `"use" || `"combine") >> rest-p parse-wth
+                             (fn s => Unparsable ("You aren't carrying " 
+                                                  ^ (articlify s) ^ "."))
+ || (`"take" || `"drop" || `"incinerate" || `"use" || `"combine" || `"switch") << eol-p parse-wth 
+                             (fn s => Unparsable ("What do you want to " ^ s ^ "? "))
+
+ (* examine followed by nothing is handled specially *)
+ || `"examine" << eol-p parse-return LookAround
+
+ || `"inventory" >> eol-p parse-return ShowInventory
+
+ || `"whistle" >> eol-p parse-return Whistle
+ || `"hum" >> eol-p parse-return Hum
+ || `"speak" >> rest-p parse-wth Speak
+ || `"speak" << eol-p parse-wth (fn _ => Unparsable "What do you want to say?")
+
+ || `"help" >> `"go" << eol-p parse-wth Help
+ || `"help" >> `"take" << eol-p parse-wth Help
+ || `"help" >> `"drop" << eol-p parse-wth Help
+ || `"help" >> `"incinerate" << eol-p parse-wth Help
+ || `"help" >> `"combine" << eol-p parse-wth Help
+ || `"help" >> `"examine" << eol-p parse-wth Help
+ || `"help" >> `"show" >> (parse-opt (`"inventory")) 
+     >> eol-p parse-return (Help "inventory")
+ || `"help" >> `"inventory" << eol-p parse-wth Help
+ || `"help" >> `"use" << eol-p parse-wth Help
+ || `"help" >> `"switch" << eol-p parse-wth Help
+
+ || `"help" >> rest-p parse-wth Help
+ || `"help" << eol-p parse-wth (fn _ => Help "")
+
+ || `"quit" << eol-p parse-wth (fn _ => raise IO)
+
+ (* some easter eggs *)
+ || `"4" >> `"8" >> `"15" >> `"16" >> `"23" >> `"42" parse-return Unparsable "Dad?"
+ || `"xyzzy" parse-return Unparsable "Nothing happens."
+ || `"plugh" parse-return Unparsable "You don't have an h nor anything to plug it into."
+
+ (* really hopeless *) 
+ || rest-p parse-wth (fn s => Unparsable "Huh? Try 'help'.")
+ || parse-succeed () parse-wth (fn _ => Unparsable "Huh?")
+
+(* read a line of input and generate a command from it. *)
+fun read-command () =
+    let
+	val l = string-lcase (getline ())
+	val l = string-tokens (fn ?  => true
+                                | ?\t => true 
+                                | _ => false) l
+    in
+	case parse-list command-p l of
+	    NONE => raise Adventure "IMPOSSIBLE: parse failed"
+	  | SOME a => a
+    end
+

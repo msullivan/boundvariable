@@ -1,0 +1,1002 @@
+
+% Twelf Universal Machine
+%      by Jake Donham
+
+bit : type.
+0 : bit.
+1 : bit.
+
+bit-add : bit -> bit -> bit -> bit -> bit -> type.
+%mode bit-add +X1 +X2 +X3 -X4 -X5.
+- : bit-add 0 0 0 0 0.
+- : bit-add 0 0 1 1 0.
+- : bit-add 0 1 0 1 0.
+- : bit-add 0 1 1 0 1.
+- : bit-add 1 0 0 1 0.
+- : bit-add 1 0 1 0 1.
+- : bit-add 1 1 0 0 1.
+- : bit-add 1 1 1 1 1.
+
+bit-sub : bit -> bit -> bit -> bit -> bit -> type.
+%mode bit-sub +X1 +X2 +X3 -X4 -X5.
+- : bit-sub 0 0 0 0 0.
+- : bit-sub 0 0 1 1 1.
+- : bit-sub 0 1 0 1 1.
+- : bit-sub 0 1 1 0 1.
+- : bit-sub 1 0 0 1 0.
+- : bit-sub 1 0 1 0 0.
+- : bit-sub 1 1 0 0 0.
+- : bit-sub 1 1 1 1 1.
+
+bit-and : bit -> bit -> bit -> type.
+%mode bit-and +X1 +X2 -X3.
+- : bit-and 0 0 0.
+- : bit-and 1 0 0.
+- : bit-and 0 1 0.
+- : bit-and 1 1 1.
+
+bit-not : bit -> bit -> type.
+%mode bit-not +X1 -X2.
+- : bit-not 0 1.
+- : bit-not 1 0.
+
+byte : type.
+byte_ : bit -> bit -> bit -> bit -> bit -> bit -> bit -> bit -> byte.
+
+00_8 : byte = (byte_ 0 0 0 0 0 0 0 0).
+01_8 : byte = (byte_ 0 0 0 0 0 0 0 1).
+02_8 : byte = (byte_ 0 0 0 0 0 0 1 0).
+03_8 : byte = (byte_ 0 0 0 0 0 0 1 1).
+04_8 : byte = (byte_ 0 0 0 0 0 1 0 0).
+05_8 : byte = (byte_ 0 0 0 0 0 1 0 1).
+06_8 : byte = (byte_ 0 0 0 0 0 1 1 0).
+07_8 : byte = (byte_ 0 0 0 0 0 1 1 1).
+08_8 : byte = (byte_ 0 0 0 0 1 0 0 0).
+09_8 : byte = (byte_ 0 0 0 0 1 0 0 1).
+0a_8 : byte = (byte_ 0 0 0 0 1 0 1 0).
+0b_8 : byte = (byte_ 0 0 0 0 1 0 1 1).
+0c_8 : byte = (byte_ 0 0 0 0 1 1 0 0).
+0d_8 : byte = (byte_ 0 0 0 0 1 1 0 1).
+0e_8 : byte = (byte_ 0 0 0 0 1 1 1 0).
+0f_8 : byte = (byte_ 0 0 0 0 1 1 1 1).
+10_8 : byte = (byte_ 0 0 0 1 0 0 0 0).
+11_8 : byte = (byte_ 0 0 0 1 0 0 0 1).
+12_8 : byte = (byte_ 0 0 0 1 0 0 1 0).
+13_8 : byte = (byte_ 0 0 0 1 0 0 1 1).
+14_8 : byte = (byte_ 0 0 0 1 0 1 0 0).
+15_8 : byte = (byte_ 0 0 0 1 0 1 0 1).
+16_8 : byte = (byte_ 0 0 0 1 0 1 1 0).
+17_8 : byte = (byte_ 0 0 0 1 0 1 1 1).
+18_8 : byte = (byte_ 0 0 0 1 1 0 0 0).
+19_8 : byte = (byte_ 0 0 0 1 1 0 0 1).
+1a_8 : byte = (byte_ 0 0 0 1 1 0 1 0).
+1b_8 : byte = (byte_ 0 0 0 1 1 0 1 1).
+1c_8 : byte = (byte_ 0 0 0 1 1 1 0 0).
+1d_8 : byte = (byte_ 0 0 0 1 1 1 0 1).
+1e_8 : byte = (byte_ 0 0 0 1 1 1 1 0).
+1f_8 : byte = (byte_ 0 0 0 1 1 1 1 1).
+20_8 : byte = (byte_ 0 0 1 0 0 0 0 0).
+21_8 : byte = (byte_ 0 0 1 0 0 0 0 1).
+22_8 : byte = (byte_ 0 0 1 0 0 0 1 0).
+23_8 : byte = (byte_ 0 0 1 0 0 0 1 1).
+24_8 : byte = (byte_ 0 0 1 0 0 1 0 0).
+25_8 : byte = (byte_ 0 0 1 0 0 1 0 1).
+26_8 : byte = (byte_ 0 0 1 0 0 1 1 0).
+27_8 : byte = (byte_ 0 0 1 0 0 1 1 1).
+28_8 : byte = (byte_ 0 0 1 0 1 0 0 0).
+29_8 : byte = (byte_ 0 0 1 0 1 0 0 1).
+2a_8 : byte = (byte_ 0 0 1 0 1 0 1 0).
+2b_8 : byte = (byte_ 0 0 1 0 1 0 1 1).
+2c_8 : byte = (byte_ 0 0 1 0 1 1 0 0).
+2d_8 : byte = (byte_ 0 0 1 0 1 1 0 1).
+2e_8 : byte = (byte_ 0 0 1 0 1 1 1 0).
+2f_8 : byte = (byte_ 0 0 1 0 1 1 1 1).
+30_8 : byte = (byte_ 0 0 1 1 0 0 0 0).
+31_8 : byte = (byte_ 0 0 1 1 0 0 0 1).
+32_8 : byte = (byte_ 0 0 1 1 0 0 1 0).
+33_8 : byte = (byte_ 0 0 1 1 0 0 1 1).
+34_8 : byte = (byte_ 0 0 1 1 0 1 0 0).
+35_8 : byte = (byte_ 0 0 1 1 0 1 0 1).
+36_8 : byte = (byte_ 0 0 1 1 0 1 1 0).
+37_8 : byte = (byte_ 0 0 1 1 0 1 1 1).
+38_8 : byte = (byte_ 0 0 1 1 1 0 0 0).
+39_8 : byte = (byte_ 0 0 1 1 1 0 0 1).
+3a_8 : byte = (byte_ 0 0 1 1 1 0 1 0).
+3b_8 : byte = (byte_ 0 0 1 1 1 0 1 1).
+3c_8 : byte = (byte_ 0 0 1 1 1 1 0 0).
+3d_8 : byte = (byte_ 0 0 1 1 1 1 0 1).
+3e_8 : byte = (byte_ 0 0 1 1 1 1 1 0).
+3f_8 : byte = (byte_ 0 0 1 1 1 1 1 1).
+40_8 : byte = (byte_ 0 1 0 0 0 0 0 0).
+41_8 : byte = (byte_ 0 1 0 0 0 0 0 1).
+42_8 : byte = (byte_ 0 1 0 0 0 0 1 0).
+43_8 : byte = (byte_ 0 1 0 0 0 0 1 1).
+44_8 : byte = (byte_ 0 1 0 0 0 1 0 0).
+45_8 : byte = (byte_ 0 1 0 0 0 1 0 1).
+46_8 : byte = (byte_ 0 1 0 0 0 1 1 0).
+47_8 : byte = (byte_ 0 1 0 0 0 1 1 1).
+48_8 : byte = (byte_ 0 1 0 0 1 0 0 0).
+49_8 : byte = (byte_ 0 1 0 0 1 0 0 1).
+4a_8 : byte = (byte_ 0 1 0 0 1 0 1 0).
+4b_8 : byte = (byte_ 0 1 0 0 1 0 1 1).
+4c_8 : byte = (byte_ 0 1 0 0 1 1 0 0).
+4d_8 : byte = (byte_ 0 1 0 0 1 1 0 1).
+4e_8 : byte = (byte_ 0 1 0 0 1 1 1 0).
+4f_8 : byte = (byte_ 0 1 0 0 1 1 1 1).
+50_8 : byte = (byte_ 0 1 0 1 0 0 0 0).
+51_8 : byte = (byte_ 0 1 0 1 0 0 0 1).
+52_8 : byte = (byte_ 0 1 0 1 0 0 1 0).
+53_8 : byte = (byte_ 0 1 0 1 0 0 1 1).
+54_8 : byte = (byte_ 0 1 0 1 0 1 0 0).
+55_8 : byte = (byte_ 0 1 0 1 0 1 0 1).
+56_8 : byte = (byte_ 0 1 0 1 0 1 1 0).
+57_8 : byte = (byte_ 0 1 0 1 0 1 1 1).
+58_8 : byte = (byte_ 0 1 0 1 1 0 0 0).
+59_8 : byte = (byte_ 0 1 0 1 1 0 0 1).
+5a_8 : byte = (byte_ 0 1 0 1 1 0 1 0).
+5b_8 : byte = (byte_ 0 1 0 1 1 0 1 1).
+5c_8 : byte = (byte_ 0 1 0 1 1 1 0 0).
+5d_8 : byte = (byte_ 0 1 0 1 1 1 0 1).
+5e_8 : byte = (byte_ 0 1 0 1 1 1 1 0).
+5f_8 : byte = (byte_ 0 1 0 1 1 1 1 1).
+60_8 : byte = (byte_ 0 1 1 0 0 0 0 0).
+61_8 : byte = (byte_ 0 1 1 0 0 0 0 1).
+62_8 : byte = (byte_ 0 1 1 0 0 0 1 0).
+63_8 : byte = (byte_ 0 1 1 0 0 0 1 1).
+64_8 : byte = (byte_ 0 1 1 0 0 1 0 0).
+65_8 : byte = (byte_ 0 1 1 0 0 1 0 1).
+66_8 : byte = (byte_ 0 1 1 0 0 1 1 0).
+67_8 : byte = (byte_ 0 1 1 0 0 1 1 1).
+68_8 : byte = (byte_ 0 1 1 0 1 0 0 0).
+69_8 : byte = (byte_ 0 1 1 0 1 0 0 1).
+6a_8 : byte = (byte_ 0 1 1 0 1 0 1 0).
+6b_8 : byte = (byte_ 0 1 1 0 1 0 1 1).
+6c_8 : byte = (byte_ 0 1 1 0 1 1 0 0).
+6d_8 : byte = (byte_ 0 1 1 0 1 1 0 1).
+6e_8 : byte = (byte_ 0 1 1 0 1 1 1 0).
+6f_8 : byte = (byte_ 0 1 1 0 1 1 1 1).
+70_8 : byte = (byte_ 0 1 1 1 0 0 0 0).
+71_8 : byte = (byte_ 0 1 1 1 0 0 0 1).
+72_8 : byte = (byte_ 0 1 1 1 0 0 1 0).
+73_8 : byte = (byte_ 0 1 1 1 0 0 1 1).
+74_8 : byte = (byte_ 0 1 1 1 0 1 0 0).
+75_8 : byte = (byte_ 0 1 1 1 0 1 0 1).
+76_8 : byte = (byte_ 0 1 1 1 0 1 1 0).
+77_8 : byte = (byte_ 0 1 1 1 0 1 1 1).
+78_8 : byte = (byte_ 0 1 1 1 1 0 0 0).
+79_8 : byte = (byte_ 0 1 1 1 1 0 0 1).
+7a_8 : byte = (byte_ 0 1 1 1 1 0 1 0).
+7b_8 : byte = (byte_ 0 1 1 1 1 0 1 1).
+7c_8 : byte = (byte_ 0 1 1 1 1 1 0 0).
+7d_8 : byte = (byte_ 0 1 1 1 1 1 0 1).
+7e_8 : byte = (byte_ 0 1 1 1 1 1 1 0).
+7f_8 : byte = (byte_ 0 1 1 1 1 1 1 1).
+80_8 : byte = (byte_ 1 0 0 0 0 0 0 0).
+81_8 : byte = (byte_ 1 0 0 0 0 0 0 1).
+82_8 : byte = (byte_ 1 0 0 0 0 0 1 0).
+83_8 : byte = (byte_ 1 0 0 0 0 0 1 1).
+84_8 : byte = (byte_ 1 0 0 0 0 1 0 0).
+85_8 : byte = (byte_ 1 0 0 0 0 1 0 1).
+86_8 : byte = (byte_ 1 0 0 0 0 1 1 0).
+87_8 : byte = (byte_ 1 0 0 0 0 1 1 1).
+88_8 : byte = (byte_ 1 0 0 0 1 0 0 0).
+89_8 : byte = (byte_ 1 0 0 0 1 0 0 1).
+8a_8 : byte = (byte_ 1 0 0 0 1 0 1 0).
+8b_8 : byte = (byte_ 1 0 0 0 1 0 1 1).
+8c_8 : byte = (byte_ 1 0 0 0 1 1 0 0).
+8d_8 : byte = (byte_ 1 0 0 0 1 1 0 1).
+8e_8 : byte = (byte_ 1 0 0 0 1 1 1 0).
+8f_8 : byte = (byte_ 1 0 0 0 1 1 1 1).
+90_8 : byte = (byte_ 1 0 0 1 0 0 0 0).
+91_8 : byte = (byte_ 1 0 0 1 0 0 0 1).
+92_8 : byte = (byte_ 1 0 0 1 0 0 1 0).
+93_8 : byte = (byte_ 1 0 0 1 0 0 1 1).
+94_8 : byte = (byte_ 1 0 0 1 0 1 0 0).
+95_8 : byte = (byte_ 1 0 0 1 0 1 0 1).
+96_8 : byte = (byte_ 1 0 0 1 0 1 1 0).
+97_8 : byte = (byte_ 1 0 0 1 0 1 1 1).
+98_8 : byte = (byte_ 1 0 0 1 1 0 0 0).
+99_8 : byte = (byte_ 1 0 0 1 1 0 0 1).
+9a_8 : byte = (byte_ 1 0 0 1 1 0 1 0).
+9b_8 : byte = (byte_ 1 0 0 1 1 0 1 1).
+9c_8 : byte = (byte_ 1 0 0 1 1 1 0 0).
+9d_8 : byte = (byte_ 1 0 0 1 1 1 0 1).
+9e_8 : byte = (byte_ 1 0 0 1 1 1 1 0).
+9f_8 : byte = (byte_ 1 0 0 1 1 1 1 1).
+a0_8 : byte = (byte_ 1 0 1 0 0 0 0 0).
+a1_8 : byte = (byte_ 1 0 1 0 0 0 0 1).
+a2_8 : byte = (byte_ 1 0 1 0 0 0 1 0).
+a3_8 : byte = (byte_ 1 0 1 0 0 0 1 1).
+a4_8 : byte = (byte_ 1 0 1 0 0 1 0 0).
+a5_8 : byte = (byte_ 1 0 1 0 0 1 0 1).
+a6_8 : byte = (byte_ 1 0 1 0 0 1 1 0).
+a7_8 : byte = (byte_ 1 0 1 0 0 1 1 1).
+a8_8 : byte = (byte_ 1 0 1 0 1 0 0 0).
+a9_8 : byte = (byte_ 1 0 1 0 1 0 0 1).
+aa_8 : byte = (byte_ 1 0 1 0 1 0 1 0).
+ab_8 : byte = (byte_ 1 0 1 0 1 0 1 1).
+ac_8 : byte = (byte_ 1 0 1 0 1 1 0 0).
+ad_8 : byte = (byte_ 1 0 1 0 1 1 0 1).
+ae_8 : byte = (byte_ 1 0 1 0 1 1 1 0).
+af_8 : byte = (byte_ 1 0 1 0 1 1 1 1).
+b0_8 : byte = (byte_ 1 0 1 1 0 0 0 0).
+b1_8 : byte = (byte_ 1 0 1 1 0 0 0 1).
+b2_8 : byte = (byte_ 1 0 1 1 0 0 1 0).
+b3_8 : byte = (byte_ 1 0 1 1 0 0 1 1).
+b4_8 : byte = (byte_ 1 0 1 1 0 1 0 0).
+b5_8 : byte = (byte_ 1 0 1 1 0 1 0 1).
+b6_8 : byte = (byte_ 1 0 1 1 0 1 1 0).
+b7_8 : byte = (byte_ 1 0 1 1 0 1 1 1).
+b8_8 : byte = (byte_ 1 0 1 1 1 0 0 0).
+b9_8 : byte = (byte_ 1 0 1 1 1 0 0 1).
+ba_8 : byte = (byte_ 1 0 1 1 1 0 1 0).
+bb_8 : byte = (byte_ 1 0 1 1 1 0 1 1).
+bc_8 : byte = (byte_ 1 0 1 1 1 1 0 0).
+bd_8 : byte = (byte_ 1 0 1 1 1 1 0 1).
+be_8 : byte = (byte_ 1 0 1 1 1 1 1 0).
+bf_8 : byte = (byte_ 1 0 1 1 1 1 1 1).
+c0_8 : byte = (byte_ 1 1 0 0 0 0 0 0).
+c1_8 : byte = (byte_ 1 1 0 0 0 0 0 1).
+c2_8 : byte = (byte_ 1 1 0 0 0 0 1 0).
+c3_8 : byte = (byte_ 1 1 0 0 0 0 1 1).
+c4_8 : byte = (byte_ 1 1 0 0 0 1 0 0).
+c5_8 : byte = (byte_ 1 1 0 0 0 1 0 1).
+c6_8 : byte = (byte_ 1 1 0 0 0 1 1 0).
+c7_8 : byte = (byte_ 1 1 0 0 0 1 1 1).
+c8_8 : byte = (byte_ 1 1 0 0 1 0 0 0).
+c9_8 : byte = (byte_ 1 1 0 0 1 0 0 1).
+ca_8 : byte = (byte_ 1 1 0 0 1 0 1 0).
+cb_8 : byte = (byte_ 1 1 0 0 1 0 1 1).
+cc_8 : byte = (byte_ 1 1 0 0 1 1 0 0).
+cd_8 : byte = (byte_ 1 1 0 0 1 1 0 1).
+ce_8 : byte = (byte_ 1 1 0 0 1 1 1 0).
+cf_8 : byte = (byte_ 1 1 0 0 1 1 1 1).
+d0_8 : byte = (byte_ 1 1 0 1 0 0 0 0).
+d1_8 : byte = (byte_ 1 1 0 1 0 0 0 1).
+d2_8 : byte = (byte_ 1 1 0 1 0 0 1 0).
+d3_8 : byte = (byte_ 1 1 0 1 0 0 1 1).
+d4_8 : byte = (byte_ 1 1 0 1 0 1 0 0).
+d5_8 : byte = (byte_ 1 1 0 1 0 1 0 1).
+d6_8 : byte = (byte_ 1 1 0 1 0 1 1 0).
+d7_8 : byte = (byte_ 1 1 0 1 0 1 1 1).
+d8_8 : byte = (byte_ 1 1 0 1 1 0 0 0).
+d9_8 : byte = (byte_ 1 1 0 1 1 0 0 1).
+da_8 : byte = (byte_ 1 1 0 1 1 0 1 0).
+db_8 : byte = (byte_ 1 1 0 1 1 0 1 1).
+dc_8 : byte = (byte_ 1 1 0 1 1 1 0 0).
+dd_8 : byte = (byte_ 1 1 0 1 1 1 0 1).
+de_8 : byte = (byte_ 1 1 0 1 1 1 1 0).
+df_8 : byte = (byte_ 1 1 0 1 1 1 1 1).
+e0_8 : byte = (byte_ 1 1 1 0 0 0 0 0).
+e1_8 : byte = (byte_ 1 1 1 0 0 0 0 1).
+e2_8 : byte = (byte_ 1 1 1 0 0 0 1 0).
+e3_8 : byte = (byte_ 1 1 1 0 0 0 1 1).
+e4_8 : byte = (byte_ 1 1 1 0 0 1 0 0).
+e5_8 : byte = (byte_ 1 1 1 0 0 1 0 1).
+e6_8 : byte = (byte_ 1 1 1 0 0 1 1 0).
+e7_8 : byte = (byte_ 1 1 1 0 0 1 1 1).
+e8_8 : byte = (byte_ 1 1 1 0 1 0 0 0).
+e9_8 : byte = (byte_ 1 1 1 0 1 0 0 1).
+ea_8 : byte = (byte_ 1 1 1 0 1 0 1 0).
+eb_8 : byte = (byte_ 1 1 1 0 1 0 1 1).
+ec_8 : byte = (byte_ 1 1 1 0 1 1 0 0).
+ed_8 : byte = (byte_ 1 1 1 0 1 1 0 1).
+ee_8 : byte = (byte_ 1 1 1 0 1 1 1 0).
+ef_8 : byte = (byte_ 1 1 1 0 1 1 1 1).
+f0_8 : byte = (byte_ 1 1 1 1 0 0 0 0).
+f1_8 : byte = (byte_ 1 1 1 1 0 0 0 1).
+f2_8 : byte = (byte_ 1 1 1 1 0 0 1 0).
+f3_8 : byte = (byte_ 1 1 1 1 0 0 1 1).
+f4_8 : byte = (byte_ 1 1 1 1 0 1 0 0).
+f5_8 : byte = (byte_ 1 1 1 1 0 1 0 1).
+f6_8 : byte = (byte_ 1 1 1 1 0 1 1 0).
+f7_8 : byte = (byte_ 1 1 1 1 0 1 1 1).
+f8_8 : byte = (byte_ 1 1 1 1 1 0 0 0).
+f9_8 : byte = (byte_ 1 1 1 1 1 0 0 1).
+fa_8 : byte = (byte_ 1 1 1 1 1 0 1 0).
+fb_8 : byte = (byte_ 1 1 1 1 1 0 1 1).
+fc_8 : byte = (byte_ 1 1 1 1 1 1 0 0).
+fd_8 : byte = (byte_ 1 1 1 1 1 1 0 1).
+fe_8 : byte = (byte_ 1 1 1 1 1 1 1 0).
+ff_8 : byte = (byte_ 1 1 1 1 1 1 1 1).
+
+word : type.
+word_ : bit -> bit -> bit -> bit -> bit -> bit -> bit -> bit ->
+        bit -> bit -> bit -> bit -> bit -> bit -> bit -> bit ->
+        bit -> bit -> bit -> bit -> bit -> bit -> bit -> bit ->
+        bit -> bit -> bit -> bit -> bit -> bit -> bit -> bit -> word.
+
+0_32 : word = word_ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.
+1_32 : word = word_ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.
+
+word-zero : word -> bit -> type.
+%mode word-zero +X1 -X2.
+- : word-zero (word_ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0) 1.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ _ 1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ _ 1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ _ 1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ _ 1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ _ 1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ _ 1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ _ 1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) 0.
+- : word-zero (word_ 1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _) 0.
+%deterministic word-zero.
+
+word-add : word -> word -> word -> type.
+%mode word-add +X1 +X2 -X3.
+- : word-add
+     (word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	    A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 A00)
+     (word_ B31 B30 B29 B28 B27 B26 B25 B24 B23 B22 B21 B20 B19 B18 B17 B16
+	    B15 B14 B13 B12 B11 B10 B09 B08 B07 B06 B05 B04 B03 B02 B01 B00)
+     (word_ D31 D30 D29 D28 D27 D26 D25 D24 D23 D22 D21 D20 D19 D18 D17 D16
+	    D15 D14 D13 D12 D11 D10 D09 D08 D07 D06 D05 D04 D03 D02 D01 D00)
+     <- bit-add A00 B00 0   D00 C00
+     <- bit-add A01 B01 C00 D01 C01
+     <- bit-add A02 B02 C01 D02 C02
+     <- bit-add A03 B03 C02 D03 C03
+     <- bit-add A04 B04 C03 D04 C04
+     <- bit-add A05 B05 C04 D05 C05
+     <- bit-add A06 B06 C05 D06 C06
+     <- bit-add A07 B07 C06 D07 C07
+     <- bit-add A08 B08 C07 D08 C08
+     <- bit-add A09 B09 C08 D09 C09
+     <- bit-add A10 B10 C09 D10 C10
+     <- bit-add A11 B11 C10 D11 C11
+     <- bit-add A12 B12 C11 D12 C12
+     <- bit-add A13 B13 C12 D13 C13
+     <- bit-add A14 B14 C13 D14 C14
+     <- bit-add A15 B15 C14 D15 C15
+     <- bit-add A16 B16 C15 D16 C16
+     <- bit-add A17 B17 C16 D17 C17
+     <- bit-add A18 B18 C17 D18 C18
+     <- bit-add A19 B19 C18 D19 C19
+     <- bit-add A20 B20 C19 D20 C20
+     <- bit-add A21 B21 C20 D21 C21
+     <- bit-add A22 B22 C21 D22 C22
+     <- bit-add A23 B23 C22 D23 C23
+     <- bit-add A24 B24 C23 D24 C24
+     <- bit-add A25 B25 C24 D25 C25
+     <- bit-add A26 B26 C25 D26 C26
+     <- bit-add A27 B27 C26 D27 C27
+     <- bit-add A28 B28 C27 D28 C28
+     <- bit-add A29 B29 C28 D29 C29
+     <- bit-add A30 B30 C29 D30 C30
+     <- bit-add A31 B31 C30 D31 _.
+
+word-sub : word -> word -> word -> bit -> type.
+%mode word-sub +X1 +X2 -X3 -X4.
+- : word-sub
+     (word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	    A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 A00)
+     (word_ B31 B30 B29 B28 B27 B26 B25 B24 B23 B22 B21 B20 B19 B18 B17 B16
+	    B15 B14 B13 B12 B11 B10 B09 B08 B07 B06 B05 B04 B03 B02 B01 B00)
+     (word_ D31 D30 D29 D28 D27 D26 D25 D24 D23 D22 D21 D20 D19 D18 D17 D16
+	    D15 D14 D13 D12 D11 D10 D09 D08 D07 D06 D05 D04 D03 D02 D01 D00)
+     C31
+     <- bit-sub A00 B00 0   D00 C00
+     <- bit-sub A01 B01 C00 D01 C01
+     <- bit-sub A02 B02 C01 D02 C02
+     <- bit-sub A03 B03 C02 D03 C03
+     <- bit-sub A04 B04 C03 D04 C04
+     <- bit-sub A05 B05 C04 D05 C05
+     <- bit-sub A06 B06 C05 D06 C06
+     <- bit-sub A07 B07 C06 D07 C07
+     <- bit-sub A08 B08 C07 D08 C08
+     <- bit-sub A09 B09 C08 D09 C09
+     <- bit-sub A10 B10 C09 D10 C10
+     <- bit-sub A11 B11 C10 D11 C11
+     <- bit-sub A12 B12 C11 D12 C12
+     <- bit-sub A13 B13 C12 D13 C13
+     <- bit-sub A14 B14 C13 D14 C14
+     <- bit-sub A15 B15 C14 D15 C15
+     <- bit-sub A16 B16 C15 D16 C16
+     <- bit-sub A17 B17 C16 D17 C17
+     <- bit-sub A18 B18 C17 D18 C18
+     <- bit-sub A19 B19 C18 D19 C19
+     <- bit-sub A20 B20 C19 D20 C20
+     <- bit-sub A21 B21 C20 D21 C21
+     <- bit-sub A22 B22 C21 D22 C22
+     <- bit-sub A23 B23 C22 D23 C23
+     <- bit-sub A24 B24 C23 D24 C24
+     <- bit-sub A25 B25 C24 D25 C25
+     <- bit-sub A26 B26 C25 D26 C26
+     <- bit-sub A27 B27 C26 D27 C27
+     <- bit-sub A28 B28 C27 D28 C28
+     <- bit-sub A29 B29 C28 D29 C29
+     <- bit-sub A30 B30 C29 D30 C30
+     <- bit-sub A31 B31 C30 D31 C31.
+
+word-shl : word -> word -> type.
+%mode word-shl +X1 -X2.
+- : word-shl
+     (word_ B31 B30 B29 B28 B27 B26 B25 B24 B23 B22 B21 B20 B19 B18 B17 B16
+	    B15 B14 B13 B12 B11 B10 B09 B08 B07 B06 B05 B04 B03 B02 B01 B00)
+     (word_ B30 B29 B28 B27 B26 B25 B24 B23 B22 B21 B20 B19 B18 B17 B16 B15
+	    B14 B13 B12 B11 B10 B09 B08 B07 B06 B05 B04 B03 B02 B01 B00 0).
+
+word-shr : word -> word -> type.
+%mode word-shr +X1 -X2.
+- : word-shr
+     (word_ B31 B30 B29 B28 B27 B26 B25 B24 B23 B22 B21 B20 B19 B18 B17 B16
+	    B15 B14 B13 B12 B11 B10 B09 B08 B07 B06 B05 B04 B03 B02 B01 B00)
+     (word_ 0   B31 B30 B29 B28 B27 B26 B25 B24 B23 B22 B21 B20 B19 B18 B17
+	    B16 B15 B14 B13 B12 B11 B10 B09 B08 B07 B06 B05 B04 B03 B02 B01).
+
+word-cadd : bit -> word -> word -> word -> type.
+%mode word-cadd +X1 +X2 +X3 -X4.
+- : word-cadd 0 A B A.
+- : word-cadd 1 A B C
+     <- word-add A B C.
+
+word-mul : word -> word -> word -> type.
+%mode word-mul +X1 +X2 -X3.
+- : word-mul
+     (word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	    A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 A00)
+     B00
+     C31
+     <- word-cadd A00 0_32 B00 C00 <- word-shl B00 B01
+     <- word-cadd A01 C00  B01 C01 <- word-shl B01 B02
+     <- word-cadd A02 C01  B02 C02 <- word-shl B02 B03
+     <- word-cadd A03 C02  B03 C03 <- word-shl B03 B04
+     <- word-cadd A04 C03  B04 C04 <- word-shl B04 B05
+     <- word-cadd A05 C04  B05 C05 <- word-shl B05 B06
+     <- word-cadd A06 C05  B06 C06 <- word-shl B06 B07
+     <- word-cadd A07 C06  B07 C07 <- word-shl B07 B08
+     <- word-cadd A08 C07  B08 C08 <- word-shl B08 B09
+     <- word-cadd A09 C08  B09 C09 <- word-shl B09 B10
+     <- word-cadd A10 C09  B10 C10 <- word-shl B10 B11
+     <- word-cadd A11 C10  B11 C11 <- word-shl B11 B12
+     <- word-cadd A12 C11  B12 C12 <- word-shl B12 B13
+     <- word-cadd A13 C12  B13 C13 <- word-shl B13 B14
+     <- word-cadd A14 C13  B14 C14 <- word-shl B14 B15
+     <- word-cadd A15 C14  B15 C15 <- word-shl B15 B16
+     <- word-cadd A16 C15  B16 C16 <- word-shl B16 B17
+     <- word-cadd A17 C16  B17 C17 <- word-shl B17 B18
+     <- word-cadd A18 C17  B18 C18 <- word-shl B18 B19
+     <- word-cadd A19 C18  B19 C19 <- word-shl B19 B20
+     <- word-cadd A20 C19  B20 C20 <- word-shl B20 B21
+     <- word-cadd A21 C20  B21 C21 <- word-shl B21 B22
+     <- word-cadd A22 C21  B22 C22 <- word-shl B22 B23
+     <- word-cadd A23 C22  B23 C23 <- word-shl B23 B24
+     <- word-cadd A24 C23  B24 C24 <- word-shl B24 B25
+     <- word-cadd A25 C24  B25 C25 <- word-shl B25 B26
+     <- word-cadd A26 C25  B26 C26 <- word-shl B26 B27
+     <- word-cadd A27 C26  B27 C27 <- word-shl B27 B28
+     <- word-cadd A28 C27  B28 C28 <- word-shl B28 B29
+     <- word-cadd A29 C28  B29 C29 <- word-shl B29 B30
+     <- word-cadd A30 C29  B30 C30 <- word-shl B30 B31
+     <- word-cadd A31 C30  B31 C31.
+
+%% XXX replace repeated subtraction with long division
+word-div' : bit -> word -> word -> word -> word -> type.
+%mode word-div' +X1 +X2 +X3 +X4 -X5.
+- : word-div' 1 _ _ Q Q.
+- : word-div' 0 A B Q Q'
+     <- word-sub A B C Z
+     <- bit-not Z Z'
+     <- word-cadd Z' Q 1_32 Q''
+     <- word-div' Z C B Q'' Q'.
+word-div : word -> word -> word -> type.
+%mode word-div +X1 +X2 -X3.
+- : word-div A B Q
+     <- word-div' 0 A B 0_32 Q.
+
+word-and : word -> word -> word -> type.
+%mode word-and +X1 +X2 -X3.
+- : word-and
+     (word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	    A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 A00)
+     (word_ B31 B30 B29 B28 B27 B26 B25 B24 B23 B22 B21 B20 B19 B18 B17 B16
+	    B15 B14 B13 B12 B11 B10 B09 B08 B07 B06 B05 B04 B03 B02 B01 B00)
+     (word_ D31 D30 D29 D28 D27 D26 D25 D24 D23 D22 D21 D20 D19 D18 D17 D16
+	    D15 D14 D13 D12 D11 D10 D09 D08 D07 D06 D05 D04 D03 D02 D01 D00)
+     <- bit-and A00 B00 D00
+     <- bit-and A01 B01 D01
+     <- bit-and A02 B02 D02
+     <- bit-and A03 B03 D03
+     <- bit-and A04 B04 D04
+     <- bit-and A05 B05 D05
+     <- bit-and A06 B06 D06
+     <- bit-and A07 B07 D07
+     <- bit-and A08 B08 D08
+     <- bit-and A09 B09 D09
+     <- bit-and A10 B10 D10
+     <- bit-and A11 B11 D11
+     <- bit-and A12 B12 D12
+     <- bit-and A13 B13 D13
+     <- bit-and A14 B14 D14
+     <- bit-and A15 B15 D15
+     <- bit-and A16 B16 D16
+     <- bit-and A17 B17 D17
+     <- bit-and A18 B18 D18
+     <- bit-and A19 B19 D19
+     <- bit-and A20 B20 D20
+     <- bit-and A21 B21 D21
+     <- bit-and A22 B22 D22
+     <- bit-and A23 B23 D23
+     <- bit-and A24 B24 D24
+     <- bit-and A25 B25 D25
+     <- bit-and A26 B26 D26
+     <- bit-and A27 B27 D27
+     <- bit-and A28 B28 D28
+     <- bit-and A29 B29 D29
+     <- bit-and A30 B30 D30
+     <- bit-and A31 B31 D31.
+
+word-not : word -> word -> type.
+%mode word-not +X1 -X2.
+- : word-not
+     (word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	    A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 A00)
+     (word_ B31 B30 B29 B28 B27 B26 B25 B24 B23 B22 B21 B20 B19 B18 B17 B16
+	    B15 B14 B13 B12 B11 B10 B09 B08 B07 B06 B05 B04 B03 B02 B01 B00)
+     <- bit-not A00 B00
+     <- bit-not A01 B01
+     <- bit-not A02 B02
+     <- bit-not A03 B03
+     <- bit-not A04 B04
+     <- bit-not A05 B05
+     <- bit-not A06 B06
+     <- bit-not A07 B07
+     <- bit-not A08 B08
+     <- bit-not A09 B09
+     <- bit-not A10 B10
+     <- bit-not A11 B11
+     <- bit-not A12 B12
+     <- bit-not A13 B13
+     <- bit-not A14 B14
+     <- bit-not A15 B15
+     <- bit-not A16 B16
+     <- bit-not A17 B17
+     <- bit-not A18 B18
+     <- bit-not A19 B19
+     <- bit-not A20 B20
+     <- bit-not A21 B21
+     <- bit-not A22 B22
+     <- bit-not A23 B23
+     <- bit-not A24 B24
+     <- bit-not A25 B25
+     <- bit-not A26 B26
+     <- bit-not A27 B27
+     <- bit-not A28 B28
+     <- bit-not A29 B29
+     <- bit-not A30 B30
+     <- bit-not A31 B31.
+
+word-byte : word -> byte -> type.
+%mode word-byte +X1 -X2.
+- : word-byte
+     (word_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ B7 B6 B5 B4 B3 B2 B1 B0)
+     (byte_  B7 B6 B5 B4 B3 B2 B1 B0).
+
+byte-word : byte -> word -> type.
+%mode byte-word +X1 -X2.
+- : byte-word
+     (byte_  B7 B6 B5 B4 B3 B2 B1 B0)
+     (word_ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 B7 B6 B5 B4 B3 B2 B1 B0).
+
+bytes : type.
+nil$ : bytes.
+$ : byte -> bytes -> bytes.
+%infix right 4 $.
+
+% word array with log-time read.
+words : type.
+words-one : word -> words.
+words-cons : words -> words -> words.
+
+words-get : words -> word -> word -> type.
+%mode words-get +X1 +X2 -X3.
+- : words-get (words-one W) _ W.
+- : words-get
+     (words-cons Ws1 Ws2)
+     (word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	    A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 0)
+     W
+     <- word-shr
+	(word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	       A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 0)
+	A'
+     <- words-get Ws1 A' W.
+- : words-get
+     (words-cons Ws1 Ws2)
+     (word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	    A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 1)
+     W
+     <- word-shr
+	(word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	       A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 0)
+	A'
+     <- words-get Ws2 A' W.
+
+words-set : words -> word -> word -> words -> type.
+%mode words-set +X1 +X2 +X3 -X4.
+- : words-set (words-one W) _ W' (words-one W').
+- : words-set
+     (words-cons Ws1 Ws2)
+     (word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	    A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 0)
+     W'
+     (words-cons Ws1' Ws2)
+     <- word-shr
+	(word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	       A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 0)
+	A'
+     <- words-set Ws1 A' W' Ws1'.
+- : words-set
+     (words-cons Ws1 Ws2)
+     (word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	    A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 1)
+     W'
+     (words-cons Ws1 Ws2')
+     <- word-shr
+	(word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	       A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 0)
+	A'
+     <- words-set Ws2 A' W' Ws2'.
+
+words-double : words -> words -> type.
+%mode words-double +X1 -X2.
+- : words-double (words-one W) (words-cons (words-one W) (words-one 0_32)).
+- : words-double (words-cons Ws1 Ws2) (words-cons Ws1' Ws2')
+     <- words-double Ws1 Ws1'
+     <- words-double Ws2 Ws2'.
+
+words-make' : bit -> bit -> words -> word -> word -> word -> words -> type.
+%mode words-make' +X1 +X2 +X3 +X4 +X5 +X6 -X7.
+- : words-make' 1 _ Ws _ _ _ Ws.
+- : words-make' 0 0 Ws Alloc Free Sz Ws'
+     <- word-add Alloc 1_32 Alloc'
+     <- word-sub Free 1_32 Free' _
+     <- word-sub Sz 1_32 Sz' _
+     <- word-zero Sz' Z
+     <- word-zero Free' Z'
+     <- words-make' Z Z' Ws Alloc' Free' Sz' Ws'.
+- : words-make' 0 1 Ws Alloc _ Sz Ws'
+     <- words-double Ws Ws''
+     <- word-add Alloc 1_32 Alloc'
+     <- word-sub Sz 1_32 Sz' _
+     <- word-zero Sz' Z
+     <- word-sub Alloc 1_32 Free' _
+     <- word-zero Free' Z'
+     <- words-make' Z Z' Ws'' Alloc' Free' Sz' Ws'.
+words-make : word -> words -> type.
+%mode words-make +X1 -X2.
+- : words-make Sz Ws
+     <- word-zero Sz Z
+     <- words-make' Z 0 (words-one 0_32) 0_32 1_32 Sz Ws.
+
+bytes-words' : bit -> words -> word -> word -> bytes -> words -> type.
+%mode bytes-words' +X1 +X2 +X3 +X4 +X5 -X6.
+-1 : bytes-words' _ Ws _ _ nil$ Ws.
+-2 : bytes-words' 0 Ws Alloc Free
+      ((byte_ B31 B30 B29 B28 B27 B26 B25 B24) $ (byte_ B23 B22 B21 B20 B19 B18 B17 B16) $
+       (byte_ B15 B14 B13 B12 B11 B10 B09 B08) $ (byte_ B07 B06 B05 B04 B03 B02 B01 B00) $ Bs)
+      Ws'
+      <- words-set Ws Alloc
+	 (word_ B31 B30 B29 B28 B27 B26 B25 B24 B23 B22 B21 B20 B19 B18 B17 B16
+	        B15 B14 B13 B12 B11 B10 B09 B08 B07 B06 B05 B04 B03 B02 B01 B00) Ws''
+      <- word-add Alloc 1_32 Alloc'
+      <- word-sub Free 1_32 Free' _
+      <- word-zero Free' Z
+      <- bytes-words' Z Ws'' Alloc' Free' Bs Ws'.
+-3 : bytes-words' 1 Ws Alloc _
+      ((byte_ B31 B30 B29 B28 B27 B26 B25 B24) $ (byte_ B23 B22 B21 B20 B19 B18 B17 B16) $
+       (byte_ B15 B14 B13 B12 B11 B10 B09 B08) $ (byte_ B07 B06 B05 B04 B03 B02 B01 B00) $ Bs)
+      Ws'
+      <- words-double Ws Ws''
+      <- words-set Ws'' Alloc
+	 (word_ B31 B30 B29 B28 B27 B26 B25 B24 B23 B22 B21 B20 B19 B18 B17 B16
+	        B15 B14 B13 B12 B11 B10 B09 B08 B07 B06 B05 B04 B03 B02 B01 B00) Ws'''
+      <- word-add Alloc 1_32 Alloc'
+      <- word-sub Alloc 1_32 Free' _
+      <- word-zero Free' Z
+      <- bytes-words' Z Ws''' Alloc' Free' Bs Ws'.
+bytes-words : bytes -> words -> type.
+%mode bytes-words +X1 -X2.
+- : bytes-words Bs Ws
+     <- bytes-words' 0 (words-one 0_32) 0_32 1_32 Bs Ws.
+
+wordss : type.
+wordss-one : words -> wordss.
+wordss-cons : wordss -> wordss -> wordss.
+
+wordss-get : wordss -> word -> words -> type.
+%mode wordss-get +X1 +X2 -X3.
+- : wordss-get (wordss-one Ws) _ Ws.
+- : wordss-get
+     (wordss-cons Wss1 Wss2)
+     (word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	    A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 0)
+     Ws
+     <- word-shr
+	(word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	       A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 0)
+	A'
+     <- wordss-get Wss1 A' Ws.
+- : wordss-get
+     (wordss-cons Wss1 Wss2)
+     (word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	    A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 1)
+     Ws
+     <- word-shr
+	(word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	       A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 0)
+	A'
+     <- wordss-get Wss2 A' Ws.
+
+wordss-set : wordss -> word -> words -> wordss -> type.
+%mode wordss-set +X1 +X2 +X3 -X4.
+- : wordss-set (wordss-one Ws) _ Ws' (wordss-one Ws').
+- : wordss-set
+     (wordss-cons Wss1 Wss2)
+     (word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	    A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 0)
+     Ws'
+     (wordss-cons Wss1' Wss2)
+     <- word-shr
+	(word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	       A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 0)
+	A'
+     <- wordss-set Wss1 A' Ws' Wss1'.
+- : wordss-set
+     (wordss-cons Wss1 Wss2)
+     (word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	    A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 1)
+     Ws'
+     (wordss-cons Wss1 Wss2')
+     <- word-shr
+	(word_ A31 A30 A29 A28 A27 A26 A25 A24 A23 A22 A21 A20 A19 A18 A17 A16
+	       A15 A14 A13 A12 A11 A10 A09 A08 A07 A06 A05 A04 A03 A02 A01 0)
+	A'
+     <- wordss-set Wss2 A' Ws' Wss2'.
+
+wordss-double : wordss -> wordss -> type.
+%mode wordss-double +X1 -X2.
+- : wordss-double (wordss-one Ws) (wordss-cons (wordss-one Ws) (wordss-one (words-one 0_32))).
+- : wordss-double (wordss-cons Wss1 Wss2) (wordss-cons Wss1' Wss2')
+     <- wordss-double Wss1 Wss1'
+     <- wordss-double Wss2 Wss2'.
+
+heap : type.
+heap_ : word -> word -> wordss -> heap.
+
+heap-alloc' : bit -> heap -> words -> heap -> type.
+%mode heap-alloc' +X1 +X2 +X3 -X4.
+- : heap-alloc' 0 (heap_ Alloc Free Wss) Ws (heap_ Alloc' Free' Wss')
+     <- word-add Alloc 1_32 Alloc'
+     <- word-sub Free 1_32 Free' _
+     <- wordss-set Wss Alloc Ws Wss'.
+- : heap-alloc' 1 (heap_ Alloc Free Wss) Ws (heap_ Alloc' Free Wss')
+     <- wordss-double Wss Wss'
+     <- word-add Alloc 1_32 Alloc'
+     <- word-sub Alloc 1_32 Free _.
+
+heap-alloc : heap -> word -> heap -> word -> type.
+%mode heap-alloc +X1 +X2 -X3 -X4.
+- : heap-alloc (heap_ Alloc Free Wss) Sz H' Alloc
+     <- words-make Sz Ws
+     <- word-zero Free Z
+     <- heap-alloc' Z (heap_ Alloc Free Wss) Ws H'.
+
+heap-free : heap -> word -> heap -> type.
+%mode heap-free +X1 +X2 -X3.
+- : heap-free (heap_ Alloc Free Wss) Addr (heap_ Alloc Free Wss')
+     <- wordss-set Wss Addr (words-one 0_32) Wss'.
+
+regs : type.
+regs_ : word -> word -> word -> word -> word -> word -> word -> word -> regs.
+
+reg : type.
+reg_ : bit -> bit -> bit -> reg.
+
+regs-get : regs -> reg -> word -> type.
+%mode regs-get +X1 +X2 -X3.
+
+regs-set : regs -> reg -> word -> regs -> type.
+%mode regs-set +X1 +X2 +X3 -X4.
+
+mach : type.
+mach_ : words -> word ->
+        heap -> regs ->
+        bytes -> bytes ->
+        mach.
+
+inst : type.
+inst_ : bit -> bit -> bit -> bit -> inst.
+
+decode : word -> inst -> reg -> reg -> reg -> reg -> word -> type.
+- : decode
+     (word_ B31 B30 B29 B28 B27 B26 B25 B24 B23 B22 B21 B20 B19 B18 B17 B16
+	    B15 B14 B13 B12 B11 B10 B09 B08 B07 B06 B05 B04 B03 B02 B01 B00)
+     (inst_ B31 B30 B29 B28)
+     (reg_ B08 B07 B06)
+     (reg_ B05 B04 B03)
+     (reg_ B02 B01 B00)
+     (reg_ B27 B26 B25)
+     (word_ 0   0   0   0   0   0   0   B24 B23 B22 B21 B20 B19 B18 B17 B16
+	    B15 B14 B13 B12 B11 B10 B09 B08 B07 B06 B05 B04 B03 B02 B01 B00).
+
+dispatch : inst -> reg -> reg -> reg -> reg -> word -> mach -> mach -> bit -> type.
+
+%% cmov
+  dispatch-cmov : bit -> regs -> reg -> reg -> regs -> type.
+  -1 : dispatch-cmov 1 R _ _ R.
+  -2 : dispatch-cmov 0 R A B R'
+	<- regs-get R B R<B>
+	<- regs-set R A R<B> R'.
+-1 : dispatch (inst_ 0 0 0 0) A B C _ _ (mach_ P F H R I O) (mach_ P F H R' I O) 0
+      <- regs-get R C R<C>
+      <- word-zero R<C> Z
+      <- dispatch-cmov Z R A B R'.
+
+%% ld
+  dispatch-ld: bit -> words -> heap -> word -> words -> type.
+  -1 : dispatch-ld 1 P _ _ P.
+  -2 : dispatch-ld 0 _ (heap_ _ _ Wss) Addr Ws
+	<- wordss-get Wss Addr Ws.
+-2 : dispatch (inst_ 0 0 0 1) A B C _ _ (mach_ P F H R I O) (mach_ P F H R' I O) 0
+      <- regs-get R B R<B>
+      <- word-zero R<B> Z
+      <- dispatch-ld Z P H R<B> Ws
+      <- regs-get R C R<C>
+      <- words-get Ws R<C> Ws<R<C>>
+      <- regs-set R A Ws<R<C>> R'.
+
+%% st
+  dispatch-st: bit -> words -> heap -> word -> word -> word -> words -> heap -> type.
+  -1 : dispatch-st 1 P H _ R<B> R<C> P' H
+	<- words-set P R<B> R<C> P'.
+  -2 : dispatch-st 0 P (heap_ Alloc Free Wss) R<A> R<B> R<C> P (heap_ Alloc Free Wss')
+	<- wordss-get Wss R<A> Ws
+	<- words-set Ws R<B> R<C> Ws'
+	<- wordss-set Wss R<A> Ws' Wss'.
+-3 : dispatch (inst_ 0 0 1 0) A B C _ _ (mach_ P F H R I O) (mach_ P' F H' R I O) 0
+      <- regs-get R A R<A>
+      <- regs-get R B R<B>
+      <- regs-get R C R<C>
+      <- word-zero R<A> Z
+      <- dispatch-st Z P H R<A> R<B> R<C> P' H'.
+
+%% add
+-4 : dispatch (inst_ 0 0 1 1) A B C _ _ (mach_ P F H R I O) (mach_ P F H R' I O) 0
+      <- regs-get R B R<B>
+      <- regs-get R C R<C>
+      <- word-add R<B> R<C> W
+      <- regs-set R A W R'.
+
+%% mul
+-5 : dispatch (inst_ 0 1 0 0) A B C _ _ (mach_ P F H R I O) (mach_ P F H R' I O) 0
+      <- regs-get R B R<B>
+      <- regs-get R C R<C>
+      <- word-mul R<B> R<C> W
+      <- regs-set R A W R'.
+
+%% div
+-6 : dispatch (inst_ 0 1 0 1) A B C _ _ (mach_ P F H R I O) (mach_ P F H R' I O) 0
+      <- regs-get R B R<B>
+      <- regs-get R C R<C>
+      <- word-div R<B> R<C> W
+      <- regs-set R A W R'.
+
+%% nand
+-7 : dispatch (inst_ 0 1 1 0) A B C _ _ (mach_ P F H R I O) (mach_ P F H R' I O) 0
+      <- regs-get R B R<B>
+      <- regs-get R C R<C>
+      <- word-and R<B> R<C> W
+      <- word-not W W'
+      <- regs-set R A W' R'.
+
+%% halt
+-8 : dispatch (inst_ 0 1 1 1) _ _ _ _ _ M M 1.
+
+%% alloc
+-9 : dispatch (inst_ 1 0 0 0) _ B C _ _ (mach_ P F H R I O) (mach_ P F H' R' I O) 0
+      <- regs-get R C R<C>
+      <- heap-alloc H R<C> H' W
+      <- regs-set R B W R'.
+
+%% free
+-10 : dispatch (inst_ 1 0 0 1) _ _ C _ _ (mach_ P F H R I O) (mach_ P F H' R I O) 0
+       <- regs-get R C R<C>
+       <- heap-free H R<C> H'.
+
+%% putc
+-11 : dispatch (inst_ 1 0 1 0) _ _ C _ _ (mach_ P F H R I O) (mach_ P F H R I (B $ O)) 0
+       <- regs-get R C R<C>
+       <- word-byte R<C> B.
+
+%% getc
+-12 : dispatch (inst_ 1 0 1 1) _ _ C _ _ (mach_ P F H R (B $ I') O) (mach_ P F H R' I' O) 0
+       <- byte-word B W
+       <- regs-set R C W R'.
+
+%% jmp
+  dispatch-jmp : bit -> words -> heap -> word -> words -> type.
+  -1 : dispatch-jmp 1 P _ _ P.
+  -2 : dispatch-jmp 0 _ (heap_ _ _ Wss) Addr Ws
+	<- wordss-get Wss Addr Ws.
+-13 : dispatch (inst_ 1 1 0 0) _ B C _ _ (mach_ P F H R I O) (mach_ P' F' H R I O) 0
+       <- regs-get R B R<B>
+       <- word-zero R<B> Z
+       <- dispatch-jmp Z P H R<B> P'
+       <- regs-get R C F.
+
+%% imm
+-14 : dispatch (inst_ 1 1 0 1) _ _ _ A Imm (mach_ P F H R I O) (mach_ P F H R' I O) 0
+       <- regs-set R A Imm R'.
+
+step : mach -> mach -> bit -> type.
+- : step (mach_ P F H R I O) M' Halt
+     <- words-get P F P<F>
+     <- word-add F 1_32 F'
+     <- decode P<F> Inst A B C A' Imm
+     <- dispatch Inst A B C A' Imm (mach_ P F' H R I O) M' Halt.
+
+run' : bit -> mach -> mach -> type.
+-1 : run' 1 M M.
+-2 : run' 0 M M'
+      <- step M M'' Halt
+      <- run' Halt M'' M'.
+
+run : bytes -> bytes -> bytes -> type.
+- : run B I O
+     <- bytes-words B P
+     <- run'
+	0
+	(mach_
+	   P 0_32
+	   (heap_ 0_32 1_32 (wordss-one (words-one 0_32)))
+	   (regs_ 0_32 0_32 0_32 0_32 0_32 0_32 0_32 0_32 )
+	   I nil$)
+	(mach_ _ _ _ _ _ O).
+
+%% tests
+%{
+2_32 : word = word_ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0.
+3_32 : word = word_ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1.
+4_32 : word = word_ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0.
+5_32 : word = word_ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1.
+256_32 : word = word_ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0.
+
+w : words = (words-cons
+	       (words-cons (words-one 2_32) (words-one 1_32))
+	       (words-cons (words-one 3_32) (words-one 4_32))).
+
+%query 1 1 word-add 1_32 1_32 W.
+%query 1 1 word-zero 0_32 Z.
+%query 1 1 word-not 1_32 W.
+%query 1 1 word-mul 4_32 3_32 W.
+%query 1 1 word-sub 3_32 4_32 W C.
+%query 1 1 word-div 256_32 3_32 Q.
+
+%query 1 1 words-get w 3_32 W.
+%query 1 1 words-set w 2_32 256_32 Ws.
+%query 1 1 words-make 5_32 Ws.
+}%

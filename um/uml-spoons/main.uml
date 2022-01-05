@@ -1,0 +1,36 @@
+let
+  import "std.uh"
+  import "string.uh"
+  import "int.uh"
+  import "growarray.uh"
+  import "random.uh"
+  import "io.uh"
+
+  import "um.uh"
+
+  fun readprog () =
+    let
+      fun getw () = (ord (getc ()) shl 24) + 
+                    (ord (getc ()) shl 16) +
+                    (ord (getc ()) shl 8) +
+                    (ord (getc ()))
+
+      val length = getw ()
+
+      val prog = array (length, 0)
+
+      fun readone n =
+          if n = length then ()
+          else (update (prog, n, getw ()); 
+                readone (n + 1))
+    in
+      readone 0;
+      prog
+    end
+
+in
+
+  um-run (readprog ())
+  handle IO => print ("\n\n== Unexpected End of Stream. ==\n")
+
+end

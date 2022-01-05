@@ -1,0 +1,485 @@
+(* included from rml.uml *)
+
+val rml-externtypes =
+    ("int", IntType)::
+    ("string", StringType)::
+    ("room", RoomType)::
+    ("item", ItemType)::
+    ("kind", KindType)::
+    nil
+
+(* N.B. constructors must be sorted lexicographically! *)
+val stringlist_cnstrs = ref nil
+val StringListType = DataType ("stringlist", stringlist_cnstrs)
+do stringlist_cnstrs := ("NoStrings", nil)::
+                        ("SomeStrings", StringType::StringListType::nil)::nil
+val itemlist_cnstrs = ref nil
+val ItemListType = DataType ("itemlist", itemlist_cnstrs)
+do itemlist_cnstrs := ("NoItems", nil)::
+                      ("SomeItems", ItemType::ItemListType::nil)::nil
+val direction_cnstrs = ref nil
+val DirectionType = DataType ("direction", direction_cnstrs)
+do direction_cnstrs := ("East", nil)::
+                       ("North", nil)::
+                       ("South", nil)::
+                       ("West", nil)::nil
+val mayberoom_cnstrs = ref nil
+val MaybeRoomType = DataType ("mayberoom", mayberoom_cnstrs)
+do mayberoom_cnstrs := ("NoRoom", nil)::
+                       ("SomeRoom", RoomType::nil)::nil
+val command_cnstrs = ref nil
+val CommandType = DataType ("command", command_cnstrs)
+do command_cnstrs := ("Break", ItemType::nil)::
+                     ("Combine", ItemType::ItemType::nil)::
+                     ("Drop", ItemType::nil)::
+                     ("Examine", ItemType::nil)::
+                     ("Go", DirectionType::nil)::
+                     ("Hum", nil)::
+                     ("Incinerate", ItemType::nil)::
+                     ("LookAround", nil)::
+                     ("ShowInventory", nil)::
+                     ("Speak", StringType::nil)::
+                     ("Take", ItemType::nil)::
+                     ("Use", ItemType::nil)::
+                     ("Whistle", nil)::nil
+val datum_cnstrs = ref nil
+val DatumType = DataType ("datum", datum_cnstrs)
+do datum_cnstrs := ("Assoc", StringType::DatumType::DatumType::nil)::
+                   ("Atom", StringType::nil)::
+                   ("NoData", nil)::
+                   ("Seq", DatumType::DatumType::nil)::nil
+val kindlist_cnstrs = ref nil
+val KindListType = DataType ("kindlist", kindlist_cnstrs)
+do kindlist_cnstrs := ("NoKinds", nil)::
+                      ("SomeKinds", KindType::KindListType::nil)::nil
+val condition_cnstrs = ref nil
+val ConditionType = DataType ("condition", condition_cnstrs)
+do condition_cnstrs := ("Broken", ConditionType::KindListType::nil)::
+                       ("Pristine", nil)::nil
+
+val types = ("bool", BoolType)::
+            ("stringlist", StringListType)::
+            ("itemlist", ItemListType)::
+            ("direction", DirectionType)::
+            ("mayberoom", MaybeRoomType)::
+            ("command", CommandType)::
+            ("datum", DatumType)::
+            ("kindlist", KindListType)::
+            ("condition", ConditionType)::
+            nil
+
+val rml-externs =
+    let fun here args =
+            let in case args of nil => 
+                                (false, Room (sub (rooms, !current_loc)))
+                              | _ => raise RML "of an invalid argument to extern 'here'"
+            end
+        fun dir 1 = 0
+          | dir 0 = 1
+          | dir 2 = 2
+          | dir 3 = 3
+          | dir _ = raise RML "of an invalid argument to extern 'here'"
+        fun neighbor args =
+            let in 
+              case args of (tt1, Room room)::(tt2, Construct ((dir) d, nil))::nil =>
+                           let val exits = #exits/room room
+                               val tt = tt1 orelse tt2
+                           in 
+                             case sub(exits, d)
+                              of NONE => (tt, Construct (0, nil))
+                               | SOME loc => (tt, Construct (1, 
+                                               (tt, Room (sub(rooms, location-toidx loc))) 
+                                               :: nil))
+                           end
+                         | _ => raise RML "of an invalid argument to extern 'neighbor'"
+            end
+
+        fun room_from_name args =
+            let in
+              case args of (tt, (anystring) s)::nil =>
+                           let in
+                             case hash-get (room_map, string-lcase s)
+                              of NONE => (tt, Construct (0, nil))
+                               | SOME loc => (tt, Construct (1, 
+                                                    (tt, (Room (sub (rooms, location-toidx loc)))) :: nil))
+                           end
+                         | _ => raise RML "of an invalid argument to extern 'room_from_name'"
+            end
+        fun room_name args =
+            let in
+              case args of (tt, Room room)::nil =>
+                           mkstring tt (location-tostring (#location/room room))
+                         | _ => raise RML "of an invalid argument to extern 'room_name'"
+            end
+        fun room_description args =
+            let in
+              case args of (tt, Room room)::nil =>
+                           mkstring tt (#description/room room)
+                         | _ => raise RML "of an invalid argument to extern 'room_description'"
+            end
+        fun room_items args =
+            let fun make_list tt nil = (tt, Construct (0, nil))
+                  | make_list tt (idx::idxs) =
+                    (tt, Construct (1, 
+                           (tt, Item (growarray-sub (items, idx)))::(make_list tt idxs)::nil))
+            in
+              case args of (tt, Room room)::nil =>
+                           make_list tt (sub (items_locs, #idx/room room))
+                         | _ => raise RML "of an invalid argument to extern 'room_items'"
+            end
+        fun item_name args =
+            let in
+              case args of (tt, Item item)::nil =>
+                           mkstring tt (noun-tostring (item-noun item))
+                         | _ => raise RML "of an invalid argument to extern 'item_name'"
+            end
+        fun item_description args =
+            let in
+              case args of (tt, Item item)::nil =>
+                           let in
+                             case #description/item item of
+                               Classified os =>
+                               (true, SecureString os)
+                             | Exemplary =>
+                               let val partNo = noun-tostring (nounphrase-noun 
+                                                                 (#nounphrase/item item))
+                               in
+                                 mkstring tt [an exemplary instance of part number [partNo]]
+                               end
+                             | S s =>
+                               (* Special case for the console -- embed the
+                                * publication string in the description! *)
+                               if noun-equals (Console, item-noun item) then
+                                 (case (#read_console/pubs (!pubs)) () of
+                                   SOME p => 
+                                   let val p' = 
+                                           (* ENH maybe pubs should generate a obs string? *)
+                                           obs-concat (ObsString cryptfile "ADVENTURE_FINALE_START",
+                                                       obs-concat (obs-fromstring (random-int (),
+                                                                                   random-int ()) p,
+                                                         ObsString cryptfile "ADVENTURE_FINALE_END"))
+                                   in
+                                     (true, SecureString p')
+                                   end
+                                 | _ => raise (Adventure "should never reject final publication"))
+                               else  
+                                 mkstring tt s
+                           end
+                         | _ => raise RML "of an invalid argument to extern 'item_description'"
+            end
+        fun item_adjectives args =
+            let in
+              case args of (tt, Item item)::nil =>
+                           list-foldl (fn (a, s) => 
+                                          (tt, Construct (1, 
+                                                 (mkstring tt (adjective-tostring a))::s::nil)))
+                                      (tt, Construct (0, nil))
+                                      (#adjectives/item item)
+                         | _ => raise RML "of an invalid argument to extern 'item_adjectives'"
+            end
+        fun item_portable args =
+            let in 
+              case args of (tt, Item item)::nil =>
+                           if #portable/item item then
+                             (tt, Construct (1, nil))
+                           else
+                             (tt, Construct (0, nil))
+                         | _ => raise RML "of an invalid argument to extern 'item_portable'"
+            end
+        fun nounphrases_tokindlist tt nil = (tt, Construct (0, nil))
+          | nounphrases_tokindlist tt (np::nps) = 
+            (tt, Construct (1,
+                            (tt, Kind np)::(nounphrases_tokindlist tt nps)::nil))
+        fun nounphrase_tocondition tt (Noun noun) = (tt, Construct (1, nil))
+          | nounphrase_tocondition tt (Missing (np, nps)) =
+            (tt, Construct (0, (nounphrase_tocondition tt np)::
+                                      (nounphrases_tokindlist tt nps)::nil))
+        fun item_condition args =
+            let in 
+              case args of (tt, Item item)::nil =>
+                           nounphrase_tocondition tt (#nounphrase/item item)
+                         | _ => raise RML "of an invalid argument to extern 'item_condition'"
+            end
+        fun item_equals args =
+            let in 
+              case args of (tt1, Item item1)::(tt2, Item item2)::nil =>
+                let val tt = tt1 orelse tt2 in
+                  if (#idx/item item1) = (#idx/item item2) then
+                    (tt, Construct (1, nil))
+                  else 
+                    (tt, Construct (0, nil))
+                end
+              | _ => raise RML "of an invalid argument to extern 'item_equals'"
+            end
+        fun item_matches_kind args = 
+            let in
+              case args of (tt1, Item item)::(tt2, Kind np)::nil =>
+                let val tt = tt1 orelse tt2 in
+                  if nounphrase-equals (#nounphrase/item item, np) then
+                    (tt, Construct (1, nil))
+                  else
+                    (tt, Construct (0, nil))
+                end
+              | _ => raise RML "of an invalid argument to extern 'item_matches_kind'"
+            end
+        fun fix_item args = 
+            let in
+              case args of (_, Item item)::condition::nil =>
+                let val idx = #idx/item item
+                    fun convert_kindlist (_, Construct (0, nil)) = nil
+                      | convert_kindlist (_, Construct (1, (_, Kind np)::rest::nil)) =
+                        np::(convert_kindlist rest)
+                      | convert_kindlist _ =
+                        raise RML "of an invalid argument to extern 'fix_item'"
+                    fun convert_condition (_, Construct (1, nil)) =
+                        Noun (item-noun item)
+                      | convert_condition (_, Construct (0, condition::missing::nil)) =
+                        Missing (convert_condition condition, convert_kindlist missing)
+                      | convert_condition _ =
+                        raise RML "of an invalid argument to extern 'fix_item'"
+
+                    val nounphrase = convert_condition condition
+                    val item = { idx = idx,
+                                 nounphrase = nounphrase,
+                                 adjectives = #adjectives/item item,
+                                 portable = #portable/item item,
+                                 description = #description/item item,
+                                 location = #location/item item }
+
+                    do case (#combine_items/pubs (!pubs)) () of
+                         SOME p => print (p ^ "\n")
+                       | _ => ()
+                    (* ENH publications should really be printed after goggle output *)
+                    do case #nounphrase/item item of
+                         Noun USBCable => 
+                         let in case (#fix_usbcable/pubs (!pubs)) () of
+                                  SOME p =>  print (p ^ "\n")
+                                | _ => ()
+                         end
+                       | Noun Display => 
+                         let in case (#fix_display/pubs (!pubs)) () of
+                                  SOME p =>  print (p ^ "\n")
+                                | _ => ()
+                         end
+                       | Noun PowerCord => 
+                         let in case (#fix_powercord/pubs (!pubs)) () of
+                                  SOME p =>  print (p ^ "\n")
+                                | _ => ()
+                         end
+                       | Noun JumperShunt => 
+                         let in case (#fix_jumpershunt/pubs (!pubs)) () of
+                                  SOME p =>  print (p ^ "\n")
+                                | _ => ()
+                         end
+		       | Noun Battery => 
+                         let in case (#fix_battery/pubs (!pubs)) () of
+                                  SOME p =>  print (p ^ "\n")
+                                | _ => ()
+                         end
+		       | Noun EPROMBurner => 
+                         let in case (#fix_epromburner/pubs (!pubs)) () of
+                                  SOME p =>  print (p ^ "\n")
+                                | _ => ()
+                         end
+		       | Noun RS232Adapter => 
+                         let in case (#fix_rs232adapter/pubs (!pubs)) () of
+                                  SOME p =>  print (p ^ "\n")
+                                | _ => ()
+                         end
+		       | Noun StatusLED => 
+                         let in case (#fix_statusled/pubs (!pubs)) () of
+                                  SOME p =>  print (p ^ "\n")
+                                | _ => ()
+                         end
+		       | Noun MOSFET => 
+                         let in case (#fix_mosfet/pubs (!pubs)) () of
+                                  SOME p =>  print (p ^ "\n")
+                                | _ => ()
+                         end
+                       | Noun RaceCar =>
+                         let in case (#fix_racecar/pubs (!pubs)) () of
+                                  SOME p => print (p ^ "\n")
+                                | _ => ()
+                         end
+                       | Noun PousseGame =>
+                         let in case (#fix_poussegame/pubs (!pubs)) () of
+                                  SOME p => print (p ^ "\n")
+                                | _ => ()
+                         end
+                       | Noun PackageRobot =>
+                         let in case (#fix_packagerobot/pubs (!pubs)) () of
+                                  SOME p => print (p ^ "\n")
+                                | _ => ()
+                         end
+                       | Noun Robber =>
+                         let in case (#fix_robber/pubs (!pubs)) () of
+                                  SOME p => print (p ^ "\n")
+                                | _ => ()
+                         end
+                       | Noun FiniteStateMachine =>
+                         let in case (#fix_fsm/pubs (!pubs)) () of
+                                  SOME p => print (p ^ "\n")
+                                | _ => ()
+                         end
+                       | Noun Codex =>
+                         let in case (#fix_codex/pubs (!pubs)) () of
+                                  SOME p => print (p ^ "\n")
+                                | _ => ()
+                         end
+                       | _ => ()
+                in
+                  growarray-update (items, idx, item);
+                  (false, Unit)
+                end
+              | _ => raise RML "of an invalid argument to extern 'fix_item'"
+            end
+        fun kind_name args =
+            let in
+              case args of (tt, Kind np)::nil => 
+                           mkstring tt (noun-tostring (nounphrase-noun np))
+              | _ => raise RML "of an invalid argument to extern 'kind_name'"
+            end
+        fun kind_condition args = 
+            let in
+              case args of (tt, Kind np)::nil => 
+                           (nounphrase_tocondition tt np)
+              | _ => raise RML "of an invalid argument to extern 'kind_condition'"
+            end
+        fun move_self_to_room args =
+            let
+            in
+              case args of (_, Room room)::nil =>
+                let do case #location/room room of
+                         FiftyFourthStreetandRidgewood =>
+                         let in case (#use_keypad/pubs (!pubs)) () of
+                                  SOME p => print (p ^ "\n")
+                                | _ => ()
+                         end
+                       | MuseumofScienceandIndustry =>
+                         let in case (#move_to_museum/pubs (!pubs)) () of
+                                  SOME p => print (p ^ "\n")
+                                | _ => ()
+                         end
+                       | _ => ()
+                in 
+                  current_loc := (#idx/room room);
+                  (false, Unit)
+                end
+              | _ => raise RML "of an invalid argument to extern 'move_self_to_room'"
+            end
+        fun move_item_to_room args =
+            let in
+              case args of (_, Item item)::(_, Room room)::nil =>
+                let val new_loc = #location/room room
+                    val item_idx = #idx/item item
+                    val old_room_idx = location-toidx (#location/item item)
+                    val old_items = list-filter (fn idx' => item_idx <> idx') 
+                                                (sub (items_locs, old_room_idx))
+                    do update (items_locs, old_room_idx, old_items)
+                    val new_room_idx = #idx/room room
+                    do update (items_locs, new_room_idx, 
+                               item_idx::(sub (items_locs, new_room_idx)))
+
+                    (* NB update the item's location too! *)
+                    val item = { idx = item_idx,
+                                 nounphrase = #nounphrase/item item,
+                                 adjectives = #adjectives/item item,
+                                 portable = #portable/item item,
+                                 description = #description/item item,
+                                 location = #location/room room}
+                    do growarray-update (items, item_idx, item)
+
+                    fun match_useless Pamphlet = ()
+                      | match_useless Pill = ()
+                      | match_useless Manifesto = ()
+                      | match_useless Spring = ()
+                      | match_useless Antenna = ()
+                      | match_useless _ = raise Match
+
+                    (* N.B. that this function is called for both incinerate and combine
+                       but that the tutorial puzzle is set up in such a way as to force 
+                       the player to incinerate something before combining anything. *)
+                    do case (item-noun item, #location/room room) of
+                         ((match_useless) _, TrashHeap) => 
+                         let in case (#incinerate_item/pubs (!pubs)) () of
+                                  SOME p => print (p ^ "\n")
+                                | _ => ()
+                         end
+                       | (ProgressBar, InventoryA87312) => 
+                         let in case (#get_progressbar/pubs (!pubs)) () of
+                                  SOME p =>  print (p ^ "\n")
+                                | _ => ()
+                         end
+                       | _ => ()
+                in
+                  (false, Unit)
+                end
+              | _ => raise RML "of an invalid argument to extern 'move_item_to_room'"
+            end
+        fun string_length args =
+            let in 
+              case args of (tt, (anystring) s)::nil =>
+                           (tt, Int (length s))
+                         | _ => raise RML "of an invalid argument to extern 'string_length'"
+            end
+        fun string_charat args =
+            let in 
+              case args of (tt1, (anystring) s)::(tt2, Int i)::nil =>
+                           if i >= 0 andalso i < length s then
+                             (tt1 orelse tt2, Int (ord (sub (s, i))))
+                           else
+                             (tt1 orelse tt2, Int 0)
+                         | _ => raise RML "of an invalid argument to extern 'string_charat'"
+            end
+        fun string_fromchar args =
+            let in 
+              case args of (tt, Int i)::nil =>
+                           mkstring tt (array (1, chr i))
+                         | _ => raise RML "of an invalid argument to extern 'string_fromchar'"
+            end
+        fun cps_convert f x k = throw f x to k
+    in
+      (("here", cps_convert here, 
+        FunType (nil, RoomType)) ::
+       ("neighbor", cps_convert neighbor, 
+        FunType (RoomType::DirectionType::nil, MaybeRoomType)) ::
+       ("room_from_name", cps_convert room_from_name, 
+        FunType (StringType::nil, MaybeRoomType)) ::
+       ("room_name", cps_convert room_name,
+        FunType (RoomType::nil, StringType)) ::
+       ("room_description", cps_convert room_description,
+        FunType (RoomType::nil, StringType)) ::
+       ("room_items", cps_convert room_items,
+        FunType (RoomType::nil, ItemListType)) ::
+       ("item_name", cps_convert item_name,
+        FunType (ItemType::nil, StringType)) ::
+       ("item_description", cps_convert item_description,
+        FunType (ItemType::nil, StringType)) ::
+       ("item_adjectives", cps_convert item_adjectives,
+        FunType (ItemType::nil, StringListType)) ::
+       ("item_portable", cps_convert item_portable,
+        FunType (ItemType::nil, BoolType))::
+       ("item_condition", cps_convert item_condition,
+        FunType (ItemType::nil, ConditionType))::
+       ("item_equals", cps_convert item_equals,
+        FunType (ItemType::ItemType::nil, BoolType))::
+       ("item_matches_kind", cps_convert item_matches_kind,
+        FunType (ItemType::KindType::nil, BoolType))::
+       ("fix_item", cps_convert fix_item,
+        FunType (ItemType::ConditionType::nil, UnitType))::
+       ("kind_name", cps_convert kind_name,
+        FunType (KindType::nil, StringType))::
+       ("kind_condition", cps_convert kind_condition,
+        FunType (KindType::nil, ConditionType))::
+       ("move_self_to_room", cps_convert move_self_to_room,
+        FunType (RoomType::nil, UnitType)) ::
+       ("move_item_to_room", cps_convert move_item_to_room,
+        FunType (ItemType::RoomType::nil, UnitType)) ::
+       ("string_length", cps_convert string_length,
+        FunType (StringType::nil, IntType)) ::
+       ("string_charat", cps_convert string_charat,
+        FunType (StringType::IntType::nil, IntType)) ::
+       ("string_fromchar", cps_convert string_fromchar,
+        FunType (IntType::nil, StringType)) ::
+       nil)
+    end

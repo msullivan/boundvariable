@@ -1,0 +1,343 @@
+val runAdventure = 
+let 
+  (* ENH add requires *)
+
+  exception Adventure of string
+
+  datatype chapter =
+     FirstChapter
+   | SequelChapter
+
+  fun doInFirst chapter f =
+      (case chapter of
+          FirstChapter => f ()
+        | SequelChapter => ())
+
+  fun doInSequel chapter f =
+      (case chapter of
+          FirstChapter => ()
+        | SequelChapter => f ())
+
+  fun chapter-equals (FirstChapter, FirstChapter) = true
+    | chapter-equals (SequelChapter, SequelChapter) = true
+    | chapter-equals (_, _) = false
+
+  import "nouns.uh"
+  import "adjectives.uh"
+  import "rooms.uh"
+
+  datatype itemdescription = 
+     S of string
+   | Classified of obs-string
+   | Exemplary
+
+  type item = { idx : int,
+                nounphrase : nounphrase,
+                adjectives : adjective list, (* a unique set for this noun *)
+                portable : bool,
+                description : itemdescription,
+                location : location }
+
+  fun item-noun item = nounphrase-noun (#nounphrase/item item)
+
+  datatype datum =
+     Atom of string
+   | Seq of datum * datum
+   | Assoc of string * datum * datum
+   | NoData
+   | Redacted
+
+  (* icing: only used for ANSI goggles *)
+  val ansiscore = ref 0
+  val ansiroom = ref "?"
+
+  (* Different ways of printing out the current player environment *)
+  import "goggles.uh"
+
+  (* Integers are often offsets into the list of local items. NB local items
+     are defined differently for each action (e.g. Take must carry an index in
+     the list of items in the room but not the inventory). *)
+  datatype command = 
+     Go of int
+   | Take of int
+   | Incinerate of int
+   | Combine of int * int
+   | Break of int
+   | Drop of int
+   | Use of int
+   | LookAround
+   | ShowInventory
+   | Examine of int
+   | Whistle
+   | Hum
+   | Speak of string
+   | SwitchGoggles of goggles
+   | Save
+   | Restore of string
+   | Help of string
+   | Unparsable of string (* error message *)
+
+  (* CURRENT STATE *)
+  (* Set up default values... the real initial values are set in populate.uh. *)
+  val current_loc = ref 0
+  val items_locs = array (num_rooms, nil)
+  val current_goggles = ref EnglishGoggles
+  val history = ref nil
+  val items = (growarray-new
+                (* growarray needs a default element *)
+                { idx = ~1,
+                  nounphrase = Noun Trash,
+                  adjectives = nil, 
+                  portable = true,
+                  description = S "",
+                  location = TrashHeap }) : item growarray
+
+  datatype itemswhere = InventoryItems | RoomItems | InventoryAndRoomItems
+  fun local_items InventoryItems = sub (items_locs, location-toidx InventoryA87312)
+    | local_items RoomItems = sub (items_locs, !current_loc)
+    | local_items InventoryAndRoomItems = (sub (items_locs, location-toidx InventoryA87312)) 
+                                          @ (sub (items_locs, !current_loc))
+
+  type pub = unit -> string option
+  type pubs =
+     { 
+      incinerate_item : pub,
+      combine_items : pub,
+      use_keypad : pub,
+
+      fix_usbcable : pub,
+      get_progressbar : pub,
+      fix_display : pub,
+      fix_powercord : pub,
+      fix_jumpershunt : pub,
+      use_downloader : pub,
+
+      fix_battery : pub,
+      fix_epromburner : pub,
+      fix_rs232adapter : pub,
+      fix_statusled : pub,
+      fix_mosfet : pub,
+      use_uploader : pub,
+
+      move_to_museum : pub,
+      use_crowbar : pub,
+      read_console : pub,
+                     
+      fix_racecar : pub,
+      fix_poussegame : pub,
+      fix_packagerobot : pub,
+      fix_robber : pub,
+      fix_fsm : pub,
+      fix_codex : pub
+     }
+  val pubs = ref
+     { 
+      incinerate_item = fn () => NONE,
+      combine_items = fn () => NONE,
+      use_keypad = fn () => NONE,
+      fix_usbcable = fn () => NONE,
+
+      get_progressbar = fn () => NONE,
+      fix_display = fn () => NONE,
+      fix_powercord = fn () => NONE,
+      fix_jumpershunt = fn () => NONE,
+      use_downloader = fn () => NONE,
+
+      fix_battery = fn () => NONE,
+      fix_epromburner = fn () => NONE,
+      fix_rs232adapter = fn () => NONE,
+      fix_statusled = fn () => NONE,
+      fix_mosfet = fn () => NONE,
+      use_uploader = fn () => NONE,
+
+      move_to_museum = fn () => NONE,
+      use_crowbar = fn () => NONE,
+      read_console = fn () => NONE,
+
+      fix_racecar = fn () => NONE,
+      fix_poussegame = fn () => NONE,
+      fix_packagerobot = fn () => NONE,
+      fix_robber = fn () => NONE,
+      fix_fsm = fn () => NONE,
+      fix_codex = fn () => NONE
+     }
+  val censor_output = ref true
+
+  (* support for interpreted command processors *)
+  import "rml.uh"
+
+  val mind_source = ref ""
+  val mind = ref Unit (* dummy rml exp *)
+  
+  (* adds items to rooms, etc *)
+  import "populate.uh"
+
+  (* parses user input *)
+  import "english-parse.uh"
+
+  fun success_command (c, details) = 
+      Assoc ("success", Assoc ("command", Assoc (c, details, NoData), NoData), NoData)
+  fun failed_command (c, details, reason) =
+      Assoc ("failed", Assoc ("command", Assoc (c, details, NoData),
+                              Assoc ("reason", Atom reason, NoData)), NoData)
+  fun item_as_datum item =
+      Assoc ("item",
+             Assoc ("name",
+                    Atom (noun-tostring (item-noun item)),
+             NoData),
+      NoData)
+  fun isuse noun1 (Use off) =
+    let val item2 = growarray-sub (items, list-nth off (local_items InventoryItems))
+        val np2 = #nounphrase/item item2
+    in
+      case np2 of
+        Noun noun2 => if noun-equals (noun1, noun2) then item2
+                      else raise Match
+      | _ => raise Match
+    end
+    | isuse _ _ = raise Match
+  fun download item =
+      let in 
+        print "Current sub-cerebral program:\n\n";
+        print (!mind_source);
+        (case (#use_downloader/pubs (!pubs)) () of
+           SOME p => print (p ^ "\n")
+         | _ => ());
+        NoData
+      end
+  fun upload item =
+      let do print ("Enter sub-cerebral program followed"
+                    ^ " by end-of-mind marker \"EOM\":\n\n")
+             
+          fun progress n = print ("Burned " ^ int-tostring n ^ "...\n")
+          val s = case all-lines-progress "EOM" progress of
+	             SOME s => s
+		   | NONE => raise RML "EProm capacity exceeded"
+	      
+          do print "[Parsing source]\n"
+          val parsed_mind = (rml-parse s)
+          do print "[Checking code against specification]\n"
+      in
+        mind := rml-load parsed_mind;
+        print "[Installing compiled image]\n";
+        mind_source := s;
+        (case (#use_uploader/pubs (!pubs)) () of
+           SOME p => print (p ^ "\n")
+         | _ => ());
+        success_command ("use", Seq (item_as_datum item,
+                                Atom "You feel an odd tingling sensation."))
+      end
+        handle RML s => 
+               failed_command ("use", item_as_datum item, s)
+  fun smash item = 
+      let in
+        case list-find (fn idx => noun-equals (item-noun (growarray-sub (items, idx)),
+                                               CensoryEngine)) 
+                       (local_items InventoryAndRoomItems) of
+          SOME idx =>
+             if !censor_output then
+                let val item = growarray-sub (items, idx)
+                in
+                   growarray-update (items, idx, 
+                                     {idx = idx,
+                                      nounphrase = Missing (Noun CensoryEngine, (Noun Panel)::nil),
+                                      adjectives = #adjectives/item item,
+                                      portable = #portable/item item,
+                                      description = S "trashed. Its front panel has been removed and its internals demolished",
+                                      location = #location/item item });
+                   censor_output := false;
+                   (case (#use_crowbar/pubs (!pubs)) () of
+                      SOME p => print (p ^ "\n")
+                    | _ => ());                   
+                   success_command ("use", Seq (item_as_datum item,
+                                           Atom "Brandishing your crowbar with gusto, you smash the Censory Engine, ending the Municipality's control over the flow of information! Your vision clears noticeably."))
+                end
+             else
+                failed_command ("use", item_as_datum item,
+                                "the Censory Engine is already smashed")
+        | NONE =>
+          failed_command ("use", item_as_datum item,
+                          "you see nothing worth smashing here")
+      end
+  fun switchgoggles g = 
+      let in 
+        current_goggles := g; 
+        success_command ("switch", Atom (goggles-tostring g))
+      end
+  fun process_help c =
+      let fun helped s = Assoc ("help", Atom s, NoData)
+      in
+        case c of 
+          ((sis "") _) => helped "You can go, take, drop, incinerate, combine, use, examine, show inventory, and quit. Try 'help <command>' for further details and synonyms."
+        | ((sis "go") _) => helped "go: Move from one location to another. Usually you can move north, east, south, or west. These directions may be abbreviated n, e, s, and w. You can also use these single-letter directions without the 'go' keyword."
+        | ((sis "take") _) => helped "take: Pick up an item. Synonyms include get and grab."
+        | ((sis "drop") _) => helped "drop: Release an item from your inventory."
+        | ((sis "incinerate") _) => helped "incinerate: Destroy an item. You are equipped with a state-of-the-art DVNUL-9000 incinerator. Synonyms include inc."
+        | ((sis "combine") _) => helped "combine: Fix one item by adding a missing part. For example 'combine radio with transistor'. Synonyms include comb and c."
+        | ((sis "examine") _) => helped "examine: Inspect an item or your environment. Synonyms include ex, x, look, and l."
+        | ((sis "inventory") _) => helped "inventory: Display your current inventory. Synonyms include show, invent, inv, and i."
+        | ((sis "use") _) => helped "use: Exploit the functionality of an item."
+        | ((sis "switch") _) => helped ("switch: Switch your Insta-Read(tm) Goggles to another mode. The goggles are marked with the following settings: " ^ string-delimit ", " 
+	     (list-map (fn g => "'" ^ (goggles-tostring g) ^ "'") all-goggles) ^ ". Synonyms include sw.")
+        | ((sis "quit") _) => helped "quit: Stop playing Adventure. Synonyms include exit."
+        | _ => helped "There is no help on that subject."
+      end
+
+  (* main loop *)
+  fun prompt result =
+      let do goggle-view (!current_goggles) result
+          val cmd = read-command ()
+          (* do history := cmd :: !history *)
+
+          val result = case cmd
+                        (* A couple of commands handled here instead of in RML: *)
+                        of ((isuse Downloader) item) => download item
+                         | ((isuse Uploader) item) => upload item
+                         | ((isuse Crowbar) item) => smash item
+                         | SwitchGoggles v => switchgoggles v
+                         (* Parse errors are always handled here: *)
+                         | Unparsable msg => Assoc ("error", 
+                                                    Assoc ("response",
+                                                           Atom msg, NoData),
+                                                    NoData)
+                         (* ... as is help: *)
+                         | Help c => process_help c
+                         (* Everything else is passed on to the mind! *)
+                         | _ => rml-process-command (!mind) cmd
+      in 
+        prompt result
+      end
+
+  fun runAdventure options =
+      let val chapter =
+             (case options of
+                 _ :: s :: _ =>
+                    if s seq "sequent-sequel" then
+                       SequelChapter
+                    else
+                       FirstChapter
+               | _ => FirstChapter)
+      in 
+        print "[Building vocabulary]\n";
+
+        (* Set up the initial world: *)
+        nouns-initialize ();
+        adjectives-initialize ();
+        rooms-initialize chapter;
+        populate NONE chapter;
+
+        (* Start by looking around. *)
+        prompt (rml-process-command (!mind) LookAround) 
+      end
+        handle Adventure s => print ("Adventure BUG: " ^ s ^ "\n")
+             | RML s => print ("Runtime RML error " ^ s ^ "\n")
+             | Subscript => print ("Adventure BUG: Subscript\n")
+             | Match => print ("Adventure BUG: Match\n")
+             | List => print ("Adventure BUG: List\n")
+             | UnequalLengths => print ("Adventure BUG: UnequalLengths\n")
+             | IO => ()
+             | _ => print "Adventure BUG: unknown exception\n"
+
+in
+  runAdventure
+end

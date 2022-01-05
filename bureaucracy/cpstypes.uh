@@ -1,0 +1,23 @@
+val app = list-app
+val EOF = 0 - 1
+	     
+datatype primop = Eq 
+		| Plus 
+		| Minus 
+		| Times
+		| If
+datatype exp = Int of int 
+		| Staple of exp * exp 
+		| TearL of exp
+		| TearR of exp
+		| It
+		  
+datatype address = Exp of exp
+		 | Prim of primop
+datatype value = VInt of int
+		  | VStaple of value * value
+		  | VReturnK
+		  | VGarbage
+		  | VPackage
+		    
+type office = address * exp 

@@ -1,0 +1,26 @@
+This is a more or less direct perl port of the c-tom interpreter.
+
+mistakes made:
+* used "L*" instead of "N*" in pack, an endianness error
+* nand used to be ~(r[b] & r[c]), instead of the correct
+  expression 0xffffffff & ~(r[b] & r[c])
+* similarly addition and multiplication I forgot to
+  make mod 32.
+
+In the self-test, a check to see if 0 = 0 would have caught
+mistake number two. As it was, it resulted in a weird error
+message. I think a check to see if 1 + (0 - 1) = 0 would catch
+mistake number three.
+
+performance:
+hilariously bad.
+minml.um takes about 9 seconds to run on my machine.
+ 
+---
+
+optimized it to 2 seconds. Perl's lack of an efficient
+case construct is depressing. This is the best one I
+could find, and it's still sensitive to the order of
+cases. Moving the most common instruction (immediate load)
+to the end of the list slows things down by like a factor
+of 3.

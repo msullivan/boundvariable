@@ -1,0 +1,10 @@
+
+  Bureaucracy              16 Jul 2007
+
+This is a "deleted scene" from the contest. Jason Reed originally
+developed this proof of concept early on as we were brainstorming
+various puzzles. There is a little demo puzzle (during this phase we
+worked by making puzzles and sending out UM binaries to each other to
+test) that you can try by running 'make' and then launching
+bureaucracy.um in your Universal Machine.
+

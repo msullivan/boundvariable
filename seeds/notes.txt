@@ -1,0 +1,104 @@
+Task Descriptions for the Birds Eat Seeds Computer branch
+
+OVERVIEW
+
+A faction of the Order works in a place with no readily available source of
+sand and so must make use of other substances in place of sand.  Each of these
+substances has its own problems, however.  For example,
+
+    - seeds (eaten by birds)
+    - dirt (smaller -- falls through holes; dirty)
+    - salt (dissolves water)
+    - water (evaporating)
+    - ice (melting)
+
+Thus the computational model includes some sort of errors.  We have identified
+a number of forms of "lossy" behavior.
+
+ * Statically-determined randomness
+    - components of the machine are faulty and do not conform to the
+      specification; the actual behavior of each component may be determined:
+      + once for all time (i.e. as part of the problem)
+      + once for each invocation of the interpreter
+      + at various points during computation
+
+ * Dynamic randomness (i.e. birds eating seeds)
+    - registers/stack values change their values at each step in the
+      computation (much like a lossy analog computer)
+    - as the previous case, but were the total amount of seeds in a set of
+      registers remains constant (thus the random changes among a set of
+      registers are not independent)
+    - "fall thru" stack: certain bits in the stack "leak" seeds into the
+      corresponding bits in older values on the stack (answering once and for
+      all whether stacks grow up or down)
+    - certain bits on the stack (e.g. edge bits) are more accessible to birds
+      and thus are more lossy than others.
+
+ * Randomness in the programming language
+    - probabilistic/random Turing machines
+    - non-deterministic choice in the language
+
+Relation to over-heating machine: could the overheating machine introduce
+errors as a function of its temperature?  Thus contestants could overcome the
+heat problem either by dissipating heat or by redundancy.
+
+Opportunity to reference the ants of ICFP contest '04?  (How could ants mess
+up the works?)
+
+
+TASKS
+
+Task 1. Fault-Tolerant Arithmetic 
+  
+  Inputs: 	Seed Interpreter (as UM binary)
+		  includes decryption algorithm with missing subroutine
+		Specification for Seed language
+		Specification for missing subroutine
+		Binary for next stage
+                Checksum for decrypted binary
+
+  This task (like the following one) has the "dynamic" randomness described in
+  the second example -- registers and stack values change their value at each
+  step in computation.  Writing code in the Seed language, contestants must
+  implement the missing subroutine in a decryption algorithm with enough
+  redundancy to accurately decrypt the input binary.  For example, the missing
+  subroutine might be something as simple as addition mod 256.  We should tell
+  the contestants how lossy the interpreter is so that, given the size of the
+  encrypted binary, they can determine how much redundancy is necessary.
+
+  How do they compute the checksum of the output?
+
+
+Task 2. Optimizing Away Redundancy
+
+  Inputs:       Decryption algorithm as a Seed program (that takes forever to
+                  run on our interpreter)
+                Binary for next stage
+
+  In this case we give them the entire implementation of the decryption
+  algorithm, but it turns out to be far too slow in our Seed interpreter.
+  Contestants must optimize the program to run on the UM (or some other
+  platform?), i.e. they must undo the redundancy added by the original
+  authors.
+
+  Can this just be accomplished by PRE?
+
+
+Task 3. Just-in-time Correctness
+
+  Inputs: 	?
+
+  [NEEDS SOME WORK --spoons] This task uses the first form of lossiness
+  described above: the virtual machine is just crappy, and bytecode
+  instructions just don't do what they should (e.g. "add" always resets bit 3
+  in the result).  [Does this crappiness change on each invocation or is it
+  fixed?]  Thus the contestants/JIT must first determine the current
+  configuration of the machine (through testing?).  [Is there overlap with
+  some other state-space exploration task?]  The user/program must recompile
+  the source program to run given the actual behavior of the machine (rather
+  than its specification).
+
+  This could more plausibly be combined with the previous two tasks if the
+  crappiness were to be isolated to a part of the instruction set unused in
+  the first two tasks.
+

@@ -1,0 +1,146 @@
+[ C version
+SANDmark complete.
+
+real    8m5.491s
+user    3m37.580s
+sys     0m0.780s ]
+
+[ SML UNSAFE VERSION
+0.   a8d1619e.5540e6cf
+SANDmark complete.
+
+
+== Halted. ==
+
+real    9m32.920s
+user    4m16.750s
+sys     0m1.010s ]
+
+[ SML VERSION
+0.   a8d1619e.5540e6cf
+SANDmark complete.
+
+
+== Halted. ==
+
+real    13m22.648s
+user    5m59.910s
+sys     0m1.720s ]
+
+(moved literal above loop like in um.um)
+
+0.   a8d1619e.5540e6cf
+SANDmark complete.
+
+real    6m18.065s
+user    2m49.270s
+sys     0m0.780s
+
+(svn version)
+
+0.   a8d1619e.5540e6cf
+SANDmark complete.
+
+real    6m16.457s
+user    2m48.040s
+sys     0m0.860s
+
+
+
+---------------------------------
+
+orig:
+
+-rwxr-xr-x    1 tom7     users        4864 May  4 17:15 um*
+real    2m10.714s
+user    1m46.900s
+sys     0m0.490s
+
+mildly improved literal:
+
+-rwxr-xr-x    1 tom7     users        4864 May  4 17:15 um*
+real    2m8.728s
+user    1m44.170s
+sys     0m0.540s
+
+
+got rid of invalid instruction branch: (??)
+
+-rwxr-xr-x    1 tom7     users        4864 May  4 17:19 um*
+real    2m12.915s
+user    1m47.400s
+sys     0m0.540s
+
+
+made literal code smaller assuming %esi holds w
+-rwxr-xr-x    1 tom7     users        4848 May  4 17:23 um*
+
+real    2m4.575s
+user    1m41.070s
+sys     0m0.440s
+
+same for nand; could still use some work
+-rwxr-xr-x    1 tom7     users        4832 May  4 17:29 um*
+
+real    1m57.100s
+user    1m35.450s
+sys     0m0.370s
+
+improved add a little
+
+-rwxr-xr-x    1 tom7     users        4816 May  4 23:44 um*
+real    1m57.743s
+user    1m36.790s
+sys     0m0.490s
+
+
+removed stupid banches at the end of each arithmetic op
+
+real    1m49.621s
+user    1m30.200s
+sys     0m0.390s
+
+pushed move of instruction word to -188 into instructions
+only where necessary
+-rwxr-xr-x    1 tom7     users        4848 May  4 23:57 um
+
+real    1m53.341s
+user    1m32.500s
+sys     0m0.460s
+
+optimized loadprog
+-rwxr-xr-x    1 tom7     users        4848 May  4 23:57 um
+
+real    1m49.075s
+user    1m29.250s
+sys     0m0.420s
+
+
+optimized putc and getc, also more stupid branches
+-rwxr-xr-x    1 tom7     users        4816 May  5 00:08 um
+
+
+real    1m51.573s
+user    1m31.160s
+sys     0m0.540s
+
+
+forgot what I did
+
+real    1m47.953s
+user    1m28.380s
+sys     0m0.480s
+
+
+tightened update
+-rwxr-xr-x    1 tom7     users        4768 May  5 00:15 um*
+real    1m56.101s
+user    1m35.660s
+sys     0m0.530s
+
+wooo gcc4.1 is smart
+
+-rwxr-xr-x    1 tom7     users        4668 May  5 16:41 um*
+real    1m33.954s
+user    1m16.240s
+sys     0m0.370s

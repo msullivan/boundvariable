@@ -1,0 +1,18 @@
+
+group is
+
+#if (defined(SMLNJ_VERSION))
+ $/basis.cm
+#endif
+
+../sml-lib/util/util-sig.sml
+../sml-lib/util/util.sml
+
+../sml-lib/util/stringutil-sig.sml
+../sml-lib/util/stringutil.sml
+
+balance-sig.sml
+balance.sml
+test.sml
+
+solve.sml

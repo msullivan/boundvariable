@@ -1,0 +1,471 @@
+
+(* I think these are all the stdlibs that this library uses *)
+val require-list = provide-list
+val require-std = provide-std
+
+val require-symbol-table = provide-symbol-table
+val provide-language = ()
+val require-aspects = provide-aspects
+
+(* ---------------------------------------------------------------------- *)
+(* syntax *)
+
+(* ENH: tune size for hash table performance 
+   in my code, I only use about 25 symbols,
+   so this should be good if the hash function is reasonable
+*)
+val theSymbolTable = newSymbolTable 200
+fun intTST s = intern (s, theSymbolTable)
+fun extTST s = extern (s, theSymbolTable)
+
+type name = symbol
+
+datatype term = 
+    Const of name
+  | App of term * term
+    
+fun equalTerms (Const n, Const n') = symbol-equals (n, n')
+  | equalTerms (App (e1, e2), App (e1', e2')) = 
+    equalTerms (e1, e1') andalso equalTerms (e2, e2') 
+  | equalTerms _ = false
+
+datatype pattern =
+    PVar of name
+  | PConst of name
+  | PApp of pattern * pattern
+    
+type rule = pattern * pattern  
+
+fun freeVars (PVar n) = n :: nil
+  | freeVars (PConst _) = nil
+  | freeVars (PApp (p1, p2)) = (freeVars p1) @ (freeVars p2)
+
+fun subset (l1, l2) =
+    list-all (fn x => list-exists (fn y => symbol-equals (x, y)) l2, l1)
+
+fun checkRule (p1, p2) = subset (freeVars p2, freeVars p1)
+
+(* SUSP: overflow? 
+   probably not on the files you can upload with umodem
+*)
+fun patternSize (PVar _) = 1
+  | patternSize (PConst _) = 1
+  | patternSize (PApp (p1, p2)) = (patternSize p1) + (patternSize p2) + 1
+
+(* SUSP: overflow? *)
+fun ruleSize ((p1, p2) : rule) = (patternSize p1) + (patternSize p1)
+
+(* bool: whether or not the answer is correct
+   string: any useful information about what happened 
+           this string will be printed at the beginning of the line
+	   and should terminate any lines it includes with a newline
+*)
+type test = term * (term -> (bool * string))
+type simpleTest = term * term
+
+(* ---------------------------------------------------------------------- *)
+(* printing syntax *)
+
+(* fully parenthesized *)
+
+fun termToString (Const n) = (extTST n)
+  | termToString (App (e1, e2)) = "(" ^ (termToString e1) ^ " " ^ (termToString e2) ^ ")"
+
+fun patternToString (PVar n) = (extTST n)
+  | patternToString (PConst n) = (extTST n)
+  | patternToString (PApp (p1, p2)) = "(" ^ (patternToString p1) ^ " " ^ (patternToString p2) ^ ")"
+
+(* pretty *)
+
+(* don't put parens around a left-hand side application;
+   the usual associativity means they're implicit *)
+fun termToPrettyString e =
+    let fun help _ (Const n) =  (extTST n)
+	  | help appParensP (App (e1, e2)) =
+	    if appParensP 
+	    then "(" ^ (help false e1) ^ " " ^ (help true e2) ^ ")"
+	    else (help false e1) ^ " " ^ (help true e2)
+    in
+	help false e
+    end
+
+fun pairToString tts (sep, terminator) (l, r) =
+    (tts l) ^ sep ^ (tts r) ^ terminator
+
+fun ruleToString (rul : rule) = pairToString patternToString (" => ", ";") rul
+fun simpleTestToString (t : simpleTest) = pairToString termToPrettyString (" -> ", ";") t
+
+(* ---------------------------------------------------------------------- *)
+(* testing *)
+
+fun simpleTestToTest (inp, outp) = 
+    (inp, 
+     fn res => 
+     let val corP = equalTerms (res, outp) in
+	 (* say nothing if it's right; 
+	    give the expected output if it's wrong *)
+	 (corP, 
+	  if corP then "" else ("Expected:\t" ^ (termToString outp) ^ "\n"))
+     end
+     )
+
+(* ---------------------------------------------------------------------- *)
+(* utilities for operational semantics *)
+
+type bindings = (name * term) list
+
+(* merge two bindings 
+
+   VERY common case: 2 vs 1 or 1 vs 2
+
+   invt: sorted
+*)
+
+fun merge (nil : bindings, b : bindings) = SOME b
+  | merge (b, nil) = SOME b 
+  | merge (b1 as (n1, t1)::rest1, b2 as (n2,t2)::rest2) = 
+    if symbol-equals(n1, n2) 
+    then
+	if equalTerms (t1, t2) 
+	then
+	    case merge(rest1, rest2) of 
+		NONE => NONE
+	      | SOME bRest => SOME ((n1, t1) :: bRest)
+	else
+	    NONE
+    else
+	let val recAndMerge = 
+	    (fn (rec1, rec2, firstName, firstTerm) => 
+	     case merge (rec1, rec2) of
+		 NONE => NONE
+	       | SOME bRest => SOME ((firstName, firstTerm) :: bRest))
+	in
+	    if symbol-lessThan (n1, n2) 
+	    then recAndMerge (rest1, b2, n1, t1)
+	    else recAndMerge (b1, rest2, n2, t2)
+	end
+
+fun match ((PVar n) : pattern, e : term) : bindings option = SOME ((n, e)::nil)
+  | match (PConst n, Const n') = 
+    if symbol-equals (n, n') then SOME nil else NONE
+  | match (PApp (p1, p2), App(e1, e2)) = 
+       (* do one side before the other so we can fail fast 
+	  doing the left first is probably better... ?
+	  *)
+       (case match (p1, e1) of
+	    NONE => NONE
+	  | SOME b1 => 
+		(case match (p2, e2) of
+		     NONE => NONE
+		   | SOME b2 => merge (b1, b2)))
+  | match _ = NONE
+
+(* apply a bindings to a pattern, resulting in a term
+   
+   assumes that every var is bound in the pattern
+   *)
+fun subst (b : bindings, p : pattern) = 
+    case p of
+	PApp (p1, p2) => App (subst (b, p1), subst (b, p2))
+      | PVar n => 
+	    (case (list-find (fn (curName, _) => symbol-equals (n, curName))) b of
+		 NONE => raise AspectsInternal ("variable not in bindings: " ^  (symbol-tostring n))
+	       | SOME (_, bindingVal) => bindingVal)
+      | PConst n => Const n
+
+(* ---------------------------------------------------------------------- *)
+(* operational semantics: single step combinators *)
+
+(* a policy decides how to apply a rule to a term. 
+
+   an inside policy decides how to apply a rule to subcomponents of an
+   application; it presumes that the rule does not match the given term
+   itself.
+   
+   these datatypes get a little type abstraction going so we don't
+   confuse SRP and SRIPs (they would otherwise have the same type).  if
+   we had modules, we'd only export the defined combinators; clients
+   should not use the datatype constructors directly.  
+*)
+datatype singleRuleInsidePolicy = SRIP of (rule * term -> term option)
+datatype singleRulePolicy = SRP of (rule * term -> term option)
+fun unSRP (SRP x) = x
+fun unSRIP (SRIP x) = x
+
+(* apply the rule when the given rule matches the term immediately
+   otherwise, call ifnot to go inside the application
+   *)
+fun stepIfMatch (SRIP ifnot : singleRuleInsidePolicy) : singleRulePolicy = 
+    SRP (fn (rul as (pattern, result), e) =>
+	 case match (pattern, e) of
+	     SOME bindings => SOME (subst (bindings, result))
+	   | NONE => ifnot (rul, e))
+
+(* make a recursive policy 
+   note: have to roll and unroll here to delay, or else it loops
+   *)
+fun stepFix (p : singleRulePolicy -> singleRulePolicy) : singleRulePolicy =
+    p (SRP (fn args => (unSRP (stepFix p)) args))
+    
+(* goes inside, left to right, 
+   and applies the rule at the first match site 
+   *)
+val stepInsideSingle : singleRuleInsidePolicy =
+    let 
+	fun this (rul : rule, e : term) : term option = 
+	    let 
+		(* recursive call needs to check if it's an immediate match,
+		   and then come back to this function if not *)
+		val stepInside = unSRP(stepIfMatch (SRIP this))
+	    in
+		(* go inside e *)
+		(case e of 
+		     App (e1, e2) => 
+			 (* left to right for now, 
+			    always takes rule if it matches anywhere *)
+			 (case stepInside (rul, e1) of
+			      SOME e1' => SOME (App (e1', e2))
+			    | NONE => 
+				  (case stepInside (rul, e2) of
+				       SOME e2' => SOME (App (e1, e2'))
+				     | NONE => NONE))
+		   (* if variables or constants don't match, 
+		      there are no subterms to check *)
+		   | _ => NONE)
+	    end
+    in
+	SRIP this
+    end
+
+(* goes inside and applies the rule to all subterms that the rule matches 
+   
+   does not apply the rule if there are no matches at all
+   *)
+val stepInsideAll : singleRuleInsidePolicy =
+    let
+	fun this (rul : rule, e : term) = 
+	    let 
+		(* ifmatch and recur to step inside the term *) 
+		val stepInside = unSRP (stepIfMatch (SRIP this))
+	    in 
+		(case e of 
+		     App (e1, e2) => 
+			 (case (stepInside (rul, e1), stepInside (rul, e2)) of
+			      (NONE, NONE) => NONE
+			    | (SOME e1', NONE) => SOME (App (e1', e2))
+			    | (NONE, SOME e2') => SOME (App (e1, e2'))
+			    | (SOME e1', SOME e2') => SOME (App (e1', e2')))
+		   | _ => NONE)
+	    end
+    in
+	SRIP this
+    end
+
+(* counts the number of subterms a rule matches 
+   (not including subterms of the subterms in which it matches)
+
+   profiling: very hot
+*)
+fun countPatternMatches (p : pattern, e : term) = 
+    case match (p, e) of 
+	SOME _ => 1
+      | NONE => 
+	    (case e of 
+		 App (e1, e2) => countPatternMatches (p, e1) + countPatternMatches (p, e2)
+	       | _ => 0)
+
+fun countMatches ((p, _) : rule, e : term) = countPatternMatches (p, e)
+
+(*
+  "Advice is least heeded when most needed."
+ 	Unknown
+
+   applies the rule (using the argument policy) on one side of the application.
+   Which side is determined as follows:
+   (a) count the number of matches in each side 
+   (b) if the rule doesn't match either side, it is not applied
+
+       if the rule only matches on one side, it is applied to that side
+
+       if the rule matches both sides, 
+            if one side has strictly more matches, the rule is applied
+	    in the OTHER side (i.e., it is least heeded in the side where it
+	    is most needed) using the argument policy.  
+	    
+	    if the two sides tie, the rule is not applied 
+*)
+fun stepInsideLHMN (doToSide : singleRulePolicy) : singleRuleInsidePolicy =
+    SRIP(fn (rul, e) =>
+	 let 
+	     (* put the result of the step into the context,
+		progagating a NONE if that's what happens *)
+	     fun doStep (applyTo : term,  context : term -> term) = 
+		 option-map context ((unSRP doToSide) (rul, applyTo))
+
+	 in
+	     (case e of 
+		  App (e1, e2) =>
+		      (case (countMatches (rul, e1), countMatches (rul, e2)) of
+			   (0,0) => NONE
+			 | (_, 0) => doStep (e1, fn hole => App (hole, e2))
+			 | (0, _) => doStep (e2, fn hole => App (e1, hole))
+			 | (matches1, matches2) => 
+			       if matches1 = matches2 
+			       then (* fail to match *)
+				   NONE
+			       else 
+				   if matches1 < matches2 
+				   then (* apply in 1 only *) 
+				       doStep (e1, (fn hole => App (hole, e2)))
+				   else 
+				       (* 1 > 2, so apply in 2 only *) 
+				       doStep (e2, (fn hole => App (e1, hole))))
+		| _ => NONE)
+	 end)
+
+(* does the pattern match anywhere in the term? *)
+fun deepMatch (p, e) = 
+    case match (p, e) of
+	SOME _ => true
+      | NONE => 
+	    (case e of 
+		 App (e1, e2) => deepMatch (p, e1) orelse deepMatch (p, e2)
+	       | _ => false)
+
+(* direct implementation
+      doesn't use any combinators, countPatternMatches, etc 
+
+      tested against old by diffing full output of 
+      xml-attempt1 
+      arith-attempt4
+      (which gets stuck in weird ways) 
+*)
+val stepLHMNRecFast : singleRulePolicy = 
+    let
+	(* humlock might do better if this is specialized *)
+	datatype loopRetOpt = 
+	    LRSOME of {e' : unit -> term, i : int} 
+	  | LRNONE
+	    
+	fun loop (rul as (pattern, result), e) : loopRetOpt = 
+	    case match (pattern, e) of
+		SOME bindings => LRSOME {e'=fn _ => subst (bindings, result), i=1}
+	      | NONE => 
+		    (case e of
+			 App (e1, e2) =>
+			     (case loop (rul, e1) of
+				  LRNONE => 
+				      (* no matches on LHS, so try righthand side *)
+				      (case loop (rul, e2) of
+					   LRNONE => 
+					       (* didn't apply at all *)
+					       LRNONE 
+					| LRSOME {e'=e2', i=i2} => 
+					       (* applied only somewhere on RHS *)
+					       LRSOME {e'=fn _ => App (e1, e2'()), i=i2})
+				| LRSOME {e'=e1',i=i1} =>
+					   (* some matches on LHS *)
+					   (case loop (rul, e2) of
+						LRNONE => 
+						    (* applied only on LHS *)
+						    LRSOME {e'=fn _ => App (e1' (), e2), i=i1}
+					      | LRSOME {e'=e2', i=i2} => 
+						    if i1 = i2 
+						    then LRNONE
+						    else if i1 < i2 
+							 then (* so apply in LHS only *)
+							     LRSOME {e'=fn _ => App(e1' (), e2), i=i1+i2}
+							 else (* i1 > i2, so apply in RHS only *)
+							     LRSOME {e'=fn _ => App(e1, e2' ()), i=i1+i2}))
+		       | _ => LRNONE)
+    in
+	(* check whether it matches at all anywhere 
+	   work is repeated if it doesn't, but this speeds up the common case
+	   (at least for my rules)
+	   where the rule doesn't match at all
+	   *)	 
+	SRP (fn (r as (p,_), e) =>
+	     if deepMatch (p, e)
+	     then 
+		 case loop (r, e) of
+		     LRSOME {e', i=_} => SOME (e' ())
+		   | LRNONE => NONE
+	     else NONE)
+    end
+  
+(* ---------------------------------------------------------------------- *)
+(* operational semantics: many step *)
+
+type manyRulesPolicy = rule list * term -> term option
+
+(* searches the rules left-to-right
+   and returns the result of the first rule that applies according to the policy (if any)
+   *)
+fun stepWithFirstMatchingRule (SRP srp : singleRulePolicy) : manyRulesPolicy =
+    fn (rules, e) =>
+    let
+	(* halt as soon as we get the first SOME *)
+	fun loop nil = NONE
+	  | loop (r::rs) = 
+	    (case srp (r, e) of
+		 result as SOME _ => result
+                | NONE => loop rs)
+    in
+	loop rules
+    end
+		 
+(* run until stuck with some stepper 
+   return the final result and the count of how many steps it took
+   
+   call printer on ***each new term*** (so not the very first input)
+   *)
+fun stepToStuck (printer : term -> unit,
+		 step : manyRulesPolicy,
+		 ruleAndTerm : rule list * term)
+                : term * int = 
+    let 
+	fun loop ((rl, e), count) = 
+	    case step (rl, e) of 
+		NONE => (e, count)
+	      | SOME e' => 
+		    (printer e';
+		     loop ((rl, e'), count + 1))
+    in
+	loop (ruleAndTerm, 0)
+    end
+
+(* ---------------------------------------------------------------------- *)
+(* define some operational semantics using the combinators *)
+
+type stepToStuckFunction = (rule list * term) -> term * int
+(* term -> unit is the display function for each step *)	
+type stepToStuckFunctionWithDisplay = ((term -> unit) * (rule list * term) -> (term * int))
+
+(* a way to step many until stuck *)
+fun mts (srp : singleRulePolicy) : stepToStuckFunctionWithDisplay =
+    fn (printer, ruleAndTerm) => stepToStuck (printer, (stepWithFirstMatchingRule srp), ruleAndTerm)
+
+(* NOTE: commented out for code size in final version 
+
+val stepToStuckSingle : stepToStuckFunctionWithDisplay = 
+    mts (stepIfMatch stepInsideSingle)
+val stepToStuckAll : stepToStuckFunctionWithDisplay = 
+    mts (stepIfMatch stepInsideAll)
+val stepToStuckLHMNSingle : stepToStuckFunctionWithDisplay =
+    mts (stepIfMatch (stepInsideLHMN (stepIfMatch stepInsideSingle)))
+val stepToStuckLHMNAll : stepToStuckFunctionWithDisplay =
+    mts (stepIfMatch (stepInsideLHMN (stepIfMatch stepInsideAll)))
+(* recursively LHMN *)
+val stepToStuckLHMNRec : stepToStuckFunctionWithDisplay =
+    mts (stepFix (fn r => (stepIfMatch (stepInsideLHMN r))))
+*)
+
+(* single step *)
+val stepLHMNRec : ((rule list * term) -> term option) = stepWithFirstMatchingRule stepLHMNRecFast
+val theSingleStepper = stepLHMNRec
+
+(* recursively LHMN *)
+val stepToStuckLHMNRecFast : stepToStuckFunctionWithDisplay = 
+    mts stepLHMNRecFast
+val theStepper = stepToStuckLHMNRecFast
+

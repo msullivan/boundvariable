@@ -1,0 +1,1054 @@
+
+(* SUSP must agree with assemble.uh *)
+val rethi = 0
+val retlo = 1
+val tmp1 = 2
+val tmp2 = 3
+val tmp3 = 4
+
+val SP = 6  (* stack pointer = 0*)
+val FO = 5  (* frame offset *)
+val zero = 6  (* always zero ==> pointer to code *)
+val one = 7 (* always one *)
+
+(* SUSP make a configuration option *)
+val STACK_SIZE = 100
+
+(*
+
+ Stack layout
+
+ There is a single array that represents the entire stack.  The register SP
+ (stack pointer) is a reference to this array.  The FO (frame offset) register
+ is an offset into this array that denotes the current frame.  A frame is laid
+ out as follows.
+
+   SP[FO + 0]              return address
+   SP[FO + 1]              in arg 1
+   ...
+   SP[FO + n]              in arg m
+   ...                     locals (variables declared within a function)
+
+   ...                     tmps (used during the evaluation of nested exps)
+
+ Callers are responsible for restoring the FO register after the call.  This
+ convention allows tail calls to be made without allocating a frame (by
+ overwriting the input arguments with the output arguments).
+
+*)
+
+datatype sgn =
+               (* args                 ret *)
+    SFun of var * (ty * string) list * ty
+  | SGlob of var * ty
+  | SStruct of (ty * string) list
+
+fun asizeof _ AInt = 1
+  | asizeof _ AChar = 1
+  | asizeof _ (APtr _) = 2
+  | asizeof gctx (AStruct x) = 
+    let in
+      case list-find (fn (x', _) => x seq x') gctx of
+        SOME (_, SStruct fields) => 
+          list-foldl (fn ((ty, _), s) => s + (sizeof gctx ty)) 0 fields
+      | _ => raise Compile [unknown struct type [x]]
+    end
+
+and sizeof gctx (_, ty) = asizeof gctx ty
+           
+fun lookup-fun gctx x =
+    let in
+      case list-find (fn (x', _) => x seq x') gctx of
+        SOME (_, SFun v) => v
+      | SOME (_, _) => raise Compile [expected function for identifier [x]]
+      | NONE => raise Compile [unknown identifier [x]]
+    end
+
+fun lookup-glob gctx x =
+    let in
+      case list-find (fn (x', _) => x seq x') gctx of
+        SOME (_, SGlob v) => v
+      | SOME (_, _) => raise Compile [expected global for identifier [x]]
+      | NONE => raise Compile [unknown identifier [x] (looked in globals)]
+    end
+
+fun lookup-var-or-field gctx l x =
+    let fun c ((ty, x'), NONE) = 
+            if x seq x' then 
+              SOME (0, sizeof gctx ty, ty)
+            else NONE
+          | c ((ty', _), SOME (off, sz, ty)) = 
+            SOME (off + (sizeof gctx ty'), sz, ty)
+    in
+      list-foldl c NONE l
+    end
+
+fun frame-size gctx frame = list-foldl (fn ((ty, _), s) => s + (sizeof gctx ty)) 0 frame
+
+(* Save the return register(s) into variable x, but
+  if result is too big, just leave it where it is;
+  bashes tmp1 and tmp2 *)
+fun save_result gctx frame x =
+    let in
+      case lookup-var-or-field gctx frame x of
+        SOME (off, sz, ty) => 
+        let in
+          case sz of
+             1 => LITERAL (tmp1, off)::
+                  ADD (tmp1, FO, tmp1)::
+                  UPD (SP, tmp1, rethi)::
+                  nil
+           | 2 => LITERAL (tmp1, off)::
+                  ADD (tmp1, FO, tmp1)::
+                  UPD (SP, tmp1, rethi)::
+                  ADD (tmp1, tmp1, one)::
+                  UPD (SP, tmp1, retlo)::
+                  nil
+           | _ => nil (* nothing to do *)
+                  (* SUSP could assert that x is on the top of the frame *)
+        end
+      | NONE => raise Compile "unknown var in save_result"
+    end
+
+(* Load value from variable x into tmp1 and tmp2 if sizeof(x) <= 2,
+  otherwise leave x where it is; preserves rethi/lo *)
+fun load_result gctx frame x =
+    let in
+      case lookup-var-or-field gctx frame x of
+        SOME (off, sz, ty) => 
+        let in
+          case sz of
+             1 => LITERAL (tmp2, off)::
+                  ADD (tmp2, FO, tmp2)::
+                  ASUB (tmp1, SP, tmp2)::
+                  nil
+           | 2 => LITERAL (tmp2, off)::
+                  ADD (tmp2, FO, tmp2)::
+                  ASUB (tmp1, SP, tmp2)::
+                  ADD (tmp2, tmp2, one)::
+                  ASUB (tmp2, SP, tmp2)::
+                  nil
+           | _ => nil (* nothing to do *)
+        end
+      | NONE => raise Compile "unknown var in load_result"
+    end
+
+fun compile-field gctx frame e f =
+    let
+      val (insts, ty) = compile-exp gctx frame (EAddrOf e)
+      val s = case ty of (_, APtr (_, AStruct s)) => s
+                       | _ => raise Compile "expected structure type at selection"
+      val fields = case list-find (fn (s', _) => s seq s') gctx of
+                     SOME (_, SStruct fields) => fields
+                   | SOME _ => raise Compile ("expected struct for identifier " ^ s)
+                   | NONE => raise Compile [unknown struct type [s]]
+      val (off, fty) = case lookup-var-or-field gctx fields f
+                        of SOME (off, _, fty) => (off, fty)
+                         | NONE => raise Compile [unknown field [f]]
+    in
+      (insts, off, fty)
+    end
+
+(* puts the result of evaluating the exp into rethi/lo *)
+and compile-exp _ _ (EInt i) = 
+    let in
+      (COMMENT [Int [int-tostring i]]::
+       LITERAL_ANY (rethi, i, tmp1)::nil,
+       TInt)
+    end
+
+  | compile-exp _ _ (EChar c) =
+    let in
+      (COMMENT [Char [implode (c::nil)]]::
+       LITERAL (rethi, ord c)::nil,
+       TChar)
+    end
+
+  | compile-exp _ _ (EUnit) = 
+    let in
+      (COMMENT [Unit]::
+       LITERAL (rethi, 1)::nil (* non-zero so that tests succeed *)
+       , TUnit)
+    end
+
+  (* *********** VAR *********** *)
+
+  | compile-exp gctx frame (EVar x) =
+    let in
+      case lookup-var-or-field gctx frame x of
+        SOME (off, sz, ty) => 
+        let in
+          (COMMENT [Var [x] ([ty-tostring ty])]::
+           LITERAL (tmp1, off)::
+           ADD (tmp1, FO, tmp1)::
+           ASUB (rethi, SP, tmp1)::
+           (case sz of
+              1 => nil
+            | 2 => ADD (tmp1, tmp1, one)::
+                   ASUB (retlo, SP, tmp1)::
+                   nil
+            | _ => raise Compile "unexpected size in var"),
+           ty)
+        end
+      | NONE => 
+        let val (lab, ty) = lookup-glob gctx x in
+          (COMMENT [Global [x] ([ty-tostring ty])]::
+           LITERAL_ADDR (tmp2, lab) ::
+           ASUB (rethi, zero, tmp2)::
+           (case sizeof gctx ty of
+              1 => nil
+            | 2 => ADD (tmp2, tmp2, one)::
+                   ASUB (retlo, zero, tmp2)::
+                   nil
+            | _ => raise Compile "unexpected size in var"),
+           ty)
+        end
+    end
+
+  (* *********** PRIM *********** *)
+
+  | compile-exp gctx frame (EPrim (oper, arg1::arg2::nil)) =
+    let val (insts1, ty1) = compile-exp gctx frame arg1
+        val tmp = var-tostring (var-namedvar "__primtmp")
+        val frame' = (ty1, tmp)::frame
+        val (insts2, ty2) = compile-exp gctx frame' arg2
+                            
+        fun compile-compare lt eq gt =
+            let 
+              (* PERF this could probably be more efficient if it
+                didn't always try to return exactly 1 or 0 *)
+              val lneg = var-namedvar "__lneg"
+              val lposrneg = var-namedvar "__lposrneg"
+              val lnegrneg = var-namedvar "__lnegrneg"
+              val cexit = var-namedvar "__cexit"
+                          
+              val SIGNBIT = 2147483647 + 1
+              val MANTISSAMASK = 2147483647
+                                 
+              (* ll, rr \in {tmp1, rethi} *)
+              fun unsignedcompare ll rr lt eq gt =
+                  let 
+                    val less = var-namedvar "__less"
+                    val equal = var-namedvar "__equal"
+                  in
+                    LITERAL_ANY (tmp3, MANTISSAMASK, tmp2)::
+                    (* discard originals *)
+                    AND (ll, ll, tmp3)::
+                    AND (rr, rr, tmp3)::
+                    SUB (tmp2, ll, rr)::
+                    JZ (tmp2, equal, tmp3, retlo)::
+                    LITERAL_ANY (tmp3, SIGNBIT, tmp1)::
+                    AND (tmp2, tmp2, tmp3)::
+                    JNZ (tmp2, less, tmp3, retlo)::
+                    (* greater *)
+                    LITERAL (rethi, gt)::
+                    LITERAL_ADDR (tmp3, cexit)::
+                    LOADPROG (zero, tmp3)::
+                    
+                    (* less *)
+                    LABEL less::
+                    LITERAL (rethi, lt)::
+                    LITERAL_ADDR (tmp3, cexit)::
+                    LOADPROG (zero, tmp3)::
+                    
+                    (* equal *)
+                    LABEL equal::
+                    LITERAL (rethi, eq)::
+                    LITERAL_ADDR (tmp3, cexit)::
+                    LOADPROG (zero, tmp3)::
+                    nil
+                  end
+            in
+              ((* Check sign bits *)
+               LITERAL_ANY (tmp3, SIGNBIT, tmp2)::
+               AND (tmp2, tmp1, tmp3)::
+               JNZ (tmp2, lneg, tmp3, retlo)::
+               (* left pos *)
+               LITERAL_ANY (tmp3, SIGNBIT, retlo)::
+               AND (retlo, rethi, tmp3)::
+               JNZ (retlo, lposrneg, tmp3, tmp2)::
+               (* both pos *)
+               unsignedcompare tmp1 rethi lt eq gt) @
+              
+              ((* left neg *)
+               LABEL lneg::
+               LITERAL_ANY (tmp3, SIGNBIT, retlo)::
+               AND (retlo, rethi, tmp3)::
+               JNZ (retlo, lnegrneg, tmp3, tmp2)::
+               (* left neg, right pos *)
+               LITERAL (rethi, lt)::
+               LITERAL_ADDR (tmp3, cexit)::
+               LOADPROG (zero, tmp3)::
+               
+               (* left pos, right neg *)
+               LABEL lposrneg::
+               LITERAL (rethi, gt)::
+               LITERAL_ADDR (tmp3, cexit)::
+               LOADPROG (zero, tmp3)::
+               
+               (* both negative *)
+               LABEL lnegrneg::
+               unsignedcompare rethi tmp1 gt eq lt) @
+              
+              (LABEL cexit::
+               nil)
+            end
+
+    in
+      (COMMENT [Prim]::
+       insts1 @ 
+       (* Save intermediate result *)
+       (save_result gctx frame' tmp) @
+       insts2 @ 
+       (load_result gctx frame' tmp) @
+       (* arg1 in tmp1/2; arg2 in rethi/lo *)
+       (case (ty1, ty2, oper) of 
+          (* Pointer ops first! *)
+          ((_, APtr ty), (_, AInt), OAdd) => MANY
+          let in
+            (case sizeof gctx ty of
+               1 => nil
+             | n => let in
+                      (* Use retlo as a temporary tmp *)
+                      LITERAL (retlo, n)::
+                      MUL (rethi, rethi, retlo)::
+                      nil
+                    end) @
+            ((* Compute the offset *)
+             ADD (retlo, rethi, tmp2)::
+             (* Copy the pointer *)
+             ADD (rethi, tmp1, zero)::
+             nil)
+          end
+        | ((_, APtr ty), (_, AInt), OSub) => MANY
+          let in
+            (case sizeof gctx ty of
+               1 => nil
+             | n => let in
+                      (* Use retlo as a temporary tmp *)
+                      LITERAL (retlo, n)::
+                      MUL (rethi, rethi, retlo)::
+                      nil
+                    end) @
+            ((* Compute the offset *)
+             SUB (retlo, tmp2, rethi)::
+             (* Copy the pointer *)
+             ADD (rethi, tmp1, zero)::
+             nil)
+          end
+	| ((_, APtr ty), (_, APtr _), OSub) => MANY
+          let in
+            SUB (retlo, tmp2, retlo)::
+            (case sizeof gctx ty of
+               1 => nil
+             | n => let in
+                      LITERAL (tmp2, n)::
+                      DIV (retlo, retlo, tmp2)::
+                      nil
+                    end) @
+            ((* Use the platters too, just so the difference of two unequal
+               pointers is non-zero.  If this is a "reasonable" subtraction,
+               this difference should be zero (and the OR will have no
+               effect). *)
+             SUB (rethi, tmp1, rethi)::
+             OR (rethi, rethi, retlo, tmp2)::
+             nil)
+          end
+        | ((_, APtr _), (_, APtr _), OEq) => MANY
+          let in
+            SUB (retlo, tmp2, retlo)::
+            SUB (rethi, tmp1, rethi)::
+            OR (retlo, rethi, retlo, tmp2)::
+            ADD (rethi, one, zero)::
+            CMOV (rethi, zero, retlo)::
+            nil
+          end
+        | ((_, APtr _), (_, APtr _), ONeq) => MANY
+          let in
+            SUB (retlo, tmp2, retlo)::
+            SUB (rethi, tmp1, rethi)::
+            OR (rethi, rethi, retlo, tmp2)::
+            nil
+          end
+        | ((_, APtr _), (_, APtr _), OComma) => MANY nil (* result is already in rethi/lo *)
+        | ((_, APtr _), (_, _), _) => raise Compile "unsupported pointer operation"
+        | ((_, _), (_, APtr _), _) => raise Compile "unsupported pointer operation"
+
+        (* No more pointers... *)
+        | (_, _, OAdd) => ADD (rethi, tmp1, rethi)
+        | (_, _, OSub) => SUB (rethi, tmp1, rethi)
+        | (_, _, OEq) => MANY
+          let in
+            SUB (tmp1, tmp1, rethi)::
+            LITERAL (rethi, one)::
+            CMOV (rethi, zero, tmp1)::
+            nil         
+          end
+        | (_, _, ONeq) => MANY
+          let in
+            SUB (rethi, tmp1, rethi)::
+            CMOV (rethi, one, rethi)::
+            nil         
+          end
+        | (_, _, OLeq) => MANY (compile-compare 1 1 0)
+        | (_, _, OLess) => MANY (compile-compare 1 0 0)
+        | (_, _, OGeq) => MANY (compile-compare 0 1 1)
+        | (_, _, OGreater) => MANY (compile-compare 0 0 1)
+
+        | (_, _, OBitAnd) => AND (rethi, tmp1, rethi)
+        | (_, _, OBitOr) => OR (rethi, tmp1, rethi, tmp2)
+        | (_, _, OBitXor) => XOR (rethi, tmp1, rethi, tmp2)
+        | (_, _, OLogAnd) => MANY
+          let in
+            CMOV (tmp1, one, tmp1)::
+            CMOV (rethi, tmp1, rethi)::
+            nil
+          end
+        | (_, _, OLogOr) => MANY
+          let in
+            CMOV (tmp1, one, tmp1)::
+            CMOV (rethi, one, rethi)::
+            OR (rethi, rethi, tmp1, tmp2)::
+            nil
+          end
+        | (_, _, ODiv) => DIV (rethi, tmp1, rethi)
+        | (_, _, OMul) => MUL (rethi, tmp1, rethi)
+        | (_, _, OComma) => MANY nil (* result is already in rethi/lo *)
+        | (_, _, _) => raise Compile "unsupported binary operator"
+        )::nil,
+       ty1)
+    end
+  | compile-exp gctx frame (EPrim (oper, arg1::nil)) =
+    let
+      val (insts1, ty) = compile-exp gctx frame arg1
+      val insts2 = case oper of
+                   OBitNot => NOT (rethi, rethi) :: nil
+                 | OLogNot => ADD (tmp1, one, zero) ::
+                             CMOV (tmp1, zero, rethi) ::
+                             ADD (rethi, tmp1, zero) :: nil
+                 | _ => raise Compile "invalid unary operator"
+    in
+      (insts1 @
+       insts2,
+      ty)
+    end
+  | compile-exp gctx frame (EPrim (OIf, arg1::arg2::arg3::nil)) =
+    let 
+      val (insts1, ty1) = compile-exp gctx frame arg1
+      val alt_lab = var-namedvar "__alttern"
+      val end_lab = var-namedvar "__endtern"
+      val (insts2, ty2) = compile-exp gctx frame arg2
+      val (insts3, _) = compile-exp gctx frame arg3
+    in
+      (insts1 @
+      (* Result in rethi *)
+       (JZ (rethi, alt_lab, tmp1, tmp2) :: nil) @
+       insts2 @
+       (LITERAL_ADDR (tmp1, end_lab) ::
+        LOADPROG (zero, tmp1) :: 
+        LABEL alt_lab :: nil) @
+       insts3 @
+       (LABEL end_lab :: nil),           
+       (* SUSP maybe check to see that ty2 and ty3 are the same? *)
+       ty2)
+    end
+  | compile-exp gctx frame (EPrim _) = raise Compile "invalid n-ary operator (n > 3)"
+
+  (* *********** ADDROF *********** *)
+
+  | compile-exp gctx frame (EAddrOf (EVar x)) =
+    let in
+      case lookup-var-or-field gctx frame x of
+        SOME (off, _, ty) => let in
+                           (COMMENT [AddrOf Var [x]]::
+                            ADD (rethi, SP, zero)::
+                            LITERAL (retlo, off)::
+                            ADD (retlo, FO, retlo)::
+                            nil,
+                            TPtr ty)
+                         end
+      | NONE => let val (lab, ty) = lookup-glob gctx x in
+                  (COMMENT [AddrOf Global [x] ([ty-tostring ty])]::
+                   ADD (rethi, zero, zero) ::
+                   LITERAL_ADDR (retlo, lab) ::
+                   nil,
+                   TPtr ty)
+                end
+    end
+  | compile-exp gctx frame (EAddrOf (EProj (e, f))) =
+    let
+      val (insts, off, fty) = compile-field gctx frame e f
+    in
+      (COMMENT [EAddrOf Proj]::
+       (* Address of struct in rethi/lo *)
+       insts @
+       (LITERAL (tmp2, off)::
+        ADD (retlo, retlo, tmp2)::
+        nil),
+       TPtr fty)
+    end
+  | compile-exp gctx frame (EAddrOf (EDeref e)) =
+    let val (insts, ty) = compile-exp gctx frame e
+    in
+      (COMMENT [AddrOf Deref]::
+       insts,
+       ty)
+    end
+  | compile-exp gctx frame (EAddrOf _) =
+    raise Compile "invalid AddrOf"
+
+  (* *********** DEREF *********** *)
+
+  | compile-exp gctx frame (EDeref e) =
+    let val (insts, ty) = compile-exp gctx frame e 
+        val ty = case ty of (_, APtr ty) => ty
+                          | _ => raise Compile "unexpected type in deref"
+    in
+      (insts @
+       (COMMENT [Deref]::
+        (case sizeof gctx ty of
+           1 => ASUB (rethi, rethi, retlo)::
+                nil
+         | 2 => ASUB (tmp1, rethi, retlo)::
+                ADD (retlo, retlo, one)::
+                ASUB (retlo, rethi, retlo)::
+                ADD (rethi, tmp1, zero)::
+                nil
+         | _ => raise Compile [unexpected size in dereference])),
+       ty)
+    end
+
+  (* *********** ASSIGN *********** *)
+
+  | compile-exp gctx frame (EAssign (dst, src)) = 
+    let
+      fun compile-src (EVar x) =
+          let in
+            case lookup-var-or-field gctx frame x of
+              SOME (off, sz, sty) =>
+              if sz <= 2 then 
+                compile-exp gctx frame (EVar x)
+              else (* just leave the address in rethi/lo *)
+                (ADD (rethi, zero, zero)::
+                 LITERAL (retlo, off)::
+                 ADD (retlo, FO, retlo)::
+                 nil,
+                 sty)
+            | NONE => 
+              let val (lab, ty) = lookup-glob gctx x in
+                if sizeof gctx ty <= 2 then
+                  compile-exp gctx frame (EVar x)
+                else (* just leave the address in rethi/lo *)
+                  (LITERAL_ADDR (retlo, lab) ::
+                   ADD (rethi, zero, zero)::
+                   nil,
+                   ty)
+              end
+          end
+        | compile-src e = compile-exp gctx frame e
+
+      val (sinsts, sty) = compile-src src
+
+      (* move a value of sz > 2 from (sptr, soff) to (dptr, doff); bashes
+         doff, soff, and tmp *)
+      fun move-value sz (dptr, doff) (sptr, soff) tmp =
+          let
+            fun copy-one i =
+                let in
+                  COMMENT [Move ([int-tostring i])]::
+                  SUB (tmp, sptr, soff)::
+                  UPD (dptr, doff, tmp)::
+                  ADD (soff, soff, one)::
+                  ADD (doff, doff, one)::
+                  nil            
+                end
+          in
+            list-concat (list-tabulate (sz, copy-one))
+          end
+
+      fun compile-dst (EVar x) =
+          let in
+            (* res in rethi/lo *)
+            COMMENT [Assign (dst)]::
+            (case lookup-var-or-field gctx frame x of
+               SOME (off, _, _) => 
+               let in
+                 LITERAL (tmp2, off)::
+                 ADD (tmp2, FO, tmp2)::
+                 COMMENT [Assign (copy)]::
+                 (case sizeof gctx sty of
+                    1 => UPD (SP, tmp2, rethi)::
+                         nil
+                  | 2 => UPD (SP, tmp2, rethi)::
+                         ADD (tmp2, tmp2, one)::
+                         UPD (SP, tmp2, retlo)::
+                         nil
+                  (* >2 case assumes rethi/lo is a pointer to src! *)
+                  | sz => LITERAL (tmp2, off)::
+                          ADD (tmp2, FO, tmp2)::
+                          (move-value sz (SP, tmp2) (rethi, retlo) tmp1))
+               end
+             | NONE => 
+               let val (lab, ty) = lookup-glob gctx x in
+                 COMMENT [Assign (copy)]::
+                 LITERAL_ADDR (tmp2, lab) ::
+                 (case sizeof gctx sty of
+                    1 => UPD (zero, tmp2, rethi)::
+                         nil
+                  | 2 => UPD (zero, tmp2, rethi)::
+                         ADD (tmp2, tmp2, one)::
+                         UPD (zero, tmp2, retlo)::
+                         nil
+                  | sz => move-value sz (zero, tmp2) (rethi, retlo) tmp1)
+               end)
+          end
+            
+        (* If the dst is not a var, then we will just compile it as normal,
+            but we need to save rethi/lo to stack first *)
+        | compile-dst dst = 
+          let val tmp = var-tostring (var-namedvar "__src")
+              val frame' = (sty, tmp)::frame
+              val (insts, _) = compile-exp gctx frame' (EAddrOf dst)
+          in
+            (save_result gctx frame' tmp) @
+            (COMMENT [Assign (dst)]::
+             insts) @
+            (* Load res back to tmp1/2 *)
+            (load_result gctx frame' tmp) @
+              (* rethi/lo is the destination *)
+            (COMMENT [Assign (copy)]::
+             (case sizeof gctx sty of
+                1 => UPD (rethi, retlo, tmp1)::
+                     nil
+              | 2 => UPD (rethi, retlo, tmp1)::
+                     ADD (retlo, retlo, one)::
+                     UPD (rethi, retlo, tmp2)::
+                     (* Copy the result into ret *)
+                     ADD (retlo, tmp2, zero)::
+                     nil
+              | sz => move-value sz (rethi, retlo) (tmp1, tmp2) tmp3)) @
+            (* Copy the (other half) of the result *)
+            (ADD (rethi, tmp1, zero)::
+             nil)
+          end
+
+    in
+      (COMMENT [Assign (src)]::
+       sinsts @
+       compile-dst dst,
+       sty)
+    end
+
+  (* *********** CALL *********** *)
+
+  | compile-exp gctx frame (ECall (f, args)) = 
+    let val ret_lab = var-namedvar "__ret"
+        val old_frame_size = frame-size gctx frame
+        val frame = (TInt, "__raddr")::frame
+        val (label, formal_args, ret) = lookup-fun gctx f
+        
+        fun mkdec (e, (ty, name)) =
+            let val x = var-tostring (var-namedvar name) in
+              DVar (ty, x, SOME e)
+            end
+        val (copy_args, _) = compile-stmtdecs gctx frame 
+                               (listpair-map mkdec (args, formal_args))
+                               handle UnequalLengths => raise Compile [wrong number of args at call to [f]]
+    in
+      ((* Copy args *)
+       copy_args @ (
+
+       (* Bump frame offset *)
+       LITERAL (tmp1, old_frame_size)::
+       ADD (FO, FO, tmp1)::
+
+       (* Save the return address *)
+       LITERAL_ADDR (tmp2, ret_lab)::
+       UPD (SP, FO, tmp2)::
+
+       (* Call *)
+       LITERAL_ADDR (tmp1, label)::
+       LOADPROG (zero, tmp1)::
+       LABEL ret_lab::
+
+       (* Restore frame offset *)
+       LITERAL (tmp1, old_frame_size)::
+       SUB (FO, FO, tmp1)::
+
+       (* rethi and retlo already have the right values *)
+       nil),
+       ret)
+
+    end
+
+  (* *********** CAST *********** *)
+
+  | compile-exp gctx frame (ECast (ty, e)) =
+    let val (insts, _) = compile-exp gctx frame e
+    in
+	(COMMENT [Cast]::insts, ty)
+    end
+
+  (* *********** SIZEOF *********** *)
+
+  | compile-exp gctx frame (ESizeOf ty) =
+    let in
+      (COMMENT [Sizeof]::
+       LITERAL_ANY (rethi, sizeof gctx ty, tmp1)::
+       nil,
+       TInt)
+    end
+
+  (* *********** ARRAY *********** *)
+
+  | compile-exp gctx frame (EArray (nil)) =
+    let in
+      (COMMENT [Array0]::
+       ALLOC (rethi, zero)::
+       ADD (retlo, zero, zero)::
+       nil,
+       TPtr TUnit)
+    end
+  (* XXX should statically allocate literal arrays *)
+  | compile-exp gctx frame (EArray (e::es)) =
+    let 
+      (* Compile the first expression to get the type *)
+      val (insts, ty) = compile-exp gctx frame e
+
+      val arr = var-tostring (var-namedvar "__arr")
+      val frame = (TInt, arr)::frame
+      val off = case lookup-var-or-field gctx frame arr
+                 of SOME (off, _, _) => off
+                 | NONE => raise Compile "internal: couldn't find array tmp var?"
+
+      val insts = COMMENT [ArrayN (first)]::
+                  insts @
+                  (COMMENT [ArrayN (alloc)]::
+                   (* Don't forget to add one for e! *)
+                   LITERAL (tmp2, (list-length es + 1) * sizeof gctx ty)::
+                   ALLOC (tmp1, tmp2)::
+                   (* Save the new array on the stack *)
+                   LITERAL (tmp2, off)::
+                   ADD (tmp2, FO, tmp2)::
+                   UPD (SP, tmp2, tmp1)::
+                   (* Update the first element *)
+                   UPD (tmp1, zero, rethi)::
+                   (case sizeof gctx ty of 
+                      1 => nil
+                    | 2 => UPD (tmp1, one, retlo)::
+                           nil
+                    | _ => raise Compile "array of struct unimplemented"))
+
+      fun compile-element (e, i) =
+          let val (insts, _) = compile-exp gctx frame e
+          in
+            insts @
+            (LITERAL (tmp1, off)::
+             ADD (tmp1, FO, tmp1)::
+             ASUB (tmp1, SP, tmp1)::
+             LITERAL (tmp2, (i + 1) * sizeof gctx ty)::
+             UPD (tmp1, tmp2, rethi)::
+             (case sizeof gctx ty of 
+                1 => nil
+              | 2 => ADD (tmp2, tmp2, one)::
+                     UPD (tmp1, tmp2, retlo)::
+                     nil
+              | _ => raise Compile "array of struct unimplemented"))
+          end
+
+      val insts' = list-concat (list-mapi compile-element es)
+    in
+      (insts @
+       insts' @
+       (COMMENT [ArrayN (return)]::
+        LITERAL (tmp2, off)::
+        ADD (tmp2, FO, tmp2)::
+        ASUB (rethi, SP, tmp2)::
+        ADD (retlo, zero, zero)::
+        nil),
+       TPtr ty)
+    end
+
+  (* *********** PROJ *********** *)
+
+  | compile-exp gctx frame (EProj (e, f)) =
+    let 
+      val (insts, off, fty) = compile-field gctx frame e f
+    in
+      (COMMENT [Proj]::
+       insts @
+       (* Address of structure in rethi/lo *)
+       LITERAL (tmp2, off)::
+       ADD (retlo, retlo, tmp2)::
+       (case sizeof gctx fty of
+          1 => ASUB (rethi, rethi, retlo)::
+                nil
+         | 2 => ASUB (tmp1, rethi, retlo)::
+                ADD (retlo, retlo, one)::
+                ASUB (retlo, rethi, retlo)::
+                ADD (rethi, tmp1, zero)::
+                nil
+         | _ => raise Compile [unexpected size in field selection]),
+       fty)
+    end
+
+and compile-topdec gctx (DFun (ret, f, args, body)) = 
+    let val label = var-namedvar f
+        val gctx = (f, SFun (label, args, ret))::gctx
+        val frame = list-rev ((TInt, "__raddr")::args)
+    in
+      (nil,
+       nil,
+       (label,
+        (compile-stmt gctx frame (NONE, NONE) body) @
+        (* PERF code size: this isn't necessary if all code paths return *)
+        COMMENT "Implicit return"::
+        ASUB (tmp1, SP, FO)::
+        LOADPROG (zero, tmp1)::
+        nil)::nil,
+       gctx)
+    end
+  | compile-topdec gctx (DVar (ty, x, e)) =
+    let val label = var-namedvar x
+        (* SUSP this makes bindings recursive *)
+        val gctx = (x, SGlob (label, ty))::gctx
+        val insts = case e of
+                      NONE => nil
+                    | SOME e => #1/2 (compile-exp gctx nil (EAssign (EVar x, e)))
+
+    in
+      (LABEL label::
+       list-tabulate (sizeof gctx ty, fn _ => BSSDATA),
+       insts,
+       nil,
+       gctx)
+    end
+  | compile-topdec gctx (DStruct (s, fields)) = 
+    (nil, nil, nil, (s, SStruct fields)::gctx)
+
+and compile-topdecs gctx nil = (nil, nil, nil, gctx)
+  | compile-topdecs gctx (dec::decs) = 
+    let val (data1, insts1, block, gctx) = compile-topdec gctx dec
+        val (data2, insts2, blocks, gctx) = compile-topdecs gctx decs
+    in
+      (data1 @ data2, insts1 @ insts2, 
+       block @ blocks, gctx)
+    end
+
+and compile-stmtdec gctx frame (DVar (ty, x, e)) =
+    (* SUSP this makes bindings recursive *)
+    let val frame' = (ty, x)::frame
+        val insts = case e of
+                      NONE => nil
+                    | SOME e => #1/2 (compile-exp gctx frame' (EAssign (EVar x, e)))
+    in
+      (insts, frame')
+    end
+  | compile-stmtdec _ _ _ = raise Compile "invalid stmt dec"
+
+and compile-stmtdecs gctx frame nil = (nil, frame)
+  | compile-stmtdecs gctx frame (dec::decs) = 
+    let val (block, frame) = compile-stmtdec gctx frame dec
+        val (blocks, frame) = compile-stmtdecs gctx frame decs
+    in
+      (block @ blocks, frame)
+    end
+
+and compile-stmt gctx frame labs (SExp e) =
+    #1/2 (compile-exp gctx frame e)
+
+  | compile-stmt gctx frame labs (SBlock (decs, stmts)) =
+    let val (block, frame) = compile-stmtdecs gctx frame decs
+        fun compile-stmts nil = nil
+          | compile-stmts (stmt::stmts) =
+            (compile-stmt gctx frame labs stmt) @
+            (compile-stmts stmts)
+        val block' = compile-stmts stmts
+    in
+      block @ block'
+    end
+
+  | compile-stmt gctx frame labs (SReturn eo) =
+    let val insts = case eo of
+	              SOME e => (#1/2 (compile-exp gctx frame e))
+		    | NONE => nil 
+    in
+	insts @	
+        (ASUB (tmp1, SP, FO)::
+	 LOADPROG (zero, tmp1)::
+	 nil)
+    end
+
+  | compile-stmt gctx frame labs (SLoop (init, cond, step, body)) =
+    let val lenter = var-namedvar "__loopstart"
+        val lexit = var-namedvar "__loopexit"
+        val lnext = var-namedvar "__loopnext"
+    in
+      (#1/2 (compile-exp gctx frame init)) @
+      (LABEL lenter :: nil) @
+      (#1/2 (compile-exp gctx frame cond)) @
+      (* Result of conditional is in rethi *)
+      (JZ (rethi, lexit, tmp1, tmp2) :: nil ) @
+      (compile-stmt gctx frame (SOME lexit, SOME lnext) body) @
+      (LABEL lnext :: nil) @
+      (#1/2 (compile-exp gctx frame step)) @
+      (* Jump back to start *)
+      (LITERAL_ADDR (tmp1, lenter) ::
+       LOADPROG (zero, tmp1) ::
+       nil) @
+      (LABEL lexit :: nil)
+    end
+
+  | compile-stmt _ _  (br_lab, _) (SBreak) =
+    let val lab = case br_lab of SOME l => l
+                               | NONE => raise Compile "break without destination"
+    in
+      COMMENT [Break ([var-tostring lab])]::
+      LITERAL_ADDR (tmp1, lab) ::
+      LOADPROG (zero, tmp1) ::
+      nil
+    end
+
+  | compile-stmt _ _  (_, cn_lab) (SContinue) =
+    let val lab = case cn_lab of SOME l => l
+                               | NONE => raise Compile "continue without destination"
+    in
+      COMMENT [Continue ([var-tostring lab])]::
+      LITERAL_ADDR (tmp1, lab) ::
+      LOADPROG (zero, tmp1) ::
+      nil
+    end
+
+  | compile-stmt gctx frame (_, cn_lab) (SSwitch (e, css)) =
+    let 
+      val (insts, _) = compile-exp gctx frame e
+      val table_lab = var-namedvar "__jumptable"
+      val exit_lab = var-namedvar "__sexit"
+
+      fun compile-case ((NONE, s), (NONE, ilabs, instss)) = 
+                    let val def_lab = var-namedvar "__default" 
+                        val def_insts = LABEL def_lab ::
+                                        compile-stmt gctx frame (SOME exit_lab, cn_lab) s
+                    in
+                      (SOME def_lab, ilabs, def_insts :: instss)
+                    end
+        | compile-case ((NONE, _), (SOME _, _, _)) = raise Compile "multiple default cases?"
+        | compile-case ((SOME i, s), (def_lab, ilabs, instss)) =
+                    let val lab = var-namedvar [__case_[int-tostring i]]
+                        val insts = LABEL lab ::
+                                    compile-stmt gctx frame (SOME exit_lab, cn_lab) s
+                    in
+                      (def_lab, (i, lab) :: ilabs, insts :: instss)
+                    end  
+
+      val (def_lab, ilabs, instss) = list-foldl compile-case (NONE, nil, nil) (list-rev css)
+      val def_lab = case def_lab of SOME def_lab => def_lab
+                                  | NONE => exit_lab
+      val m = list-foldl (fn ((NONE, _), m) => m
+                           | ((SOME i, _), m) => 
+                             if i < 0 then raise Compile "negative cases unsupported"
+                             else if i > m then i else m) 
+                         0 css
+      do if m > 100 then print "Warning: generating large jump table\n" else ()
+      val table = list-tabulate (m + 1, fn n => case list-find (fn (i, _) => i = n) ilabs
+                                                 of SOME (_, lab) => DATALAB lab
+                                                  | NONE => DATALAB def_lab)
+    in
+      COMMENT [Switch] ::
+      insts @
+      (* scrutinee in rethi *)
+      (LITERAL_ADDR (tmp1, table_lab) ::
+       ADD (rethi, tmp1, rethi) ::
+       ASUB (rethi, zero, rethi) ::
+       LOADPROG (zero, rethi) ::
+       LABEL table_lab ::
+       nil ) @
+      table @
+      (list-concat instss) @
+      (LABEL exit_lab ::
+       nil)
+    end
+
+  | compile-stmt gctx frame labs (SLabel l) = 
+    let 
+      val v = var-rawvar l
+    in
+      COMMENT [User Label [l]] ::
+      LABEL v ::
+      nil
+    end
+  | compile-stmt gctx frame labs (SGoto l) = 
+    let 
+      val v = var-rawvar l
+    in
+      COMMENT [Goto [l]] ::
+      LITERAL_ADDR (tmp1, v) ::
+      LOADPROG (zero, tmp1) ::
+      nil
+    end
+
+  | compile-stmt gctx frame labs (SIf (e, st, sf)) =
+    let val (insts, _) = compile-exp gctx frame e
+	val true_insts = compile-stmt gctx frame labs st
+	val false_lab = var-namedvar "__iffalse"
+	val false_insts = compile-stmt gctx frame labs sf
+	val end_lab = var-namedvar "__ifend"
+    in
+      COMMENT [If (test)]::
+      insts @
+      (JZ (rethi, false_lab, tmp1, tmp2)::
+
+       COMMENT [If (true)]::
+       true_insts) @
+      (LITERAL_ADDR (tmp1, end_lab)::
+       LOADPROG (zero, tmp1)::
+       
+       COMMENT [If (False)]::
+       LABEL false_lab::
+       false_insts) @
+      
+      (LABEL end_lab::
+       nil)
+    end
+
+  | compile-stmt _ _ _ (SAsm inst) = inst::nil
+
+fun compile-prog decs = 
+    let val (data, init, blocks, gctx) = compile-topdecs nil decs
+        val exit = var-namedvar "__exit"
+        val stack = var-namedvar "__stack"
+        val (main_lab, _, _) = lookup-fun gctx "main"
+    in
+      (* Set the initial frame offset *)
+      (LITERAL_ADDR (FO, stack)::
+
+       (* Set default value *)
+       LITERAL (one, 1)::
+
+       (* Run any initialization code.
+          N.B. this must come after the stack is initialized, since this code
+          will use the stack for any temporary values. *)
+       init @
+
+       (* Set return address *)
+       (LITERAL_ADDR (tmp1, exit)::
+        UPD (SP, FO, tmp1)::
+
+        (* Tail call *)
+        LITERAL_ADDR (tmp1, main_lab)::
+        LOADPROG (zero, tmp1)::
+        
+        (* Halt when main returns *)
+        LABEL exit::
+        HALT::
+        
+        (* The stack! *)
+        LABEL stack::
+        (list-tabulate (STACK_SIZE, (fn _ => BSSDATA))) @
+
+        (* Stick the static data here: *)
+        data),
+       (* the rest of the code *)
+       blocks)
+    end
+

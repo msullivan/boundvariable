@@ -1,0 +1,56 @@
+{ obvious first try }
+
+Add Z y => y;
+Add (S x) y => S (Add x y);
+
+Mult Z y => Z;
+Mult (S x) y => (Add y (Mult x y));
+
+Fact Z => (S Z);
+Fact (S x) => Mult (S x) (Fact x);
+
+{
+
+----------------------------------------------------------------------
+
+Initial Term:	Fact (S (S Z))
+Applying advice...
+		-> ((Mult (S (S Z))) (Fact (S Z)))
+		-> ((Add (Fact (S Z))) ((Mult (S Z)) (Fact (S Z))))
+		-> ((Add (Fact (S Z))) ((Add (Fact (S Z))) ((Mult Z) (Fact (S Z)))))
+		-> ((Add (Fact (S Z))) ((Add (Fact (S Z))) Z))
+Final Term:	((Add (Fact (S Z))) ((Add (Fact (S Z))) Z))
+Total Steps:	4
+
+INCORRECT!
+Expected:	UNSPECIFIED
+
+----------------------------------------------------------------------
+
+----------------------------------------------------------------------
+
+Initial Term:	Fact (S (S (S Z)))
+Applying advice...
+		-> ((Mult (S (S (S Z)))) (Fact (S (S Z))))
+		-> ((Add (Fact (S (S Z)))) ((Mult (S (S Z))) (Fact (S (S Z)))))
+		-> ((Add (Fact (S (S Z)))) ((Add (Fact (S (S Z)))) ((Mult (S Z)) (Fact (S (S Z))))))
+		-> ((Add (Fact (S (S Z)))) ((Add (Fact (S (S Z)))) ((Add (Fact (S (S Z)))) ((Mult Z) (Fact (S (S Z)))))))
+		-> ((Add (Fact (S (S Z)))) ((Add (Fact (S (S Z)))) ((Add (Fact (S (S Z)))) Z)))
+		-> ((Add ((Mult (S (S Z))) (Fact (S Z)))) ((Add (Fact (S (S Z)))) ((Add (Fact (S (S Z)))) Z)))
+		-> ((Add ((Add (Fact (S Z))) ((Mult (S Z)) (Fact (S Z))))) ((Add (Fact (S (S Z)))) ((Add (Fact (S (S Z)))) Z)))
+		-> ((Add ((Add (Fact (S Z))) ((Add (Fact (S Z))) ((Mult Z) (Fact (S Z)))))) ((Add (Fact (S (S Z)))) ((Add (Fact (S (S Z)))) Z)))
+		-> ((Add ((Add (Fact (S Z))) ((Add (Fact (S Z))) Z))) ((Add (Fact (S (S Z)))) ((Add (Fact (S (S Z)))) Z)))
+Final Term:	((Add ((Add (Fact (S Z))) ((Add (Fact (S Z))) Z))) ((Add (Fact (S (S Z)))) ((Add (Fact (S (S Z)))) Z)))
+Total Steps:	9
+
+INCORRECT!
+Expected:	UNSPECIFIED
+
+----------------------------------------------------------------------
+
+}
+
+{ get rid of the top-level }
+Compute x => x;
+
+. { end of rules }

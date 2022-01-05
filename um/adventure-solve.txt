@@ -1,0 +1,47 @@
+look
+go south
+get donut
+get the donut
+take donut
+look at donut
+eat donut
+north
+go north
+give donut to man
+give the donut to the man
+go west
+go north
+give donut to cop
+bribe cop with donut
+give the donut to the cop
+give donut to the cop
+give the donut to cop
+talk cop
+talk to cop
+look at cop
+give donut
+give donut to cop
+bribe cop
+hand donut to cop
+drop donut
+get handcuffs
+take the handcuffs
+take handcuffs
+look handcuffs
+south
+go south
+go east
+use handcuffs
+drop handcuffs
+look
+get handcuffs
+take handcuffs
+look at man
+use handcuffs
+use handcuffs on man
+handcuff man
+look
+look scroll
+get scroll
+take scroll
+look at scroll

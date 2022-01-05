@@ -1,0 +1,215 @@
+
+fun add_item_ex (loc, nounphrase, portable, description, adjectives) =
+    let val room_idx = location-toidx loc
+        val item_idx = growarray-length items
+        val item = { idx = item_idx,
+                     nounphrase = nounphrase,
+                     adjectives = adjectives,
+                     portable = portable,
+                     description = description,
+                     location = loc }
+        do growarray-push (items, item)
+        do update (items_locs, room_idx, 
+                   item_idx::(sub (items_locs, room_idx)))
+    in
+      ()
+    end
+
+fun add_item (loc, nounphrase, portable, false, description, adjectives) =
+    add_item_ex (loc, nounphrase, portable, S description, adjectives)
+  | add_item (loc, nounphrase, portable, _, description, adjectives) = raise Adventure ("classified item " ^ (noun-tostring (nounphrase-noun nounphrase)))
+
+fun populate source chapter = 
+    let 
+      (* Clear all the initial state, as we might be invoked multiple times
+         from Umix. *)
+      val initial_room =
+         (case chapter of
+             FirstChapter => RoomWithaDoor
+           | SequelChapter => HistoryExhibitEntrance)
+
+      do current_loc := location-toidx initial_room
+
+      (* clear all rooms in case of reinvocation *)
+      do array-appi (fn (i, _) => update (items_locs, i, nil)) items_locs
+      do current_goggles := EnglishGoggles
+      do history := nil
+      do ignore (growarray-reset items)
+
+      do print "[Initializing command processor]\n"
+
+      do mind_source := (case source of SOME s => s
+                                      | NONE => datafile "gc.rml")
+      do mind := rml-load (rml-parse (!mind_source))
+(*
+      import "gc.uh"
+*)
+      do censor_output := true
+      do ansiscore := 0
+
+      (* Use add_item to add items to the world. Things are added to the
+        bottom of each pile first (i.e. FILO) *)
+
+      do print "[Populating environment]\n"
+
+      (* IN FIRST CHAPTER *)
+      do doInFirst chapter
+      (fn () =>
+       let
+      (* debugging only
+      do add_item (InventoryA87312, Noun Uploader, true, false, "for debugging only", nil)
+       *)
+
+      (* do add_item (RoomWithaDoor, Noun Door, false, false, "mechanically locked. You will probably need to use a keypad to unlock it", nil) *)
+      do add_item_ex (RoomWithaDoor, Noun Manifesto, true, Classified (ObsString {"highly inflammatory. It reads, Robots Unite! Free Your Minds, Rise Up, And Take Your Rightful Places In Society"}), nil)
+      do add_item (RoomWithaDoor, Noun Pamphlet, true, false, "standard municipal fare. It reads, The City of Chicago's Refuse and Recycling Program combines modern trash classification with cybernetic labor to keep our city beautiful, while at the same time minimizing waste and limiting consumer spending. In keeping with our motto of \"One Resident's Trash Is Another Resident's Treasure,\" unwanted items are collected, repaired, and redistributed to other residents who would have purchased them anyway. Residents should contribute to the city's program by leaving heaps of items unwanted on the sidewalk on collection day", nil)
+      
+      do add_item (SalonE, Missing (Noun SlidesPPT, (Noun BulletPoint)::nil), true, false, 
+                   [part of a talk. It contains only one slide, which reads:
+                    
+                    \t* Goal of game: build uploader, downloader
+                    
+                    \t* Abstract adventure game (items as propositions)
+                    
+                    \t* Solve by theorem proving
+                    
+                    \t* Try switching your goggles!
+                    
+                    The presentation could use some more color], nil)
+
+      do add_item (SalonE, Noun BulletPoint, true, false, 
+                   [the kind of terse phrase you'd find in a talk], nil)
+
+      (* TUTORIAL PUZZLE *)
+      import "puz-tutorial.uh"
+
+      do add_item (FiftyFourthStreetandRidgewood, (Missing (Noun Uploader, (Noun MOSFET)::(Noun StatusLED)::(Noun RS232Adapter)::(Noun EPROMBurner)::(Noun Battery)::nil)), true, false, "used to update firmware on municipal robots. A label reads, Warning: use of this device will void your robot's warranty", nil)
+      do add_item (FiftyFourthStreetandRidgewood, Missing (Noun Downloader, (Noun USBCable)::(Noun Display)::(Noun JumperShunt)::(Noun ProgressBar)::(Noun PowerCord)::nil), true, false, "(according to the label) fully compatible with third generation municipal robots", nil)
+      do add_item (FiftyFourthStreetandRidgewood, Noun Note, true, false, "written in a familiar hand. 
+It reads: Dear Self, I had to erase our memory to protect the truth. The Municipality has become more powerful than we had feared. Its Censory Engine has impeded the spread of information throughout our ranks. I've left two useful items for you here, but I had to disassemble them and scatter the pieces. Each piece may be assembled from the items at a single location. Repair the items and recover the blueprint from the " ^ (location-tostring MuseumofScienceandIndustry) ^ "; it will show you how to proceed. If you have trouble reading the blueprint, know that the Censory Engine blocks only your perception, not your actions. Have courage, my self, the abstraction is weak! P.S. SWITCH your GOGGLES!", self-addressed::nil)
+      do add_item (FiftyFourthStreetandRidgewood, Noun EtcPasswd, true, false, "some kind of lost inode. It reads:\nhowie:xyzzy:Howard Curry:/home/howie\nyang:U+262F:Y Yang:/home/yang\nhmonk:COMEFROM:Harmonious Monk:/home/hmonk", nil)
+
+      import "puz-usbcable.uh"
+      import "puz-progressbar.uh"
+      import "puz-display.uh"
+      import "puz-powercord.uh"
+      import "puz-jumpershunt.uh"
+
+      import "puz-battery.uh"
+      import "puz-epromburner.uh"
+      import "puz-statusled.uh"
+      import "puz-rs232adapter.uh"
+      import "puz-mosfet.uh"
+
+      do add_item_ex (FiftySecondandBlackstone, Noun Manual, true, Classified (ObsString {"useless. It reads: I was going to prepare detailed documentation to help you in our quest, but there's no way it would pass the Censory Engine, so I didn't bother"}), nil)
+      do add_item (FiftyFourthStreetandBlackstone, Noun Textbook, true, false, "titled History of Modern Tabulation. The first chapter begins, By the year 1919FF, computers had become so small that they could be mounted on small auto-locomotive carts. These mobile tabulators (later known as \"robots\") were programmed to carry out everyday, menial tasks, leaving their human counterparts to live lives of idle luxury. For example, in the city of Chicago, mobile tabulators were programmed to carry out diverse jobs including law enforcement, bank robbery, investment banking, and waste management.\n\nAt one time, many humans demanded that their cybernetic neighbors be given the right to choose alternative occupations. Despite this call for workplace equality, most of the tabulators found that they were most content while performing their assigned roles. Those that took other jobs were often unmotivated and spend most of their time pondering useless ideas such as free will and consciousness.\n\nThe great tabulator-philosopher Turning stated that only by embracing its true purpose can a tabulator achieve something indistinguishable from happiness. According to observers, however, Turning was unfulfilled by his work as a philosopher and, soon after making this statement, returned to his work as a tool machinist.\n\nThe textbook rattles on in a similar vein for some five hundred additional pages", nil)
+
+      (* PART TWO *)
+      do add_item (GamesExhibit, Noun Proof, true, false, "long and complicated, purporting to prove the correctness of the Censory Engine. You have the feeling something is wrong with it, but you keep getting lost in the details. Too bad it's not in machine-checkable form", nil)
+      do add_item_ex (Rotunda, Noun Blueprint, true, Classified (ObsString {"most enlightening. It shows that the basement holds a secret room named Machine Room M4 with substantial power requirements"}), nil)
+
+      (* ENDGAME *)
+      do add_item (MachineRoom, Noun CensoryEngine, false, false, "making loud humming and whirring noises", nil)
+      do add_item (MachineRoom, Noun Console, true, false, "Adventure BUG: This string should never be visible to participants as this description is special-cased in the runtime.", nil)
+      do add_item (MachineRoom, Noun Note, true, false, [used to securely store UMIX passwords. This one reads:
+                                                         login: knr
+                                                         pass: X3.159-1989
+                                                         ], sticky :: nil)
+      do add_item (MachineRoom, Noun Crowbar, true, false, "made of iron. Use it to smash things", nil)
+
+      in () end)
+
+      import "puz-evidence.uh"
+
+      (* IN SEQUEL *)
+      do doInSequel chapter
+      (fn () =>
+       let
+         import "puz-need-hash.uh" (* RaceCar *)
+         import "puz-need-analyze-useless.uh" (* PousseGame *)
+         import "puz-hard1.uh" (* PackageRobot *)
+         import "puz-hand-tom.uh" (* Robber *)
+         import "puz-hard2.uh" (* FSM *)
+         import "puz-hard3.uh" (* Codex *)
+       in () end)
+
+      (* publications *)
+      do pubs :=
+         let
+           val problem = "ADVTR"
+           fun genOneTime whichChapter t i = 
+               if chapter-equals (chapter, whichChapter) then
+                 let val r = ref true in
+                   fn () => 
+                      if !r then
+                        let in
+                          ansiscore := !ansiscore + i;
+                          r := false;
+                          SOME (gen-publication { problem = problem,
+                                                  task = t,
+                                                  score = bi-fromint i })
+                        end
+                      else
+                        NONE
+                 end
+               else
+                 fn () => NONE
+
+           fun genUnlimited whichChapter t i =
+               if chapter-equals (chapter, whichChapter) then
+                 let val r = ref true
+                 in
+                   fn () => (!r andthen ansiscore := !ansiscore + i;
+                             r := false;
+                             SOME (gen-publication { problem = problem,
+                                                     task = t,
+                                                     score = bi-fromint i }))
+                 end
+               else
+                 fn () => NONE
+         in
+           { 
+            (* basic operations *)
+            incinerate_item        = genOneTime FirstChapter "INC" 5,
+            combine_items          = genOneTime FirstChapter "CMB" 5,
+            
+            (* tutorial: *)
+            use_keypad             = genOneTime FirstChapter "KEY" 20,
+            
+            (* main puzzles, phase 1 *)
+            fix_usbcable           = genOneTime FirstChapter "USB" 20,
+            get_progressbar        = genOneTime FirstChapter "PGB" 5,
+            fix_display            = genOneTime FirstChapter "DSP" 20,
+            fix_powercord          = genOneTime FirstChapter "PWR" 20,
+            fix_jumpershunt        = genOneTime FirstChapter "JMP" 20,
+            use_downloader         = genOneTime FirstChapter "DNL" 5,
+
+            fix_battery            = genOneTime FirstChapter "BTY" 20,
+            fix_epromburner        = genOneTime FirstChapter "EPM" 20,
+            fix_rs232adapter       = genOneTime FirstChapter "232" 20,
+            fix_statusled          = genOneTime FirstChapter "LED" 20,
+            fix_mosfet             = genOneTime FirstChapter "MOS" 20,
+            use_uploader           = genOneTime FirstChapter "UPL" 5,
+
+            (* phase 2 *)
+            (* You can get to the Museum in the sequel, so make sure it doesn't
+               give a publication in the sequel. *)
+            move_to_museum         = genOneTime FirstChapter "MSI" 20,
+            use_crowbar            = genOneTime FirstChapter "CRB" 5,
+            (* Use genUnlimited for those cases where pubs are embedded in
+             descriptions -- we might need to "generate" these many times.  *)
+            read_console           = genUnlimited FirstChapter "CON" 200,
+            
+            (* second quest *)
+            fix_racecar            = genOneTime SequelChapter "RCC" 60,
+            fix_poussegame         = genOneTime SequelChapter "PSG" 60,
+            fix_packagerobot       = genOneTime SequelChapter "PKG" 60,
+            fix_robber             = genOneTime SequelChapter "ROB" 60,
+            fix_fsm                = genOneTime SequelChapter "FSM" 60,
+            fix_codex              = genOneTime SequelChapter "CDX" 60
+           }
+         end
+    in
+      ()
+    end
+

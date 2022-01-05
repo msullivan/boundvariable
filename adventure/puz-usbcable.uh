@@ -1,0 +1,126 @@
+(* Items 42 - 59 *)
+do add_item_ex(FiftyFourthStreetandDorchester, Noun B-5065-YLQ, true, Exemplary, dim-gray::nil)
+do add_item_ex(FiftyFourthStreetandDorchester, Noun J-9247-IRG, true, Exemplary, slate-gray::nil)
+do add_item_ex(FiftyFourthStreetandDorchester, Noun N-4832-NUN, true, Exemplary, sienna::nil)
+do add_item(FiftyFourthStreetandDorchester, Missing (Missing (Missing (Noun USBCable, (Missing (Noun T-9887-OFC, (Noun X-6458-TIJ)::nil))::nil), (Noun F-6678-DOX)::nil), (Noun N-4832-NUN)::nil), true, false, "compatible with all high-speed Universal Sand Bus 2.0 devices", nil)
+do add_item_ex(FiftyFourthStreetandDorchester, Noun R-1403-SXU, true, Exemplary, pale-green::nil)
+do add_item_ex(FiftyFourthStreetandDorchester, Missing (Missing (Noun F-6678-DOX, (Noun J-9247-IRG)::nil), (Noun V-0010-XBD)::nil), true, Exemplary, shiny::nil)
+do add_item_ex(FiftyFourthStreetandDorchester, Noun H-9887-MKY, true, Exemplary, yellow-green::nil)
+do add_item_ex(FiftyFourthStreetandDorchester, Missing (Missing (Noun Z-1623-CEK, (Noun D-4292-HHR)::nil), (Noun L-6458-RNH)::nil), true, Exemplary, indigo::nil)
+do add_item_ex(FiftyFourthStreetandDorchester, Missing (Missing (Noun T-9887-OFC, (Noun X-6458-TIJ)::nil), (Noun H-9887-MKY)::nil), true, Exemplary, eggplant::nil)
+do add_item_ex(FiftyFourthStreetandDorchester, Missing (Noun L-6458-RNH, (Missing (Noun P-5065-WQO, (Noun T-6678-BTV)::nil))::nil), true, Exemplary, gray40::nil)
+do add_item_ex(FiftyFourthStreetandDorchester, Noun B-4832-LAL, true, Exemplary, taupe::nil)
+do add_item_ex(FiftyFourthStreetandDorchester, Missing (Missing (Missing (Noun P-5065-WQO, (Noun T-6678-BTV)::nil), (Noun B-4832-LAL)::nil), (Noun F-1403-QDS)::nil), true, Exemplary, heavy::nil)
+do add_item_ex(FiftyFourthStreetandDorchester, Noun F-1403-QDS, true, Exemplary, pumpkin::nil)
+do add_item_ex(FiftyFourthStreetandDorchester, Missing (Noun V-0010-XBD, (Noun X-9247-GWE)::nil), true, Exemplary, magenta::nil)
+do add_item_ex(FiftyFourthStreetandDorchester, Noun X-9247-GWE, true, Exemplary, orange-red::nil)
+
+(*
+  val missing_percent_chance = ?
+  val max_missing = 1
+  val lambda_percent_chance = 0
+  val duplicate_percent_chance = 0
+  val reuse_prop = 0
+
+val (pf, (goal, pile)) = Generator.generate 42 (ref (0wxDEADBEEF, 0wxFEED831)) 25 4 (nil, (nil, (Noun "USBCable", nil)::nil, Noun "USBCable"));
+val pf =
+  [Pickup (Noun (Part(57)),["orange-red"]),
+   Pickup (Missing (Noun (Part(50)),[Noun (Part(57))]),["magenta"]),
+   Pickup (Noun (Part(59)),["pumpkin"]),
+   Pickup
+     (Missing
+        (Missing
+           (Missing (Noun (Part(55)),[Noun (Part(56))]),[Noun (Part(58))]),
+         [Noun (Part(59))]),["heavy"]),
+   Combine
+     ((Missing
+         (Missing
+            (Missing (Noun (Part(55)),[Noun (Part(56))]),[Noun (Part(58))]),
+          [Noun (Part(59))]),["heavy"]),(Noun (Part(59)),["pumpkin"])),
+   Pickup (Noun (Part(58)),["taupe"]),
+   Combine
+     ((Missing (Missing (Noun (Part(55)),[Noun (Part(56))]),[Noun (Part(58))]),
+       ["heavy"]),(Noun (Part(58)),["taupe"])),
+   Pickup
+     (Missing (Noun (Part(54)),[Missing (Noun (Part(55)),[Noun (Part(56))])]),
+      ["gray40"]),
+   Combine
+     ((Missing (Noun (Part(50)),[Noun (Part(57))]),["magenta"]),
+      (Noun (Part(57)),["orange-red"])),
+   Combine
+     ((Missing (Noun (Part(54)),[Missing (Noun (Part(55)),[Noun (Part(56))])]),
+       ["gray40"]),(Missing (Noun (Part(55)),[Noun (Part(56))]),["heavy"])),
+   Pickup
+     (Missing (Missing (Noun (Part(43)),[Noun (Part(44))]),[Noun (Part(53))]),
+      ["eggplant"]),
+   Pickup
+     (Missing (Missing (Noun (Part(51)),[Noun (Part(52))]),[Noun (Part(54))]),
+      ["indigo"]),
+   Combine
+     ((Missing (Missing (Noun (Part(51)),[Noun (Part(52))]),[Noun (Part(54))]),
+       ["indigo"]),(Noun (Part(54)),["gray40"])),
+   Pickup (Noun (Part(53)),["yellow-green"]),
+   Combine
+     ((Missing (Missing (Noun (Part(43)),[Noun (Part(44))]),[Noun (Part(53))]),
+       ["eggplant"]),(Noun (Part(53)),["yellow-green"])),
+   Pickup
+     (Missing (Missing (Noun (Part(46)),[Noun (Part(47))]),[Noun (Part(50))]),
+      ["shiny"]),
+   Incinerate (Missing (Noun (Part(51)),[Noun (Part(52))]),["indigo"]),
+   Combine
+     ((Missing (Missing (Noun (Part(46)),[Noun (Part(47))]),[Noun (Part(50))]),
+       ["shiny"]),(Noun (Part(50)),["magenta"])),
+   Pickup (Noun (Part(49)),["pale-green"]),
+   Pickup
+     (Missing
+        (Missing
+           (Missing
+              (Noun "USBCable",[Missing (Noun (Part(43)),[Noun (Part(44))])]),
+            [Noun (Part(46))]),[Noun (Part(48))]),[]),
+   Incinerate (Noun (Part(49)),["pale-green"]),
+   Pickup (Noun (Part(48)),["sienna"]),
+   Combine
+     ((Missing
+         (Missing
+            (Missing
+               (Noun "USBCable",[Missing (Noun (Part(43)),[Noun (Part(44))])]),
+             [Noun (Part(46))]),[Noun (Part(48))]),[]),
+      (Noun (Part(48)),["sienna"])),Pickup (Noun (Part(47)),["slate-gray"]),
+   Combine
+     ((Missing (Noun (Part(46)),[Noun (Part(47))]),["shiny"]),
+      (Noun (Part(47)),["slate-gray"])),
+   Combine
+     ((Missing
+         (Missing
+            (Noun "USBCable",[Missing (Noun (Part(43)),[Noun (Part(44))])]),
+          [Noun (Part(46))]),[]),(Noun (Part(46)),["shiny"])),
+   Pickup (Noun (Part(45)),["dim-gray"]),
+   Incinerate (Noun (Part(45)),["dim-gray"]),
+   Combine
+     ((Missing (Noun "USBCable",[Missing (Noun (Part(43)),[Noun (Part(44))])]),
+       []),(Missing (Noun (Part(43)),[Noun (Part(44))]),["eggplant"]))]
+  : (prop * string list) step list
+val goal = Noun "USBCable" : prop
+val pile =
+  [(Noun (Part(57)),["orange-red"]),
+   (Missing (Noun (Part(50)),[Noun (Part(57))]),["magenta"]),
+   (Noun (Part(59)),["pumpkin"]),
+   (Missing
+      (Missing (Missing (Noun (Part(55)),[Noun (Part(56))]),[Noun (Part(58))]),
+       [Noun (Part(59))]),["heavy"]),(Noun (Part(58)),["taupe"]),
+   (Missing (Noun (Part(54)),[Missing (Noun (Part(55)),[Noun (Part(56))])]),
+    ["gray40"]),
+   (Missing (Missing (Noun (Part(43)),[Noun (Part(44))]),[Noun (Part(53))]),
+    ["eggplant"]),
+   (Missing (Missing (Noun (Part(51)),[Noun (Part(52))]),[Noun (Part(54))]),
+    ["indigo"]),(Noun (Part(53)),["yellow-green"]),
+   (Missing (Missing (Noun (Part(46)),[Noun (Part(47))]),[Noun (Part(50))]),
+    ["shiny"]),(Noun (Part(49)),["pale-green"]),
+   (Missing
+      (Missing
+         (Missing
+            (Noun "USBCable",[Missing (Noun (Part(43)),[Noun (Part(44))])]),
+          [Noun (Part(46))]),[Noun (Part(48))]),[]),
+   (Noun (Part(48)),["sienna"]),(Noun (Part(47)),["slate-gray"]),
+   (Noun (Part(45)),["dim-gray"])] : (prop * string list) list
+- *)

@@ -1,0 +1,22 @@
+
+{ slowest test for depth=3, maxInt=5  }
+Compute (Mult (Mult (S (S (S (S Z)))) (S (S (S (S Z))))) (Mult (S (S (S (S Z)))) (S (S (S (S Z)))))) -> UNSPECIFIED; 
+
+{ slowest test for depth=3, maxInt=6}
+Compute (Mult (Mult (S (S (S (S (S Z))))) (S (S (S (S (S Z))))))
+	      (Mult (S (S (S (S (S Z))))) (S (S (S (S (S Z)))))))
+-> UNSPECIFIED;
+
+
+Compute (Mult (Mult Z (S Z)) (Mult Z (S Z))) -> Z;
+
+Compute (Fact Z) -> UNSPECIFIED;  
+Compute (Fact (S Z)) -> UNSPECIFIED;  
+Compute (Fact (S (S Z))) -> UNSPECIFIED;  
+Compute (Fact (S (S (S Z)))) -> UNSPECIFIED; 
+Compute (Fact (S (S (S (S Z))))) -> UNSPECIFIED; 
+Compute (Fact (S (S (S (S (S Z)))))) -> UNSPECIFIED; 
+
+Compute (Mult (Add (Mult (S Z) (S (S (S Z)))) (Mult (S (S Z)) (S (S Z)))) (Mult (Mult Z (S (S (S Z)))) (Mult Z (S (S (S Z)))))) -> Z;
+
+. { end of tests }

@@ -1,0 +1,19 @@
+word size: 8
+memory: 256 array (initialized to powers of 2 in first 8 cells then zeroes, or initialized to address)
+source registers: A, B, C, D
+destination registers: X, Y
+instruction pointer register: IP
+instruction speed register: IS
+
+op: inst[7:5]
+d: inst[4]
+s1: inst[3:2]
+s2: inst[1:0]
+imm: inst[4:0]
+
+JNZ imm             if M[srcR[A]] = 0 then () else IS <- imm
+MATH d s1 s2        M[dstR[d+1]] <- M[srcR[s1+1]] - M[srcR[s2+1]]; M[dstR[d]] <- M[srcR[s1]] + M[srcR[s2]]
+LOGIC d s1 s2       M[dstR[d+1]] <- M[srcR[s1+1]] ^ M[srcR[s2+1]]; M[dstR[d]] <- M[srcR[s1]] & M[srcR[s2]]
+ROT/REF imm         R[A] <- R[A] + imm; rot(R, {1,imm})
+
+ip := ip + (size(inst) - 1) + is

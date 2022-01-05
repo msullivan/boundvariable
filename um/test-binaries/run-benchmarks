@@ -1,0 +1,253 @@
+#!/bin/bash
+
+# TODO add .uml files to benchmarks list and automatically compile them
+
+# DEFAULT CONFIGURATION
+
+#DEFAULT_VMS="c-rleywild/um java-adam/um ocaml-wjl/um-fast c-tom/um sml-tom/um x86-tom/um sml-fast-tom/um"
+DEFAULT_VMS="c-tom/um java-adam/um csharp-adam/um ocaml-wjl/um-fast sml-fast-tom/um sml-fast-tom/um-safe x86-tom/um"
+# slow: scheme-dan/um python-adam/um.py perl-jcreed/um-cport.pl awk-noam/um
+
+#DEFAULT_MARKS="fact.161.um quicksort.161.um fact.345.um quicksort.345.um umix.269.um^../../umix/bench-short.in"
+DEFAULT_MARKS="../../sandmark/fastmark.umz"
+
+DEFAULT_RUNS="5" # if greater than 1, then the first run will be discarded
+
+DEFAULT_DATA_DIR="benchmark-results";
+
+
+# NO NEED TO MODIFY BELOW HERE
+
+PRINTE="echo";
+PRINTEN="echo -n";
+
+TIME="/usr/bin/time";
+
+VM_DIR=`dirname $0`;
+VM_DIR=`cd ${VM_DIR}/.. && pwd`;
+
+HUMLOCK_DIR=`dirname $0`;
+HUMLOCK_DIR=`cd ${HUMLOCK_DIR}/../humlock && pwd`;
+
+MARKS_DIR=`dirname $0`;
+MARKS_DIR=`cd ${MARKS_DIR} && pwd`;
+
+while [ -n "$1" ]; do
+    case $1 in
+	-v) shift;
+	    VMS="${VMS} $1";
+	    ${PRINTE} "Using command-line VM(s):";
+	    ${PRINTE} "  $1";
+	    shift;;
+	
+	-b) shift;
+	    MARKS="${MARKS} $1";
+	    ${PRINTE} "Using command-line benchmark(s):";
+	    ${PRINTE} "  $1";
+	    shift;;
+
+	-r) shift;
+	    RUNS=$1;
+	    shift;
+	    ${PRINTE} "Using command-line iterations:";
+	    ${PRINTE} "  ${RUNS}";;
+
+	-d) shift;
+	    DATA_DIR=$1;
+	    shift;
+	    ${PRINTE} "Using command-line data directory:";
+	    ${PRINTE} "  ${DATA_DIR}";;
+
+	-a) shift;
+	    HUMLOCK_ARGS="${HUMLOCK_ARGS} $1";
+	    ${PRINTE} "Using Humlock argument(s):";
+	    ${PRINTE} "  $1";
+	    shift;;
+
+	-h)
+	    ${PRINTE} "usage: `basename $0` <options>";
+	    ${PRINTE} "  -v <vm>              use <vm> (may occur multiple times)";
+	    ${PRINTE} "  -b <benchmark>       use <benchmark> (may occur multiple times)";
+	    ${PRINTE} "                       benchmarks ending in .um will be run as is";
+	    ${PRINTE} "                       those ending in .uml will be compiled first";
+	    ${PRINTE} "  -r <i>               repeat each benchmark <i> times";
+	    ${PRINTE} "  -d <dir>             put results in <dir>";
+	    ${PRINTE} "  -a <args>            pass additional cmd-line arguments to";
+	    ${PRINTE} "                       Humlock (may occur multiple times)";
+	    ${PRINTE} "  -h                   print this message";
+	    exit 1;;
+
+	*)
+	    ${PRINTE} "Unrecognized option: $1 (Did you forget quotes?)";
+	    exit 1;;
+    esac
+done
+
+if [ -z "${VMS}" ]; then
+  ${PRINTE} "Defaulting to VMs in:";
+  ${PRINTE} "  ${VM_DIR}";
+  ${PRINTE} "Using VMs:";
+  ${PRINTE} "  ${DEFAULT_VMS}";
+  VMS=`echo ${DEFAULT_VMS} | xargs -n1 echo | sed -e "s#\([^ ]*\)#${VM_DIR}/\1#g;"`;
+fi;
+
+if [ -z "${MARKS}" ]; then
+  ${PRINTE} "Defaulting to benchmarks in:";
+  ${PRINTE} "  ${MARKS_DIR}";
+  ${PRINTE} "Using benchmarks:";
+  ${PRINTE} "  ${DEFAULT_MARKS}";
+  MARKS=`echo ${DEFAULT_MARKS} | xargs -n1 echo | sed -e "s#\([^ ]*\)#${MARKS_DIR}/\1#g;"`;
+fi;
+
+if [ -z "${RUNS}" ]; then
+  ${PRINTE} "Defaulting to ${DEFAULT_RUNS} iterations";
+  RUNS=${DEFAULT_RUNS};
+fi;
+
+RUNS_TO_USE=`echo "${RUNS} 1 - ${RUNS} [r] s1 1 ${RUNS} >1 p" | dc`
+
+if [ -z "${DATA_DIR}" ]; then
+  ${PRINTE} "Defaulting to data directory:";
+  ${PRINTE} "  ${MARKS_DIR}/${DEFAULT_DATA_DIR}";
+  DATA_DIR="${MARKS_DIR}/${DEFAULT_DATA_DIR}";
+fi;
+
+if [ ! -d ${DATA_DIR} ]; then
+  mkdir ${DATA_DIR};
+fi
+
+# Compile any ".uml" benchmarks
+UML_MARKS=`echo ${MARKS} | xargs -n1 echo | grep "\.uml"`;
+MARKS=`echo ${MARKS} | xargs -n1 echo | grep -v "\.uml"`;
+
+for UML_MARK in ${UML_MARKS}; do
+  REDIRECT=`echo ${UML_MARK} | sed -e 's/.*\^//g;'`;
+  UML_MARK=`echo ${UML_MARK} | sed -e 's/\^.*//g;'`;
+
+  ${PRINTE} "Compiling ${UML_MARK}";
+  if [ -x ${HUMLOCK_DIR}/humlock ]; then
+    UM_FILE=${MARKS_DIR}/`echo ${UML_MARK} | sed -e 's#.*/\([^/]*.um\)l#\1#g;'`
+#    if [ -r ${UM_FILE} ]; then
+#      ${PRINTE} "Aborting: can't compile without overwriting ${UM_FILE}";
+#      exit 1;
+
+#    else
+      if ${HUMLOCK_DIR}/humlock ${HUMLOCK_ARGS} -o ${UM_FILE} ${UML_MARK}; then
+	  #NEW_MARK=`echo ${UM_FILE} | sed -s 's#.*/\([^/]*\)#\1#g;'`
+	  if [ -n "${REDIRECT}" ]; then
+	    MARKS="${MARKS} ${UM_FILE}^${REDIRECT}";
+	  else
+	    MARKS="${MARKS} ${UM_FILE}";      
+	  fi;	  
+
+      else
+	  ${PRINTE} "Aborting: compilation failed"
+	  exit 1;
+      fi;
+#    fi
+  else
+    ${PRINTE} "Aborting: no humlock binary in ${HUMLOCK_DIR}"
+    exit 1;
+  fi
+
+done;
+
+
+MARKS=`echo ${MARKS} | sed -e 's/[:space:]?/ /g;'`;
+if [ -n "${UML_MARKS}" ]; then
+  ${PRINTE} "Benchmarks after compilation:"
+  for MARK in ${MARKS}; do 
+    ${PRINTE} "  ${MARK}";
+  done
+fi;
+
+# Check to see if we will overwrite anything.
+EXISTING_FILES="";
+
+for VM in ${VMS}; do
+  if [ -x ${VM} ]; then
+    VM_NAME=`echo ${VM} | sed -e 's#/um\([^/]*\)$#\1#;' -e 's#.*/##g' \
+        -e 's#\.#_#g;'`;
+    for MARK in ${MARKS}; do
+      MARK_EXE=`echo ${MARK} | sed -e 's/\^.*//g;'`;
+      if [ -r ${MARK_EXE} ]; then
+	MARK_NAME=`echo ${MARK_EXE} | sed -e 's#.um$##g;' -e 's#^.*/##g;'`;
+	RAW_FILE="${DATA_DIR}/.${VM_NAME}.${MARK_NAME}";
+	if [ -r ${RAW_FILE} ]; then
+	    EXISTING_FILES="${EXISTING_FILES} ${RAW_FILE}";
+	fi
+	AVG_FILE="${DATA_DIR}/${VM_NAME}.${MARK_NAME}";
+	if [ -r ${AVG_FILE} ]; then
+	    EXISTING_FILES="${EXISTING_FILES} ${AVG_FILE}";
+	fi
+      fi;
+    done;
+  fi;
+done;
+
+if [ -n "${EXISTING_FILES}" ]; then
+  ${PRINTE} "The following files must be removed (or use -d to specify a different directory):";
+  for FILE in ${EXISTING_FILES}; do
+    ${PRINTE} "  ${FILE}";
+  done
+  ${PRINTE} "Aborting."
+  exit 1;
+fi;
+
+# Now run the benchmarks
+for VM in ${VMS}; do
+  if [ -x ${VM} ]; then
+      VM_NAME=`echo ${VM} | sed -e 's#/um\([^/]*\)$#\1#;' -e 's#.*/##g' \
+          -e 's#\.#_#g;'`;
+      ${PRINTE} "Running benchmarks for VM ${VM_NAME}:"
+
+      for MARK in ${MARKS}; do
+	  MARK_EXE=`echo ${MARK} | sed -e 's/\^.*//g;'`;
+	  if [ -r ${MARK_EXE} ]; then
+	      MARK_NAME=`echo ${MARK_EXE} | sed -e 's#.um$##g;' -e 's#^.*/##g;'`;
+	      ${PRINTEN} "  ${MARK_NAME}"
+
+	      RAW_FILE="${DATA_DIR}/.${VM_NAME}.${MARK_NAME}";
+	      AVG_FILE="${DATA_DIR}/${VM_NAME}.${MARK_NAME}";
+	      FAILED="";
+
+	      # ^ denotes the beginning shell redirection
+	      REDIRECT=`echo ${MARK} | sed -e 's/.*^//g;'`;
+	      if [ -z "${REDIRECT}" ]; then
+		  REDIRECT="/dev/null";
+	      fi;
+
+	      RUN=1;
+	      while [ ${RUN} -le ${RUNS} ]; do
+		  if ${TIME} -f "bench.$$ %e" ${VM} ${MARK_EXE} \
+                        < ${REDIRECT} \
+		        >> ${RAW_FILE} 2>&1; then
+		      ${PRINTEN} ".";
+		  else
+		      ${PRINTEN} " Failed!";
+		      FAILED=1;
+		  fi
+		  RUN=`echo ${RUN} 1 + p | dc`;
+	      done
+
+	      if [ -z "${FAILED}" ]; then
+                  # Discard the first run
+		  tail -n ${RUNS_TO_USE} ${RAW_FILE} 2>/dev/null \
+		      | grep -a "bench.$$" \
+		      | sed -e "s/bench.$$ //g;" \
+		      | awk '{ s += $1; } END { print s / NR; }' \
+		      >> ${AVG_FILE};
+	      else
+		  rm -f ${RAW_FILE};
+		  ${PRINTE} " Omitting results!";
+	      fi
+
+	      ${PRINTE} "";
+	  else
+	      ${PRINTE} "Skipping benchmark ${MARK} (no binary)!"
+	  fi
+      done
+  else
+      ${PRINTE} "Skipping VM ${VM} (no executable)!"
+  fi;
+done

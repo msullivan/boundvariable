@@ -1,0 +1,200 @@
+datatype mail = Mail of { sender : string,
+			  subject : string,
+			  headers : (string * string) list,
+			  body : string,
+			  read : bool ref }
+
+(* note: one mail queue for all users,
+   which will make sending hard
+
+   we're probably not going to do su anyway since so much of umix closes
+   around the current user 
+*)
+
+val mailqueue = 
+    ref 
+    (* seed with a read message *)
+    (Mail
+     {sender="Donald Nut <dnut@clv.net>",
+      headers=("X-Organization", 
+	       "First Projection On-Line: So Easy to Use, No Wonder It's #1!") :: nil,
+      subject="Yours loan is approved 7l0l",
+      body=[Dear Homeowner
+            
+            You have been approved for a 
+            
+            [gen-publication {problem = "INTRO", task = "MUA", score = bi-fromint 5}]
+            
+            house loan.  This offer is being presented to you right now!. 
+            Your credit history is in no way a factor.  To take advantage 
+            of this Limited Time Opportunity, please take a minute and 
+            confirm your curiosity or intention to accept this loan.
+            
+            Best Regards
+            Don Nut
+            Loan Manager
+            ],
+      read=ref true} 
+     :: nil)
+
+(* new mail at the front *)
+fun enqueuemail { sender, headers, subject, body } =
+    let
+    in
+	mailqueue := ((Mail{ sender=sender,
+			     headers=headers,
+			     subject=subject,
+			     body=body,
+			     read=ref false }) :: (!mailqueue))
+    end
+
+fun mail-unread (Mail { read = ((!) false), body, subject, headers=_, sender }) = true
+  | mail-unread _ = false
+
+fun mailcheck () =
+    if list-exists mail-unread (!mailqueue)
+    then print "\nYou have new mail. Type 'mail' to view.\n"
+    else ()
+
+(* SUSP: fields or tokens? *)
+fun removeWhitespace (s : string) : string option = 
+    case list-filter (fn s => not (string-equals (s, "")))
+	(string-fields (fn ?  => true | ?\t => true | _ => false) s) of
+	one :: nil => SOME one
+      | _ => NONE
+    
+
+(* EASTER: add sending of mails 
+           invite friends?
+*)
+fun runmail user _ =
+    let 
+	fun numMessages () = list-length (!mailqueue)
+	fun topIndex () = numMessages () - 1
+
+	fun readString r = if !r then "Yes" else "No"
+	fun displayInbox () = 
+	    let
+		do print "---------------------------------------------------------------------\n"
+		do print "INBOX:\n"
+		do print "\n"
+
+		do print [Message  Read?  Sender                                Subject
+                          -------  -----  ------                                -------
+                          ] 
+		
+		do list-app 
+		    (fn (count, Mail {sender, subject, body=_, read, headers=_}) => 
+		        print [[string-pad(0 - 7, int-tostring count)]  [string-pad(0 - 5, readString read)]  [string-pad(21 + 15, sender)]  [subject]\n])
+		    (list-rev
+		     (* SUSP: either -zipEq or -app is going right-to-left *)
+		     (list-zipEq (list-tabulate (numMessages(), fn x => x),
+				  !mailqueue)))
+		do print "\n"
+		do print "---------------------------------------------------------------------\n"
+	    in
+		()
+	    end
+
+	datatype loopPromptResult = Quit | Message of int
+
+	fun getlineNoWS () : string option = removeWhitespace (getline ())
+	    
+	fun prompt () : loopPromptResult option = 
+	    let 
+		do print [Which message would you like to read?
+                          Type a number from '0' to '[int-tostring (topIndex ())]'.
+                          Or type 'q' to quit.
+                          ]
+	    in
+		case getlineNoWS () of 
+		    SOME s => 
+			if s seq "q" 
+			then SOME Quit 
+			else 
+			    (case int-fromstring s of
+				 NONE => NONE
+			       | SOME i => SOME (Message i))
+		  | NONE => NONE
+	    end
+
+	fun getMessage i : mail option = 
+	    (SOME (list-nth i (!mailqueue)))
+	    handle List => NONE
+
+	fun printMessage (Mail {sender, subject, headers, body, read}) =
+	    let in
+		read := true;
+		print "\n";
+		print ("Date: Fri, 1 Jan 19100 00:00:00 -0400\n");
+		print ("From: " ^ sender ^ "\n");
+		list-app (fn (hdr, value) => print [[hdr]: [value]\n]) headers;
+		print ("To: " ^ user ^ "@cbv.net\n");
+		print ("Subject: " ^ subject ^ "\n\n");
+		print body
+	    end
+	
+	fun enterPrompt () = 
+	    let 
+		do print "Press Enter to continue...\n"
+		do getline () (* SUSP: but accept anything *)
+	    in
+		()
+	    end
+
+	fun loop () = 
+	    let
+		do print "\n"
+		do displayInbox ()
+		do print "\n"
+	    in
+		(case prompt () of 
+		     NONE => 
+			 let 
+			     do print "Unrecognized input.\n"
+			     do enterPrompt ()
+			 in
+			     loop ()
+			 end
+		   | SOME Quit =>
+			 print "Goodbye!\n" 
+		   (* don't loop *)
+		   | SOME (Message i) => 
+			 (case getMessage i of
+			      SOME m => 
+				  let 
+				      do printMessage m
+				      do print "\n"
+				      do enterPrompt ()
+				  in
+				      loop ()
+				  end
+			    | NONE => 
+				  let 
+				      do print "You don't have that many messages.\n"
+				      do enterPrompt ()
+				  in
+				      loop ()
+				  end))
+	    end
+
+	fun checkUnreadOrLoop () = 
+	    case list-find mail-unread (!mailqueue) of
+		NONE => 
+		    let 
+			do print "No unread messages.\n" 
+		    in
+			loop ()
+		    end
+	      | SOME f => 
+		    let 
+			do print [First unread message:
+                                  ---------------------
+                                  ]
+			do printMessage f
+		    in
+			()
+		    end
+    in
+	checkUnreadOrLoop ()
+    end

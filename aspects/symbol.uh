@@ -1,0 +1,73 @@
+(* ---------------------------------------------------------------------- *)
+(* symbol table *)
+
+val require-hash = provide-hash
+val require-growarray = provide-growarray
+
+val provide-symbol-table = ()
+
+type symbol = int
+val symbol-equals = op=
+val symbol-lessThan = op<
+val symbol-tostring = int-tostring
+fun symbol-toint x = x
+(* convenient, but breaks the guarantees of the abstract type *)
+fun symbol-fromint x = x
+
+(* cache both directions for speed *)
+type symbolTable = ((string, symbol) hash) * string growarray * int ref 
+
+(* return the symbol if s is already interned,
+   otherwise add it to the table *)
+fun intern (s: string, ((ht, ga, next) : symbolTable)) : symbol = 
+    case hash-get (ht, s) of 
+	SOME i => i
+	          (*
+	          let 
+		      do print [! INTERN: String [s] already interned to symbol [(symbol-tostring i)]\n]
+		  in
+		      i
+		  end
+		  *)
+      | NONE => 
+	    let 
+		val symbS = ! next
+		    
+		(* DEBUG 
+		do print [? INTERN: Interning string [s] to symbol [(symbol-tostring symbS)]\n]
+		*)
+		    
+		(* map s to its symbol *)
+		do hash-put (ht, s, symbS)
+
+		(* invt: push makes the new index be symbS *)
+		(* map the symbol to s *)
+		do growarray-push (ga, s)
+		    
+		(* bump next *)
+		do next := symbS + 1
+	    in
+		symbS
+	    end
+
+(* invt: s is in the table 
+   intern(extern (s, t), t) = s
+*)
+fun extern (s : symbol, table as (ht, ga, next) : symbolTable) : string =
+    growarray-sub (ga, s)
+    (*
+    let
+	val it = 
+	do print [X EXTERN: Symbol [symbol-tostring s] maps to string [it]\n]
+	do if not (symbol-equals (s, intern(it, table)))
+	   then raise Match
+	   else ()
+    in
+	it
+    end *)
+
+fun newSymbolTable (size) : symbolTable = 
+    (hash-new (string-hash, string-equals, size),
+     growarray-new ("BOGUS"),
+     ref 0)
+

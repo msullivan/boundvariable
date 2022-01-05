@@ -1,0 +1,5 @@
+To Run: 
+*******
+(1) you'll need mzscheme v301 installed (see www.plt-scheme.org)
+(2) make
+(3) run um from this directory with the program file as an argument

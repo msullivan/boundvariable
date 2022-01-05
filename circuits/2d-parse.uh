@@ -1,0 +1,842 @@
+
+val { parse-2d } =
+
+let
+  val require-std = provide-std
+  val require-string = provide-string
+  val require-list = provide-list
+  val require-int = provide-int
+  val require-array = provide-array
+  val require-io = provide-io
+  val require-2d = provide-2d
+  import "2d-com-parse.uh"
+  val provide-2d-parse = ()
+                         
+  val MOD-CORN = ord ?,
+  val MOD-TOP = ord ?.
+  val MOD-SIDE = ord ?:
+                 
+  val MOD-NINP = ord ?0
+  val MOD-WINP = ord ?1
+  val MOD-EOUT = ord ?2
+                 
+  val BOX-SIDE = ord ?!
+  val BOX-TOP = ord ?=
+                
+                
+  val PLUS-NE = ?4
+  val PLUS-SE = ?5
+  val PLUS-SW = ?6
+  val PLUS-NW = ?7
+                
+                
+fun parse-strings program =
+    let 
+      val prog_size = length program
+
+      do print "[2D] Parsing...\n"
+              
+      val height = length program
+      val width = array-foldl (fn (ar,m) => int-max (length ar, m)) 0 
+                              program
+                              
+      fun coord-tostring (x,y) = "(ln: " ^ (int-tostring (y+1)) ^ ", col: "
+                                 ^ int-tostring x ^ ")"
+                                 
+      fun psub (x, y) =
+          let
+            val s = sub(program, y)
+          in
+            if x >= width then raise Subscript
+            else (if x >= (length s) then ? 
+                  else sub(s, x))
+          end
+            
+            
+      fun pupd (x, y, e) =
+          let
+            val s = sub(program,y)
+          in
+            update (s, x, e)
+          end
+            
+              
+      (* Functions useful for keeping track of boxes (and modules) *)
+      fun isbox (bxstart,bxline,bxlists) =
+          let
+            val line_list = sub(bxlists, bxline)
+          in
+            case line_list of
+              nil => NONE
+            | ((bl,br)::bxs) =>
+              if bl = bxstart then (update (bxlists, bxline, bxs);
+                                    SOME br)
+              else NONE
+          end
+            
+      fun addbox (_,_,_,0,_) = ()
+        | addbox (bxstart,bxline,bxright,bxlen,bxlists) =
+          let
+            val bl = sub (bxlists, bxline)
+            val nb = (bxstart,bxright)
+            fun cmp ((x1,_),(x2,_)) = int-compare (x1,x2)
+          in
+            (update (bxlists,bxline, list-sort cmp (nb::bl));
+             addbox (bxstart,bxline+1,bxright,bxlen - 1,bxlists))
+          end
+            
+            
+            
+            do  print "[2D] Locating modules...\n"
+                  
+        (* Step 1:  Locate Modules *)
+      type moduleInfo =  string * (int*int) * (int*int) * int option 
+                         * int option * int list
+
+        (*name, top left, (width,height), n inp, w inp, outs *)
+
+      fun moduleInfo-tostring (nm, (x,y), (w,h), nop, wop, olist) =
+          let
+            val tls = coord-tostring (x,y)
+            val whs = coord-tostring (w,h)
+            fun intop-tostring NONE = "NONE"
+              | intop-tostring (SOME i) = "SOME(" ^ int-tostring i ^")"
+            val nops = intop-tostring nop
+            val wops = intop-tostring wop
+            fun str-list nil = "]"
+              | str-list (i::is) = ( (int-tostring i) ^ ", " 
+                                     ^ (str-list is))
+            val olists = "[" ^ (str-list olist)
+          in
+            "(" ^ nm ^ ", " ^ tls ^ ", " ^ whs ^ ", " ^ nops ^ ", " 
+            ^ wops ^ ", " ^ olists ^ ")\n"
+          end
+              
+      type boxInfo = command2D 
+                     * (((wire2D option) ref option)
+                        * ((wire2D option) ref option)
+                        * ((wire2D option) ref option)
+                        * ((wire2D option) ref option))
+
+      fun boxInfo-tostring (c,(n,e,s,w)) =
+          let fun wr-ts NONE = "NONE"
+                | wr-ts (SOME _) = "SOME"
+          in
+            ("(" ^ cmd2D-tostring c ^ ", " ^ wr-ts (n) ^ ", " ^ wr-ts (e) 
+             ^ ", " ^ wr-ts (s) ^ ", " ^ wr-ts (w) ^ ")\n")
+          end
+              
+              
+      val moduleLocs = 
+          let
+            val bxlists = array(prog_size, nil)
+
+            fun scanLine (n,fromc) =
+                if n+2 >= height then nil
+                else if fromc+2 >= width then scanLine (n+1, 0)
+                else
+                  let
+                    fun findcorn c = 
+                        if c+2 >= width then NONE
+                        else case psub (c,n) of
+                               ?  => findcorn (c+1)
+                             | ?, => (case isbox (c,n,bxlists) of
+                                        NONE    => SOME c
+                                      | SOME rs => findcorn (rs+1))
+                               (* MOD-WINP *)
+                             | ?1 => (case isbox (c,n,bxlists) of
+                                        NONE    => raise ParseError2D
+           ("[2D] Parse Error:  Stray module side character : at " 
+            ^ coord-tostring (c,n) ^ ".\n")
+                                      | SOME rs => findcorn (rs+1))
+                             | ?: => (case isbox (c,n,bxlists) of
+                                        NONE    => raise ParseError2D
+           ("[2D] Parse Error:  Stray box side char : at " ^ coord-tostring (c,n)
+            ^ ".\n")
+                                      | SOME rs => findcorn (rs+1))
+                             | chr => raise ParseError2D
+           ("[2D] Parse Error:  Stray character " ^ array (1,chr) ^ " at " ^
+            coord-tostring (c,n) ^ ".\n")
+
+                    val lcorn = findcorn fromc
+                    val line = sub(program, n)
+                                 
+                  in
+                    case lcorn of
+                      NONE => scanLine ((n+1),0)
+                    | SOME i =>
+                      let
+                        fun getTop (tc,accum) = 
+                            (case (sub(line, tc),accum) of
+                               (?.,_) => getTop ((tc+1),accum)
+                             | (?|,NONE) => 
+                               (update(line,tc,chr MOD-NINP);
+                                getTop (tc+1, SOME tc))
+                             | (?|,SOME ni) => raise ParseError2D
+              ("[2D] Parse Error: Module has two N inputs " ^ coord-tostring (n,ni)
+               ^ " and " ^ coord-tostring (n,tc) ^ ".\n")
+                             | (?,,_) => (tc,accum)
+                             | _ => raise ParseError2D
+              ("[2D] Parse Error: Expected module top" ^ " at " ^ 
+               coord-tostring (tc,n) ^ ".\n"))
+                               handle Subscript => raise ParseError2D
+              ("[2D] Parse Error: Unterminated module top: did you forget" ^
+               " a comma\nin the upper right corner at" ^ coord-tostring
+               (tc - 1, n))
+
+                        val (tr, nInp) = getTop ((i+1),NONE)
+                                         
+                        fun getRight (scanl,olist) =
+                          (case psub (tr, scanl) of
+                               ?: => getRight ((scanl+1), olist)
+                             | ?- => 
+                               (pupd (tr, scanl, chr MOD-EOUT);
+                                getRight ((scanl+1),(scanl::olist)))
+                             | ?, => (scanl,olist)
+                             | c => raise ParseError2D
+              ("[2D] Parse Error: Expected module side at " ^ 
+               coord-tostring (tr,scanl) ^ ", saw: " ^ implode (c::nil) ^ 
+               ".\n"))
+                             handle Subscript => raise ParseError2D
+              ("[2D] Parse Error: Unterminated module right side - did you " ^
+               "forget a comma\nin the lower right corner at " ^
+               coord-tostring (tr, scanl - 1))
+                        val (br, eOuts) = getRight ((n+1), nil)
+                                          
+                        val botLine = sub (program,br)
+                                      
+                        fun getBot scanc =
+                            (case sub (botLine, scanc) of
+                               ?. => getBot (scanc + 1)
+                             | ?| => raise ParseError2D
+             ("[2D] Parse Error: No outputs allowed along S side of module "
+              ^ coord-tostring (scanc,br) ^ ".\n")
+                             | ?, => if scanc = tr then ()
+                                     else raise ParseError2D
+             ("[2D] Parse Error: Is the bottom right corner at " ^ 
+              coord-tostring (scanc,br) ^ " or " ^ coord-tostring (tr,br) ^ 
+              "?\n")
+                             | c => raise ParseError2D
+              ("[2D] Parse Error: Expected module bottom char = at " ^ 
+               coord-tostring (scanc,br) ^ ", saw: " ^ implode (c::nil) ^ 
+               ".\n"))
+
+                        val () = getBot (i+1)
+                                 
+                        fun getLeft (scanl, accum) =
+                            (case (psub(i,scanl),accum) of
+                               (?:,_) => getLeft ((scanl+1), accum)
+                             | (?-,NONE) => 
+                               (pupd (i,scanl,chr MOD-WINP);
+                                getLeft ((scanl+1), (SOME scanl)))
+                             | (?-,SOME wi) => raise ParseError2D
+             ("[2D] Parse Error: Module has two W inputs " ^ coord-tostring (i,wi) 
+              ^ " and " ^ coord-tostring (i,scanl) ^ ".\n")
+                             | (?,,_) => if scanl = br then accum else
+                                         raise ParseError2D 
+             ("[2D] Parse Error: unexpected , at " ^ coord-tostring (i,scanl) ^ 
+              ", doesn't the module end at line " ^ int-tostring br ^ "?\n")
+                             | (_,_) => raise ParseError2D
+             ("[2D] Parse Error: Expected module side at " ^ coord-tostring 
+              (i,scanl) ^ ".\n"))
+                               handle Subscript => raise ParseError2D
+             ("[2D] Parse Error: Unterminated module left side - did you " ^
+              "forget a comma\nin the lower left corner at " ^
+              coord-tostring (i, scanl - 1))
+
+                        val wInp = getLeft (n+1,NONE)
+                                   
+                        val name = 
+                            let
+                              val nmline = sub(program,n+1)
+                              val firstspace = 
+                                  case array-findfrom i 
+                                       (fn c => (ord c) = (ord ? )) nmline
+                                   of
+                                    SOME spchr => spchr
+                                  | NONE => raise ParseError2D
+             ("[2D] Parse Error: Module name must be followed by a space\n")
+                              val nm = array(firstspace - i - 1, ? )
+                                
+                              fun getnm sc =
+                                let
+                                  val newchar = sub(nmline,i+sc+1)
+                                in
+                                  if ((ord newchar) >= 65 andalso
+                                      (ord newchar) <= 90)
+                                     orelse
+                                     ((ord newchar) >= 97 andalso
+                                      (ord newchar) <= 122)
+                                     orelse
+                                     ((ord newchar) >= 48 andalso
+                                      (ord newchar) <= 57)
+                                  then 
+                                    (update (nm, sc, newchar);
+                                     update (nmline, i+sc+1, ? );
+                                     case sc of
+                                       0 => ()
+                                     | _ => getnm (sc - 1))
+                                  else
+                                    raise ParseError2D
+             ("[2D] Parse Error: only characters 0-9, a-z, and A-Z are allowed" ^
+              " in module names.\nInvalid character seen at: " ^
+              coord-tostring (i+sc+1,n+1) ^ "\n")
+                                end
+                            in
+                              (getnm (firstspace - i - 2); nm)
+                            end
+                      in 
+                        (addbox (i,n+1,tr,br - n,bxlists);
+                         (name,(i,n),(tr - i+1,br - n+1),nInp,wInp,eOuts)::
+                         (scanLine (n,tr+1)))
+                      end
+                  end
+          in
+            scanLine (0,0)
+          end
+           (* Step 2:  Verify module internals/find boxes *)
+
+
+      (* verifuModule : moduleInfo -> 
+       *                (string*((boxInfo list)
+       *                 *(((int*int)*(wire2D option ref)) list))
+       *)
+      fun verifyModule (nm,(ulx,uly),(mwidth,mheight),ninpo,winpo,olist) =
+          let
+            val () = print ("[2D] Verifying wires in module '" ^ nm ^ "'...\n")
+            fun is-vwire2D-char c =
+                case c of
+                  ?# => true
+                | ?+ => true
+                | ?= => true
+                | ?| => true
+                | ?v => true
+                | ?0 => true (*MOD-NINP*)
+                | ?4 => true (*modified plus characters *)
+                | ?5 => true
+                | ?6 => true
+                | ?7 => true
+                | _  => false
+                        
+            fun is-hwire2D-char c = 
+                case c of
+                  ?# => true
+                | ?+ => true
+                | ?! => true
+                | ?- => true
+                | ?> => true
+                | ?1 => true (*MOD-EINP*)
+                | ?2 => true (*MOD-WOUT*)
+                | ?4 => true (*modified plus characters *)
+                | ?5 => true
+                | ?6 => true
+                | ?7 => true
+                | _  => false 
+                          
+              (* step 1: check inputs/outputs *)
+            val () = case ninpo of
+                       NONE => ()
+                     | SOME i => if is-vwire2D-char (psub (i,uly+1)) 
+                                 then ()
+                                 else raise ParseError2D
+            ("ParseError2D : module " ^ nm ^ " has an unconnected north " 
+             ^ "input\n")
+            val () = case winpo of
+                       NONE => ()
+                     | SOME i => if is-hwire2D-char (psub (ulx+1,i)) 
+                                 then ()
+                                 else raise ParseError2D
+            ("ParseError2D : module " ^ nm ^ " has an "
+             ^ "unconnected west input\n")
+
+            val () = 
+                let
+                  fun scanos nil = ()
+                    | scanos (oc::ocs) = 
+                      if is-hwire2D-char 
+                         (psub (ulx+mwidth - 1, oc))
+                      then scanos ocs
+                      else raise ParseError2D
+            ("ParseError2D : module " ^ nm ^ " has an unconnected output at "
+             ^ coord-tostring (ulx+mwidth, oc) ^ ".\n")
+                in
+                  scanos olist
+                end
+                  
+            (* step 2: verify module, locate ul corners of boxes *)
+            val (brx,bry) = (ulx + mwidth - 1, uly + mheight - 1)
+                              
+            val bxlists = array(mheight, nil)
+
+            (* find-box-info : int*int -> 
+             *                 int * boxInfo 
+             *                 * ((int*int)*(wire2D option ref option) list)
+             *)
+            fun find-box-info (x,y) =
+                let
+                  val winp = case (psub(x,y+1),psub(x - 1, y+1)) of
+                               (?!,?>) => SOME (ref NONE)
+                             | (?!,?-) => raise ParseError2D
+              ("[2D] Parse Error: Improperly connected - character at " ^
+               coord-tostring (x - 1,y+1) ^ "\n  (did you want >?)\n")
+                             | (?!, _)  => NONE
+                             | _ => raise ParseError2D
+              ("[2D] Parse Error: Expected box side character ! at " ^ 
+               coord-tostring (x,y+1) ^ ".\n")
+
+                  val (brcoord,(ninploc,nimpwr)) =
+                      let 
+                        fun scantop sx accum = 
+                            case (psub(sx,y), psub(sx,y - 1), accum) of
+                              (?=,?v,(_,NONE)) => scantop (sx+1) 
+                                                          (sx, SOME (ref NONE))
+                            | (?=,?v,(_,SOME _)) => raise ParseError2D
+              ("[2D] Parse Error: Box with upper left corner at " ^ 
+               coord-tostring (x,y) ^ "\n  has more than one north input\n")
+                            | (?=,?|,_) => raise ParseError2D
+              ("[2D] Parse Error: Improperly connected | character at " ^
+               coord-tostring (sx,y - 1) ^ "\n  (did you want v?)\n")
+                            | (?=,_,_) => scantop (sx+1) accum
+                            | (?*,_,_) => (sx,accum)
+                            | _ => raise ParseError2D
+              ("[2D] Parse Error: Expected box top character = at " ^
+               coord-tostring (sx,y) ^ "\n")
+                      in
+                        scantop (x+1) (0,NONE)
+                      end
+
+                  val eout = case (psub(brcoord,y+1), psub(brcoord+1,y+1)) of
+                               (?!,?-) => SOME (ref NONE)
+                             | (?!,?#) => SOME (ref NONE)
+                             | (?!,?+) => SOME (ref NONE)
+                             (* MOD-EOUT *)
+                             | (?!,?2) => SOME (ref NONE)
+                             | (?!,?>) => raise ParseError2D
+              ("[2D] Parse Error: Invalid > character at " ^ coord-tostring 
+               (brcoord+1,y+1) ^ ".\n")
+                             | (?!,_) => NONE
+                             | _ => raise ParseError2D
+              ("[2D] Parse Error: Expected box side character ! at " ^
+               coord-tostring (brcoord,y+1) ^ ".\n")
+
+                  val (soutloc,soutwr) =
+                      let
+                        fun scanbot sx accum =
+                            case (psub(sx,y+2), psub(sx,y+3), accum) of
+                              (?=,?|,(_,NONE)) => 
+                              scanbot (sx+1) (sx, SOME (ref NONE))
+                            | (?=,?#,(_,NONE)) => 
+                              scanbot (sx+1) (sx, SOME (ref NONE))
+                            | (?=,?+,(_,NONE)) => 
+                              scanbot (sx+1) (sx, SOME (ref NONE))
+                            | (?=,?|,(_,SOME _)) => raise ParseError2D
+              ("[2D] Parse Error: Box with ul corner at " ^
+               coord-tostring (x,y) ^ "\n  has more than one south output\n")
+                            | (?=,?#,(_,SOME _)) => raise ParseError2D
+             ("[2D] Parse Error: Box with ul corner at " ^
+              coord-tostring (x,y) ^ "\n  has more than one south output\n")
+                            | (?=,?+,(_,SOME _)) => raise ParseError2D
+             ("[2D] Parse Error: Box with ul corner at " ^
+              coord-tostring (x,y) ^ "\n  has more than one south output\n")
+                            | (?=,?v,_) => raise ParseError2D
+             ("[2D] Parse Error: Invalid v character at " ^ coord-tostring
+              (sx,y+3) ^ ".\n")
+                            | (?=,_,_) => scanbot (sx+1) accum
+                            | (?*,_,_) => if sx = brcoord then accum
+                                          else raise ParseError2D
+             ("[2D] Parse Error: Couldn't determine location of right side "
+              ^ " of box with ul corner at " ^ coord-tostring (x,y) ^ ".\n")
+                            | (c,_,_) => raise ParseError2D
+             ("[2D] Parse Error : Expected box bottom character at " ^
+              coord-tostring (sx,y+2) ^ ",\nbut found " ^ {|c|} ^ " instead\n")
+                      in
+                        scanbot (x+1) (0,NONE)
+                      end
+
+                  val () = if ord (psub (x,y+2)) = ord ?* then ()
+                           else raise ParseError2D
+             ("[2D] Parse Error: expected bottom left box corner at " ^
+              coord-tostring (x,y+2) ^ ".\n")
+
+                  (* find command *)
+                  val com_arr = array(brcoord - x - 1, ? )
+                  fun fill-com 0 = update(com_arr, 0, psub(x+1,y+1))
+                    | fill-com n = (update(com_arr, n, psub(x+1+n,y+1));
+                                    fill-com (n - 1))
+                  val () = fill-com (brcoord - x - 2)
+                           
+                  val () = 
+                    if ord ?  = ord (sub(com_arr, 0)) orelse
+                       ord ?  = ord (sub(com_arr, brcoord - x - 2))
+                    then raise ParseError2D
+                      ("[2D] Parse Error : Commands can't have leading or" ^
+                       " closing whitespace!\n")
+                    else ()
+
+                  val command = cir-com-parse com_arr
+                    handle _ => raise ParseError2D 
+                      ("[2D] Parse Error : A command didn't parse - the " ^
+                       "string\n" ^ com_arr ^ "\nis not a valid command.\n")
+   
+                  val wire2Ds = (case nimpwr of 
+                                 NONE => nil
+                               | SOME wr => ((ninploc, y - 1), wr)::nil)
+                              @(case eout of 
+                                  NONE => nil
+                                | SOME wr => ((brcoord+1,y+1), wr)::nil)
+                              @(case soutwr of 
+                                  NONE => nil
+                                | SOME wr => ((soutloc,y+3), wr)::nil)
+                              @(case winp of 
+                                  NONE => nil
+                                | SOME wr => ((x - 1, y+1), wr)::nil)
+                in
+                  (brcoord,(command, (nimpwr, eout, soutwr, winp)),wire2Ds)
+                end
+
+
+            (* check-module-wf : int*(boxInfo list)
+             *                   *(((int*int)*(wire2D option ref)) list)
+             *                   -> (boxInfo list)
+             *                      *(((int*int)*(wire2D option ref)) list)
+             *)
+            fun check-module-wf (y,bxs',wrs') =
+                if y >= bry then (bxs',wrs')
+                else 
+                  let
+                    val line = sub(program, y)
+                               
+                    fun check-module-wf-line (x,bxs,wrs) = 
+                        if x >= brx then check-module-wf (y+1,bxs,wrs)
+                        else
+                          case sub (line,x) of
+                            ?| => if is-vwire2D-char (psub (x,y - 1))
+                                     andalso is-vwire2D-char (psub (x,y+1))
+                                  then check-module-wf-line ((x+1),bxs,wrs)
+                                  else raise ParseError2D
+           ("[2D] Parse Error: Character | at " ^ coord-tostring (x,y) ^
+            " not properly connected.\n") 
+                          | ?- => if is-hwire2D-char (sub (line, x+1))
+                                     andalso is-hwire2D-char (sub (line, x - 1))
+                                  then check-module-wf-line ((x+1),bxs,wrs)
+                                  else raise ParseError2D
+           ("[2D] Parse Error: Wire character - at " ^ coord-tostring (x,y)
+            ^ " not properly connected.\n")
+                          | ?> => if is-hwire2D-char (sub (line, x - 1))
+                                     andalso BOX-SIDE = ord (sub (line, x+1))
+                                  then check-module-wf-line ((x+1),bxs,wrs)
+                                  else raise ParseError2D
+           ("[2D] Parse Error: Box input character > at " ^ coord-tostring (x,y) ^ 
+            " not properly connected.\n")
+                          | ?v => if is-vwire2D-char (psub (x, y - 1))
+                                     andalso BOX-TOP = ord (psub (x,y+1))
+                                  then check-module-wf-line ((x+1),bxs,wrs)
+                                  else raise ParseError2D
+           ("[2D] Parse Error: Box input character v at " ^ coord-tostring (x,y) ^ 
+            " not properly connected.\n")
+                          | ?# => if is-vwire2D-char (psub (x, y - 1))
+                                     andalso is-vwire2D-char (psub (x, y+1))
+                                     andalso is-hwire2D-char (sub (line, x+1))
+                                     andalso is-hwire2D-char (sub (line, x - 1))
+                                  then check-module-wf-line (x+1,bxs,wrs)
+                                  else raise ParseError2D
+           ("[2D] Parse Error: Wire crossover character # at " ^
+            coord-tostring (x,y) ^ " not properly connected.\n")
+                          | ?+ => 
+                            (case (is-vwire2D-char (psub (x, y - 1)),
+                                   is-hwire2D-char (sub (line, x+1)),
+                                   is-vwire2D-char (psub (x, y + 1)),
+                                   is-hwire2D-char (sub (line, x - 1)))
+                              of
+                               (true, true, false, false) =>
+                               update(line, x, PLUS-NE)
+                             | (false, true, true, false) =>
+                               update(line, x, PLUS-SE)
+                             | (false, false, true, true) =>
+                               update(line, x, PLUS-SW)
+                             | (true, false, false, true) =>
+                               update(line, x, PLUS-NW)
+                             | (true, false, true, false) =>
+                               update(line, x, ?|)
+                             | (false, true, false, true) =>
+                               update(line, x, ?-)
+                             | _ => raise ParseError2D
+           ("[2D] Parse Error: + character rules violated at " ^
+            coord-tostring (x,y) ^ " not properly connected.\n");
+                                    check-module-wf-line ((x+1),bxs,wrs))
+                          | ?! => (case isbox (x,y - uly - 1,bxlists) of
+                                     SOME x' => check-module-wf-line 
+                                                  ((x'+1),bxs,wrs)
+                                   | NONE => raise ParseError2D
+           ("[2D] Parse Error: Box side ! character seen at " ^
+            coord-tostring (x,y) ^ " but there is no box there.\n"))
+                          | ?* => (case isbox (x,y - uly - 1,bxlists) of
+                                     SOME x' => check-module-wf-line 
+                                                  ((x'+1),bxs,wrs)
+                                   | NONE => 
+                                     let
+                                       val (rs, bi, wr) = find-box-info (x,y)
+                                     in
+                                       (addbox (x,y - uly,rs,2,bxlists);
+                                        check-module-wf-line (rs+1,bi::bxs,
+                                                              wr@wrs))
+                                     end)
+                          | ?  => check-module-wf-line (x+1,bxs,wrs)
+                          | c => raise ParseError2D 
+           ("[2D] Parse Error: Unrecognized stray " ^ array(1,c) ^
+            " character at " ^ coord-tostring (x,y) ^ ".\n")
+
+                  in
+                    check-module-wf-line (ulx+1,bxs',wrs')
+                  end
+                in
+                  (nm, check-module-wf (uly+1,nil,nil))
+                end
+
+            (* parsed_modules : (string*((boxInfo list)
+             *                 *(((int*int)*(wire2D option ref)) list))) list
+             *)
+      val parsed_modules = list-map verifyModule moduleLocs
+
+      do  print ("[2D] Connecting wires...\n")
+      (* Part 3 : Now trace the wire2Ds and connected them up *)
+
+      datatype dir = Left | Right | Up | Down | Start
+
+    (* connect-wl : (((int*int)*(wire2D option ref)) list)*
+     *               *(wire2D option ref option)*(wire2D option ref option)
+     *               *((wire2D option ref) list)
+     *               -> (((wire2D option ref)*(wire2D option ref)) list)
+     *                 *(wire2D option ref option)*(wire2D option ref option)
+     *                 *(wire2D option ref list)
+                                                         *)
+      fun connect-wl (nil, winp, ninp, el, wrprs) = 
+          (wrprs, winp, ninp, el)
+        | connect-wl (wr::wrs, winp, ninp, eoutl, wrprs) =
+          let
+            val ((wsx,wsy),wref) = wr
+
+          (* findWire2D : int*int -> (int*int)*(wire2D option ref) list ->
+                        (wire2D option ref)*((int*int)*(wire2D option ref) list) *)
+            fun findWire2D (x,y) nil = raise InternalError2D
+             ("[2D] Internal Error : Wire doesn't exist - This " ^
+              "should never happen")
+              | findWire2D (x,y) ((thisw as ((csx,csy),wri)) :: ws) =
+                if x = csx andalso y = csy then (wri, ws)
+                else 
+                  let
+                    val (wro, ws') = findWire2D (x,y) ws
+                  in
+                    (wro, thisw::ws')
+                  end
+                    
+
+         (* follow-wire2D : (int*int)*dir -> 
+          *               ( (wire2D option ref*wire2D option ref) list)
+          *               *((wire2D option ref) list)
+          *)
+            fun follow-wire2D ((x,y),from) =
+                case (psub(x,y), from) of
+                  (?|, Up)     => follow-wire2D ((x,y+1),   Up)
+                | (?|, Down)   => follow-wire2D ((x,y - 1), Down)
+                | (?|, Start)  =>
+                  if BOX-TOP = ord (psub (x,y - 1)) then
+                    follow-wire2D ((x, y+1), Up)
+                  else follow-wire2D ((x,y - 1), Down)
+                | (?-, Left)   => follow-wire2D ((x+1,y),   Left)
+                | (?-, Right)  => follow-wire2D ((x - 1,y), Right)
+                | (?-, Start)  =>
+                  if BOX-SIDE = ord (psub (x+1,y)) then
+                    follow-wire2D ((x - 1, y), Right)
+                  else follow-wire2D ((x+1,y), Left)
+                | (?#, Up)     => follow-wire2D ((x,y+1),   Up)
+                | (?#, Down)   => follow-wire2D ((x,y - 1), Down)
+                | (?#, Left)   => follow-wire2D ((x+1,y),   Left)
+                | (?#, Right)  => follow-wire2D ((x - 1,y), Right)
+                | (?#, Start)  =>
+                    if BOX-SIDE = ord (psub (x - 1,y)) then
+                       follow-wire2D ((x+1,y),Left)
+                    else follow-wire2D ((x,y+1),Up)
+                (* PLUS-NE *)
+                | (?4, Up)     => follow-wire2D ((x+1,y),   Left)
+                | (?4, Right)  => follow-wire2D ((x,y - 1), Down)
+                | (?4, Start)  => follow-wire2D ((x+1,y),   Left)
+                (* PLUS-SE *)
+                | (?5, Right)  => follow-wire2D ((x,y+1),   Up)
+                | (?5, Down)   => follow-wire2D ((x+1,y),   Left)
+                (* PLUS-SW *)
+                | (?6, Down)   => follow-wire2D ((x - 1,y), Right)
+                | (?6, Left)   => follow-wire2D ((x,y+1),   Up)
+                | (?6, Start)  => follow-wire2D ((x,y+1),   Up)
+                (* PLUS-NW *)
+                | (?7, Left)   => follow-wire2D ((x,y - 1), Down)
+                | (?7, Up)     => follow-wire2D ((x - 1,y), Right)
+                | (?7, Start)  => 
+                  if BOX-SIDE = ord (psub (x - 1,y)) then
+                    follow-wire2D ((x, y - 1), Down)
+                  else follow-wire2D ((x - 1,y), Right)
+                | (?!, Right)  => 
+                  let
+                    val (wref', wrs) = findWire2D (x+1,y) wrs
+                  in
+                    connect-wl(wrs, winp, ninp, eoutl, (wref,wref')::wrprs)
+                  end
+                | (?=, Down)   =>
+                  let
+                    val (wref', wrs) = findWire2D (x,y+1) wrs
+                  in
+                    connect-wl(wrs, winp, ninp, eoutl, (wref,wref')::wrprs)
+                  end
+                | (?>, Start)  => follow-wire2D ((x - 1,y), Right)
+                | (?>, Left)   =>
+                  let
+                    val (wref', wrs) = findWire2D (x,y) wrs
+                  in
+                    connect-wl(wrs, winp, ninp, eoutl, (wref,wref')::wrprs)
+                  end
+                | (?v, Start)  => follow-wire2D ((x,y - 1), Down)
+                | (?v, Up)     =>
+                  let
+                    val (wref', wrs) = findWire2D (x,y) wrs
+                  in
+                    connect-wl(wrs, winp, ninp, eoutl, (wref,wref')::wrprs)
+                  end
+                (* MOD-NINP *)
+                | (?0, Down)   =>  connect-wl(wrs,winp,SOME wref,eoutl,wrprs)
+                (* MOD-WINP *)
+                | (?1, Right)  =>  connect-wl(wrs,SOME wref,ninp,eoutl,wrprs)
+                (* MOD-EOUT *)
+                | (?2, Left) =>
+                  connect-wl(wrs, winp, ninp, wref::eoutl,wrprs)
+                | (?2, Start) => 
+                  connect-wl(wrs, winp, ninp, wref::eoutl,wrprs)
+                | (c, _) =>
+                  raise ParseError2D
+                    ("[2D] Parse Error : Ran into character " ^ {|c|} ^
+                     " at location " ^ coord-tostring (x,y) ^ ", but it "
+                     ^ "doesn't connect properly\n")
+          in
+            follow-wire2D ((wsx,wsy),Start)
+          end
+
+
+        (* val wrlists : (string*(boxInfo list)
+         *              *((((wire2D option ref)*(wire2D option ref)) list)
+         *              *(wire2D option ref option)*(wire2D option ref option)
+         *              *((wire2D option ref) list))) list
+         *)
+
+      val wrlists = list-map
+                      (fn (nm, (bxs, wrs)) =>
+                          (nm, bxs, connect-wl (wrs, NONE, NONE, nil, nil)))
+                      parsed_modules
+                      
+     (* USEFUL DEBUGGING OUTPUT
+      val () = list-app
+                 (fn (nm,bxs,(_,winpo,ninpo,_)) =>
+                     (print (nm ^ ": ");
+                      print "winp - ";
+                      (case winpo of
+                         NONE => print "NONE, "
+                       | SOME _ => print "SOME, ");
+                      print "ninp - ";
+                      (case ninpo of
+                         NONE => print "NONE\n"
+                       | SOME _ => print "SOME\n");
+                      (list-app (fn bi => print (boxInfo-tostring bi))
+                                bxs)))
+                 wrlists
+      *)
+     
+      (* buildModule : (string)*(boxInfo list)
+      *              *(((wire2D option ref)*(wire2D option ref)) list)
+      *              *(wire2D option ref option)
+      *              *(wire2D option ref option)
+      *              *((wire2D option ref) list)
+      *             -> module
+      *)
+      fun buildModule (nm, bxs, (wrprs, winp, ninp, outwrs)) =
+        (nm,
+         fn (modfinn, modfinw) =>
+         let
+           
+           (* create wire2Ds for the outputs *)
+           fun do-outs nil = ()
+             | do-outs (wref::wrefs) =
+             (wref := SOME (ref NONE); do-outs wrefs)
+             
+           val () = do-outs outwrs
+             
+           (* set north input *)
+           val () = 
+             case (ninp, modfinn) of
+               (NONE, NONE) => ()
+             | (SOME wr, SOME expr) =>
+                 let
+                   val ninpwr = ref (SOME expr)
+                 in
+                   wr := SOME ninpwr
+                 end
+             | _ => raise EvalError2D 
+                 ("[2D] Eval Error : Module " ^ nm ^ " tried to use the north "
+                  ^ "input, but it doesn't have one\n") 
+                 
+           (* set west input *)
+           val () = 
+             case (winp, modfinw) of
+               (NONE, NONE) => ()
+             | (SOME wr, SOME expr) =>
+                 let
+                   val winpwr = ref (SOME expr)
+                 in
+                   wr := SOME winpwr
+                 end
+             | _ => raise EvalError2D
+                 ("[2D] Eval Error : Module " ^ nm ^ " tried to use the west "
+                  ^ "input, but it doesn't have one\n")
+                 
+           (* create wire2Ds between boxes *)
+           fun make-wrs nil = ()
+             | make-wrs ((wra,wrb)::wrs) =
+             let
+               val newwire2D = ref NONE
+             in
+               (wra := SOME newwire2D;
+                wrb := SOME newwire2D;
+                make-wrs wrs)
+             end
+           
+           val () = make-wrs wrprs
+             
+           fun make-box (command, (n, e, s, w)) =
+             let
+               fun getwr wrro = 
+                 case wrro of NONE => NONE
+               | SOME wref => !wref
+             in
+               {com   = command,
+                north = getwr n,
+                east  = getwr e,
+                south = getwr s,
+                west  = getwr w}
+             end
+           
+           fun getOutwr wror = 
+             case !wror of
+               SOME wr => wr
+             | NONE => raise InternalError2D
+                 ("[2D] Internal Error : Somehow an outwire disappeared\n")
+         in
+           (list-map make-box bxs, list-map getOutwr outwrs)
+         end)
+
+      val modules = list-map buildModule wrlists
+
+      do print "[2D] Done Parsing!\n"
+    in
+      modules
+    end
+    (* fun parse-stdin () = parse-strings (all-lines ()) *)
+in
+  { parse-2d = parse-strings }
+end

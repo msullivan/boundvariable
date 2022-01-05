@@ -1,0 +1,20 @@
+{ comments are enclosed by curly-braces;
+  no nested comments are allowed  }
+
+{ addition 
+
+  these rules work when the arguments are numerals
+  but not for all arbitrary expressions
+
+}
+Add Z y => y;
+Add (S x) y => S (Add x y);
+
+{ define multiplication (Mult) here }
+
+
+{ when all other computation is done } 
+Compute x => x;
+
+. { end of rules }
+

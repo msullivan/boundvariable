@@ -1,0 +1,9 @@
+Universal^2 Machine (in progress)
+
+TO DO:
+  write mk-uum
+
+To use the U^2M, run mk-uum to prefix a UM binary with its length.  Then run:
+
+  cat test.uum - | ../c-tom/um um.um
+
