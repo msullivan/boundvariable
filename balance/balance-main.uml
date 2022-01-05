@@ -5,6 +5,7 @@ let
     import "list.uh"
     import "array.uh"
     import "growarray.uh"
+    import "random.uh"
     import "io.uh"
     import "stream.uh"
     import "util.uh"

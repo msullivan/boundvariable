@@ -141,7 +141,7 @@ struct
   (* A ... R ... -> R ... A+2^r ... *)
   (* int -> inst' *)
   fun swap r =
-      REF' (W8.<< (0w1, Word31.fromInt r))
+      REF' (W8.<< (0w1, Word.fromInt r))
 
   (* swap contents of registers 5 and r : 0..4, n times *)
   (* A ... R ... -> R ... A+2^r ... *)
@@ -156,7 +156,7 @@ struct
       then []
       else
           let (* 2^n *)
-              fun exp n = Word31.toInt (Word31.<< (0w1, Word31.fromInt n))
+              fun exp n = Word.toInt (Word.<< (0w1, Word.fromInt n))
               (* 2 * (2^8 - 2^r) / 2^r = 2^(9 - r) - 2 *)
               fun diff r = exp (9 - r) - 2
           in (* A ... R1 ... R2 ... *)
@@ -185,10 +185,10 @@ struct
       (* A-2^b+n*2^b ... R+2^b ... B ... *)
       (* w[n] *)
       fun bit w n =
-          Word8.toInt (Word8.andb (0w1, Word8.~>> (Word8.fromInt w, Word31.fromInt n)))
+          Word8.toInt (Word8.andb (0w1, Word8.~>> (Word8.fromInt w, Word.fromInt n)))
       (* -w[7:n] *)
       fun diff w n =
-          Word8.toInt (Word8.~ (Word8.~>> (Word8.fromInt w, Word31.fromInt n)))
+          Word8.toInt (Word8.~ (Word8.~>> (Word8.fromInt w, Word.fromInt n)))
   in
   (* increment register r : 0..4 by n : 0..255 *)
   (* int -> int -> inst' list *)
@@ -223,7 +223,7 @@ struct
         | LOGIC (d, s1, s2) => [LOGIC' (dst d, src s1, src s2)]
         | SWAPIN r => [swap r]
         | SWAPOUT r =>
-          let fun diff r = Word.toInt (Word.~>> (0w256, Word31.fromInt r))
+          let fun diff r = Word.toInt (Word.~>> (0w256, Word.fromInt r))
           in nswap r (2 * diff r - 1)
           end
         | TRANSPOSE (r1, r2) => transpose r1 r2

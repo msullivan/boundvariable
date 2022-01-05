@@ -1,3 +1,3 @@
 
-um : um.sml um.cm
-	mlton um.cm
+um : um.sml um.mlb
+	mlton um.mlb

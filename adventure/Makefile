@@ -7,4 +7,4 @@ adjectives.uh nouns.uh: nouns.in nouns.uh.in adjectives.in adjectives.uh.in gene
 HUMLOCK = ../um/humlock/humlock
 
 %.um: %.uml $(wildcard *.uh) nouns.uh adjectives.uh gc.rml ${HUMLOCK}
-	time ${HUMLOCK} @MLton max-heap 400m -- -iloptstop 200 -writeasm -writecps -prof -sequence-unit $<;
+	time ${HUMLOCK} -iloptstop 200 -writeasm -writecps -prof -sequence-unit $<;

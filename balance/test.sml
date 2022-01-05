@@ -18,7 +18,7 @@ struct
   (* {1, 2, 4, 8, 16, 32, 64, 128, 0, ...} *)
   val addM =
       let val m = W8A.tabulate (256, fn _ => 0w0)
-      in Util.for 0 7 (fn i => W8A.update (m, i, W8.<< (0w1, Word31.fromInt i)))
+      in Util.for 0 7 (fn i => W8A.update (m, i, W8.<< (0w1, Word.fromInt i)))
        ; m
       end
   (* {0, 1, 2, 3, 4, 5} *)
@@ -159,7 +159,7 @@ struct
       in W8A.update (m, 0, W8.fromInt a)
        ; W8A.update (m, 1, W8.fromInt i)
        ; W8A.update (m, 2, W8.fromInt j)
-       ; Util.for 0 3 (fn i => W8A.update (m, 4 + i, W8.<< (0w1, Word31.fromInt i)))
+       ; Util.for 0 3 (fn i => W8A.update (m, 4 + i, W8.<< (0w1, Word.fromInt i)))
        ; m
       end
   (* {0, 1, 2, 3, 4, 5} *)

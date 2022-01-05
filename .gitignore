@@ -7,4 +7,5 @@ core
 *.sym
 *.bins
 *.cps
-
+*.um
+*.umz

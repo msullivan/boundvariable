@@ -6,7 +6,7 @@ struct
   structure W8 = Word8
   structure W8V = Word8Vector
   structure W8A = Word8Array
-  structure W31 = Word31
+  structure W = Word
 
   (* The machine has a 256 byte array of bytes
      (main memory) and an arbitrarily long
@@ -152,7 +152,7 @@ struct
   exception Compile of string
   local
       val || = W8.orb
-      fun << (v, n) = (W8.<< (W8.fromInt v, W31.fromInt n))
+      fun << (v, n) = (W8.<< (W8.fromInt v, W.fromInt n))
       infix || <<
       (* n[7:5] *)
       fun inst n =
@@ -161,7 +161,7 @@ struct
       fun threeops i d s1 s2 =
           (inst i) || (d << 4) || (s1 << 2) || (s2 << 0)
 
-      fun assertWidth n w = (W31.~>> (W31.fromInt n, W31.fromInt w)) = 0w0
+      fun assertWidth n w = (W.~>> (W.fromInt n, W.fromInt w)) = 0w0
       (*fun assertImm imm = assertWidth imm 23 orelse raise Compile "imm"*)
       fun assertImm imm = assertWidth imm 5 orelse raise Compile "imm"
       fun assertImm' imm = assertWidth (Word8.toInt imm) 5 orelse raise Compile "imm'"

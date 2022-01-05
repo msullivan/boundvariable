@@ -1,14 +1,14 @@
 
 default : humlock.exe
 
-MLTON_FLAGS = @MLton max-heap 200M --
+MLTON_FLAGS = @MLton max-heap 2000M --
 
 humlock.exe : humlock
 	rm -f humlock.exe
 	cp humlock humlock.exe
 
-humlock : makefile humlock.cm *.sml front/*.sml el/*.sml parser/*.sml util/*.sml cps/*.sml il/*.sml runtime/*.sml backend/*.sml ../../../../sml-lib/util/*.sml ../../../../sml-lib/algo/*.sml
-	mlton $(MLTON_FLAGS) humlock.cm
+humlock : makefile humlock.mlb *.sml front/*.sml el/*.sml parser/*.sml util/*.sml cps/*.sml il/*.sml runtime/*.sml backend/*.sml ../../sml-lib/util/*.sml ../../sml-lib/algo/*.sml
+	mlton $(MLTON_FLAGS) humlock.mlb
 
 # should remove some generated files in runtime/...
 clean :
