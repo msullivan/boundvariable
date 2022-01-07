@@ -65,8 +65,12 @@ The function [[-]] represents an O'Cult program as data in 2D:
 	 Inl ())
 
  Your step module will be suppled the representation of an (advice,term)
-pair, and should output the term that results from applying the advice
-once to term.
+pair, and should output the result of applying the advice once to term.
+This result should be:
+  Inl <resulting term>
+if advice was applied, and
+  Inr ()
+if no advice applied.
 
  As incentive, I'll be happy to provide anyone who completes the
 O'Cult-in-2D interpreter with a copy of my forthcoming book, 
