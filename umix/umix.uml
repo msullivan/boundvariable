@@ -1097,7 +1097,7 @@ let
                ((sis) "mult") _ => SOME (mult_check, "MUL")
              | ((sis) "rev") _ => SOME (rev_check, "REV")
              | ((sis) "raytrace") _ => SOME (raytrace_check, "RAY")
-             | ((sis) "ocult") _ => SOME (aspects_check, "OCU")
+             | ((sis) "ocult") _ => SOME (aspects_check, "ASP")
              | _ => NONE
 
            do print ("Program area: " ^ bi-tostring area ^ " (smaller is better)\n")
