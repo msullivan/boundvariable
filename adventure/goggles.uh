@@ -2,6 +2,7 @@
 datatype goggles = 
     EnglishGoggles 
   | XMLGoggles
+  | JSONGoggles
   | SExpGoggles
   | MLGoggles
   | ANSIGoggles
@@ -9,6 +10,7 @@ datatype goggles =
 
 fun goggles-tostring EnglishGoggles = "English"
   | goggles-tostring XMLGoggles = "XML"
+  | goggles-tostring JSONGoggles = "JSON"
   | goggles-tostring SExpGoggles = "sexp"
   | goggles-tostring MLGoggles = "ML"
   | goggles-tostring ANSIGoggles = "ANSI"
@@ -16,6 +18,7 @@ fun goggles-tostring EnglishGoggles = "English"
 
 val all-goggles = EnglishGoggles :: 
                   XMLGoggles :: 
+                  JSONGoggles ::
 		  SExpGoggles :: 
                   MLGoggles ::
 		  ANSIGoggles ::
@@ -545,6 +548,58 @@ fun xml_view result =
       xml_print (result, 0)
     end
 
+fun json_view result =
+    let fun sp_str s =
+            let in
+                putc ?\";
+                print (string-tostring s);
+                putc ?\"
+            end
+        fun sp (Atom s) = sp_str s
+          | sp (s as (Seq _)) =
+            let in
+                putc ?[;
+                sp_seq s;
+                putc ?]
+            end
+          | sp (s as (Assoc _)) =
+            let in
+                putc ?{;
+                sp_assoc s;
+                putc ?}
+            end
+          | sp NoData = print "null"
+          | sp Redacted = print "{\"redacted\": true}"
+        and sp_seq NoData = ()
+          | sp_seq (Seq (d1, NoData)) = sp d1
+          | sp_seq (Seq (d1, d2)) =
+            let in
+                sp d1;
+                putc ?,;
+                sp_seq d2
+            end
+          | sp_seq x = sp x
+        and sp_assoc_ent s d =
+            let in
+                sp_str s;
+                putc ?:;
+                sp d
+            end
+        and sp_assoc NoData = ()
+          | sp_assoc (Assoc (s, d1, NoData)) = sp_assoc_ent s d1
+          | sp_assoc (Assoc (s, d1, d2)) =
+            let in
+                sp_assoc_ent s d1;
+                putc ?,;
+                sp_assoc d2
+            end
+          | sp_assoc x = sp_assoc_ent "..." x
+
+    in
+        sp result;
+        putc ?\n
+    end
+
 fun sexp_view result =
     let fun sp (Atom s) = 
 	    let in
@@ -620,6 +675,7 @@ fun goggle-view gogs result =
     case gogs of 
 	EnglishGoggles => english_view ({ ansi = false, reading = false }, result)
       | XMLGoggles => xml_view result
+      | JSONGoggles => json_view result
       | SExpGoggles => sexp_view result
       | MLGoggles => ml_view result
       | ANSIGoggles => english_view ({ ansi = true, reading = false }, result)
