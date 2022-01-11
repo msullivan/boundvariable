@@ -118,12 +118,6 @@ The rules in the sentence are considered left-to-right.
        Note that counting does not proceed into subterms that themselves
        match the current rule.
 
-       Additionally, due to a confused attempt at optimization by a
-       graduate student, if both positions of a juxtaposition subterm
-       have an equal number of matches, that subterm is considered to
-       have *zero* matches. (As we already have several users, we want
-       to avoid changing the behavior.)
-
    (b) If the rule does not match in either position, it is not applied.  
 
        If the rule matches only in one position, it is recursively

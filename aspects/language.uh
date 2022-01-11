@@ -339,45 +339,46 @@ fun deepMatch (p, e) =
       xml-attempt1 
       arith-attempt4
       (which gets stuck in weird ways) 
+ *)
+(*
+      The testing alluded to in the above comment did not catch that the
+      original stepLHMNRecFast actually changed the behavior pretty
+      substantially.
+
+      This version was tested by generating a ton of test cases using
+      quickcheck and a Haskell implementation and checking it against this
+      and the stepInsideLHMN version.
 *)
 val stepLHMNRecFast : singleRulePolicy = 
     let
 	(* humlock might do better if this is specialized *)
 	datatype loopRetOpt = 
-	    LRSOME of {e' : unit -> term, i : int} 
+	    LRSOME of unit -> term
 	  | LRNONE
 	    
-	fun loop (rul as (pattern, result), e) : loopRetOpt = 
+	fun loop (rul as (pattern, result), e) : loopRetOpt * int =
 	    case match (pattern, e) of
-		SOME bindings => LRSOME {e'=fn _ => subst (bindings, result), i=1}
+		SOME bindings => (LRSOME (fn _ => subst (bindings, result)), 1)
 	      | NONE => 
 		    (case e of
 			 App (e1, e2) =>
-			     (case loop (rul, e1) of
-				  LRNONE => 
-				      (* no matches on LHS, so try righthand side *)
-				      (case loop (rul, e2) of
-					   LRNONE => 
-					       (* didn't apply at all *)
-					       LRNONE 
-					| LRSOME {e'=e2', i=i2} => 
-					       (* applied only somewhere on RHS *)
-					       LRSOME {e'=fn _ => App (e1, e2'()), i=i2})
-				| LRSOME {e'=e1',i=i1} =>
-					   (* some matches on LHS *)
-					   (case loop (rul, e2) of
-						LRNONE => 
-						    (* applied only on LHS *)
-						    LRSOME {e'=fn _ => App (e1' (), e2), i=i1}
-					      | LRSOME {e'=e2', i=i2} => 
-						    if i1 = i2 
-						    then LRNONE
-						    else if i1 < i2 
-							 then (* so apply in LHS only *)
-							     LRSOME {e'=fn _ => App(e1' (), e2), i=i1+i2}
-							 else (* i1 > i2, so apply in RHS only *)
-							     LRSOME {e'=fn _ => App(e1, e2' ()), i=i1+i2}))
-		       | _ => LRNONE)
+                         let val (te1', i1) = loop (rul, e1)
+                             val (te2', i2) = loop (rul, e2)
+                             val e' = if i1 = i2 then LRNONE else
+                                      (* If RHS has no matches or both parts have matches but the LHS has fewer, try the LHS *)
+                                      if i2 = 0 orelse (i1 > 0 andalso i1 < i2)
+                                      then
+                                          (case te1' of
+                                               LRNONE => LRNONE
+                                             | LRSOME e1' => LRSOME (fn _ => App(e1' (), e2)))
+                                      else
+                                          (* Otherwise just try the RHS *)
+                                          (case te2' of
+                                               LRNONE => LRNONE
+                                             | LRSOME e2' => LRSOME (fn _ => App(e1, e2' ())))
+                         in (e', i1+i2) end
+		       | _ => (LRNONE, 0)
+                    )
     in
 	(* check whether it matches at all anywhere 
 	   work is repeated if it doesn't, but this speeds up the common case
@@ -388,8 +389,8 @@ val stepLHMNRecFast : singleRulePolicy =
 	     if deepMatch (p, e)
 	     then 
 		 case loop (r, e) of
-		     LRSOME {e', i=_} => SOME (e' ())
-		   | LRNONE => NONE
+		     (LRSOME e', i) => SOME (e' ())
+		   | _ => NONE
 	     else NONE)
     end
   
