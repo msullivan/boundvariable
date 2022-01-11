@@ -13,9 +13,11 @@ DEPS += ../antomaton/*.ant ../balance/BALANCE* ../balance/*.mem ../balance/*.src
 
 HUMLOCK = ../um/humlock/humlock
 
+GCRATIO = 3
+
 umix.um : umix.uml hack_bas.uh qbasic.uh mail.uh roman.uh \
   ../um/humlock/stdlib/*.uh ${HUMLOCK} ${DEPS}
-	${HUMLOCK} ${INCLUDES} -writecps -prof -writeasm -gcratio 10 -iloptstop 200 umix.uml
+	${HUMLOCK} ${INCLUDES} -writecps -prof -writeasm -gcratio ${GCRATIO} -iloptstop 200 umix.uml
 
 run : umix.um
 	../um/c-tom/um umix.um
@@ -37,7 +39,7 @@ testy :
 
 # always ready
 codex.umz : .dummy
-	${HUMLOCK} ${INCLUDES} -revision 9 -scloadprog -writecps -prof -writeasm -print -crypt -sd -junk -obsouter -gcdebug -gcratio 10    umix.uml -o codex.umz
+	${HUMLOCK} ${INCLUDES} -revision 9 -scloadprog -writecps -prof -writeasm -print -crypt -sd -junk -obsouter -gcdebug -gcratio ${GCRATIO}    umix.uml -o codex.umz
 
 .dummy :
 
