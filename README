@@ -63,3 +63,19 @@
        Karl Crary
        Robert Harper
        (see story/STORY_CONTEST_CREDITS for full credits)
+
+--------------------------------------------------------------------------
+
+This is a copy of the source code release with a few updates:
+
+ * Get everything building again
+ * Fix a (fairly critical!) documentation error for O'Cult
+ * Fix a crash bug when finishing the O'Cult 2d puzzle
+ * Fix a documentation error for the O'Cult 2d puzzle
+ * Add a JSON output mode for adventure
+ * Turn down the gcratio for selfish reasons
+
+Updated codex is at:
+  https://github.com/msullivan/boundvariable/releases/download/v1/codex.umz
+
+-- Michael J. Sullivan
